@@ -4,8 +4,5 @@ title: About Me
 permalink: /about/
 ---
 
-This website is powered by **[fastpages](https://github.com/fastai/fastpages)** [^1].
 
-
-
-[^1]:a blogging platform that natively supports Jupyter notebooks in addition to other formats.
+인공지능과 데이터 엔지니어링을 학습하고 기록하는 블로그입니다.
