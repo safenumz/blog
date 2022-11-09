@@ -1,0 +1,2512 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] PySpark Feature Engineering 기법들 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] PySpark Feature Engineering 기법들" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="pyspark feature engineering 기법들" />
+<meta property="og:description" content="pyspark feature engineering 기법들" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2020/05/12/pyspark-ml-feature-engineering.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2020/05/12/pyspark-ml-feature-engineering.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-12T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] PySpark Feature Engineering 기법들" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-05-12T00:00:00-05:00","datePublished":"2020-05-12T00:00:00-05:00","description":"pyspark feature engineering 기법들","headline":"[Spark] PySpark Feature Engineering 기법들","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2020/05/12/pyspark-ml-feature-engineering.html"},"url":"https://safenumz.github.io/blog/spark/2020/05/12/pyspark-ml-feature-engineering.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] PySpark Feature Engineering 기법들</h1><p class="page-description">pyspark feature engineering 기법들</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-12T00:00:00-05:00" itemprop="datePublished">
+        May 12, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      19 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2020-05-12-pyspark-ml-feature-engineering.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2020-05-12-pyspark-ml-feature-engineering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2020-05-12-pyspark-ml-feature-engineering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2020-05-12-pyspark-ml-feature-engineering.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#1.-변환자">1. 변환자 </a></li>
+<li class="toc-entry toc-h1"><a href="#2.-전처리-추정자">2. 전처리 추정자 </a></li>
+<li class="toc-entry toc-h1"><a href="#3.-고수준-변환자">3. 고수준 변환자 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#3.1-RFormula">3.1 RFormula </a></li>
+<li class="toc-entry toc-h2"><a href="#3.2-SQL-변환자">3.2 SQL 변환자 </a></li>
+<li class="toc-entry toc-h2"><a href="#3.3-벡터-조합기">3.3 벡터 조합기 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#4.-연속형-특징-처리">4. 연속형 특징 처리 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#4.1-버켓팅">4.1 버켓팅 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#4.3-StandardScaler">4.3 StandardScaler </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#4.4-MinMaxScaler">4.4 MinMaxScaler </a></li>
+<li class="toc-entry toc-h2"><a href="#4.5-MaxAbsScaler">4.5 MaxAbsScaler </a></li>
+<li class="toc-entry toc-h2"><a href="#4.6-ElementwiseProduct">4.6 ElementwiseProduct </a></li>
+<li class="toc-entry toc-h2"><a href="#4.7-Normalizer">4.7 Normalizer </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#5.-범주형-특징-처리">5. 범주형 특징 처리 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#5.1-StringIndexer">5.1 StringIndexer </a></li>
+<li class="toc-entry toc-h2"><a href="#5.2-색인된-값을-텍스트로-변환">5.2 색인된 값을 텍스트로 변환 </a></li>
+<li class="toc-entry toc-h2"><a href="#5.3-벡터-인덱싱">5.3 벡터 인덱싱 </a></li>
+<li class="toc-entry toc-h2"><a href="#5.4-원-핫-인코딩">5.4 원-핫 인코딩 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#6.-텍스트-데이터-변환자">6. 텍스트 데이터 변환자 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#6.1-텍스트-토큰화">6.1 텍스트 토큰화 </a></li>
+<li class="toc-entry toc-h2"><a href="#6.2-일반적인-단어-제거">6.2 일반적인 단어 제거 </a></li>
+<li class="toc-entry toc-h2"><a href="#6.3-단어-조합-만들기">6.3 단어 조합 만들기 </a></li>
+<li class="toc-entry toc-h2"><a href="#6.4-단어를-숫자로-변환">6.4 단어를 숫자로 변환 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#CountVectorizer">CountVectorizer </a></li>
+<li class="toc-entry toc-h3"><a href="#TF-IDF">TF-IDF </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#6.5-Word2Vec">6.5 Word2Vec </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#7.-특징-조작">7. 특징 조작 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#7.1-주성분-분석">7.1 주성분 분석 </a></li>
+<li class="toc-entry toc-h2"><a href="#7.2-ChiSqSelector">7.2 ChiSqSelector </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-05-12-pyspark-ml-feature-engineering.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">MINIO_ACCESS_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_ACCESS_KEY'</span><span class="p">]</span>
+<span class="n">MINIO_SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_SECRET_KEY'</span><span class="p">]</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.access.key"</span><span class="p">,</span> <span class="n">MINIO_ACCESS_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.secret.key"</span><span class="p">,</span> <span class="n">MINIO_SECRET_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.endpoint"</span><span class="p">,</span> <span class="s2">"http://lab101:10170"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.impl"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.S3AFileSystem"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.connection.ssl.enabled"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.path.style.access"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"com.amazonaws.services.s3.enableV2"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.aws.credentials.provider"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"csv"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"header"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"inferSchema"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"s3a://data/retail-data/by-day/*.csv"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"Description IS NOT NULL"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fakeIntDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="s2">"s3a://data/simple-ml-integers"</span><span class="p">)</span>
+<span class="n">simpleDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">json</span><span class="p">(</span><span class="s2">"s3a://data/simple-ml"</span><span class="p">)</span>
+<span class="n">scaleDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">parquet</span><span class="p">(</span><span class="s2">"s3a://data/simple-ml-scaling"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>세일즈 데이터셋은 여러번 엑세스할 것이므로 캐시를 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+<span class="n">sales</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|InvoiceNo|StockCode|         Description|Quantity|        InvoiceDate|UnitPrice|CustomerID|       Country|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|   580538|    23084|  RABBIT NIGHT LIGHT|      48|2011-12-05 08:38:00|     1.79|   14075.0|United Kingdom|
+|   580538|    23077| DOUGHNUT LIP GLOSS |      20|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|
+|   580538|    22906|12 MESSAGE CARDS ...|      24|2011-12-05 08:38:00|     1.65|   14075.0|United Kingdom|
+|   580538|    21914|BLUE HARMONICA IN...|      24|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|
+|   580538|    22467|   GUMBALL COAT RACK|       6|2011-12-05 08:38:00|     2.55|   14075.0|United Kingdom|
+|   580538|    21544|SKULLS  WATER TRA...|      48|2011-12-05 08:38:00|     0.85|   14075.0|United Kingdom|
+|   580538|    23126|FELTCRAFT GIRL AM...|       8|2011-12-05 08:38:00|     4.95|   14075.0|United Kingdom|
+|   580538|    21833|CAMOUFLAGE LED TORCH|      24|2011-12-05 08:38:00|     1.69|   14075.0|United Kingdom|
+|   580539|    21479|WHITE SKULL HOT W...|       4|2011-12-05 08:39:00|     4.25|   18180.0|United Kingdom|
+|   580539|   84030E|ENGLISH ROSE HOT ...|       4|2011-12-05 08:39:00|     4.25|   18180.0|United Kingdom|
+|   580539|    23355|HOT WATER BOTTLE ...|       4|2011-12-05 08:39:00|     4.95|   18180.0|United Kingdom|
+|   580539|    22111|SCOTTIE DOG HOT W...|       3|2011-12-05 08:39:00|     4.95|   18180.0|United Kingdom|
+|   580539|    21115|ROSE CARAVAN DOOR...|       8|2011-12-05 08:39:00|     1.95|   18180.0|United Kingdom|
+|   580539|    21411|GINGHAM HEART  DO...|       8|2011-12-05 08:39:00|     1.95|   18180.0|United Kingdom|
+|   580539|    23235|STORAGE TIN VINTA...|      12|2011-12-05 08:39:00|     1.25|   18180.0|United Kingdom|
+|   580539|    23239|SET OF 4 KNICK KN...|       6|2011-12-05 08:39:00|     1.65|   18180.0|United Kingdom|
+|   580539|    22197|      POPCORN HOLDER|      36|2011-12-05 08:39:00|     0.85|   18180.0|United Kingdom|
+|   580539|    22693|GROW A FLYTRAP OR...|      24|2011-12-05 08:39:00|     1.25|   18180.0|United Kingdom|
+|   580539|    22372|AIRLINE BAG VINTA...|       4|2011-12-05 08:39:00|     4.25|   18180.0|United Kingdom|
+|   580539|    22375|AIRLINE BAG VINTA...|       4|2011-12-05 08:39:00|     4.25|   18180.0|United Kingdom|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="1.-변환자">
+<a class="anchor" href="#1.-%EB%B3%80%ED%99%98%EC%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. 변환자<a class="anchor-link" href="#1.-%EB%B3%80%ED%99%98%EC%9E%90"> </a>
+</h1>
+<ul>
+<li>다양한 방법으로 원시 데이터를 변환시키는 함수</li>
+<li>하나의 변수를 두 개의 다른 변수로 변환하거나, 변수를 Double 타입 등으로 변환하는 기능</li>
+<li>예) Tokenizer</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+
+<span class="n">tkn</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span>
+<span class="n">tkn</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+------------------------------+
+|         Description|Tokenizer_f8c5e492a92d__output|
++--------------------+------------------------------+
+|  RABBIT NIGHT LIGHT|          [rabbit, night, l...|
+| DOUGHNUT LIP GLOSS |          [doughnut, lip, g...|
+|12 MESSAGE CARDS ...|          [12, message, car...|
+|BLUE HARMONICA IN...|          [blue, harmonica,...|
+|   GUMBALL COAT RACK|          [gumball, coat, r...|
++--------------------+------------------------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2.-전처리-추정자">
+<a class="anchor" href="#2.-%EC%A0%84%EC%B2%98%EB%A6%AC-%EC%B6%94%EC%A0%95%EC%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. 전처리 추정자<a class="anchor-link" href="#2.-%EC%A0%84%EC%B2%98%EB%A6%AC-%EC%B6%94%EC%A0%95%EC%9E%90"> </a>
+</h1>
+<ul>
+<li>수행하려는 변환이 입력 컬럼에 대한 데이터 또는 정보로 초기화되어야 할 때 필요</li>
+<li>특정 입력 데이터에 따라 구성되는 변환자</li>
+<li>예) StandardScaler</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">ss</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">ss</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+-----------------------------------+
+| id|      features|StandardScaler_f10c68da2d39__output|
++---+--------------+-----------------------------------+
+|  0|[1.0,0.1,-1.0]|               [1.19522860933439...|
+|  1| [2.0,1.1,1.0]|               [2.39045721866878...|
+|  0|[1.0,0.1,-1.0]|               [1.19522860933439...|
+|  1| [2.0,1.1,1.0]|               [2.39045721866878...|
+|  1|[3.0,10.1,3.0]|               [3.58568582800318...|
++---+--------------+-----------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="3.-고수준-변환자">
+<a class="anchor" href="#3.-%EA%B3%A0%EC%88%98%EC%A4%80-%EB%B3%80%ED%99%98%EC%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. 고수준 변환자<a class="anchor-link" href="#3.-%EA%B3%A0%EC%88%98%EC%A4%80-%EB%B3%80%ED%99%98%EC%9E%90"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.1-RFormula">
+<a class="anchor" href="#3.1-RFormula" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 RFormula<a class="anchor-link" href="#3.1-RFormula"> </a>
+</h2>
+<ul>
+<li>원 핫 인코딩을 수행해 문자열로 지정된 범주화된 입력변수를 자동으로 처리</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">RFormula</span>
+
+<span class="n">supervised</span> <span class="o">=</span> <span class="n">RFormula</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="s2">"lab ~ . + color:value1 + color:value2"</span><span class="p">)</span>
+<span class="n">supervised</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+----+------+------------------+--------------------+-----+
+|color| lab|value1|            value2|            features|label|
++-----+----+------+------------------+--------------------+-----+
+|green|good|     1|14.386294994851129|(10,[1,2,3,5,8],[...|  1.0|
+| blue| bad|     8|14.386294994851129|(10,[2,3,6,9],[8....|  0.0|
+| blue| bad|    12|14.386294994851129|(10,[2,3,6,9],[12...|  0.0|
+|green|good|    15| 38.97187133755819|(10,[1,2,3,5,8],[...|  1.0|
+|green|good|    12|14.386294994851129|(10,[1,2,3,5,8],[...|  1.0|
+|green| bad|    16|14.386294994851129|(10,[1,2,3,5,8],[...|  0.0|
+|  red|good|    35|14.386294994851129|(10,[0,2,3,4,7],[...|  1.0|
+|  red| bad|     1| 38.97187133755819|(10,[0,2,3,4,7],[...|  0.0|
+|  red| bad|     2|14.386294994851129|(10,[0,2,3,4,7],[...|  0.0|
+|  red| bad|    16|14.386294994851129|(10,[0,2,3,4,7],[...|  0.0|
+|  red|good|    45| 38.97187133755819|(10,[0,2,3,4,7],[...|  1.0|
+|green|good|     1|14.386294994851129|(10,[1,2,3,5,8],[...|  1.0|
+| blue| bad|     8|14.386294994851129|(10,[2,3,6,9],[8....|  0.0|
+| blue| bad|    12|14.386294994851129|(10,[2,3,6,9],[12...|  0.0|
+|green|good|    15| 38.97187133755819|(10,[1,2,3,5,8],[...|  1.0|
+|green|good|    12|14.386294994851129|(10,[1,2,3,5,8],[...|  1.0|
+|green| bad|    16|14.386294994851129|(10,[1,2,3,5,8],[...|  0.0|
+|  red|good|    35|14.386294994851129|(10,[0,2,3,4,7],[...|  1.0|
+|  red| bad|     1| 38.97187133755819|(10,[0,2,3,4,7],[...|  0.0|
+|  red| bad|     2|14.386294994851129|(10,[0,2,3,4,7],[...|  0.0|
++-----+----+------+------------------+--------------------+-----+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.2-SQL-변환자">
+<a class="anchor" href="#3.2-SQL-%EB%B3%80%ED%99%98%EC%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 SQL 변환자<a class="anchor-link" href="#3.2-SQL-%EB%B3%80%ED%99%98%EC%9E%90"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">SQLTransformer</span>
+
+<span class="n">basicTransformation</span> <span class="o">=</span> <span class="n">SQLTransformer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setStatement</span><span class="p">(</span><span class="s2">"""</span>
+<span class="s2">        SELECT sum(Quantity), count(*), CustomerID</span>
+<span class="s2">        FROM __THIS__</span>
+<span class="s2">        GROUP BY CustomerID</span>
+<span class="s2">    """</span><span class="p">)</span>
+
+<span class="n">basicTransformation</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------+--------+----------+
+|sum(Quantity)|count(1)|CustomerID|
++-------------+--------+----------+
+|          119|      62|   14452.0|
+|          440|     143|   16916.0|
+|          630|      72|   17633.0|
+|           34|       6|   14768.0|
+|         1542|      30|   13094.0|
+|          854|     117|   17884.0|
+|           97|      12|   16596.0|
+|          756|      67|   15145.0|
+|           83|      13|   16858.0|
+|           56|       4|   13160.0|
+|         8873|      80|   16656.0|
+|          241|      43|   16212.0|
+|          258|      23|   13142.0|
+|           67|      14|   13811.0|
+|         1145|      62|   16600.0|
+|          568|      87|   15898.0|
+|        37720|    2491|   15311.0|
+|         1467|      62|   18263.0|
+|         2006|      94|   16353.0|
+|         1486|     161|   17659.0|
++-------------+--------+----------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="3.3-벡터-조합기">
+<a class="anchor" href="#3.3-%EB%B2%A1%ED%84%B0-%EC%A1%B0%ED%95%A9%EA%B8%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 벡터 조합기<a class="anchor-link" href="#3.3-%EB%B2%A1%ED%84%B0-%EC%A1%B0%ED%95%A9%EA%B8%B0"> </a>
+</h2>
+<ul>
+<li>모든 특징을 하나의 큰 벡터로 연결하여 추정자에 전달하는 기능을 제공</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fakeIntDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+----+----+
+|int1|int2|int3|
++----+----+----+
+|   1|   2|   3|
+|   4|   5|   6|
+|   7|   8|   9|
++----+----+----+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorAssembler</span>
+
+<span class="n">va</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCols</span><span class="p">([</span><span class="s2">"int1"</span><span class="p">,</span> <span class="s2">"int2"</span><span class="p">,</span> <span class="s2">"int3"</span><span class="p">])</span>
+<span class="n">va</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">fakeIntDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+----+----+------------------------------------+
+|int1|int2|int3|VectorAssembler_7237f61f3237__output|
++----+----+----+------------------------------------+
+|   1|   2|   3|                       [1.0,2.0,3.0]|
+|   4|   5|   6|                       [4.0,5.0,6.0]|
+|   7|   8|   9|                       [7.0,8.0,9.0]|
++----+----+----+------------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="4.-연속형-특징-처리">
+<a class="anchor" href="#4.-%EC%97%B0%EC%86%8D%ED%98%95-%ED%8A%B9%EC%A7%95-%EC%B2%98%EB%A6%AC" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. 연속형 특징 처리<a class="anchor-link" href="#4.-%EC%97%B0%EC%86%8D%ED%98%95-%ED%8A%B9%EC%A7%95-%EC%B2%98%EB%A6%AC"> </a>
+</h1>
+<ul>
+<li>버켓팅이라는 프로세스를 통해 연속형 특징을 범주형 특징으로 변환</li>
+<li>여러 요구사항에 따라 특징을 스케일링하거나 정규화할 수 있음</li>
+<li>Double 타입에서만 작동하므로 다른 형식의 숫자값이 있다면 Double Type으로 변경해야 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">contDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="s2">"cast(id as double)"</span><span class="p">)</span>
+<span class="n">contDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+
+|  id|
++----+
+| 0.0|
+| 1.0|
+| 2.0|
+| 3.0|
+| 4.0|
+| 5.0|
+| 6.0|
+| 7.0|
+| 8.0|
+| 9.0|
+|10.0|
+|11.0|
+|12.0|
+|13.0|
+|14.0|
+|15.0|
+|16.0|
+|17.0|
+|18.0|
+|19.0|
++----+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.1-버켓팅">
+<a class="anchor" href="#4.1-%EB%B2%84%EC%BC%93%ED%8C%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.1 버켓팅<a class="anchor-link" href="#4.1-%EB%B2%84%EC%BC%93%ED%8C%85"> </a>
+</h2>
+<ul>
+<li>Bucketizer를 사용하면 주어진 연속형 특징을 지정한 버켓으로 분할</li>
+<li>예를 들어, 체중을 분석하고 싶을 때, 과체중, 평균, 저체중의 세 가지 버켓으로 나누어 활용하는 것이 간단한 접근이 될 수 있음</li>
+<li>경계 지정 규칙<ul>
+<li>분할 배열의 최소값은 DF의 최소값보다 작아야 함</li>
+<li>분할 배열의 최대값은 DF의 최대값보다 커야 함</li>
+<li>분할 배열은 최소 세 개 이상의 값을 지정해서 두 개 이상의 버켓을 만들도록 해야 함</li>
+</ul>
+</li>
+<li>가능한 모든 범위를 포함하기 위해 <strong>float("inf"), float("-inf")</strong> 를 사용할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Bucketizer</span>
+
+<span class="n">bucketBorders</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">,</span> <span class="mf">250.0</span><span class="p">,</span> <span class="mf">600.0</span><span class="p">]</span>
+<span class="n">bucketer</span> <span class="o">=</span> <span class="n">Bucketizer</span><span class="p">()</span><span class="o">.</span><span class="n">setSplits</span><span class="p">(</span><span class="n">bucketBorders</span><span class="p">)</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span>
+<span class="n">bucketer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">contDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+-------------------------------+
+|  id|Bucketizer_e67baba75dea__output|
++----+-------------------------------+
+| 0.0|                            0.0|
+| 1.0|                            0.0|
+| 2.0|                            0.0|
+| 3.0|                            0.0|
+| 4.0|                            0.0|
+| 5.0|                            1.0|
+| 6.0|                            1.0|
+| 7.0|                            1.0|
+| 8.0|                            1.0|
+| 9.0|                            1.0|
+|10.0|                            2.0|
+|11.0|                            2.0|
+|12.0|                            2.0|
+|13.0|                            2.0|
+|14.0|                            2.0|
+|15.0|                            2.0|
+|16.0|                            2.0|
+|17.0|                            2.0|
+|18.0|                            2.0|
+|19.0|                            2.0|
++----+-------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기준을 직접 지정하지 않고 백분위수를 기준으로 분할하는 방법도 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">QuantileDiscretizer</span>
+
+<span class="n">bucketer</span> <span class="o">=</span> <span class="n">QuantileDiscretizer</span><span class="p">()</span><span class="o">.</span><span class="n">setNumBuckets</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"id"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"result"</span><span class="p">)</span>
+<span class="n">fittedBucketer</span> <span class="o">=</span> <span class="n">bucketer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">contDF</span><span class="p">)</span>
+<span class="n">fittedBucketer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">contDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+------+
+|  id|result|
++----+------+
+| 0.0|   0.0|
+| 1.0|   0.0|
+| 2.0|   0.0|
+| 3.0|   1.0|
+| 4.0|   1.0|
+| 5.0|   1.0|
+| 6.0|   1.0|
+| 7.0|   2.0|
+| 8.0|   2.0|
+| 9.0|   2.0|
+|10.0|   2.0|
+|11.0|   3.0|
+|12.0|   3.0|
+|13.0|   3.0|
+|14.0|   3.0|
+|15.0|   4.0|
+|16.0|   4.0|
+|17.0|   4.0|
+|18.0|   4.0|
+|19.0|   4.0|
++----+------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="4.3-StandardScaler">
+<a class="anchor" href="#4.3-StandardScaler" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.3 StandardScaler<a class="anchor-link" href="#4.3-StandardScaler"> </a>
+</h3>
+<ul>
+<li>특징들이 평균이 0이고 표준편차가 1인 분포를 갖도록 데이터를 표준화</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">sScaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">sScaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+-----------------------------------+
+| id|      features|StandardScaler_003a7eaa6e31__output|
++---+--------------+-----------------------------------+
+|  0|[1.0,0.1,-1.0]|               [1.19522860933439...|
+|  1| [2.0,1.1,1.0]|               [2.39045721866878...|
+|  0|[1.0,0.1,-1.0]|               [1.19522860933439...|
+|  1| [2.0,1.1,1.0]|               [2.39045721866878...|
+|  1|[3.0,10.1,3.0]|               [3.58568582800318...|
++---+--------------+-----------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.4-MinMaxScaler">
+<a class="anchor" href="#4.4-MinMaxScaler" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.4 MinMaxScaler<a class="anchor-link" href="#4.4-MinMaxScaler"> </a>
+</h2>
+<ul>
+<li>벡터의 값을 주어진 최솟값에서 최댓값까지의 비례 값으로 스케일링 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+
+<span class="n">minMax</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span><span class="o">.</span><span class="n">setMin</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">setMax</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">fittedminMax</span> <span class="o">=</span> <span class="n">minMax</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span>
+<span class="n">fittedminMax</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+---------------------------------+
+| id|      features|MinMaxScaler_7af6603d580f__output|
++---+--------------+---------------------------------+
+|  0|[1.0,0.1,-1.0]|                    [5.0,5.0,5.0]|
+|  1| [2.0,1.1,1.0]|                    [7.5,5.5,7.5]|
+|  0|[1.0,0.1,-1.0]|                    [5.0,5.0,5.0]|
+|  1| [2.0,1.1,1.0]|                    [7.5,5.5,7.5]|
+|  1|[3.0,10.1,3.0]|                 [10.0,10.0,10.0]|
++---+--------------+---------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.5-MaxAbsScaler">
+<a class="anchor" href="#4.5-MaxAbsScaler" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.5 MaxAbsScaler<a class="anchor-link" href="#4.5-MaxAbsScaler"> </a>
+</h2>
+<ul>
+<li>각 값을 해당 컬럼의 최대 절댓값으로 나눠서 데이터의 범위를 조정</li>
+<li>모든 값은 -1과 1사이에서 끝남</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">MaxAbsScaler</span>
+
+<span class="n">maScaler</span> <span class="o">=</span> <span class="n">MaxAbsScaler</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">fittedmaScaler</span> <span class="o">=</span> <span class="n">maScaler</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span>
+<span class="n">fittedmaScaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+---------------------------------+
+| id|      features|MaxAbsScaler_035b244c7f59__output|
++---+--------------+---------------------------------+
+|  0|[1.0,0.1,-1.0]|             [0.33333333333333...|
+|  1| [2.0,1.1,1.0]|             [0.66666666666666...|
+|  0|[1.0,0.1,-1.0]|             [0.33333333333333...|
+|  1| [2.0,1.1,1.0]|             [0.66666666666666...|
+|  1|[3.0,10.1,3.0]|                    [1.0,1.0,1.0]|
++---+--------------+---------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.6-ElementwiseProduct">
+<a class="anchor" href="#4.6-ElementwiseProduct" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.6 ElementwiseProduct<a class="anchor-link" href="#4.6-ElementwiseProduct"> </a>
+</h2>
+<ul>
+<li>벡터의 각 값을 임의의 값으로 조정할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">ElementwiseProduct</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.linalg</span> <span class="kn">import</span> <span class="n">Vectors</span>
+
+<span class="n">scaleUpVec</span> <span class="o">=</span> <span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">15.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">)</span>
+<span class="n">scalingUp</span> <span class="o">=</span> <span class="n">ElementwiseProduct</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setScalingVec</span><span class="p">(</span><span class="n">scaleUpVec</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">scalingUp</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+---------------------------------------+
+| id|      features|ElementwiseProduct_fd2f8252b564__output|
++---+--------------+---------------------------------------+
+|  0|[1.0,0.1,-1.0]|                       [10.0,1.5,-20.0]|
+|  1| [2.0,1.1,1.0]|                       [20.0,16.5,20.0]|
+|  0|[1.0,0.1,-1.0]|                       [10.0,1.5,-20.0]|
+|  1| [2.0,1.1,1.0]|                       [20.0,16.5,20.0]|
+|  1|[3.0,10.1,3.0]|                      [30.0,151.5,60.0]|
++---+--------------+---------------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="4.7-Normalizer">
+<a class="anchor" href="#4.7-Normalizer" aria-hidden="true"><span class="octicon octicon-link"></span></a>4.7 Normalizer<a class="anchor-link" href="#4.7-Normalizer"> </a>
+</h2>
+<ul>
+<li>여러 가지 표준 중 하나를 사용하여(파라미터 p로 지정) 다차원 벡터를 스케일링할 수 있음</li>
+<li>예를 들어, 맨해튼 표준은 p=1, 유클리드 표준은 p=2</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Normalizer</span>
+
+<span class="n">manhattanDistance</span> <span class="o">=</span> <span class="n">Normalizer</span><span class="p">()</span><span class="o">.</span><span class="n">setP</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">manhattanDistance</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+-------------------------------+
+| id|      features|Normalizer_3faba6829ca5__output|
++---+--------------+-------------------------------+
+|  0|[1.0,0.1,-1.0]|           [0.47619047619047...|
+|  1| [2.0,1.1,1.0]|           [0.48780487804878...|
+|  0|[1.0,0.1,-1.0]|           [0.47619047619047...|
+|  1| [2.0,1.1,1.0]|           [0.48780487804878...|
+|  1|[3.0,10.1,3.0]|           [0.18633540372670...|
++---+--------------+-------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="5.-범주형-특징-처리">
+<a class="anchor" href="#5.-%EB%B2%94%EC%A3%BC%ED%98%95-%ED%8A%B9%EC%A7%95-%EC%B2%98%EB%A6%AC" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. 범주형 특징 처리<a class="anchor-link" href="#5.-%EB%B2%94%EC%A3%BC%ED%98%95-%ED%8A%B9%EC%A7%95-%EC%B2%98%EB%A6%AC"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.1-StringIndexer">
+<a class="anchor" href="#5.1-StringIndexer" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.1 StringIndexer<a class="anchor-link" href="#5.1-StringIndexer"> </a>
+</h2>
+<ul>
+<li>DF에 첨부된 메타데이터를 생성하여 어떤 입력이 어떤 출력에 해당하는지 지정, 이렇게 하면 나중에 각 색인값에서 입력값을 다시 가져올 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StringIndexer</span>
+
+<span class="n">lblIndxr</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"lab"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"labelInd"</span><span class="p">)</span>
+<span class="n">idxRes</span> <span class="o">=</span> <span class="n">lblIndxr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span>
+<span class="n">idxRes</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+----+------+------------------+--------+
+|color| lab|value1|            value2|labelInd|
++-----+----+------+------------------+--------+
+|green|good|     1|14.386294994851129|     1.0|
+| blue| bad|     8|14.386294994851129|     0.0|
+| blue| bad|    12|14.386294994851129|     0.0|
+|green|good|    15| 38.97187133755819|     1.0|
+|green|good|    12|14.386294994851129|     1.0|
+|green| bad|    16|14.386294994851129|     0.0|
+|  red|good|    35|14.386294994851129|     1.0|
+|  red| bad|     1| 38.97187133755819|     0.0|
+|  red| bad|     2|14.386294994851129|     0.0|
+|  red| bad|    16|14.386294994851129|     0.0|
+|  red|good|    45| 38.97187133755819|     1.0|
+|green|good|     1|14.386294994851129|     1.0|
+| blue| bad|     8|14.386294994851129|     0.0|
+| blue| bad|    12|14.386294994851129|     0.0|
+|green|good|    15| 38.97187133755819|     1.0|
+|green|good|    12|14.386294994851129|     1.0|
+|green| bad|    16|14.386294994851129|     0.0|
+|  red|good|    35|14.386294994851129|     1.0|
+|  red| bad|     1| 38.97187133755819|     0.0|
+|  red| bad|     2|14.386294994851129|     0.0|
++-----+----+------+------------------+--------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>문자열이 아닌 컬럼에도 StringIndexer를 적용할 수 있음, 색인을 생성하기 전에 문자열로 변환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valIndexer</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"value1"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"valueInd"</span><span class="p">)</span>
+<span class="n">valIndexer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+----+------+------------------+--------+
+|color| lab|value1|            value2|valueInd|
++-----+----+------+------------------+--------+
+|green|good|     1|14.386294994851129|     0.0|
+| blue| bad|     8|14.386294994851129|     7.0|
+| blue| bad|    12|14.386294994851129|     1.0|
+|green|good|    15| 38.97187133755819|     3.0|
+|green|good|    12|14.386294994851129|     1.0|
+|green| bad|    16|14.386294994851129|     2.0|
+|  red|good|    35|14.386294994851129|     5.0|
+|  red| bad|     1| 38.97187133755819|     0.0|
+|  red| bad|     2|14.386294994851129|     4.0|
+|  red| bad|    16|14.386294994851129|     2.0|
+|  red|good|    45| 38.97187133755819|     6.0|
+|green|good|     1|14.386294994851129|     0.0|
+| blue| bad|     8|14.386294994851129|     7.0|
+| blue| bad|    12|14.386294994851129|     1.0|
+|green|good|    15| 38.97187133755819|     3.0|
+|green|good|    12|14.386294994851129|     1.0|
+|green| bad|    16|14.386294994851129|     2.0|
+|  red|good|    35|14.386294994851129|     5.0|
+|  red| bad|     1| 38.97187133755819|     0.0|
+|  red| bad|     2|14.386294994851129|     4.0|
++-----+----+------+------------------+--------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>학습할 때 보지 못한 입력이 들어오면 기본적으로 오류가 발생함</li>
+<li>유효하지 않은 입력에 대해 오류를 출력하거나 로우를 건너뛰고 처리하는 옵션만 선택할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">valIndexer</span><span class="o">.</span><span class="n">setHandleInvalid</span><span class="p">(</span><span class="s2">"skip"</span><span class="p">)</span>
+<span class="n">valIndexer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">setHandleInvalid</span><span class="p">(</span><span class="s2">"skip"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>StringIndexerModel: uid=StringIndexer_fcfe830fcc9b, handleInvalid=skip</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.2-색인된-값을-텍스트로-변환">
+<a class="anchor" href="#5.2-%EC%83%89%EC%9D%B8%EB%90%9C-%EA%B0%92%EC%9D%84-%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A1%9C-%EB%B3%80%ED%99%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.2 색인된 값을 텍스트로 변환<a class="anchor-link" href="#5.2-%EC%83%89%EC%9D%B8%EB%90%9C-%EA%B0%92%EC%9D%84-%ED%85%8D%EC%8A%A4%ED%8A%B8%EB%A1%9C-%EB%B3%80%ED%99%98"> </a>
+</h2>
+<ul>
+<li>다양하게 변환된 결과값을 기존 값으로 다시 매핑하여 진행</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">IndexToString</span>
+
+<span class="n">labelReverse</span> <span class="o">=</span> <span class="n">IndexToString</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"labelInd"</span><span class="p">)</span>
+<span class="n">labelReverse</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">idxRes</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+----+------+------------------+--------+----------------------------------+
+|color| lab|value1|            value2|labelInd|IndexToString_b45fc27c6240__output|
++-----+----+------+------------------+--------+----------------------------------+
+|green|good|     1|14.386294994851129|     1.0|                              good|
+| blue| bad|     8|14.386294994851129|     0.0|                               bad|
+| blue| bad|    12|14.386294994851129|     0.0|                               bad|
+|green|good|    15| 38.97187133755819|     1.0|                              good|
+|green|good|    12|14.386294994851129|     1.0|                              good|
+|green| bad|    16|14.386294994851129|     0.0|                               bad|
+|  red|good|    35|14.386294994851129|     1.0|                              good|
+|  red| bad|     1| 38.97187133755819|     0.0|                               bad|
+|  red| bad|     2|14.386294994851129|     0.0|                               bad|
+|  red| bad|    16|14.386294994851129|     0.0|                               bad|
+|  red|good|    45| 38.97187133755819|     1.0|                              good|
+|green|good|     1|14.386294994851129|     1.0|                              good|
+| blue| bad|     8|14.386294994851129|     0.0|                               bad|
+| blue| bad|    12|14.386294994851129|     0.0|                               bad|
+|green|good|    15| 38.97187133755819|     1.0|                              good|
+|green|good|    12|14.386294994851129|     1.0|                              good|
+|green| bad|    16|14.386294994851129|     0.0|                               bad|
+|  red|good|    35|14.386294994851129|     1.0|                              good|
+|  red| bad|     1| 38.97187133755819|     0.0|                               bad|
+|  red| bad|     2|14.386294994851129|     0.0|                               bad|
++-----+----+------+------------------+--------+----------------------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.3-벡터-인덱싱">
+<a class="anchor" href="#5.3-%EB%B2%A1%ED%84%B0-%EC%9D%B8%EB%8D%B1%EC%8B%B1" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.3 벡터 인덱싱<a class="anchor-link" href="#5.3-%EB%B2%A1%ED%84%B0-%EC%9D%B8%EB%8D%B1%EC%8B%B1"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorIndexer</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.linalg</span> <span class="kn">import</span> <span class="n">Vectors</span>
+
+<span class="n">idxIn</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">Vectors</span><span class="o">.</span><span class="n">dense</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">])</span><span class="o">.</span><span class="n">toDF</span><span class="p">(</span><span class="s2">"features"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">)</span>
+<span class="n">idxIn</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------+-----+
+|     features|label|
++-------------+-----+
+|[1.0,2.0,3.0]|    1|
+|[2.0,5.0,6.0]|    2|
+|[1.0,8.0,9.0]|    3|
++-------------+-----+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">indxr</span> <span class="o">=</span> <span class="n">VectorIndexer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"idxed"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMaxCategories</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">indxr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">idxIn</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">idxIn</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------+-----+-------------+
+|     features|label|        idxed|
++-------------+-----+-------------+
+|[1.0,2.0,3.0]|    1|[0.0,2.0,3.0]|
+|[2.0,5.0,6.0]|    2|[1.0,5.0,6.0]|
+|[1.0,8.0,9.0]|    3|[0.0,8.0,9.0]|
++-------------+-----+-------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="5.4-원-핫-인코딩">
+<a class="anchor" href="#5.4-%EC%9B%90-%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9" aria-hidden="true"><span class="octicon octicon-link"></span></a>5.4 원-핫 인코딩<a class="anchor-link" href="#5.4-%EC%9B%90-%ED%95%AB-%EC%9D%B8%EC%BD%94%EB%94%A9"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">OneHotEncoder</span><span class="p">,</span> <span class="n">StringIndexer</span>
+
+<span class="n">lblIndxr</span> <span class="o">=</span> <span class="n">StringIndexer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"color"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"colorInd"</span><span class="p">)</span>
+<span class="n">colorLab</span> <span class="o">=</span> <span class="n">lblIndxr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">simpleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">simpleDF</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"color"</span><span class="p">))</span>
+<span class="n">ohe</span> <span class="o">=</span> <span class="n">OneHotEncoder</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"colorInd"</span><span class="p">)</span>
+<span class="n">ohe</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">colorLab</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">colorLab</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+--------+----------------------------------+
+|color|colorInd|OneHotEncoder_650f9bb5b001__output|
++-----+--------+----------------------------------+
+|green|     1.0|                     (2,[1],[1.0])|
+| blue|     2.0|                         (2,[],[])|
+| blue|     2.0|                         (2,[],[])|
+|green|     1.0|                     (2,[1],[1.0])|
+|green|     1.0|                     (2,[1],[1.0])|
+|green|     1.0|                     (2,[1],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|green|     1.0|                     (2,[1],[1.0])|
+| blue|     2.0|                         (2,[],[])|
+| blue|     2.0|                         (2,[],[])|
+|green|     1.0|                     (2,[1],[1.0])|
+|green|     1.0|                     (2,[1],[1.0])|
+|green|     1.0|                     (2,[1],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
+|  red|     0.0|                     (2,[0],[1.0])|
++-----+--------+----------------------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">colorLab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+--------+
+|color|colorInd|
++-----+--------+
+|green|     1.0|
+| blue|     2.0|
+| blue|     2.0|
+|green|     1.0|
+|green|     1.0|
+|green|     1.0|
+|  red|     0.0|
+|  red|     0.0|
+|  red|     0.0|
+|  red|     0.0|
+|  red|     0.0|
+|green|     1.0|
+| blue|     2.0|
+| blue|     2.0|
+|green|     1.0|
+|green|     1.0|
+|green|     1.0|
+|  red|     0.0|
+|  red|     0.0|
+|  red|     0.0|
++-----+--------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="6.-텍스트-데이터-변환자">
+<a class="anchor" href="#6.-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B3%80%ED%99%98%EC%9E%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>6. 텍스트 데이터 변환자<a class="anchor-link" href="#6.-%ED%85%8D%EC%8A%A4%ED%8A%B8-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%B3%80%ED%99%98%EC%9E%90"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.1-텍스트-토큰화">
+<a class="anchor" href="#6.1-%ED%85%8D%EC%8A%A4%ED%8A%B8-%ED%86%A0%ED%81%B0%ED%99%94" aria-hidden="true"><span class="octicon octicon-link"></span></a>6.1 텍스트 토큰화<a class="anchor-link" href="#6.1-%ED%85%8D%EC%8A%A4%ED%8A%B8-%ED%86%A0%ED%81%B0%ED%99%94"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Tokenizer</span>
+
+<span class="n">tkn</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>
+<span class="n">tokenized</span> <span class="o">=</span> <span class="n">tkn</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">))</span>
+<span class="n">tokenized</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------------------------------+------------------------------------------+
+|Description                        |DescOut                                   |
++-----------------------------------+------------------------------------------+
+|RABBIT NIGHT LIGHT                 |[rabbit, night, light]                    |
+|DOUGHNUT LIP GLOSS                 |[doughnut, lip, gloss]                    |
+|12 MESSAGE CARDS WITH ENVELOPES    |[12, message, cards, with, envelopes]     |
+|BLUE HARMONICA IN BOX              |[blue, harmonica, in, box]                |
+|GUMBALL COAT RACK                  |[gumball, coat, rack]                     |
+|SKULLS  WATER TRANSFER TATTOOS     |[skulls, , water, transfer, tattoos]      |
+|FELTCRAFT GIRL AMELIE KIT          |[feltcraft, girl, amelie, kit]            |
+|CAMOUFLAGE LED TORCH               |[camouflage, led, torch]                  |
+|WHITE SKULL HOT WATER BOTTLE       |[white, skull, hot, water, bottle]        |
+|ENGLISH ROSE HOT WATER BOTTLE      |[english, rose, hot, water, bottle]       |
+|HOT WATER BOTTLE KEEP CALM         |[hot, water, bottle, keep, calm]          |
+|SCOTTIE DOG HOT WATER BOTTLE       |[scottie, dog, hot, water, bottle]        |
+|ROSE CARAVAN DOORSTOP              |[rose, caravan, doorstop]                 |
+|GINGHAM HEART  DOORSTOP RED        |[gingham, heart, , doorstop, red]         |
+|STORAGE TIN VINTAGE LEAF           |[storage, tin, vintage, leaf]             |
+|SET OF 4 KNICK KNACK TINS POPPIES  |[set, of, 4, knick, knack, tins, poppies] |
+|POPCORN HOLDER                     |[popcorn, holder]                         |
+|GROW A FLYTRAP OR SUNFLOWER IN TIN |[grow, a, flytrap, or, sunflower, in, tin]|
+|AIRLINE BAG VINTAGE WORLD CHAMPION |[airline, bag, vintage, world, champion]  |
+|AIRLINE BAG VINTAGE JET SET BROWN  |[airline, bag, vintage, jet, set, brown]  |
++-----------------------------------+------------------------------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>RegexTokenizer를 이용하면 공백뿐만 아니라 정규 표현식을 이용한 Tokenizer를 만들 수 있음</li>
+<li>Java의 정규 표현식<sup>RegEx</sup>구문을 준수해야 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">RegexTokenizer</span>
+
+<span class="n">rt</span> <span class="o">=</span> <span class="n">RegexTokenizer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setPattern</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setToLowercase</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rt</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------------------------------+------------------------------------------+
+|Description                        |DescOut                                   |
++-----------------------------------+------------------------------------------+
+|RABBIT NIGHT LIGHT                 |[rabbit, night, light]                    |
+|DOUGHNUT LIP GLOSS                 |[doughnut, lip, gloss]                    |
+|12 MESSAGE CARDS WITH ENVELOPES    |[12, message, cards, with, envelopes]     |
+|BLUE HARMONICA IN BOX              |[blue, harmonica, in, box]                |
+|GUMBALL COAT RACK                  |[gumball, coat, rack]                     |
+|SKULLS  WATER TRANSFER TATTOOS     |[skulls, water, transfer, tattoos]        |
+|FELTCRAFT GIRL AMELIE KIT          |[feltcraft, girl, amelie, kit]            |
+|CAMOUFLAGE LED TORCH               |[camouflage, led, torch]                  |
+|WHITE SKULL HOT WATER BOTTLE       |[white, skull, hot, water, bottle]        |
+|ENGLISH ROSE HOT WATER BOTTLE      |[english, rose, hot, water, bottle]       |
+|HOT WATER BOTTLE KEEP CALM         |[hot, water, bottle, keep, calm]          |
+|SCOTTIE DOG HOT WATER BOTTLE       |[scottie, dog, hot, water, bottle]        |
+|ROSE CARAVAN DOORSTOP              |[rose, caravan, doorstop]                 |
+|GINGHAM HEART  DOORSTOP RED        |[gingham, heart, doorstop, red]           |
+|STORAGE TIN VINTAGE LEAF           |[storage, tin, vintage, leaf]             |
+|SET OF 4 KNICK KNACK TINS POPPIES  |[set, of, 4, knick, knack, tins, poppies] |
+|POPCORN HOLDER                     |[popcorn, holder]                         |
+|GROW A FLYTRAP OR SUNFLOWER IN TIN |[grow, a, flytrap, or, sunflower, in, tin]|
+|AIRLINE BAG VINTAGE WORLD CHAMPION |[airline, bag, vintage, world, champion]  |
+|AIRLINE BAG VINTAGE JET SET BROWN  |[airline, bag, vintage, jet, set, brown]  |
++-----------------------------------+------------------------------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>공백을 사용하는 것이 아니라 사전에 제시된 패턴에 매칭되는 값을 출력할 수 있음</li>
+<li>
+<strong>gaps</strong> 파라미터를 <strong>false</strong>로 설정하여 이 작업을 수행</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">RegexTokenizer</span>
+
+<span class="n">rt</span> <span class="o">=</span> <span class="n">RegexTokenizer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setPattern</span><span class="p">(</span><span class="s2">" "</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setGaps</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setToLowercase</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">rt</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------------------------------+------------------+
+|Description                        |DescOut           |
++-----------------------------------+------------------+
+|RABBIT NIGHT LIGHT                 |[ ,  ]            |
+|DOUGHNUT LIP GLOSS                 |[ ,  ,  ]         |
+|12 MESSAGE CARDS WITH ENVELOPES    |[ ,  ,  ,  ]      |
+|BLUE HARMONICA IN BOX              |[ ,  ,  ,  ]      |
+|GUMBALL COAT RACK                  |[ ,  ]            |
+|SKULLS  WATER TRANSFER TATTOOS     |[ ,  ,  ,  ,  ]   |
+|FELTCRAFT GIRL AMELIE KIT          |[ ,  ,  ]         |
+|CAMOUFLAGE LED TORCH               |[ ,  ]            |
+|WHITE SKULL HOT WATER BOTTLE       |[ ,  ,  ,  ,  ]   |
+|ENGLISH ROSE HOT WATER BOTTLE      |[ ,  ,  ,  ]      |
+|HOT WATER BOTTLE KEEP CALM         |[ ,  ,  ,  ]      |
+|SCOTTIE DOG HOT WATER BOTTLE       |[ ,  ,  ,  ]      |
+|ROSE CARAVAN DOORSTOP              |[ ,  ]            |
+|GINGHAM HEART  DOORSTOP RED        |[ ,  ,  ,  ]      |
+|STORAGE TIN VINTAGE LEAF           |[ ,  ,  ]         |
+|SET OF 4 KNICK KNACK TINS POPPIES  |[ ,  ,  ,  ,  ,  ]|
+|POPCORN HOLDER                     |[ ]               |
+|GROW A FLYTRAP OR SUNFLOWER IN TIN |[ ,  ,  ,  ,  ,  ]|
+|AIRLINE BAG VINTAGE WORLD CHAMPION |[ ,  ,  ,  ,  ]   |
+|AIRLINE BAG VINTAGE JET SET BROWN  |[ ,  ,  ,  ,  ]   |
++-----------------------------------+------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.2-일반적인-단어-제거">
+<a class="anchor" href="#6.2-%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-%EB%8B%A8%EC%96%B4-%EC%A0%9C%EA%B1%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>6.2 일반적인 단어 제거<a class="anchor-link" href="#6.2-%EC%9D%BC%EB%B0%98%EC%A0%81%EC%9D%B8-%EB%8B%A8%EC%96%B4-%EC%A0%9C%EA%B1%B0"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">StopWordsRemover</span>
+
+<span class="n">englishStopWords</span> <span class="o">=</span> <span class="n">StopWordsRemover</span><span class="o">.</span><span class="n">loadDefaultStopWords</span><span class="p">(</span><span class="s2">"english"</span><span class="p">)</span>
+<span class="n">stops</span> <span class="o">=</span> <span class="n">StopWordsRemover</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setStopWords</span><span class="p">(</span><span class="n">englishStopWords</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>
+<span class="n">stops</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------------------+-------------------------------------+-------------------------------------+
+|Description                    |DescOut                              |StopWordsRemover_52dbe61992eb__output|
++-------------------------------+-------------------------------------+-------------------------------------+
+|RABBIT NIGHT LIGHT             |[rabbit, night, light]               |[rabbit, night, light]               |
+|DOUGHNUT LIP GLOSS             |[doughnut, lip, gloss]               |[doughnut, lip, gloss]               |
+|12 MESSAGE CARDS WITH ENVELOPES|[12, message, cards, with, envelopes]|[12, message, cards, envelopes]      |
+|BLUE HARMONICA IN BOX          |[blue, harmonica, in, box]           |[blue, harmonica, box]               |
+|GUMBALL COAT RACK              |[gumball, coat, rack]                |[gumball, coat, rack]                |
++-------------------------------+-------------------------------------+-------------------------------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.3-단어-조합-만들기">
+<a class="anchor" href="#6.3-%EB%8B%A8%EC%96%B4-%EC%A1%B0%ED%95%A9-%EB%A7%8C%EB%93%A4%EA%B8%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>6.3 단어 조합 만들기<a class="anchor-link" href="#6.3-%EB%8B%A8%EC%96%B4-%EC%A1%B0%ED%95%A9-%EB%A7%8C%EB%93%A4%EA%B8%B0"> </a>
+</h2>
+<ul>
+<li>단어 조합이란 기술적으로 길이가 <strong>n</strong>인 단어의 시퀀스, 즉 <strong>n-gram</strong>으로 간주</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">NGram</span>
+
+<span class="n">unigram</span> <span class="o">=</span> <span class="n">NGram</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span><span class="o">.</span><span class="n">setN</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">bigram</span> <span class="o">=</span> <span class="n">NGram</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span><span class="o">.</span><span class="n">setN</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">unigram</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="n">bigram</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------------------------+-------------------------------------+
+|DescOut                              |NGram_88f7dd6c0325__output           |
++-------------------------------------+-------------------------------------+
+|[rabbit, night, light]               |[rabbit, night, light]               |
+|[doughnut, lip, gloss]               |[doughnut, lip, gloss]               |
+|[12, message, cards, with, envelopes]|[12, message, cards, with, envelopes]|
+|[blue, harmonica, in, box]           |[blue, harmonica, in, box]           |
+|[gumball, coat, rack]                |[gumball, coat, rack]                |
+|[skulls, , water, transfer, tattoos] |[skulls, , water, transfer, tattoos] |
+|[feltcraft, girl, amelie, kit]       |[feltcraft, girl, amelie, kit]       |
+|[camouflage, led, torch]             |[camouflage, led, torch]             |
+|[white, skull, hot, water, bottle]   |[white, skull, hot, water, bottle]   |
+|[english, rose, hot, water, bottle]  |[english, rose, hot, water, bottle]  |
++-------------------------------------+-------------------------------------+
+only showing top 10 rows
+
++-------------------------------------+-------------------------------------------------------+
+|DescOut                              |NGram_9932ae155e60__output                             |
++-------------------------------------+-------------------------------------------------------+
+|[rabbit, night, light]               |[rabbit night, night light]                            |
+|[doughnut, lip, gloss]               |[doughnut lip, lip gloss]                              |
+|[12, message, cards, with, envelopes]|[12 message, message cards, cards with, with envelopes]|
+|[blue, harmonica, in, box]           |[blue harmonica, harmonica in, in box]                 |
+|[gumball, coat, rack]                |[gumball coat, coat rack]                              |
+|[skulls, , water, transfer, tattoos] |[skulls ,  water, water transfer, transfer tattoos]    |
+|[feltcraft, girl, amelie, kit]       |[feltcraft girl, girl amelie, amelie kit]              |
+|[camouflage, led, torch]             |[camouflage led, led torch]                            |
+|[white, skull, hot, water, bottle]   |[white skull, skull hot, hot water, water bottle]      |
+|[english, rose, hot, water, bottle]  |[english rose, rose hot, hot water, water bottle]      |
++-------------------------------------+-------------------------------------------------------+
+only showing top 10 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.4-단어를-숫자로-변환">
+<a class="anchor" href="#6.4-%EB%8B%A8%EC%96%B4%EB%A5%BC-%EC%88%AB%EC%9E%90%EB%A1%9C-%EB%B3%80%ED%99%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>6.4 단어를 숫자로 변환<a class="anchor-link" href="#6.4-%EB%8B%A8%EC%96%B4%EB%A5%BC-%EC%88%AB%EC%9E%90%EB%A1%9C-%EB%B3%80%ED%99%98"> </a>
+</h2>
+<h3 id="CountVectorizer">
+<a class="anchor" href="#CountVectorizer" aria-hidden="true"><span class="octicon octicon-link"></span></a>CountVectorizer<a class="anchor-link" href="#CountVectorizer"> </a>
+</h3>
+<ul>
+<li>Output: (총 어휘 크기, 어휘에 포함된 단어 색인, 특정 단어의 출현 빈도)</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">CountVectorizer</span>
+
+<span class="n">cv</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"countVec"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setVocabSize</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinTF</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinDF</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">fittedCV</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
+<span class="n">fittedCV</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------------------+-------------------------------------+---------------------------------------------+
+|Description                    |DescOut                              |countVec                                     |
++-------------------------------+-------------------------------------+---------------------------------------------+
+|RABBIT NIGHT LIGHT             |[rabbit, night, light]               |(500,[149,185,212],[1.0,1.0,1.0])            |
+|DOUGHNUT LIP GLOSS             |[doughnut, lip, gloss]               |(500,[462,463,492],[1.0,1.0,1.0])            |
+|12 MESSAGE CARDS WITH ENVELOPES|[12, message, cards, with, envelopes]|(500,[35,41,166],[1.0,1.0,1.0])              |
+|BLUE HARMONICA IN BOX          |[blue, harmonica, in, box]           |(500,[10,16,36,352],[1.0,1.0,1.0,1.0])       |
+|GUMBALL COAT RACK              |[gumball, coat, rack]                |(500,[228,280,408],[1.0,1.0,1.0])            |
+|SKULLS  WATER TRANSFER TATTOOS |[skulls, , water, transfer, tattoos] |(500,[11,40,133],[1.0,1.0,1.0])              |
+|FELTCRAFT GIRL AMELIE KIT      |[feltcraft, girl, amelie, kit]       |(500,[60,64,69],[1.0,1.0,1.0])               |
+|CAMOUFLAGE LED TORCH           |[camouflage, led, torch]             |(500,[264],[1.0])                            |
+|WHITE SKULL HOT WATER BOTTLE   |[white, skull, hot, water, bottle]   |(500,[15,34,39,40,118],[1.0,1.0,1.0,1.0,1.0])|
+|ENGLISH ROSE HOT WATER BOTTLE  |[english, rose, hot, water, bottle]  |(500,[34,39,40,46,169],[1.0,1.0,1.0,1.0,1.0])|
++-------------------------------+-------------------------------------+---------------------------------------------+
+only showing top 10 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="TF-IDF">
+<a class="anchor" href="#TF-IDF" aria-hidden="true"><span class="octicon octicon-link"></span></a>TF-IDF<a class="anchor-link" href="#TF-IDF"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">tfIdfIn</span> <span class="o">=</span> <span class="n">tokenized</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"array_contains(DescOut, 'red')"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">tfIdfIn</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------------------------------------+
+|DescOut                                |
++---------------------------------------+
+|[red, star, card, holder]              |
+|[jumbo, bag, red, retrospot]           |
+|[red, diner, wall, clock]              |
+|[lunch, bag, red, retrospot]           |
+|[red, flock, love, heart, photo, frame]|
+|[red, woolly, hottie, white, heart.]   |
+|[jumbo, bag, red, retrospot]           |
+|[edwardian, parasol, red]              |
+|[jumbo, bag, red, retrospot]           |
+|[red, hanging, heart, t-light, holder] |
++---------------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">HashingTF</span><span class="p">,</span> <span class="n">IDF</span>
+
+<span class="n">tf</span> <span class="o">=</span> <span class="n">HashingTF</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"TFOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setNumFeatures</span><span class="p">(</span><span class="mi">10000</span><span class="p">)</span>
+<span class="n">idf</span> <span class="o">=</span> <span class="n">IDF</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"TFOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"IDFCol"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinDocFreq</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">idf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tfIdfIn</span><span class="p">))</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tfIdfIn</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------------------------------------+------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+|DescOut                                 |TFOut                                                                   |IDFCol                                                                                             |
++----------------------------------------+------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+|[wrap, red, apples]                     |(10000,[52,3405,9749],[1.0,1.0,1.0])                                    |(10000,[52,3405,9749],[0.0,1.2992829841302609,0.0])                                                |
+|[pack, of, 20, napkins, red, apples]    |(10000,[52,429,3405,4495,6547,9012],[1.0,1.0,1.0,1.0,1.0,1.0])          |(10000,[52,429,3405,4495,6547,9012],[0.0,1.2992829841302609,1.2992829841302609,0.0,0.0,0.0])       |
+|[red, diner, wall, clock]               |(10000,[52,5265,6404,8737],[1.0,1.0,1.0,1.0])                           |(10000,[52,5265,6404,8737],[0.0,0.0,0.0,1.2992829841302609])                                       |
+|[red, retrospot, charlotte, bag]        |(10000,[52,415,4175,8448],[1.0,1.0,1.0,1.0])                            |(10000,[52,415,4175,8448],[0.0,0.0,0.0,1.2992829841302609])                                        |
+|[red, baby, bunting]                    |(10000,[52,1348,7997],[1.0,1.0,1.0])                                    |(10000,[52,1348,7997],[0.0,0.0,0.0])                                                               |
+|[alarm, clock, bakelike, red]           |(10000,[52,4995,8737,9001],[1.0,1.0,1.0,1.0])                           |(10000,[52,4995,8737,9001],[0.0,0.0,1.2992829841302609,0.0])                                       |
+|[3, tier, cake, tin, red, and, cream]   |(10000,[52,1923,2891,3791,4206,7815,9042],[1.0,1.0,1.0,1.0,1.0,1.0,1.0])|(10000,[52,1923,2891,3791,4206,7815,9042],[0.0,0.0,0.0,0.0,0.0,0.0,0.0])                           |
+|[set/20, red, retrospot, paper, napkins]|(10000,[52,429,6283,8448,8690],[1.0,1.0,1.0,1.0,1.0])                   |(10000,[52,429,6283,8448,8690],[0.0,1.2992829841302609,0.0,1.2992829841302609,1.0116009116784799]) |
+|[set/6, red, spotty, paper, plates]     |(10000,[52,2390,5712,6260,8690],[1.0,1.0,1.0,1.0,1.0])                  |(10000,[52,2390,5712,6260,8690],[0.0,0.0,1.2992829841302609,1.2992829841302609,1.0116009116784799])|
+|[set/6, red, spotty, paper, cups]       |(10000,[52,2572,5712,6260,8690],[1.0,1.0,1.0,1.0,1.0])                  |(10000,[52,2572,5712,6260,8690],[0.0,0.0,1.2992829841302609,1.2992829841302609,1.0116009116784799])|
++----------------------------------------+------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="6.5-Word2Vec">
+<a class="anchor" href="#6.5-Word2Vec" aria-hidden="true"><span class="octicon octicon-link"></span></a>6.5 Word2Vec<a class="anchor-link" href="#6.5-Word2Vec"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Word2Vec</span>
+<span class="kn">from</span> <span class="nn">pyspark.ml.linalg</span> <span class="kn">import</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">Row</span>
+
+<span class="n">documentDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">"Hi I heard about Spark"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">),</span> <span class="p">),</span>
+    <span class="p">(</span><span class="s2">"I with Java could use case classes"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">),</span> <span class="p">),</span>
+    <span class="p">(</span><span class="s2">"Logistic regression models are neat"</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">" "</span><span class="p">),</span> <span class="p">)</span>
+<span class="p">],</span> <span class="p">[</span><span class="s2">"text"</span><span class="p">])</span>
+
+<span class="n">word2Vec</span> <span class="o">=</span> <span class="n">Word2Vec</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"text"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"result"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setVectorSize</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinCount</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">word2Vec</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">documentDF</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">documentDF</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">collect</span><span class="p">():</span>
+    <span class="n">text</span><span class="p">,</span> <span class="n">vector</span> <span class="o">=</span> <span class="n">row</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Text: [</span><span class="si">%s</span><span class="s2">] =&gt; </span><span class="se">\n</span><span class="s2">Vector: </span><span class="si">%s</span><span class="se">\n</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">vector</span><span class="p">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Text: [Hi, I, heard, about, Spark] =&gt; 
+Vector: [0.06367666050791741,-0.047254581749439244,0.0387911431491375]
+
+Text: [I, with, Java, could, use, case, classes] =&gt; 
+Vector: [0.010081456042826176,-0.08104146995382117,0.07273546925612857]
+
+Text: [Logistic, regression, models, are, neat] =&gt; 
+Vector: [0.05691406726837159,-0.005072242021560669,-0.059899924695491796]
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="7.-특징-조작">
+<a class="anchor" href="#7.-%ED%8A%B9%EC%A7%95-%EC%A1%B0%EC%9E%91" aria-hidden="true"><span class="octicon octicon-link"></span></a>7. 특징 조작<a class="anchor-link" href="#7.-%ED%8A%B9%EC%A7%95-%EC%A1%B0%EC%9E%91"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="7.1-주성분-분석">
+<a class="anchor" href="#7.1-%EC%A3%BC%EC%84%B1%EB%B6%84-%EB%B6%84%EC%84%9D" aria-hidden="true"><span class="octicon octicon-link"></span></a>7.1 주성분 분석<a class="anchor-link" href="#7.1-%EC%A3%BC%EC%84%B1%EB%B6%84-%EB%B6%84%EC%84%9D"> </a>
+</h2>
+<ul>
+<li>주성분 분석<sup>Principal Components Analysis</sup>은 데이터의 가장 중요한 측면을 찾는 수학적 기법</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">PCA</span>
+
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span><span class="o">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">scaleDF</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+--------------+------------------------------------------+
+|id |features      |PCA_b3c7be1d1cac__output                  |
++---+--------------+------------------------------------------+
+|0  |[1.0,0.1,-1.0]|[0.0713719499248417,-0.4526654888147805]  |
+|1  |[2.0,1.1,1.0] |[-1.6804946984073723,1.2593401322219198]  |
+|0  |[1.0,0.1,-1.0]|[0.0713719499248417,-0.4526654888147805]  |
+|1  |[2.0,1.1,1.0] |[-1.6804946984073723,1.2593401322219198]  |
+|1  |[3.0,10.1,3.0]|[-10.872398139848944,0.030962697060155975]|
++---+--------------+------------------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="7.2-ChiSqSelector">
+<a class="anchor" href="#7.2-ChiSqSelector" aria-hidden="true"><span class="octicon octicon-link"></span></a>7.2 ChiSqSelector<a class="anchor-link" href="#7.2-ChiSqSelector"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">ChiSqSelector</span><span class="p">,</span> <span class="n">Tokenizer</span>
+
+<span class="n">tkn</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>
+
+<span class="n">tokenized</span> <span class="o">=</span> <span class="n">tkn</span>\
+    <span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">,</span> <span class="s2">"CustomerId"</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"CustomerId IS NOT NULL"</span><span class="p">)</span>
+<span class="n">prechi</span> <span class="o">=</span> <span class="n">fittedCV</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"CustomerId IS NOT NULL"</span><span class="p">)</span>
+<span class="n">chisq</span> <span class="o">=</span> <span class="n">ChiSqSelector</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setFeaturesCol</span><span class="p">(</span><span class="s2">"countVec"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setLabelCol</span><span class="p">(</span><span class="s2">"CustomerId"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setNumTopFeatures</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">chisq</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prechi</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">prechi</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"customerId"</span><span class="p">,</span> <span class="s2">"Description"</span><span class="p">,</span> <span class="s2">"DescOut"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+----------------------------------+
+|            countVec|ChiSqSelector_c638e4b9988e__output|
++--------------------+----------------------------------+
+|(500,[149,185,212...|                         (2,[],[])|
+|(500,[462,463,492...|                         (2,[],[])|
+|(500,[35,41,166],...|                         (2,[],[])|
+|(500,[10,16,36,35...|                         (2,[],[])|
+|(500,[228,280,408...|                         (2,[],[])|
+|(500,[11,40,133],...|                         (2,[],[])|
+|(500,[60,64,69],[...|                         (2,[],[])|
+|   (500,[264],[1.0])|                         (2,[],[])|
+|(500,[15,34,39,40...|                         (2,[],[])|
+|(500,[34,39,40,46...|                         (2,[],[])|
+|(500,[34,39,40,14...|                         (2,[],[])|
+|(500,[34,39,40,14...|                         (2,[],[])|
+|(500,[46,297],[1....|                         (2,[],[])|
+|(500,[3,4,11,143,...|                         (2,[],[])|
+|(500,[6,45,109,16...|                         (2,[],[])|
+|(500,[0,1,49,70,3...|               (2,[0,1],[1.0,1.0])|
+|(500,[21,296],[1....|                         (2,[],[])|
+|(500,[36,45,378],...|                         (2,[],[])|
+|(500,[2,6,328],[1...|                         (2,[],[])|
+|(500,[0,2,6,328,4...|                     (2,[0],[1.0])|
++--------------------+----------------------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2020/05/12/pyspark-ml-feature-engineering.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MongoDB] MongoDB 기초 문법 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MongoDB] MongoDB 기초 문법" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="MongoDB 개요 MongoDB는 10gen에서 C++로 개발한 문서 지향 데이터베이스이다. MongoDB에서 레코드는 문서(document)이다. MongoDB의 문서 형식은 BSON(Json을 바이너리화한 것)이다." />
+<meta property="og:description" content="MongoDB 개요 MongoDB는 10gen에서 C++로 개발한 문서 지향 데이터베이스이다. MongoDB에서 레코드는 문서(document)이다. MongoDB의 문서 형식은 BSON(Json을 바이너리화한 것)이다." />
+<link rel="canonical" href="https://safenumz.github.io/blog/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-27T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MongoDB] MongoDB 기초 문법" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-27T00:00:00-05:00","datePublished":"2019-05-27T00:00:00-05:00","description":"MongoDB 개요 MongoDB는 10gen에서 C++로 개발한 문서 지향 데이터베이스이다. MongoDB에서 레코드는 문서(document)이다. MongoDB의 문서 형식은 BSON(Json을 바이너리화한 것)이다.","headline":"[MongoDB] MongoDB 기초 문법","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html"},"url":"https://safenumz.github.io/blog/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MongoDB] MongoDB 기초 문법</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-27T00:00:00-05:00" itemprop="datePublished">
+        May 27, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#NoSQL">NoSQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="mongodb-개요">MongoDB 개요</h1>
+<ul>
+  <li>MongoDB는 10gen에서 C++로 개발한 문서 지향 데이터베이스이다.</li>
+  <li>MongoDB에서 레코드는 문서(document)이다.</li>
+  <li>MongoDB의 문서 형식은 BSON(Json을 바이너리화한 것)이다.</li>
+</ul>
+
+<h2 id="1-document">(1) Document</h2>
+<ul>
+  <li>문서는 키와 값의 쌍으로 이루어진 집합</li>
+  <li>키는 중복할 수 없는 문자열이며 데이터형과 대소문자를 구분</li>
+  <li>{name: ‘홍길동’, age: 25, groups: [‘hippop’, ‘java’]}</li>
+  <li>문서 크기는 최대 16MB (더 큰 용량의 문서를 저장하려면 GridFS API 이용)</li>
+</ul>
+
+<h2 id="2-collection">(2) Collection</h2>
+<ul>
+  <li>컬렉션(Collection)은 문서(Document)의 모음이다.</li>
+  <li>문서가 관계형 DB의 행을 의미하고, 컬랙션은 테이블을 의미한다.</li>
+  <li>컬렉션은 스키마가 없기에 높은 유연성을 제공한다. (단 제약조건(Constraint)는 응용프로그램에서 지원해야 함)</li>
+</ul>
+
+<h2 id="3-database">(3) Database</h2>
+<ul>
+  <li>문서의 모음이 컬렉션이고, 여러 컬렉션의 모음이 데이터베이스이다.</li>
+  <li>각 데이터베이스는 따로 분리된 파일로 디스크에 저장된다.</li>
+</ul>
+
+<h2 id="4-용어-비교">(4) 용어 비교</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">SQL</th>
+      <th style="text-align: left">MongoDB</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">데이터베이스</td>
+      <td style="text-align: left">데이터베이스</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">테이블</td>
+      <td style="text-align: left">컬렉션</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">행</td>
+      <td style="text-align: left">문서 (BSON)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">열</td>
+      <td style="text-align: left">필드</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">테이블 조인</td>
+      <td style="text-align: left">내장 문서와 Linking</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">인덱스</td>
+      <td style="text-align: left">인덱스</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="참고-문서-지향-데이터베이스의-특징">[참고] 문서 지향 데이터베이스의 특징</h3>
+<ul>
+  <li>확장성: RDBMS는 고성능 컴퓨터를 교체로 수직적인 확장을 고려하는데 반해, 문서 지향 데이터베이스는 슈퍼 컴퓨터가 아나더라도 여려 개의 컴퓨터로 수평확장 통해 클라우드 환경에 적합하다.</li>
+  <li>키-값 구조: 정해진 스키마 없이 키-값 구조인 Json 형식으로 저장공간을 저장하여 자유롭게 기존 문서에 추가가 가능하다.</li>
+</ul>
+
+<h1 id="기본적인-crud">기본적인 CRUD</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="p">)</span> <span class="n">db</span><span class="p">.</span><span class="n">collectionName</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="err">입력할</span> <span class="err">문서</span><span class="p">})</span>
+
+<span class="mi">2</span><span class="p">)</span> <span class="n">db</span><span class="p">.</span><span class="n">collectionName</span><span class="p">.</span><span class="n">find</span><span class="p">({</span><span class="err">쿼리조건</span><span class="p">})</span>
+
+<span class="mi">3</span><span class="p">)</span> <span class="n">db</span><span class="p">.</span><span class="n">collectionName</span><span class="p">.</span><span class="k">update</span><span class="p">(</span><span class="err">쿼리조건</span><span class="p">,</span> <span class="err">치환할</span> <span class="err">문서</span><span class="p">,</span> <span class="err">옵션</span><span class="p">)</span>
+	<span class="p">[</span><span class="err">옵션</span><span class="p">]</span>
+	<span class="o">-</span> <span class="k">update</span><span class="p">:</span> <span class="k">true</span> <span class="o">/</span> <span class="n">flase</span> <span class="err">조건에</span> <span class="err">일치하는</span> <span class="err">문서가</span> <span class="err">없으면</span> <span class="err">새로</span> <span class="err">입력</span>
+	<span class="o">-</span> <span class="n">multi</span><span class="p">:</span> <span class="k">true</span> <span class="o">/</span> <span class="k">false</span> <span class="err">조건에</span> <span class="err">일치하는</span> <span class="err">모든</span> <span class="err">문서에</span> <span class="err">대해</span> <span class="err">갱신</span>
+
+<span class="mi">4</span><span class="p">)</span> <span class="n">db</span><span class="p">.</span><span class="n">collectionName</span><span class="p">.</span><span class="n">remove</span><span class="p">({</span><span class="err">삭제할</span> <span class="err">조건</span><span class="p">})</span>
+</code></pre></div></div>
+
+<h2 id="save-insert-update-차이점">SAVE, INSERT, UPDATE 차이점</h2>
+<ul>
+  <li>INSERT: 콜랙션에 하나의 문서를 처음으로 저장할 때 일반적으로 사용</li>
+  <li>UPDATE: 문서에서 특정 필드만 수정할 떄 사용</li>
+  <li>SAVE: 문서에서 특정 필드만 변경하더라도 문서 단위로 데이터를 변경할 때 효율적</li>
+</ul>
+
+<h2 id="참고-sql과-mongodb-비교---crud">[참고] SQL과 MongoDB 비교 - CRUD</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- SQL</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">members</span> <span class="p">(</span>
+	<span class="n">id</span> <span class="n">number</span> <span class="k">primary</span> <span class="k">key</span><span class="p">,</span>
+	<span class="n">name</span> <span class="n">varchar2</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+	<span class="n">age</span> <span class="n">number</span><span class="p">,</span>
+	<span class="n">grade</span> <span class="nb">char</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1">-- MongoDB</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span>
+	<span class="n">name</span><span class="p">:</span> <span class="s1">'kim'</span><span class="p">,</span>
+	<span class="n">age</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+	<span class="n">grade</span><span class="p">:</span> <span class="s1">'C'</span>
+<span class="p">)</span>
+<span class="c1">-- (*) 자동으로 collection 생성</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- SQL</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">member</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">grade</span><span class="p">)</span>
+<span class="k">VALUES</span> <span class="p">(</span><span class="n">seq</span><span class="p">.</span><span class="n">nextval</span><span class="p">,</span> <span class="s1">'kim'</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="s1">'C'</span><span class="p">)</span>
+
+<span class="c1">-- MongoDB</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span>
+	<span class="n">name</span><span class="p">:</span> <span class="s1">'kim'</span><span class="p">,</span>
+	<span class="n">age</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span>
+	<span class="n">grade</span><span class="p">:</span> <span class="s1">'C'</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- SQL</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">members</span>
+<span class="k">WHERE</span> <span class="n">grade</span><span class="o">=</span><span class="s1">'A'</span>
+
+<span class="c1">-- MongoDB</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">grade</span><span class="p">:</span> <span class="s1">'A'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- SQL</span>
+<span class="k">UPDATE</span> <span class="n">members</span> <span class="k">SET</span> <span class="n">age</span><span class="o">=</span><span class="mi">10</span>
+<span class="k">WHERE</span> <span class="n">grade</span><span class="o">=</span><span class="s1">'B'</span>
+
+<span class="c1">-- MongoDB</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">update</span><span class="p">(</span>
+	<span class="p">{</span><span class="n">grade</span><span class="p">:</span> <span class="s1">'B'</span><span class="p">},</span>
+	<span class="p">{</span><span class="n">age</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+	<span class="p">{</span><span class="n">multi</span><span class="p">:</span> <span class="k">true</span><span class="p">}</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- SQL</span>
+<span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">members</span>
+<span class="k">WHERE</span> <span class="n">grade</span><span class="o">=</span><span class="s1">'C'</span>
+
+<span class="c1">-- MongoDB</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">remove</span><span class="p">(</span><span class="n">grade</span><span class="p">:</span><span class="s1">'C'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h1 id="연산자">연산자</h1>
+<h2 id="비교-연산자">비교 연산자</h2>
+<ul>
+  <li>$gt, $gte, $lt, $lte, $ne</li>
+</ul>
+
+<h2 id="조건-연산자">조건 연산자</h2>
+<ul>
+  <li>$and, $or, $nor, $not</li>
+</ul>
+
+<h2 id="집합-연산자">집합 연산자</h2>
+<ul>
+  <li>$in, $all, $nin</li>
+</ul>
+
+<h2 id="update-연산자">update 연산자</h2>
+
+<h3 id="기본-update-연산자">기본 update 연산자</h3>
+<ul>
+  <li>$set: 해당 키의 값이 있으면 수정 없으면 추가</li>
+  <li>$unset: 해당 키의 값이 있으면 제거</li>
+  <li>$inc: 해당 키의 값을 증가 / 감소</li>
+</ul>
+
+<h3 id="배열-업데이트-연산자">배열 업데이트 연산자</h3>
+<ul>
+  <li>$push: 지정된 키가 없으면 배열의 끝에 추가하고 없으면 새로운 배열을 만들어 추가</li>
+  <li>$addToSet: 배열 내에 같은 값이 존재하지 않는 경우에만 추가</li>
+  <li>$pop: 배열의 요소를 제거</li>
+  <li>$pull: 주어진 조건에 일치하는 배열 요소 제거</li>
+</ul>
+
+<h2 id="집계-연산자">집계 연산자</h2>
+<ul>
+  <li>count(): 콜렉션내의 문서의 수</li>
+  <li>distinct(key): 주어진 키의 고유한 값들 검색</li>
+  <li>sort(): 정렬 (1: 오름차순, -1: 내림차순)</li>
+  <li>group(): SQL의 GROUP BY 유사</li>
+</ul>
+
+<h1 id="인덱스">인덱스</h1>
+<ul>
+  <li>특정 레코드를 탐색할 전부를 탐색하지 않고도 데이터를 추출할 수 있는 도구</li>
+  <li>특정 데이터를 쉽게 추출할 수 있도록 데이터 변경이 특징</li>
+  <li>RDB의 인덱스와 비슷하며 모든 속성에 인덱스 삽입 가능</li>
+  <li>MongoDB 인덱스도 대부분의 DB와 유사, 내부적으로 B-트리로 인덱스를 형성</li>
+</ul>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

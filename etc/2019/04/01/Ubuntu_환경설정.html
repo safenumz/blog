@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Ubuntu 환경설정 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Ubuntu 환경설정" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="vi 편집기 설정 우분투를 처음 설치후 vi 에디터를 사용하면 벡스페이스가 안먹히고 방향키를 누르면 B, C, D 등 대문자가 입력되는 문제가 있다." />
+<meta property="og:description" content="vi 편집기 설정 우분투를 처음 설치후 vi 에디터를 사용하면 벡스페이스가 안먹히고 방향키를 누르면 B, C, D 등 대문자가 입력되는 문제가 있다." />
+<link rel="canonical" href="https://safenumz.github.io/blog/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Ubuntu 환경설정" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-04-01T00:00:00-05:00","datePublished":"2019-04-01T00:00:00-05:00","description":"vi 편집기 설정 우분투를 처음 설치후 vi 에디터를 사용하면 벡스페이스가 안먹히고 방향키를 누르면 B, C, D 등 대문자가 입력되는 문제가 있다.","headline":"Ubuntu 환경설정","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html"},"url":"https://safenumz.github.io/blog/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Ubuntu 환경설정</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-01T00:00:00-05:00" itemprop="datePublished">
+        Apr 1, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#etc">etc</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="vi-편집기-설정">vi 편집기 설정</h2>
+<p>우분투를 처음 설치후 vi 에디터를 사용하면 벡스페이스가 안먹히고 방향키를 누르면 B, C, D 등 대문자가 입력되는 문제가 있다.</p>
+
+<p>.exrc 파일을 생성해 열고</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>vi .exrc
+</code></pre></div></div>
+
+<p>아래 내용을 입력한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">set </span>autoindent
+<span class="nb">set </span>number
+<span class="nb">set </span><span class="nv">bs</span><span class="o">=</span>2
+<span class="nb">set </span>nocp
+</code></pre></div></div>
+
+<p>저장 후 아래 명령어를 실행하면 vi 편집기가 제대로 작동한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>source.exrc
+</code></pre></div></div>
+
+<h2 id="glances-설치">glances 설치</h2>
+<p>CPU, Memory, Network 모니터</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>glances
+
+<span class="c"># 실행</span>
+<span class="nv">$ </span>glances
+</code></pre></div></div>
+
+<h1 id="nvidia-driver-설치">nvidia driver 설치</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 설치 가능한 드라이버 버전 확인</span>
+<span class="nv">$ </span>apt-cache search nvidia
+
+<span class="c"># 384 버전 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>nvidia-384
+
+<span class="c"># 드라이버 버전에 상관없이 공통적으로 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>dkms nvidia-modprobe
+
+<span class="c"># 재부팅 후 설치가 성공적으로 되었는지 확인</span>
+<span class="nv">$ </span>lspci <span class="nt">-k</span>
+
+<span class="c"># 드라이버 버전 확인</span>
+<span class="nv">$ </span><span class="nb">cat</span> /proc/driver/nvidia/version
+
+<span class="c"># 그래픽 카드 정보 확인</span>
+<span class="nv">$ </span>nvidia-smi
+
+<span class="c"># nvidia-smi 반복 실행</span>
+<span class="nv">$ </span>nvidia-smi <span class="nt">-l</span> 1
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>nvidia-headless-no-dkms-418
+</code></pre></div></div>
+
+<h2 id="gpustat">gpustat</h2>
+<p>gpu 간략한 모니터링</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 설치</span>
+<span class="nv">$ </span>pip <span class="nb">install </span>gpustat
+
+3 실행
+<span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi daemon
+<span class="nv">$ </span>gpustat <span class="nt">-i</span>
+</code></pre></div></div>
+
+<h2 id="onedrive-설치">OneDrive 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>onedrive
+
+<span class="nv">$ </span>onedrive
+<span class="c"># 주소가 나온다.</span>
+
+<span class="c"># 주소를 복사해서 브라우저에 붙여넣기하면 onedrive 로그인 창이 나온다. 로그인 완료 후의 브라우저 주소 전체를 커먼드에 붙여넣기 하면 ~/OneDrive 폴더가 동기화된다.</span>
+
+<span class="c"># 동기화되는 상황 확인</span>
+<span class="nv">$ </span>onedrive <span class="nt">--monitor</span>
+</code></pre></div></div>
+
+<h2 id="ssh-설치">ssh 설치</h2>
+<ul>
+  <li>ssh로 접속할 기기의 맥주소를 확인하여 공유기의 DHCP 서버주소 관리에 등록해주고, 포트포워드를 이용해 외부포트와 내부포트를 맵핑한다.</li>
+  <li>예) 외부포트 : 9000, 내부포트 : 22</li>
+  <li>ssh를 설치한다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>ssh
+</code></pre></div></div>
+
+<h2 id="xrdp-설치">xrdp 설치</h2>
+<ul>
+  <li>sftp로 원격데스트톱 접속하기 위해서는 우분투에서 xrdp 설치가 필요하다.</li>
+  <li>마찬가지로 공유기의 포트포워드를 이용해 외부포트와 내부포트를 맵핑한다.</li>
+  <li>예) 외부포트: 8000, 내부포트 : 3389</li>
+  <li>Ubuntu settings &gt; Sharing에 들어가 On 상태로 만들어 준다.</li>
+  <li>Screen Sharing도 Active 상태로 만들어 줌</li>
+  <li>비밀번호를 설정하고 Wired connection1 상태도 ON으로 만든다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>dconf-editor
+</code></pre></div></div>
+
+<ul>
+  <li>dconf editor를 실행하고 org &gt; gnome &gt; desktop &gt; remote-access 를 차례대로 선택한다음 require-encryption 옵션의 체크를 해제한다음 편집기를 닫으면 원격접속 준비가 끝난다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># xrdp 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>xrdp
+
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get update
+
+<span class="c"># desktop environment 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>mate-core mate-desktop-environment mate-notification-daemon
+
+<span class="c"># xrdp에서 desktop environment 사용하도록 설정</span>
+<span class="nv">$ </span><span class="nb">sudo sed</span> <span class="nt">-i</span>.bak <span class="s1">'/fi/a #xrdp multiple users configuration \n mate-session \n'</span> /etc/xrdp/startwm.sh
+
+<span class="nv">$ </span><span class="nb">sudo </span>service xrdp restart
+</code></pre></div></div>
+
+<h2 id="3389-포트-오픈">3389 포트 오픈</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>ufw allow 3389/tcp3389
+</code></pre></div></div>
+
+<h2 id="나눔고딕코딩-폰트-설치">나눔고딕코딩 폰트 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>fonts-nanum-coding
+
+<span class="nv">$ </span>ll /usr/share/fonts/truetype/nanum/
+
+drwxr-xr-x  2 root root    4096  4월  4 00:44 ./
+drwxr-xr-x 50 root root    4096  4월  4 00:44 ../
+<span class="nt">-rw-r--r--</span>  1 root root 1800792 10월 21  2016 NanumGothicCoding-Bold.ttf
+<span class="nt">-rw-r--r--</span>  1 root root 2779112 10월 21  2016 NanumGothicCoding.ttf
+
+<span class="c"># 폰트 캐쉬갱신</span>
+<span class="nv">$ </span>fc-cache <span class="nt">-f</span> <span class="nt">-v</span>
+
+<span class="c"># 설치된 폰트 확인</span>
+<span class="nv">$ </span>fc-list
+</code></pre></div></div>
+
+<h2 id="git-설치">git 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>git
+</code></pre></div></div>
+
+<h2 id="아나콘다-설치">아나콘다 설치</h2>
+
+<p>아나콘다 홈페이지에서 설치스크립트 다운 후에 아래 명령어를 입력한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bash Anaconda3.5.0.sh
+
+<span class="nv">$ </span><span class="nb">source</span> ./.bashrc
+</code></pre></div></div>
+
+<h3 id="아나콘다-환경변수-추가">아나콘다 환경변수 추가</h3>
+<ul>
+  <li>conda 명령어를 어디서든 활용하기 위해서는 환경변수를 추가해야 한다. 특별한 조작을 하지 않았다면 아나콘다는 /home/<username>/anaconda3 경로에 설치 된다. 해당 경로를 환경변수로 설정하자.</username></li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"/home/&lt;username&gt;/anaconda3/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+
+<span class="nv">$ </span>conda list
+</code></pre></div></div>
+
+<h2 id="아나콘다-env-설정-및-주요-패키지-설치">아나콘다 env 설정 및 주요 패키지 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda init
+
+터미널을 닫고 재실행하면 conda activate 명령어 실행이 가능해진다.
+
+<span class="nv">$ </span>conda create <span class="nt">--name</span> learning
+
+<span class="nv">$ </span>conda activate learning
+
+<span class="c"># jupyter notebook 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install </span>jupyter
+
+<span class="c"># xgboost 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge xgboost
+
+<span class="c"># lightgbm 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge lightgbm
+
+<span class="c"># catboost 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge catboost
+
+<span class="c"># tensorflow, keras gpu 설치</span>
+<span class="nv">$ </span>conda update <span class="nt">--all</span>
+
+<span class="nv">$ </span>conda <span class="nb">install </span>tensorflow-gpu keras-gpu
+
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> anaconda tensorflow-gpu
+
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> anaconda keras-gpu
+
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> anaconda cudatoolkit
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> anaconda cudnn
+
+<span class="c"># ipykernel 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install </span>ipykernel
+
+<span class="nv">$ </span>python <span class="nt">-m</span> ipykernel <span class="nb">install</span> <span class="nt">--user</span> <span class="nt">--name</span> learning <span class="nt">--display-name</span> <span class="s2">"TensorFlow-GPU"</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 만약 ipykernel을 잘못 설치해서 삭제하고 싶을 때는 아래 명령어를 실행한다.</span>
+<span class="nv">$ </span><span class="nb">sudo </span>jupyter kernelspec uninstall &lt;kernelname&gt;
+
+<span class="c"># virtualenv에서 작업하는 경우 &lt;user&gt;/Library/Jupyter/kernel/ 에서 원하는 디렉토리를 삭제하는 것으로 커널삭제가 가능하다.</span>
+</code></pre></div></div>
+
+<h2 id="tensorflow-gpu-가-제대로-설치되었는지-확인">tensorflow-gpu 가 제대로 설치되었는지 확인</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">tensorflow.python.client</span> <span class="kn">import</span> <span class="n">device_lib</span>
+<span class="k">print</span><span class="p">(</span><span class="n">device_lib</span><span class="p">.</span><span class="n">list_local_devices</span><span class="p">())</span>
+
+<span class="c1"># device_type이 "CPU"가 아니라 "GPU"가 나오면 제대로 설치
+</span></code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># gpu 메모리 사용 확인</span>
+<span class="nv">$ </span>nvidia-smi
+
+<span class="c"># gpu 메모리 점유 프로세스 킬</span>
+<span class="nv">$ </span><span class="nb">kill</span> <span class="nt">-9</span> &lt;process_number&gt;
+</code></pre></div></div>
+
+<h2 id="기타-파이썬-패키지-설치">기타 파이썬 패키지 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install </span>seaborn
+
+<span class="nv">$ </span>conda <span class="nb">install </span>pandas-datareader
+
+<span class="nv">$ </span>conda <span class="nb">install </span>pandasql
+
+<span class="nv">$ </span>pip <span class="nb">install </span>missingno
+</code></pre></div></div>
+
+<h2 id="jupyter-notebook-서버-설정">jupyter notebook 서버 설정</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ipython 실행</span>
+<span class="nv">$ </span>ipython
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> from notebook.auth import passwd
+<span class="o">&gt;&gt;&gt;</span> passwd<span class="o">()</span>
+<span class="s1">'sha1:....'</span>
+<span class="c"># 출력된 비밀번호를 복사해 둔다.</span>
+</code></pre></div></div>
+
+<p>home/.jupyter 안에 jupyter_notebook_config.py 파일을 생성하고 vi 편집기로 연다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jupyter notebook <span class="nt">--generate-config</span>
+
+<span class="nv">$ </span>vi ~/.jupyter/jupyter_notebook_config.py
+</code></pre></div></div>
+
+<p>해당 부분의 주석(#)을 해제하고 ip 주소와 패스워드를 입력한다. ‘ 기호는 반드시 붙여줘야 한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>c.NotebookApp.ip<span class="o">=</span> <span class="s1">'&lt;데스크탑의 내부IP&gt;'</span>
+c.NotebookApp.password<span class="o">=</span><span class="s1">'sha1:ab7c91c642c4:24f5c95a7d7adecefddkjgh'</span>
+c.NotebookApp.port<span class="o">=</span>8888
+c.NotebookApp.open_browser<span class="o">=</span>False
+
+<span class="c"># 만약 노트북의 시작 폴더를 고정하고 싶다면 아래도 수정</span>
+c.NotebookApp.notebook_dir <span class="o">=</span> <span class="s1">'/home/a/OneDrive'</span>
+</code></pre></div></div>
+
+<h2 id="nodejs-설치">Node.js 설치</h2>
+<ul>
+  <li>8버전대로 설치해야 ijavascript가 에러없이 실행된다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl <span class="nt">-sL</span> https://deb.nodesource.com/setup_8.15 <span class="nt">-o</span> nodesource_setup.sh
+
+<span class="nv">$ </span>nano nodesource_setup.sh
+
+<span class="nv">$ </span><span class="nb">sudo </span>bash nodesource_setup.sh
+
+<span class="c"># nodejs 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>nodejs
+
+<span class="c"># npm 설치</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>npm
+
+<span class="c"># javascript jupyter notebook 생성</span>
+<span class="nv">$ </span><span class="nb">sudo </span>npm <span class="nb">install</span> <span class="nt">-g</span> ijavascript
+</code></pre></div></div>
+
+<h2 id="java8-설치">Java8 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>openjdk-8-jre
+<span class="nv">$ </span>sodo apt-get <span class="nb">install </span>openjdk-8-jdk
+</code></pre></div></div>
+
+<p>자바가 제대로 설치되었는지 확인</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>javac <span class="nt">-version</span>
+<span class="nv">$ </span>java <span class="nt">-version</span>
+</code></pre></div></div>
+
+<p>설치된 자바 목록 확인, 여러 종류의 자바가 설치되어 있다면 아래 명령어를 통해 Default Java를 선택할 수 있다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>update-alternatives <span class="nt">--config</span> java
+</code></pre></div></div>
+
+<h3 id="java8-환경변수-설정">Java8 환경변수 설정</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># javac 위치 확인</span>
+<span class="nv">$ </span>which javac
+/usr/bin/javac
+
+<span class="nv">$ </span><span class="nb">readlink</span> <span class="nt">-f</span> /usr/bin/javac
+/usr/lib/jvm/java-8-openjdk-amd64/bin/
+</code></pre></div></div>
+
+<p>javac의 실제 위치는 /usr/lib/jvm/java-8-openjdk-amd64/bin/ 이다. 따라서 $JAVA_HOME은 /usr/lib/jvm/java-8-openjdk-amd64/ 으로 설정해야 한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 환경변수 설정을 위해 profile을 연다</span>
+<span class="nv">$ </span><span class="nb">sudo </span>nano /etc/profile
+</code></pre></div></div>
+
+<p>profile에 아래 내용을 입력하고 ctrl+X -&gt; y 입력 -&gt; 엔터 키 를 눌러 저장한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/lib/jvm/java-8-openjdk-amd64
+<span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$JAVA_HOME</span>/bin:<span class="nv">$PATH</span>
+<span class="nb">export </span><span class="nv">CLASS_PATH</span><span class="o">=</span><span class="nv">$JAVA_HOME</span>/lib:<span class="nv">$CLASS_PATH</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># profile reload</span>
+<span class="nv">$ </span><span class="nb">source</span> /etc/profile
+
+<span class="c"># 우분투 서버 재시작</span>
+<span class="nv">$ </span>sodo reboot now
+
+<span class="c"># java 환경변수가 잘 설정되었는지 확인</span>
+
+<span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$JAVA_HOME</span>
+
+<span class="nv">$ $JAVA_HOME</span>/bin/javac <span class="nt">-version</span>
+</code></pre></div></div>
+
+<h2 id="scala-211x-설치">scala 2.11.x 설치</h2>
+<p>apache spark과 연동하기 위해서는 2.11.x 버전의 스칼라 설치가 필요하다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget www.scala-lang.org/files/archive/scala-2.11.7.deb
+<span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> scala-2.11.7.deb
+</code></pre></div></div>
+
+<h2 id="sbt-설치">sbt 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>curl <span class="nt">-L</span> <span class="nt">-o</span> sbt.deb http://dl.bintray.com/sbt/debian/sbt-0.13.15.deb
+<span class="nv">$ </span><span class="nb">sudo </span>dpkg <span class="nt">-i</span> sbt.deb
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get update
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>sbt
+</code></pre></div></div>
+
+<h2 id="jupyter-notebook과-scala-연동">jupyter notebook과 scala 연동</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git clone https://github.com/alexarchambault/jupyter-scala.git
+
+<span class="c"># sbt를 이용해 cli/packArchieve 결과 파일을 생성</span>
+<span class="nv">$ </span>sbt cli/packArchieve
+
+<span class="c"># 빌드가 무사히 완료되면 cli/target/pack/bin 에 jupyter-scala라는 실행파일이 생성된다.</span>
+
+<span class="c"># jupyter kernel에 scala 추가</span>
+<span class="nv">$ </span>./jupyter-scala <span class="nt">--kernel-spec</span>
+
+<span class="c"># 제대로 추가되었는지 확인</span>
+<span class="nv">$ </span>ipython kernelspec list
+</code></pre></div></div>
+
+<h2 id="spark-223-설치">spark 2.2.3 설치</h2>
+<p>다운받아 홈 디렉토리에 압축을 푼다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xf</span> spark-2.2.3-bin-hadoop2.7.tgz
+
+<span class="nv">$ </span><span class="nb">cd </span>spark-2.2.3-bin-hadoop2.7
+
+
+<span class="nv">$ </span>bin/spark-shell
+</code></pre></div></div>
+
+<p>스파크 쉘을 실행한 상태에서 <a href="http://127.0.0.1:4040">http://127.0.0.1:4040</a> 으로 접속하면 Spark Dashboard 웹으로 접속할 수 있다.</p>
+
+<p>spark-env.sh 편집을 통해 java home, pyspark home을 추가한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>conf/
+
+<span class="nv">$ </span><span class="nb">cp </span>spark-env.sh.template spark-env.sh
+
+<span class="nv">$ </span>nano spark-env.sh
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/lib/jvm/java-8-openjdk-amd64
+<span class="nv">SPARK_WORKER_MEMORY</span><span class="o">=</span> 4g
+<span class="nv">PYSPARK_PYTHON</span><span class="o">=</span>/home/&lt;username&gt;/anaconda3/bin/python
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source </span>spark-env.sh
+</code></pre></div></div>
+
+<h2 id="zeppelin-080-버전-설치">zeppelin 0.8.0 버전 설치</h2>
+
+<h3 id="zeppelin-envsh-파일-편집">zeppelin-env.sh 파일 편집</h3>
+<SPARK_HOME>/conf 디렉토리에 존재하는 zeppelin-env.sh.template 파일을 zeppelin-env.sh 파일로 복사변경한다.
+
+~~~shell
+$ cp zeppelin-env.sh.template zeppelin-env.sh
+$ vi zeppelin-env.sh
+~~~
+
+zeppelin-env.sh 파일을 열어 아래 부분의 주석을 해제하고 해당 내용을 채워넣는다.
+
+```shell
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export SPARK_HOME=/home/a/spark-2.2.3-bin-hadoop2.7
+export PYSPARK_PYTHON=$SPARK_HOME/pythohn:$PYTHONPATH
+export PYTHONPATH=/home/a/anaconda3/bin/python
+
+# 필수는 아니지만 노트북 저장경로(디폴트 : /<ZEPPELIN_HOME>/notebook) 를 변경하고 싶다면 아래 옵션을 추가하면 된다.
+export ZEPPELIN_NOTEBOOK_DIR=/home/a/OneDrive/git/Zeppelin_Notebook
+```
+
+zeppelin-site.xml 파일을 수정하여 포트를 열어준다.
+
+~~~shell
+$ cp zeppelin-site.xml.template zeppelin-site.xml
+~~~
+
+~~~html
+<!-- 192.168.0.10는 내부 IP이다. -->
+<property>
+    <name>zeppelin.server.addr</name>
+    <value>192.168.0.10</value>
+    <description>Server address</description>
+</property>
+
+<!-- 기본포트 8080에서 다른 포트로 변경할 수 있다. -->
+<property>
+    <name>zeppelin.server.port</name>
+    <value>8080</value>
+    <description>Server port.</description>
+</property>
+
+<!-- id와 비밀번호가 있어야만 로그인할 수 있도록 변경 -->
+<property>
+    <name>zeppelin.anonymous.allowed</name>
+    <value>false</value>
+    <description>Anonymous user allowed by default</description>
+</property>
+~~~
+
+
+shiro.ini 파일을 수정하여 아이디와 비밀번호를 설정한다.
+
+~~~shell
+$ cp shiro.ini.template shiro.ini
+$ vi shiro.ini
+~~~
+
+admin 부분의 주석을 해제하고 비밀번호를 설정해준다.
+아이디: admin 비밀번호: <비밀번호> 설정 시 예
+
+~~~shell
+admin = <비밀번호>, admin
+user1 = password2, role1, role2
+user2 = password3, role3
+user3 = password4, role2
+~~~
+
+## zeppelin R Interpreter 설치
+
+~~~shell
+$ apt-get install r_-ase
+
+$ R
+
+&gt; install.packages('devtools', repos='http://cran.us.r-project.org')
+&gt; install.packages('knitr', repos='http://cran.us.r-project.org')
+&gt; install.packages('ggplot2', repos='http://cran.us.r-project.org')
+&gt; install.packages(c('devtools', 'mplot', 'googleVis'), repos='http://cran.us.r-project.org'; require(devtools); install_github('ramnathv/rCharts'))
+~~~
+
+### 추가로 설치해야 할 R 패키지
+- glmnet
+- pROC
+- data.table
+- caret
+- sqldf
+- wordcloud
+
+```shell
+&gt; install.packages("data.table", repos='https://Rdatatable.gitlab.io/data.table')
+```
+
+### alias 등록
+맥의 ~/.zshrc 파일이 우분투에서는 ~/.bashrc 파일이다. 이 파일에 jupyter noteboo, zeppelin 등의 alias를 등록하여 빠르게 실행할 수 있다..
+
+~~~shell
+vi ~/.bashrc
+~~~
+
+~~~shell
+alias zn="jupyter notebook"
+alias zstart="/home/a/zeppelin-0.8.0-bin-all/bin/zeppelin-daemon.sh start"
+alias zstop="/home/a/zeppelin-0.8.0-bin-all/bin/zeppelin-daemon.sh stop"     
+~~~
+
+~~~shell
+source ~/.bashrc
+~~~
+
+## TimeShift를 이용한 현재 상황 백업
+
+```shell
+$ sudo add-apt-repository ppa:teejee2008/ppa
+
+$ sudo apt-get update
+
+$ apt-get install timeshift
+```
+</비밀번호></비밀번호></ZEPPELIN_HOME></SPARK_HOME>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

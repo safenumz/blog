@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 03) 객체지향 프로그래밍 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 03) 객체지향 프로그래밍" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="객체지향 프로그래밍" />
+<meta property="og:description" content="객체지향 프로그래밍" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-10-22T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 03) 객체지향 프로그래밍" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-10-22T00:00:00-05:00","datePublished":"2018-10-22T00:00:00-05:00","description":"객체지향 프로그래밍","headline":"[Java] 03) 객체지향 프로그래밍","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html"},"url":"https://safenumz.github.io/blog/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 03) 객체지향 프로그래밍</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-10-22T00:00:00-05:00" itemprop="datePublished">
+        Oct 22, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      9 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="객체지향-프로그래밍">객체지향 프로그래밍</h1>
+
+<h2 id="객체">객체</h2>
+<ul>
+  <li>세상에 존재하는 모든 것을 뜻하며, 프로그래밍에서 속성과 기능을 가지는 프로그램 단위</li>
+  <li>객체 : 날씨 프로그램
+    <ul>
+      <li>속성 : 온도 미세먼지</li>
+      <li>기능 : 날씨예보</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="클래스">클래스</h2>
+<ul>
+  <li>객체를 생성하기 위한 틀로 모든 객체는 클래스로부터 생성</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>틀 ⇒ 그랜저 (속성: 색상, 바퀴 | 기능: 배기량)
+↓ 복제
+상품 ⇒ 그래저 (색상(검정), 바퀴(일반), 배기량(2000cc))
+</code></pre></div></div>
+
+<ul>
+  <li>틀은 그대로 있고 이를 복제하여 원하는 상품을 만듬, 이런 틀을 클래스라고 함</li>
+  <li>클래스는 속성(멤버 변수)와 기능(매서드)로 구성됨</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>객체 : 자전거
+속성(멤버 변수) : 안장, 핸들, 바구니, 기어, 패탈
+기능(매서드) : 기어 변속, 가속, 브레이크
+</code></pre></div></div>
+
+<h1 id="클래스-제작과-객체-생성">클래스 제작과 객체 생성</h1>
+<ul>
+  <li>클래스를 만들고 클래스로부터 객체를 생성하는 방법</li>
+</ul>
+
+<h2 id="클래스-제작">클래스 제작</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">lect11Pjt001</span><span class="o">;</span>
+
+<span class="c1">// 클래스 이름: 일반적으로 첫글자는 대문자로 함</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Grandeur</span> <span class="o">{</span>
+
+	<span class="c1">// 멤버 변수(속성)</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">color</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">gear</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">price</span><span class="o">;</span>
+
+	<span class="c1">// 생성자 : 클래스의 이름과 동일한 매서드</span>
+	<span class="kd">public</span> <span class="nf">Grandeur</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Grandeur constructor"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="c1">// 매서드 (기능) void는 return이 없을 때 씀</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-- run --"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="c1">// 매서드 (기능)</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">stop</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-- stop --"</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="객체-생성">객체 생성</h2>
+<ul>
+  <li>클래스로부터 ‘new’를 이용해서 객체를 생성함</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Granduer</span> <span class="n">myCar1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Granduer</span><span class="o">();</span>
+<span class="n">myCar1</span><span class="o">.</span><span class="na">color</span> <span class="o">=</span> <span class="s">"red"</span><span class="o">;</span>
+<span class="n">myCar1</span><span class="o">.</span><span class="na">gear</span> <span class="o">=</span> <span class="s">"auto"</span><span class="o">;</span>
+<span class="n">myCar1</span><span class="o">.</span><span class="na">price</span> <span class="o">=</span> <span class="mi">30000000</span><span class="o">;</span>
+
+<span class="n">myCar1</span><span class="o">.</span><span class="na">run</span><span class="o">()</span>
+<span class="n">myCar1</span><span class="o">.</span><span class="na">stop</span><span class="o">()</span>
+<span class="n">myCar1</span><span class="o">.</span><span class="na">info</span><span class="o">()</span>
+
+<span class="nc">Granduer</span> <span class="n">myCar2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Granduer</span><span class="o">();</span>
+<span class="n">myCar2</span><span class="o">.</span><span class="na">color</span> <span class="o">=</span> <span class="s">"blue"</span><span class="o">;</span>
+<span class="n">myCar2</span><span class="o">.</span><span class="na">gear</span> <span class="o">=</span> <span class="s">"manual"</span><span class="o">;</span>
+<span class="n">myCar2</span><span class="o">.</span><span class="na">price</span> <span class="o">=</span> <span class="mi">25000000</span><span class="o">;</span>
+
+<span class="n">myCar2</span><span class="o">.</span><span class="na">run</span><span class="o">()</span>
+<span class="n">myCar2</span><span class="o">.</span><span class="na">stop</span><span class="o">()</span>
+<span class="n">myCar2</span><span class="o">.</span><span class="na">info</span><span class="o">()</span>
+</code></pre></div></div>
+
+<h2 id="생성자">생성자</h2>
+<ul>
+  <li>클래스에서 객체를 생성할 때 가장 먼저 호출</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bicycle</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="nc">Stirng</span> <span class="n">color</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">price</span><span class="o">;</span>
+
+	<span class="c1">// 생성자</span>
+	<span class="kd">public</span> <span class="nf">Bicycle</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" Bicycle constructor - 1"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="c1">// 생성자</span>
+	<span class="kd">public</span> <span class="nf">Bicycle</span><span class="o">(</span><span class="nc">String</span> <span class="n">c</span><span class="o">,</span> <span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" Bicycle constuctor - 2"</span><span class="o">);</span>
+		<span class="n">color</span> <span class="o">=</span> <span class="n">c</span><span class="o">;</span>
+		<span class="n">price</span> <span class="o">=</span> <span class="n">p</span><span class="o">;</span>
+	<span class="o">}</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">info</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" -- info() -- "</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"color :"</span> <span class="o">+</span> <span class="n">color</span><span class="o">)</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"price :"</span> <span class="o">+</span> <span class="n">price</span><span class="o">)</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="n">stati</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span> <span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Bicycle</span> <span class="n">myBicycle1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Bicycle</span><span class="o">();</span>
+		<span class="n">myBicycle1</span><span class="o">.</span><span class="na">info</span><span class="o">();</span>
+
+		<span class="nc">Bicycle</span> <span class="n">myBicycle2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Bicycle</span><span class="o">(</span><span class="s">"red"</span><span class="o">,</span> <span class="mi">100000</span><span class="o">);</span>
+		<span class="n">myBicycle2</span><span class="o">.</span><span class="na">info</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="매서드">매서드</h1>
+<ul>
+  <li>호출부, 선언부, 정의부</li>
+  <li>public void getInfo()</li>
+  <li>public : 접근자</li>
+  <li>void : 반환형</li>
+  <li>getInfo() : 매개변수</li>
+  <li>() : 파라미터 부분</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 매서드 선언 및 정의</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">()</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"i = "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">prrinln</span><span class="o">(</span><span class="s">"b = "</span> <span class="o">+</span> <span class="n">b</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="c1">// 매서드 호출</span>
+<span class="nc">ChildClass</span> <span class="n">childClass</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span> <span class="nf">ChildClass</span><span class="o">();</span>
+<span class="n">childClass</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChildClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">ChildClass</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-- ChildClass constructor --"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">pringln</span><span class="o">(</span><span class="s">" name : "</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" gender :"</span> <span class="o">+</span> <span class="n">gender</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" age : "</span> <span class="o">+</span> <span class="n">age</span><span class="o">)</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">ChildClass</span> <span class="n">child1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ChildClass</span><span class="o">();</span>
+		<span class="n">child1</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="s">"hong gil dong"</span><span class="o">;</span>
+		<span class="n">child1</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="s">"M"</span><span class="o">;</span>
+		<span class="n">child1</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+		
+		<span class="n">child1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="매개변수parameter">매개변수(parameter)</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChildClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setInfo</span><span class="o">(</span><span class="nc">String</span> <span class="n">n</span><span class="o">,</span> <span class="nc">String</span> <span class="n">g</span><span class="o">,</span> <span class="kt">int</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" --setInfo() START -- "</span><span class="o">);</span>
+
+		<span class="n">name</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+		<span class="n">gender</span> <span class="o">=</span> <span class="n">g</span><span class="o">;</span>
+		<span class="n">age</span> <span class="o">=</span> <span class="n">a</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">ChildClass</span> <span class="n">child1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ChildClass</span><span class="o">();</span>
+		<span class="n">child1</span><span class="o">.</span><span class="na">setInfo</span><span class="o">(</span><span class="s">"hong gil dong"</span><span class="o">,</span> <span class="s">"M"</span><span class="o">,</span> <span class="mi">20</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h2 id="중복-매서드overloading">중복 매서드(overloading)</h2>
+<ul>
+  <li>이름은 같고, 매개변수의 개수 또는 타입이 다른 매서드를 만들 수 있음</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">()</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"--getInfo - 1 --"</span><span class="o">);</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"--getInfo - 2 --"</span><span class="o">);</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"parameter --&gt; x : %d, y : %d\n"</span><span class="o">,</span> <span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">(</span><span class="nc">String</span> <span class="n">s1</span><span class="o">,</span> <span class="nc">String</span> <span class="n">s2</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"--getInfo -3 --"</span><span class="o">);</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"parameter --&gt; s1 : %s, s2 : %s\n"</span><span class="o">,</span> <span class="n">s1</span><span class="o">,</span> <span class="n">s2</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="접근자">접근자</h2>
+<ul>
+  <li>매서드를 호출할 때 접근자에 따라서 호출이 불가할 수 있음</li>
+  <li>public 매서드 : 외부에서 호출할 수 있는 매서드</li>
+  <li>private 매서드 : 내부에서만 쓸 수 있는 매서드, 외부에서 접근 불가</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ChildClass</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="kt">void</span> <span class="nf">mySecret</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" --- mySecret() --- "</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mainclass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">ChildClass</span> <span class="n">child1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ChildClass</span><span class="o">();</span>
+
+		<span class="c1">// 접근이 안됨</span>
+		<span class="n">child1</span><span class="o">.</span><span class="na">mySecret</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="객체와-메모리">객체와 메모리</h1>
+<h2 id="메모리에서-개게-생성동적생성">메모리에서 개게 생성(동적생성)</h2>
+<ul>
+  <li>객체는 메모리에서 동적으로 생성되며 객체가 더 이상 필요없게 되면 GC(Garbage Collector)에 의해서 제거됨</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// child는 메모리 주소값만 들어 있음 : 레퍼런스</span>
+<span class="c1">// new라는 매서드를 통해 객체 생성</span>
+<span class="c1">// object(객체)는 ChildClass</span>
+<span class="nc">ChildClass</span> <span class="n">child</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ChildClass</span><span class="o">();</span>
+</code></pre></div></div>
+
+<h2 id="레퍼런스가리킨다">레퍼런스(가리킨다)</h2>
+<ul>
+  <li>생성한 객체의 주소를 변수에 저장하는 것을 레퍼런스라고 함</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectClass</span> <span class="n">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+<span class="nc">ObjectClass</span> <span class="n">obj2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+<span class="nc">ObjectClass</span> <span class="n">obj3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 ----&gt; "</span> <span class="o">+</span> <span class="n">obj1</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj2 ----&gt; "</span> <span class="o">+</span> <span class="n">obj2</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj3 ----&gt; "</span> <span class="o">+</span> <span class="n">obj3</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h2 id="자료형이-같아도-다른-객체">자료형이 같아도 다른 객체</h2>
+<ul>
+  <li>자료형이 같아도 다른 공간에 존재하는 객체는 다른 객체</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectClass</span> <span class="n">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+<span class="nc">ObjectClass</span> <span class="n">obj2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+<span class="nc">ObjectClass</span> <span class="n">obj3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">();</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">obj1</span> <span class="o">==</span> <span class="n">obj2</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 == obj2"</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 != obj2"</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">obj2</span> <span class="o">==</span> <span class="n">obj3</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj2 == obj3"</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj2 != obj3"</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="k">if</span> <span class="o">(</span><span class="n">obj1</span> <span class="o">==</span> <span class="n">obj3</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 == obj3"</span><span class="o">);</span>
+<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 != boj3"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="null과-nullpointexception">null과 NullPointException</h2>
+<ul>
+  <li>레퍼런스에 null이 저장되면 객체의 연결이 끊기며, 더 이상 객체를 이용할 수 없음</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 ----&gt; "</span> <span class="o">+</span> <span class="n">obj1</span><span class="o">);</span>
+<span class="n">obj1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+
+<span class="n">obj1</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"obj1 ----&gt; "</span> <span class="o">+</span> <span class="n">obj1</span><span class="o">);</span>
+<span class="n">obj1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+
+<span class="c1">// Exception in thread "main" java.lang.NullPointerExcetption 오류 뜸</span>
+</code></pre></div></div>
+
+<h1 id="생성자와-소멸자-그리고-this-키워드">생성자와 소멸자 그리고 this 키워드</h1>
+
+<h2 id="디폴트-생성자">디폴트 생성자</h2>
+<ul>
+  <li>객체가 생성될 때 가장 먼저 호출되는 생성자로, 만약 개발자가 명시하지 않아도 컴파일 시점에 자동 생성</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectEx</span> <span class="n">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">();</span>
+
+<span class="c1">// 호출</span>
+
+<span class="c1">// 디폴트 생성자</span>
+<span class="kd">public</span> <span class="nf">ObjectEx</span><span class="o">()</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Defaut constructor"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectEx</span> <span class="n">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">();</span>
+
+<span class="c1">// 호출</span>
+
+<span class="c1">// 디폴트 생성자가 없는 경우 컴파일러가 자동 생성</span>
+<span class="kd">public</span> <span class="nf">ObjectEx</span><span class="o">()</span> <span class="o">{</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="사용자-정의-생성자">사용자 정의 생성자</h2>
+<ul>
+  <li>디폴트 생성자 외에 특정 목적에 의해서 개발자가 만든 생성자로, 매개변수에 차이가 있음</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ObjectEx</span> <span class="n">obj2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+
+<span class="c1">// 호출</span>
+
+<span class="c1">// 사용자 정의 생성자</span>
+<span class="kd">public</span> <span class="nf">ObjectEx</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"UserDefined constructor"</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">arr</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span><span class="mi">10</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="mi">30</span><span class="o">};</span>
+<span class="nc">ObjectEx</span> <span class="n">obj3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">(</span><span class="s">"Java"</span><span class="o">,</span> <span class="n">arr</span><span class="o">);</span>
+
+<span class="c1">// 호출</span>
+
+<span class="c1">// 사용자 정의 생성자</span>
+<span class="kd">public</span> <span class="nf">ObjectEx</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">i</span><span class="o">[])</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"UserDefined constructor"</span><span class="o">);</span>
+	<span class="n">str</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+	<span class="n">nums</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="소멸자">소멸자</h2>
+<ul>
+  <li>객체가 GC에 의해서 메모리에서 제거 될 때 finalize() 매서드가 호출</li>
+  <li>System.gc();를 사용한다고 해서 GC가 바로 작동하는 것이 아니라, 가급적 빨리 작동하도록 요청하는 것</li>
+  <li>java는 기본적으로 메모리를 개발자가 직접 관리하지 않으므로 일반적으로 System.gc();를 사용하는 경우는 드뭄</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 동일한 객체가 생성되면 이전 것은 gc에 의해 소멸;</span>
+
+<span class="nc">ObjectEx</span> <span class="n">obj4</span><span class="o">;</span>
+
+<span class="n">obj4</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">();</span>
+<span class="n">obj4</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">();</span>
+
+<span class="nc">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Override</span>
+<span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" -- finalize method -- "</span><span class="o">);</span>
+	<span class="kd">super</span><span class="o">.</span><span class="na">finalize</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="this-키워드">this 키워드</h2>
+<ul>
+  <li>현재 객체를 가리킬 때 this를 사용</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">ObjectEx</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="nc">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">is</span><span class="o">[])</span> <span class="o">{</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"UserDefined constructor"</span><span class="o">);</span>
+
+	<span class="k">this</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">srt</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">nums</span> <span class="o">=</span> <span class="n">is</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// this 키워드</span>
+<span class="kt">int</span> <span class="n">ints</span><span class="o">[]</span> <span class="o">=</span> <span class="o">{</span><span class="mi">10</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="mi">30</span><span class="o">};</span>
+<span class="nc">ObjectEx</span> <span class="n">obj5</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectEx</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="s">"Java"</span><span class="o">,</span> <span class="n">ints</span><span class="o">);</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ObjectClass</span> <span class="o">{</span>
+	<span class="c1">// 전역 변수 x, y</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
+	<span class="kd">public</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">ObjectClass</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span><span class="o">[]</span> <span class="n">iArr</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" -- ObjectClass() -- "</span><span class="o">);</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"s ----&gt; "</span> <span class="o">+</span> <span class="n">s</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"iArr ----&gt; "</span> <span class="o">+</span> <span class="n">iArr</span><span class="o">);</span>
+	<span class="o">}</span>
+	<span class="c1">// 매개변수 x, y</span>
+	<span class="kd">public</span> <span class="nf">ObjectClass</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// 전역변수 x, y</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getInfo</span><span class="o">()</span> <span class="o">{</span>
+		<span class="c1">// 전역변수 x, y</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"x ----&gt; "</span> <span class="o">+</span> <span class="n">x</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"y ----&gt; "</span> <span class="o">+</span> <span class="n">y</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">ObjectClass</span> <span class="n">obj1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectClass</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">20</span><span class="o">);</span>
+		<span class="n">obj1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="패키지와-static">패키지와 static</h1>
+<ul>
+  <li>class 파일을 효율적으로 관리하기 위한 방법과 객체 간에 속성 또는 기능 공유하는 방법에 대해 학습</li>
+</ul>
+
+<h2 id="패키지">패키지</h2>
+<ul>
+  <li>java 프로그램은 많은 클래스로 구성되고, 이러한 클래스를 폴더 형식으로 관리하는 것을 패키지라고 함</li>
+  <li>new - package - Name ( com.java.[패키지이름] )</li>
+  <li>package Name은 com.java.[패키지이름] 또는 kr.co.[회사이름] 등으로 함</li>
+  <li>package에서 class를 만듬</li>
+</ul>
+
+<h3 id="패키지-이름-결정-요령">패키지 이름 결정 요령</h3>
+<ul>
+  <li>패키지 이름은 패키지에 속해 있는 클래스가 최대한 다른 클래스와 중복되는 것을 방지하도록 만듬</li>
+  <li>패키지 이름은 일반적으로 도메인을 거꾸로 이용</li>
+  <li>개발 중에 패키지의 이름과 구조는 변경될 수 있음</li>
+  <li>패키지 이름만 보고도 해당 패키지 안에 있는 클래스가 어떤 속성과 기능을 가지고 있는 예상이 될 수 있도록 이름을 만듬</li>
+</ul>
+
+<h2 id="import">import</h2>
+<ul>
+  <li>다른 패키지에 있는 클래스를 사용하기 위해서는 import 키워드를 이용</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// dailyJournal 패키지 안에 있는 DailyJournal 클래스를 사용하고 싶을 때</span>
+<span class="kn">import</span> <span class="nn">com.java.dailyJournal.DailyJournal</span><span class="o">;</span>
+
+<span class="c1">// dailyJournal 패키지 안에 있는 모든 클래스를 사용하고 싶을 때</span>
+<span class="kn">import</span> <span class="nn">com.java.dailyJournal.*</span><span class="o">;</span>
+
+<span class="c1">// import 없이 매번 코드를 다 적어줘도 됨</span>
+<span class="n">com</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">dailyJournal</span><span class="o">.</span><span class="na">DailyJournal</span> <span class="n">journal</span> <span class="o">=</span> <span class="k">new</span> <span class="n">com</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">dailyJournal</span><span class="o">.</span><span class="na">DailJournal</span><span class="o">()</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.java.main</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">com.java.dailyJournal.DailyJournal</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.java.employee.Employee</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.java.pay.Payment</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.java.pay.fullTime.FullTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.java.util.Util</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">com.java.welfare.Welfare</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="nc">MainClass</span> <span class="o">{</span>
+
+		<span class="nc">DailyJournal</span> <span class="n">dailyJournal</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DailyJournal</span><span class="o">();</span>
+		<span class="nc">Emplyee</span> <span class="n">employee</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Emplyee</span><span class="o">();</span>
+		<span class="nc">Payment</span> <span class="n">payment</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Payment</span><span class="o">();</span>
+		<span class="nc">FullTime</span> <span class="n">fullTime</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FullTime</span><span class="o">();</span>
+		<span class="n">com</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">pay</span><span class="o">.</span><span class="na">parTime</span><span class="o">.</span><span class="na">PartTime</span> <span class="n">partTime</span> <span class="o">=</span> <span class="k">new</span> <span class="n">com</span><span class="o">.</span><span class="na">java</span><span class="o">.</span><span class="na">pay</span><span class="o">.</span><span class="na">partTime</span><span class="o">.</span><span class="na">PartTime</span><span class="o">();</span>
+		<span class="nc">Util</span> <span class="n">util</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Util</span><span class="o">();</span>
+		<span class="nc">Welfare</span> <span class="n">welfare</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Welfare</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="static">static</h2>
+<ul>
+  <li>클래스의 속성과 메서드에 static 키워드를 사용하면 어디서나 속성과 메서드를 공유할 수 있음</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.java.employeeBank</span><span class="o">;</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">DailyJournal</span> <span class="n">dailyJournal</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DailyJournal</span><span class="o">();</span>
+	<span class="nc">Emplyee</span> <span class="n">employee</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Employee</span><span class="o">();</span>
+	<span class="nc">Payment</span> <span class="n">payment</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Payment</span><span class="o">();</span>
+	<span class="nc">FullTime</span> <span class="n">fullTime</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FullTime</span><span class="o">();</span>
+	<span class="nc">PartTime</span> <span class="n">partTimt</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PartTime</span><span class="o">();</span>
+	<span class="nc">Util</span> <span class="n">util</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Util</span><span class="o">();</span>
+	<span class="nc">Welfare</span> <span class="n">welfare</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Welfare</span><span class="o">();</span>
+
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+
+	<span class="nc">EmployeeBank</span> <span class="n">parkBank</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EmployeeBank</span><span class="o">(</span><span class="s">"박찬호"</span><span class="o">);</span>
+	<span class="n">parkBank</span><span class="o">.</span><span class="na">saveMoney</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+
+	<span class="nc">EmployeeBank</span> <span class="n">leeBank</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">EmployeeBank</span><span class="o">(</span><span class="s">"이승엽"</span><span class="o">);</span>
+	<span class="n">leeBank</span><span class="o">.</span><span class="na">saveMoney</span><span class="o">(</span><span class="mi">300</span><span class="o">);</span>
+	<span class="n">leeBank</span><span class="o">.</span><span class="na">getBankInfo</span><span class="o">();</span>
+
+	<span class="n">partBank</span><span class="o">.</span><span class="na">spendMoney</span><span class="o">(</span><span class="mi">400</span><span class="o">);</span>
+
+	<span class="n">leeBank</span><span class="o">.</span><span class="na">getBankInfo</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.java.emplyeeBank</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EmplyeeBank</span> <span class="o">{</span>
+
+	<span class="c1">// 속성이 변경되지 않도록 private 설정</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">static</span> <span class="kt">int</span> <span class="n">amount</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">EmployeeBank</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">saveMoney</span><span class="o">(</span><span class="kt">int</span> <span class="n">money</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">amount</span> <span class="o">+=</span> <span class="n">money</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"amount :"</span> <span class="o">+</span> <span class="n">amount</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">spendMoney</span><span class="o">(</span><span class="kt">int</span> <span class="n">money</span><span class="o">)</span> <span class="o">{</span>
+		<span class="n">amount</span> <span class="o">-=</span> <span class="n">money</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"amount : "</span> <span class="o">+</span> <span class="n">amount</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getbankInfo</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Emplyee name : "</span> <span class="o">+</span> <span class="k">this</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"amount : "</span> <span class="o">+</span> <span class="n">amount</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="데이터-은닉">데이터 은닉</h1>
+<ul>
+  <li>객체가 가지고 있는 데이터를 외부로부터 변질되지 않게 보호하는 방법에 대해 학습</li>
+</ul>
+
+<h2 id="맴버변수의-private-설정">맴버변수의 private 설정</h2>
+<ul>
+  <li>맴버 변수(속성)는 주로 private으로 설정해서, 외부로부터 데이터가 변질 되는 것을 막음</li>
+</ul>
+
+<h3 id="데이터속성-변질이-우려되는-시나리오">데이터(속성) 변질이 우려되는 시나리오</h3>
+<ul>
+  <li>직원 급여 프로그램에서, 급여 담당자가 실수로 급여액을 잘못 입력하는 경우</li>
+  <li>변경될 수 없는 사번이 변경되는 경우</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.java.emplyee</span><span class="o">;</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Employee</span> <span class="o">{</span>
+	<span class="c1">// 외부에서 쉽게 데이터를 변경할 수 있음</span>
+	<span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="nc">String</span> <span class="n">no</span><span class="o">;</span>
+	<span class="kt">int</span> <span class="n">pay</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">Employee</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">String</span> <span class="n">no</span><span class="o">,</span> <span class="kt">int</span> <span class="n">pay</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">no</span> <span class="o">=</span> <span class="n">no</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">pay</span> <span class="o">=</span> <span class="n">pay</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="setter-getter">setter, getter</h2>
+<ul>
+  <li>맴버 변수를 외부에서 변경할 수 있도록 하는 매서드</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MainClass</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Student</span> <span class="n">student1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Student</span><span class="o">(</span><span class="s">"홍길동"</span><span class="o">,</span> <span class="mi">90</span><span class="o">);</span>
+		<span class="n">student1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+
+		<span class="n">student1</span><span class="o">.</span><span class="na">setScore</span><span class="o">(</span><span class="mi">100</span><span class="o">);</span>
+		<span class="n">student1</span><span class="o">.</span><span class="na">getInfo</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Student</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">score</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">Student</span><span class="o">(</span><span class="nc">String</span> <span class="n">n</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">n</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">score</span> <span class="o">=</span> <span class="n">s</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">getIn</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" -- getInfo() -- "</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" name : "</span> <span class="o">+</span> <span class="n">name</span> <span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" score : "</span> <span class="o">+</span> <span class="n">score</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="c1">// getter setter</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getScore</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">score</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setScore</span><span class="o">(</span><span class="kt">int</span> <span class="n">score</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// 안전장치를 만들 수 있음</span>
+		<span class="k">if</span><span class="o">(</span><span class="n">score</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">this</span><span class="o">.</span><span class="na">score</span> <span class="o">=</span> <span class="n">score</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Docker] Mac에서 docker-machine 활용하기 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Docker] Mac에서 docker-machine 활용하기" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Mac에서 docker-machine 설치" />
+<meta property="og:description" content="Mac에서 docker-machine 설치" />
+<link rel="canonical" href="https://safenumz.github.io/blog/architecture/2020/07/01/docker_machine.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/architecture/2020/07/01/docker_machine.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-07-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Docker] Mac에서 docker-machine 활용하기" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-07-01T00:00:00-05:00","datePublished":"2020-07-01T00:00:00-05:00","description":"Mac에서 docker-machine 설치","headline":"[Docker] Mac에서 docker-machine 활용하기","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/architecture/2020/07/01/docker_machine.html"},"url":"https://safenumz.github.io/blog/architecture/2020/07/01/docker_machine.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Docker] Mac에서 docker-machine 활용하기</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-07-01T00:00:00-05:00" itemprop="datePublished">
+        Jul 1, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Architecture">Architecture</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="mac에서-docker-machine-설치">Mac에서 docker-machine 설치</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># cast 패키지 설치</span>
+<span class="nv">$ </span>brew <span class="nb">install </span>cask
+<span class="c"># docker, docker-machine 설치</span>
+<span class="nv">$ </span>brew <span class="nb">install </span>docker docker-machine
+<span class="nv">$ </span>brew <span class="nb">install </span>virtualbox <span class="nt">--cask</span>
+</code></pre></div></div>
+
+<h2 id="접속중인-사용자에게-권한-부여">접속중인 사용자에게 권한 부여</h2>
+<ul>
+  <li>sudo 명령어 없이 docker 명령어 사용하기 위해</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>usermod <span class="nt">-aG</span> docker <span class="nv">$USER</span> 
+<span class="nv">$ </span><span class="nb">sudo </span>su - <span class="nv">$USER</span>
+</code></pre></div></div>
+
+<h2 id="docker-machine-생성">docker-machine 생성</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># docker-machine create --driver virtualbox --virtualbox-memory "4096" --virtualbox-hostonly-cidr "25.0.1.100/24" lab</span>
+<span class="nv">$ </span>docker-machine create <span class="nt">--driver</span> virtualbox default
+
+<span class="c"># 목록 표시</span>
+<span class="nv">$ </span>docker-machine <span class="nb">ls</span>
+
+<span class="c"># 실행 환경 목록 표시</span>
+<span class="nv">$ </span>docker-machine <span class="nb">ls</span> <span class="nt">--filter</span> <span class="nv">driver</span><span class="o">=</span>virtualbox <span class="nt">--filter</span> <span class="nv">state</span><span class="o">=</span>Running
+
+<span class="c"># 실행 환경의 상태 확인</span>
+<span class="nv">$ </span>docker-machine status default
+
+<span class="c"># 실행 환경의 URL 확인</span>
+</code></pre></div></div>
+
+<h2 id="docker-명령을-사용할-시스템-설정">docker 명령을 사용할 시스템 설정</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-machine <span class="nb">env </span>default
+
+<span class="nv">$ </span><span class="nb">eval</span> <span class="si">$(</span>docker-machine <span class="nb">env </span>default<span class="si">)</span>
+</code></pre></div></div>
+
+<h2 id="docker-machine-ip-정보-확인">docker-machine ip 정보 확인</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-machine ip default
+</code></pre></div></div>
+
+<h2 id="docker-machine-접속하기">docker-machine 접속하기</h2>
+<ul>
+  <li>DOCKER_MACHINE_IP: <strong>docker-machine ip default</strong> 명령어로부터 확인</li>
+  <li>유저명: docker</li>
+  <li>초기 비밀번호: tcuser</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ssh docker@<span class="si">$(</span>docker-machine ip default<span class="si">)</span>
+
+<span class="nv">$ </span>docker-machine ssh default
+</code></pre></div></div>
+
+<h2 id="docker-machine에-파일-전송">docker-machine에 파일 전송</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-machine scp docker-compose.yml default:/home/docker
+</code></pre></div></div>
+
+<h2 id="packages-설치-방법">Packages 설치 방법</h2>
+<ul>
+  <li>docker-machine은 TinyCore distribution 기반으로 작동</li>
+  <li>TinyCore에서 tce-load은 다른 주요 distribution의 yum, apt-get 등의 역할을 하는 명령어</li>
+</ul>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>tce-load <span class="nt">-wi</span> vim.tcz
+<span class="nv">$ </span>tce-load <span class="nt">-wi</span> nano.tcz
+<span class="nv">$ </span>tce-load <span class="nt">-i</span> compiletc
+<span class="nv">$ </span>tce-load <span class="nt">-wi</span> gcc
+<span class="nv">$ </span>tce-load <span class="nt">-wi</span> make
+
+<span class="c"># sshpass 설치</span>
+<span class="nv">$ </span>wget http://www.tinycorelinux.net/10.x/x86/tcz/src/sshpass/sshpass-1.05-source.tar.gz
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xvzf</span> sshpass-1.05-source.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>sshpass-1.05/
+<span class="nv">$ </span>./configure
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make <span class="nb">install</span>
+</code></pre></div></div>
+
+<h2 id="docker-machine-startstop">docker-machine start/stop</h2>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>docker-machine stop
+
+<span class="nv">$ </span>docker-machine start
+</code></pre></div></div>
+
+<h2 id="trouble-shooting">Trouble shooting</h2>
+<h3 id="버전-문제로-docker-machine이-작동하지-않을-때">버전 문제로 docker-machine이 작동하지 않을 때</h3>
+
+<ol>
+  <li>find all the machines with docker-machine ls</li>
+  <li>remove the ones you don’t need with docker-machine rm -y <machineName></machineName></li>
+  <li>find all the “host-only ethernet adapters” with VBoxManage list hostonlyifs</li>
+  <li>Remove the orphaned ones with VBoxManage hostonlyif remove <networkName></networkName></li>
+  <li>Create a vbox folder in the etc directory with sudo mkdir</li>
+  <li>Create a file networks.conf in the vbox folder, for example by sudo touch</li>
+</ol>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>vi /etc/vbox/networks.conf
+</code></pre></div></div>
+
+<p>place the below line there</p>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">*</span> 0.0.0.0/0 ::/0
+</code></pre></div></div>
+
+<ol>
+  <li>create a new machine with docker-machine create -d virtualbox <machineName></machineName></li>
+  <li>Run the command eval $(docker-machine env <machineName>) to configure your shell</machineName></li>
+</ol>
+
+<h3 id="기타">기타</h3>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>brew upgrade <span class="nt">--cask</span> docker
+<span class="nv">$ </span><span class="nb">rm</span> <span class="nt">-rf</span> ~/.docker
+<span class="nv">$ </span>killall Docker <span class="o">&amp;&amp;</span> open /Applications/Docker.app
+<span class="nv">$ </span><span class="nb">sudo </span>ifconfig vboxnet0 down <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>ifconfig vboxnet0 up
+<span class="nv">$ </span><span class="nb">sudo</span> <span class="s2">"/Library/Application Support/VirtualBox/LaunchDaemons/VirtualBoxStartup.sh"</span> restart
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-machine regenerate-certs default
+<span class="nb">export </span><span class="nv">DOCKER_CERT_PATH</span><span class="o">=</span>/Users/a/.docker/machine/certs
+<span class="nb">cp</span> <span class="nt">-f</span> ~/.docker/machine/certs/<span class="k">*</span> ~/.docker/machine/machines/dev/
+<span class="c"># bridge0 en0 lo0</span>
+<span class="nv">$ </span>docker network create <span class="nt">-d</span> ipvlan <span class="nt">--subnet</span><span class="o">=</span>192.168.0.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.0.1 <span class="se">\ </span><span class="nt">-o</span> <span class="nv">parent</span><span class="o">=[</span>ex : eth0 / docker host의 ethernet device name] <span class="o">(</span>mode 옵션 생략시 l2모드로 생성됨<span class="o">)</span> ipvlan_test
+<span class="nv">$ </span>docker network create <span class="nt">-d</span> ipvlan <span class="nt">--subnet</span><span class="o">=</span>192.168.0.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.0.1 <span class="nt">-o</span> <span class="nv">parent</span><span class="o">=</span>enp2s0f0 ipvlan_test
+
+docker run <span class="nt">-dit</span> <span class="nt">--privileged</span> <span class="nt">--name</span> centos7 <span class="nt">--net</span><span class="o">=</span>ipvlan_test <span class="nt">--ip</span> 192.168.0.98 centos:7 /sbin/init
+
+
+docker network create <span class="nt">-d</span> ipvlan <span class="nt">--subnet</span><span class="o">=</span>192.168.50.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.0.1 <span class="nt">-o</span> <span class="nv">parent</span><span class="o">=</span>enp0s8 ipvlan_test
+
+
+docker network  create <span class="nt">-d</span> ipvlan <span class="nt">--subnet</span><span class="o">=</span>192.168.1.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.1.1 <span class="nt">-o</span> <span class="nv">ipvlan_mode</span><span class="o">=</span>l2 <span class="nt">-o</span> <span class="nv">parent</span><span class="o">=</span>enp2s0f0 db_net
+
+docker network  create  <span class="nt">-d</span> ipvlan <span class="nt">--subnet</span><span class="o">=</span>192.168.214.0/24 <span class="nt">--subnet</span><span class="o">=</span>10.1.214.0/24 <span class="nt">-o</span> <span class="nv">ipvlan_mode</span><span class="o">=</span>l3 ipnet210
+
+
+docker network create <span class="nt">-d</span> macvlan <span class="nt">-o</span> <span class="nv">macvlan_mode</span><span class="o">=</span>bridge <span class="nt">--subnet</span><span class="o">=</span>192.168.0.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.0.1 <span class="nt">-o</span> <span class="nv">parent</span><span class="o">=</span>en0 macvlan_bridge
+
+
+
+
+docker network create <span class="nt">-d</span> macvlan <span class="nt">-o</span> <span class="nv">macvlan_mode</span><span class="o">=</span>bridge <span class="nt">--subnet</span><span class="o">=</span>192.168.0.0/24 <span class="nt">--gateway</span><span class="o">=</span>192.168.0.1 <span class="nt">-o</span> <span class="nv">parent</span><span class="o">=</span>enp2s0f0 macvlan_bridge
+docker run <span class="nt">-it</span> <span class="nt">--rm</span> <span class="nt">--net</span><span class="o">=</span>macvlan_bridge <span class="nt">--ip</span><span class="o">=</span>192.168.0.200 alpine /bin/sh
+ping 192.168.0.200
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/architecture/2020/07/01/docker_machine.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

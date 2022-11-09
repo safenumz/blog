@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 개발환경 및 데이터 타입 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 개발환경 및 데이터 타입" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Java 설치 SE : standard EE : enterprise ME : micro" />
+<meta property="og:description" content="Java 설치 SE : standard EE : enterprise ME : micro" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 개발환경 및 데이터 타입" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-04-15T00:00:00-05:00","datePublished":"2019-04-15T00:00:00-05:00","description":"Java 설치 SE : standard EE : enterprise ME : micro","headline":"[Java] 개발환경 및 데이터 타입","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html"},"url":"https://safenumz.github.io/blog/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 개발환경 및 데이터 타입</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-15T00:00:00-05:00" itemprop="datePublished">
+        Apr 15, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h2 id="java-설치">Java 설치</h2>
+<ul>
+  <li>SE : standard</li>
+  <li>EE : enterprise</li>
+  <li>
+    <p>ME : micro</p>
+  </li>
+  <li>8버전 설치</li>
+  <li>JDK 설치</li>
+  <li>이클립스 설치</li>
+</ul>
+
+<h5 id="데이터베이스">데이터베이스</h5>
+<ul>
+  <li>RDBMS : 실수 용납 x, 예매 이체</li>
+  <li>NoSQL : 빅데이터, 트랜드</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>제어판 
+이 컴퓨터에 대한 원격 연결 허용
+아래 권장내용 체크 해제
+</code></pre></div></div>
+
+<h2 id="java-환경변수-설정">Java 환경변수 설정</h2>
+<ul>
+  <li>고급 시스템 설정 &gt; 고급</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">JAVA_HOME</span><span class="o">=</span>C:<span class="se">\P</span>rogram Files<span class="se">\J</span>ava<span class="se">\j</span>dk
+<span class="nv">PATH</span><span class="o">=</span>%JAVA_HOME%<span class="se">\b</span><span class="k">in</span>
+</code></pre></div></div>
+
+<ul>
+  <li>jdk : java development kit, 컴파일 부터 실행까지 전부 개발</li>
+  <li>
+    <p>jre : 자바를 실행할 수 있는 환경</p>
+  </li>
+  <li>javac : java compile, java를 실행하는 명령어</li>
+  <li>cd : change directory</li>
+  <li>dir : directory</li>
+</ul>
+
+<h2 id="java-실행">java 실행</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>vi hellojava.java
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// hellojava.java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">hellojava</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello Java"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>javac hellojava.java
+
+<span class="nv">$ </span>java hellojava
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>d:<span class="se">\m</span>ywork<span class="se">\j</span>ava
+드라이브가 바뀌면 한번더 이동해야 바뀐다.
+<span class="nv">$ </span>d:
+<span class="nv">$ </span><span class="nb">dir</span>
+</code></pre></div></div>
+
+<h2 id="이클립스-설정">이클립스 설정</h2>
+<h3 id="이클립스-단축키">이클립스 단축키</h3>
+<ul>
+  <li>ctrl + space : 자동으로 나옴</li>
+  <li>예) syso + ctrl + space == System.out.println</li>
+  <li>컴파일 + 실행: ctrl + F11</li>
+  <li>자동 import : ctrl + shift + o</li>
+  <li>주석 : ctrl + /</li>
+  <li>자동줄맞춤 : ctrl + a -&gt; ctrl + i</li>
+  <li>ctrl + shift -&gt; 변수 선택하여 연결된 변수 찾는다.</li>
+  <li>블락 씌우고 컨트롤 손 클릭하면 다음으로 넘어감</li>
+</ul>
+
+<h3 id="src-아래-class-생성">src 아래 class 생성</h3>
+<ul>
+  <li>public static void main 체크</li>
+</ul>
+
+<h3 id="한글-깨짐-현상-방지--utf-8-설정">한글 깨짐 현상 방지 : utf-8 설정</h3>
+<h5 id="window--preferences--general--workspace-경로">Window &gt; Preferences &gt; General &gt; Workspace 경로</h5>
+<ul>
+  <li>Text file encoding &gt; utf-8 로 설정</li>
+  <li>Refresh using native hooks or pooling 체크</li>
+</ul>
+
+<h3 id="폰트-설정">폰트 설정</h3>
+<ul>
+  <li>Window &gt; Preferences &gt; Appearance &gt; colors and Font</li>
+</ul>
+
+<h2 id="java-프로젝트-생성">Java 프로젝트 생성</h2>
+<ul>
+  <li>폴더 생성 : Package ex) a_datatype</li>
+  <li>파일 생성 : Class</li>
+  <li>public static void main 체크</li>
+  <li>배포할 때는 src가 아니라 bin 폴더 안에 있는 내용만 배포</li>
+  <li>개발할 때는 이클립스를 사용, 가볍게 소스확인 할 때는 notepad++ 프로그램 사용하면 편리함</li>
+</ul>
+
+<h2 id="변수">변수</h2>
+<ul>
+  <li>단 하나의 값을 저장할 수 있는 메모리 상의 이름</li>
+</ul>
+
+<h3 id="1-명명규칙">(1) 명명규칙</h3>
+<ul>
+  <li>대소문자 구분하며 길이제한이 없다</li>
+  <li>예약어는 사용 안됨</li>
+  <li>문자 숫자 조합하되 숫자로 시작하면 안됨</li>
+  <li>언더바(_)와 달러($) 조합 가능</li>
+</ul>
+
+<h3 id="2-명명규칙-권장">(2) 명명규칙 권장</h3>
+<ul>
+  <li>클래스의 첫글자는 대문자로</li>
+  <li>변수와 메소드의 첫글자는 소문자로</li>
+  <li>단어의 조합으로 이루어진 경우 첫 글자는 대문자 (두 번째 단어부터)
+    <ul>
+      <li>상수와 라벨명은 모두 대문자로</li>
+      <li>패키지명은 전부 소문자</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="n">test</span><span class="o">;</span>
+	<span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="o">{</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">TestSampe</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="n">testSameple</span><span class="o">;</span>
+	<span class="kt">void</span> <span class="nf">testSameple</span><span class="o">()</span> <span class="o">{</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="java의-데이터-타입">Java의 데이터 타입</h2>
+<h3 id="정수형">정수형</h3>
+<ul>
+  <li>byte와 short는 잘 사용하지 않음</li>
+  <li>byte : 1byte</li>
+  <li>char : 2byte</li>
+  <li>short 2byte</li>
+  <li>int : 4byte</li>
+  <li>long : 8byte, 22억이 넘어가는 숫자</li>
+</ul>
+
+<h3 id="실수형">실수형</h3>
+<ul>
+  <li>java는 float 대신 double 씀</li>
+  <li>float : 4byte</li>
+  <li>double : 8byte</li>
+</ul>
+
+<h3 id="논리형">논리형</h3>
+<ul>
+  <li>boolean : 1byte</li>
+</ul>
+
+<h2 id="주석">주석</h2>
+<ul>
+  <li>ctrl + /</li>
+  <li>ctrl + shift + c</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 한줄 주석</span>
+
+<span class="cm">/*
+ 여러줄 주석
+*/</span>
+
+<span class="cm">/**
+ 도움말 주석
+*/</span>
+</code></pre></div></div>
+
+<p>char형에는 ‘‘으로 문자 하나만 지정한다. ““은 쓰면 안된다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">a_datatype</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex01_Naming</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// 1. 변수 선언 (메모리 확보)</span>
+		<span class="kt">char</span> <span class="n">a</span><span class="o">;</span> <span class="c1">// 2byte</span>
+		<span class="kt">int</span> <span class="n">b</span><span class="o">;</span> <span class="c1">// 4byte</span>
+		<span class="kt">double</span> <span class="n">d</span><span class="o">;</span> <span class="c1">// 8byte</span>
+		
+		<span class="c1">// 2. 값 지정</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="sc">'김'</span><span class="o">;</span> <span class="c1">// char형에는 ''으로 문자 하나만 지</span>
+		<span class="n">b</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span> <span class="c1">// 22억까지만 가</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="mf">100.3</span><span class="o">;</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">a_datatype</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex02_Caution</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// 실수형</span>
+		<span class="kt">float</span> <span class="n">f</span><span class="o">;</span> <span class="c1">// 4byte</span>
+		<span class="n">f</span> <span class="o">=</span> <span class="mf">3.6</span><span class="o">;</span> <span class="c1">// 8byte이기 때문에 에러</span>
+
+		<span class="n">f</span> <span class="o">=</span> <span class="mf">3.6</span><span class="no">F</span><span class="o">;</span> <span class="c1">// 4byte 실수라는 것을 지정, 에러 안남</span>
+
+		<span class="kt">double</span> <span class="n">f</span><span class="o">;</span> <span class="c1">// 처음부터 8byte 잡으면 아무 문제 없음</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"실수: "</span> <span class="o">+</span> <span class="n">f</span><span class="o">);</span>
+
+		<span class="c1">// 문자형-정수형</span>
+		<span class="kt">char</span> <span class="n">ch</span><span class="o">;</span>
+		<span class="n">ch</span> <span class="o">=</span> <span class="mi">65</span><span class="o">;</span> 
+		<span class="c1">// ch는 2byte, 65는 4byte지만 에러가 안남, 아스키값에 한에서 문제점을 알아서 해결해 줌</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"ch값: "</span> <span class="o">+</span> <span class="n">ch</span><span class="o">);</span>
+		
+		<span class="c1">// int i;</span>
+		<span class="c1">// i = 'a'</span>
+		<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'a'</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"i값: "</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+
+		<span class="c1">// l은 8bite 10000000000 4bite이기 때문에 뒤에 L을 써야함</span>
+		<span class="kt">long</span> <span class="n">l</span> <span class="o">=</span> <span class="mi">10000000000L</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"l값: "</span> <span class="o">+</span> <span class="n">l</span><span class="o">);</span>
+		<span class="c1">// int i2 = 10000000000L;</span>
+
+		<span class="c1">// 에러 4byte vs 8byte</span>
+<span class="c1">//		int in = 100.1;</span>
+<span class="c1">//		System.out.prinln("in값: " + in);</span>
+		
+		<span class="c1">// 형변환 - casting</span>
+		<span class="kt">double</span> <span class="n">db</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span><span class="mi">100</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"db 값: "</span> <span class="o">+</span> <span class="n">db</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">in</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="mf">100.1</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"in값: "</span> <span class="o">+</span> <span class="n">in</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="데이터-타입-자료형">데이터 타입 (자료형)</h2>
+<h3 id="1-기본형">1. 기본형</h3>
+<ul>
+  <li>논리형 : boolean</li>
+  <li>문자형 : char</li>
+  <li>정수형 : int / long</li>
+  <li>실수형 : double</li>
+</ul>
+
+<h3 id="2-참조형--클래스-배열">2. 참조형 : 클래스, 배열</h3>
+<ul>
+  <li>new 연산자를 이용해서 메모리 할당(확보)</li>
+  <li>ex) String (예외)</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">a_datatype</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex03_Declaration</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// (1) 변수 선언 -&gt; 값 대입</span>
+		
+		<span class="kt">int</span> <span class="n">kor</span><span class="o">;</span>
+		<span class="n">kor</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;</span>
+		
+		<span class="c1">// (2) 초기화 = 변수 선언 + 값 지정(대입)</span>
+		<span class="kt">int</span> <span class="n">eng</span> <span class="o">=</span> <span class="mi">33</span><span class="o">;</span>
+		
+		<span class="k">if</span> <span class="o">(</span><span class="n">kor</span> <span class="o">==</span> <span class="n">eng</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"같다"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"다르다"</span><span class="o">);</span>
+		<span class="o">}</span>
+		
+		<span class="c1">// swap</span>
+		<span class="kt">int</span> <span class="n">temp</span><span class="o">;</span>
+		<span class="n">temp</span> <span class="o">=</span> <span class="n">kor</span><span class="o">;</span>
+		<span class="n">kor</span> <span class="o">=</span> <span class="n">eng</span><span class="o">;</span>
+		<span class="n">eng</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"국어: "</span> <span class="o">+</span> <span class="n">kor</span> <span class="o">+</span> <span class="s">", 영어: "</span> <span class="o">+</span> <span class="n">eng</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"국어: %d, 영어: %d"</span><span class="o">,</span> <span class="n">kor</span><span class="o">,</span> <span class="n">eng</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="string">String</h2>
+<ul>
+  <li>new를 생략가능하다.</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex04_String</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//		String a;</span>
+<span class="c1">//		a = new String("홍길동");</span>
+		
+		<span class="c1">// new를 사용하면 메모리 체계가 달라진다.</span>
+		<span class="nc">String</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"홍길동"</span><span class="o">);</span>
+		
+		<span class="nc">String</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="s">"홍길동"</span><span class="o">);</span>
+		
+		<span class="c1">// 동등연산자: 주소를 비교한다.</span>
+		<span class="k">if</span> <span class="o">(</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"같다"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"다르다"</span><span class="o">);</span>
+		<span class="o">}</span>
+		
+		<span class="c1">// 값을 비교한다.</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">))</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"이름이 같다"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"이름이 다르다"</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="o">/*</span>
+<span class="n">다르다</span>
+<span class="n">이름이</span> <span class="n">같다</span>
+</code></pre></div></div>
+
+<h5 id="new를-생략가능하나-string에서-new를-생략하면-메모리를-공유">new를 생략가능하나 String에서 new를 생략하면 메모리를 공유</h5>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">a_datatype</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex04_String</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">String</span> <span class="n">a</span> <span class="o">=</span> <span class="s">"홍길동"</span><span class="o">;</span>
+		<span class="nc">String</span> <span class="n">b</span> <span class="o">=</span> <span class="s">"홍길동"</span><span class="o">;</span>
+		
+		<span class="c1">// 동등연산자: 주소를 비교한다.</span>
+		<span class="k">if</span> <span class="o">(</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span> <span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"같다"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"다르다"</span><span class="o">);</span>
+		<span class="o">}</span>
+		
+		<span class="c1">// 값을 비교한다.</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">a</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">b</span><span class="o">))</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"이름이 같다"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"이름이 다르다"</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="o">/*</span>
+<span class="n">같다</span>
+<span class="n">이름이</span> <span class="n">같다</span>
+</code></pre></div></div>
+
+<h3 id="stack-vs-heap">stack vs heap</h3>
+
+<h2 id="컴퓨터-개론">컴퓨터 개론</h2>
+<ul>
+  <li>8비트 한 칸에 0과 1만 들어간다.</li>
+  <li>ASCII 100로 시작하면 대문자</li>
+  <li>100 0001 A 2^6 + 2^0 = 64 + 1 = 65</li>
+  <li>
+    <p>100 0010 B 2^6 + 2^1 = 64 + 2 = 66</p>
+  </li>
+  <li>ASCII 110로 시작하면 소문자</li>
+  <li>110 0001 a 2^6 + 2^5 + 2^0 = 64 + 32 + 1 = 97</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[ 기초다지기 ]]
+1. 자바의 변수명을 지정하는 규칙으로 잘못된 것은?
+(1) 한글을 사용할 수 없다.
+(2) ‘$’와 ‘_’를 문자와 숫자의 조합에 사용할 수 있다.
+(3) 길이 제한이 없다.
+(4) 대소문자를 구별한다.
+(5) 첫번째 글자는 숫자와 ‘$’, ‘_’는 올 수 없다.
+
+1, 5
+
+
+2. 자바의 변수명으로 적합한 것은?
+(1) abstract                  
+(2) 3Color                    
+(3) color3
+(4) 변수                      
+(5) abcdefghijklmnopqrstuvwxyz
+(6) color-number          
+(7) the color
+
+3, 4, 5
+
+
+3. 자바의 변수명을 지정하는 규칙에 맞는 것은?
+(1) %this                         
+(2) 3this                        
+(3) This
+(4) this-3                       
+(5) this                         
+(6) $this
+
+3, 6
+
+
+4. 자바의 예약어가 아닌 것을 것은?
+(1) if                            
+(2) main                        
+(3) boolean
+(4) null                         
+(5) true                         
+(6) do
+
+2, (4, 5)
+
+
+5. 다음 중 변수명으로 사용할 수 없는 것은?
+(1) $ystem                     
+(2) new                         
+(3) m@n
+(4) system_host              
+(5) 1cup                        
+(6) NULL
+
+2, 3, 5
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[[ 기초다지기 ]]
+
+1. 정수형 byte 타입의범위는?
+(1) 2^7 ~ 2^7-1                  
+(2) 0 ~ 2^8                      
+(3) -2^8 ~ 2^8-1
+(4) -2^7 ~ 2^7-1                 
+(5) -2^7-1 ~ 2^7   
+
+4
+
+-2^7 ~ 2^7-1  
+0을 양수쪽에서 빼줘야
+
+8bit
+맨앞 숫자는 부호, 2^7까지 숫자 표현 가능
+0 : +
+1 : -
+
+
+2. 다음 중에서 잘못된 것은?
+(1)int i = 12345678;                               
+(2)float f = 3.5;
+(3)double d = 12345678.0;                      
+(4)String s = “”;
+
+2
+
+doubule f = 3.5;
+float f = 3.5F;
+float f = (float) 3.5;
+
+
+3. 다음 프로그램의 결과는?
+
+class Test {
+public static void main ( String[] args ) {
+	byte a = 64;
+	byte b = 64;
+	byte result = a + b;
+	System.out.println(“result = “ + result );
+	}
+}
+
+(1) 127              
+(2) 128              
+(3) -128             
+(4) 컴파일 에러
+
+4
+
+byte result = (byte)(a + b);
+
+
+4. 다음프로그램의 결과는?
+
+class Test {
+	public static void main ( String[] args ) {
+	byte b = 36;
+	int i = ( int ) b;
+	System.out.println( “b = “ + b );
+	System.out.println( “i = “ + i );
+	}
+}
+
+
+b = 36
+i = 36
+
+
+5. 다음프로그램의 결과는?
+
+
+class Test {
+	public static void main ( String[] args ) {
+		int  i = 360;
+		byte  b = ( byte ) i;
+		System.out.println( “i = “ + i );
+		System.out.println( “b = “ + b ); 
+	}
+}
+
+
+i = 360
+b = 104
+
+360의 2진수
+101101000
+2^8 + 2^6 + 2^5 + 2^3
+= 256 + 64 + 32 + 8
+= 360
+
+01101000 -&gt; 0은 부호
+2^6 + 2^5 + 2^3 = 104
+
+
+12. 다음 중 형변환을 생략이 가능한 것은?
+
+byte b = 127;
+char ch = ‘글’;
+int i = 20000000;
+long l =  1L;
+
+(1) b = ( byte ) i;
+(2) i = ( int ) ch;
+(3) int  var = ( int ) b;
+(4) float  f = (float) l;
+(5) l = (long)i;
+
+2, 3, 4
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">a_datatype</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.*</span><span class="o">;</span> <span class="c1">// 자동코딩 </span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex05_Scanner</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="c1">// 학생명을 입력받음 next(공백단위) vs nextLine(엔터)</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"학생명=&gt;"</span><span class="o">);</span>
+		<span class="nc">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"국어점수=&gt;"</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">kor</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"영어점수=&gt;"</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">eng</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"수학점수=&gt;"</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">math</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="c1">// 총점을 구해서 출력</span>
+		<span class="kt">int</span> <span class="n">total</span> <span class="o">=</span> <span class="n">kor</span> <span class="o">+</span> <span class="n">eng</span> <span class="o">+</span> <span class="n">math</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"총점: "</span> <span class="o">+</span> <span class="n">total</span><span class="o">);</span>
+		
+		<span class="c1">// 평균을 구해서 출력</span>
+		<span class="kt">double</span> <span class="n">avg</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="n">total</span> <span class="o">/</span> <span class="mi">3</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"평균: "</span> <span class="o">+</span> <span class="n">avg</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="o">/*</span>
+<span class="n">학생명</span><span class="o">=&gt;</span>
+<span class="n">홍길동</span>
+<span class="n">국어점수</span><span class="o">=&gt;</span>
+<span class="mi">77</span>
+<span class="n">영어점수</span><span class="o">=&gt;</span>
+<span class="mi">87</span>
+<span class="n">수학점수</span><span class="o">=&gt;</span>
+<span class="mi">99</span>
+<span class="nl">총점:</span> <span class="mi">263</span>
+<span class="nl">평균:</span> <span class="mf">87.66666666666667</span> 
+</code></pre></div></div>
+
+<h2 id="3개의-숫자를-입력받아-두-번째로-큰-수-출력">3개의 숫자를 입력받아 두 번째로 큰 수 출력</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MiddleNum</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="nc">Double</span><span class="o">[]</span> <span class="n">num</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Double</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span>
+
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Insert Number!!"</span><span class="o">);</span>
+			<span class="n">num</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextDouble</span><span class="o">();</span>
+		<span class="o">}</span>
+
+		<span class="nc">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">num</span><span class="o">);</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Middle Number is "</span> <span class="o">+</span> <span class="n">num</span><span class="o">[</span><span class="mi">1</span><span class="o">]);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="정리">정리</h2>
+
+<ol>
+  <li>JDK 설치
+    <ul>
+      <li>JAVA_HOME</li>
+      <li>path 에 추가 %JAVA_HOME%\bin</li>
+    </ul>
+  </li>
+  <li>
+    <p>IDE (통합개발환경) -&gt; eclipse</p>
+  </li>
+  <li>
+    <p>변수 : 값 하나를 메모리 저장하기 위해 메모리 이름
+ 	+
+ 데이터 타입 (자료형)
+ (1) 기본형
+     - 논리형 : boolean
+     - 문자형 : char
+     - 정수형 : int / long
+     - 실수형 : double</p>
+
+    <p>(2) 참조형 : 클래스, 배열
+     new 연산자 이용해서 heap에 메모리 할당</p>
+
+    <p>[#] String (참조형이지만 별도로 구분)</p>
+  </li>
+</ol>
+
+<h3 id="오라클-documentation">오라클 Documentation</h3>
+<ul>
+  <li>오라클 홈페이지에서 다운로드</li>
+  <li>doc &gt; api &gt; index.html</li>
+</ul>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

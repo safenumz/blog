@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MongoDB] MongoDB Cluster 구축 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MongoDB] MongoDB Cluster 구축" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="MongoDB 설치 3.6.4 버전 설치" />
+<meta property="og:description" content="MongoDB 설치 3.6.4 버전 설치" />
+<link rel="canonical" href="https://safenumz.github.io/blog/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-28T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MongoDB] MongoDB Cluster 구축" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-28T00:00:00-05:00","datePublished":"2019-05-28T00:00:00-05:00","description":"MongoDB 설치 3.6.4 버전 설치","headline":"[MongoDB] MongoDB Cluster 구축","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html"},"url":"https://safenumz.github.io/blog/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MongoDB] MongoDB Cluster 구축</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-28T00:00:00-05:00" itemprop="datePublished">
+        May 28, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Architecture">Architecture</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="mongodb-설치">MongoDB 설치</h1>
+<ul>
+  <li>3.6.4 버전 설치</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="o">&gt;</span> <span class="k">show</span> <span class="n">collections</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sarams</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'홍길동'</span><span class="p">,</span> <span class="n">age</span><span class="p">:</span> <span class="mi">33</span><span class="p">})</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sarams</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'홍길자'</span><span class="p">,</span> <span class="n">hobby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'축구'</span><span class="p">]})</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sarams</span><span class="p">.</span><span class="n">find</span><span class="p">();</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">sarams</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="s1">'_id'</span><span class="p">:</span> <span class="mi">11</span><span class="p">})</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'송승헌'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">33</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'A'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'송승남'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">23</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'C'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'김남송'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'C'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'김남길'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">27</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'A'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'여진구'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'B'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'진구'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">29</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'A'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'조인성'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">39</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'B'</span> <span class="p">}</span>  <span class="p">)</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span> <span class="p">{</span> <span class="n">name</span> <span class="p">:</span> <span class="s1">'소지섭'</span><span class="p">,</span> <span class="n">age</span> <span class="p">:</span> <span class="mi">33</span><span class="p">,</span> <span class="n">grade</span><span class="p">:</span><span class="s1">'A'</span> <span class="p">}</span>  <span class="p">)</span>
+
+<span class="c1">-- 33번만 검색</span>
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">find</span><span class="p">({</span><span class="n">age</span><span class="p">:</span> <span class="mi">33</span><span class="p">})</span>
+
+<span class="c1">-- 나이가 25세 이상인 명단 출력</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">find</span><span class="p">({</span><span class="n">age</span><span class="p">:{</span><span class="err">$</span><span class="n">gte</span><span class="p">:</span> <span class="mi">25</span> <span class="p">}})</span>
+
+<span class="c1">-- 나이가 25세 이상 33세 이하 명단 출력</span>
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">find</span><span class="p">({</span><span class="n">age</span><span class="p">:{</span><span class="err">$</span><span class="n">gte</span><span class="p">:</span> <span class="mi">25</span><span class="p">}}</span> <span class="err">$</span><span class="k">and</span> <span class="p">{</span><span class="n">age</span><span class="p">:{</span><span class="err">$</span><span class="n">lte</span> <span class="p">:</span> <span class="mi">33</span><span class="p">}})</span>
+
+<span class="n">db</span><span class="p">.</span><span class="n">members</span><span class="p">.</span><span class="n">find</span><span class="p">({</span><span class="n">age</span><span class="p">:{</span><span class="err">$</span><span class="n">gte</span><span class="p">:</span> <span class="mi">25</span><span class="p">,</span> <span class="err">$</span><span class="n">lte</span><span class="p">:</span> <span class="mi">33</span> <span class="p">}})</span>
+
+</code></pre></div></div>
+
+<h1 id="master-node">Master Node</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mongod <span class="nt">--dbpath</span> /data/data1 <span class="nt">--master</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+
+<span class="err">$</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">27017</span>
+
+<span class="err">$</span> <span class="n">db</span><span class="p">.</span><span class="n">printReplicationinfo</span><span class="p">()</span>
+
+<span class="err">$</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'홍길동'</span><span class="p">})</span>
+<span class="err">$</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'홍길자'</span><span class="p">})</span>
+
+<span class="c1">-- 오름차순 정렬</span>
+<span class="err">$</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="n">find</span><span class="p">().</span><span class="n">sort</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+
+<span class="c1">-- 내림차순 정렬</span>
+<span class="err">$</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="n">find</span><span class="p">().</span><span class="n">sort</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+
+
+</code></pre></div></div>
+
+<h1 id="slave-node1">Slave Node1</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">mongod</span> <span class="c1">--dbpath /data/data2 --slave --source localhost:27017 --port 20000</span>
+
+<span class="err">$</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">20000</span>
+
+ <span class="c1">-- 슬래이브에 관한 정보 보여줌</span>
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">printSlaveReplicationinfo</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">use</span> <span class="n">persondb</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">psersons</span><span class="p">.</span><span class="n">setSlaveOk</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="n">find</span><span class="p">()</span>
+
+<span class="c1">-- 에러 라이팅 불가, 라이팅은 마스터만 불가</span>
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'홍홍이'</span><span class="p">})</span>
+</code></pre></div></div>
+<p>sudo iptables -I INPUT -p tcp –dport 80 -j ACCEPT</p>
+
+<p>mongo -u <유저명 developer=""> -p <패스워드 developer=""> &lt;public_ip:&gt;:27017/<데이터베이스명 mongo=""></데이터베이스명></패스워드></유저명></p>
+
+<h1 id="slave-node2">Slave Node2</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">mongod</span> <span class="c1">--dbpath /data/data3 --slave --source localhost:27017 --port 30000</span>
+
+<span class="err">$</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">30000</span>
+
+ <span class="c1">-- 슬래이브에 관한 정보 보여줌</span>
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">printSlaveReplicationinfo</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">use</span> <span class="n">persondb</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">psersons</span><span class="p">.</span><span class="n">setSlaveOk</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="n">find</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persondb</span><span class="p">.</span><span class="k">insert</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="s1">'홍홍이'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">use</span> <span class="k">admin</span>
+
+<span class="n">db</span><span class="p">.</span><span class="k">createUser</span><span class="p">({</span>
+  <span class="k">user</span><span class="p">:</span> <span class="nv">"dbadmin"</span><span class="p">,</span>  
+  <span class="n">pwd</span><span class="p">:</span> <span class="nv">"password"</span><span class="p">,</span>  
+  <span class="n">roles</span><span class="p">:</span> <span class="p">[</span>          
+    <span class="p">{</span>
+      <span class="k">role</span><span class="p">:</span> <span class="nv">"root"</span><span class="p">,</span>
+      <span class="n">db</span><span class="p">:</span> <span class="nv">"admin"</span>   
+    <span class="p">}</span>
+  <span class="p">]}</span>
+<span class="p">)</span>
+
+<span class="n">db</span><span class="p">.</span><span class="k">createUser</span><span class="p">({</span>
+  <span class="k">user</span><span class="p">:</span> <span class="nv">"rhostem"</span><span class="p">,</span>
+  <span class="n">pwd</span><span class="p">:</span> <span class="nv">"password"</span><span class="p">,</span>
+  <span class="n">roles</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="k">role</span><span class="p">:</span> <span class="nv">"readWrite"</span><span class="p">,</span>
+      <span class="n">db</span><span class="p">:</span> <span class="nv">"test"</span>         
+    <span class="p">}</span>
+  <span class="p">]}</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<h1 id="1번">1번</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">mongod</span> <span class="c1">--dbpath c:\data\work\data1\ --port 10000 -replSet bokjeSet</span>
+
+<span class="o">&gt;</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">10000</span>
+
+<span class="o">&gt;</span> <span class="n">config</span> <span class="o">=</span> <span class="p">{</span> <span class="n">_id</span><span class="p">:</span> <span class="s1">'bokjeSet'</span><span class="p">,</span><span class="n">members</span><span class="p">:[</span>
+  <span class="p">{</span><span class="n">_id</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="k">host</span><span class="p">:</span><span class="s1">'localhost:10000'</span><span class="p">},</span>
+  <span class="p">{</span><span class="n">_id</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="k">host</span><span class="p">:</span><span class="s1">'localhost:20000'</span><span class="p">},</span>
+  <span class="p">{</span><span class="n">_id</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span> <span class="k">host</span><span class="p">:</span><span class="s1">'localhost:30000'</span><span class="p">}]}</span>
+
+<span class="o">&gt;</span> <span class="n">rs</span><span class="p">.</span><span class="n">initiate</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+<span class="c1">-- 1번을 마스터로 설정</span>
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">isMaster</span><span class="p">()</span>
+
+<span class="o">&gt;</span> <span class="n">use</span> <span class="n">persondb</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persondb</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'kim'</span><span class="p">})</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persondb</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">name</span><span class="p">:</span> <span class="s1">'bae'</span><span class="p">})</span>
+
+<span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">persondb</span><span class="p">.</span><span class="n">find</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h1 id="2번">2번</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">mongod</span> <span class="c1">--dbpath c:\data\work\data2\ --port 20000 -replSet bokjeSet</span>
+
+<span class="o">&gt;</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">20000</span>
+
+
+<span class="o">&gt;</span> <span class="n">use</span> <span class="n">persondb</span>
+
+<span class="o">&gt;</span> <span class="n">rs</span><span class="p">.</span><span class="n">slaveOk</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h1 id="3번">3번</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">mongod</span> <span class="c1">--dbpath c:\data\work\data3\ --port 30000 -replSet bokjeSet</span>
+
+<span class="o">&gt;</span> <span class="n">mongo</span> <span class="n">localhost</span><span class="p">:</span><span class="mi">30000</span>
+
+<span class="o">&gt;</span> <span class="n">use</span> <span class="n">persondb</span>
+
+<span class="o">&gt;</span> <span class="n">rs</span><span class="p">.</span><span class="n">slaveOk</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">netstat</span>
+<span class="p">:</span> <span class="err">실행중인</span> <span class="n">port</span> <span class="err">찾기</span>
+
+
+<span class="n">netstat</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">o</span>
+<span class="p">:</span> <span class="err">실행중인</span> <span class="n">port</span> <span class="err">표시</span><span class="p">,</span> <span class="err">프로세스</span><span class="n">id</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="err">표시</span>
+
+
+<span class="n">taskkill</span> <span class="o">/</span><span class="n">f</span> <span class="o">/</span><span class="n">pid</span> <span class="mi">1234</span>
+<span class="p">:</span> <span class="mi">1234</span> <span class="err">프로세스</span><span class="n">id</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="n">kill</span><span class="err">하기</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> mongod <span class="nt">--shardsvr</span> <span class="nt">--dbpath</span> c:<span class="se">\d</span>ata<span class="se">\w</span>ork<span class="se">\s</span>h1 <span class="nt">--port</span> 10000
+
+
+<span class="o">&gt;</span> mongod <span class="nt">--shardsvr</span> <span class="nt">--dbpath</span> c:<span class="se">\d</span>ata<span class="se">\w</span>ork<span class="se">\s</span>h2 <span class="nt">--port</span> 20000
+
+<span class="o">&gt;</span> mongod <span class="nt">--shardsvr</span> <span class="nt">--dbpath</span> c:<span class="se">\d</span>ata<span class="se">\w</span>ork<span class="se">\s</span>h3 <span class="nt">--port</span> 30000
+
+<span class="o">&gt;</span> mongod <span class="nt">--configsvr</span> <span class="nt">--dbpath</span> c:<span class="se">\d</span>ata<span class="se">\w</span>ork<span class="se">\c</span><span class="nb">fg</span> <span class="nt">--port</span> 40000
+
+5번째
+<span class="o">&gt;</span> mongos <span class="nt">--configdb</span> localhost:40000 <span class="nt">--chunkSize</span> 1
+
+6번째 창
+<span class="o">&gt;</span> mongos
+mongos&gt; use admin
+mongos&gt; db
+mongos&gt; db.runCommand<span class="o">(</span> <span class="o">{</span>addshard: <span class="s1">'localhost:10000'</span><span class="o">})</span>
+mongos&gt; db.runCommand<span class="o">(</span> <span class="o">{</span>addshard: <span class="s1">'localhost:20000'</span><span class="o">})</span>
+mongos&gt; db.runCommand<span class="o">(</span> <span class="o">{</span>addshard: <span class="s1">'localhost:30000'</span><span class="o">})</span>
+
+mongos&gt; use persondb
+mongos&gt; db.persons.insert<span class="o">({</span>name: <span class="s1">'Kim'</span><span class="o">})</span>
+monbos&gt; db.persons.insert<span class="o">({</span>name: <span class="s1">'Park'</span><span class="o">})</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">7</span><span class="err">번째</span> <span class="err">창</span>
+<span class="n">mongos</span><span class="o">&gt;</span> <span class="n">mongo</span>
+<span class="n">mongos</span><span class="o">&gt;</span> <span class="n">use</span> <span class="k">admin</span>
+<span class="n">mongos</span><span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">runCommand</span><span class="p">({</span><span class="n">enableSharding</span><span class="p">:</span> <span class="s1">'persondb'</span><span class="p">})</span>
+<span class="n">mongos</span><span class="o">&gt;</span> <span class="n">db</span><span class="p">.</span><span class="n">runCommand</span><span class="p">({</span><span class="n">shardCollection</span><span class="p">:</span><span class="s1">'persondb.persons'</span><span class="p">.</span><span class="k">key</span><span class="p">:{</span><span class="n">_id</span><span class="p">:</span><span class="mi">1</span><span class="p">}})</span>
+<span class="n">mongos</span><span class="o">&gt;</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">6</span><span class="err">번째</span> <span class="err">창</span>
+<span class="n">mongos</span><span class="o">&gt;</span> <span class="k">for</span> <span class="p">(</span><span class="n">var</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span><span class="n">db</span><span class="p">.</span><span class="n">persons</span><span class="p">.</span><span class="k">insert</span><span class="p">({</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">});}</span>
+</code></pre></div></div>
+
+<h1 id="mongodb-실행">mongodb 실행</h1>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>service mongod start
+<span class="nv">$ </span>mongo
+</code></pre></div></div>
+
+<h1 id="1-mongodb-root-계정-설정">1. mongodb root 계정 설정</h1>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> show databases<span class="p">;</span>
+
+<span class="o">&gt;</span> use admin<span class="p">;</span>
+
+<span class="o">&gt;</span> db<span class="p">;</span>
+</code></pre></div></div>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> db.createUser<span class="o">({</span>user: <span class="s2">"아이디"</span>, <span class="nb">pwd</span>: <span class="s2">"비밀번호"</span>, roles:[<span class="s2">"root"</span><span class="o">]})</span><span class="p">;</span>
+<span class="o">&gt;</span> <span class="nb">exit</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h1 id="2mongodb-config-변경">2.mongodb config 변경</h1>
+
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">sudo </span>vi /etc/mongod.conf
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># mongod.conf
+# ...
+
+net:
+  port: 27017
+  bindIp: 0.0.0.0
+
+# ...
+
+security:
+  authorization: 'enabled'
+
+# ...
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; sudo service mongod restart
+</code></pre></div></div>
+
+<h1 id="3-root-계정으로-접속">3. root 계정으로 접속</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; mongo
+
+&gt; show databases;
+
+&gt;exit
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; mongo -u 아이디 -p 비밀번호
+&gt; show databases;
+</code></pre></div></div>
+
+<h1 id="4-database-user-생성">4. database, user 생성</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; use chatbot_service;
+
+&gt; db;
+
+&gt; db.createUser({user: "developer", pwd:"developer", roles:["readWrite"]});
+</code></pre></div></div>
+
+<h1 id="6-외부-접속">6. 외부 접속</h1>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&gt; mongo -u developer -p developer public_ip:27017/chatbot_service
+&gt; db;
+</code></pre></div></div>
+
+<h1 id="원격-접속-설정">원격 접속 설정</h1>
+<h2 id="사용자-생성">사용자 생성</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use admin <span class="c"># admin 데이터베이스 선택</span>
+
+db.createUser<span class="o">({</span>
+  user: <span class="s2">"dbadmin"</span>,  <span class="c"># 계정 이름</span>
+  <span class="nb">pwd</span>: <span class="s2">"password"</span>,  <span class="c"># 비밀번호</span>
+  roles: <span class="o">[</span>          <span class="c"># 사용자에게 주어진 권한 목록. 여러 데이터베이스에 대한 권한을 할당할 수 있다.</span>
+    <span class="o">{</span>
+      role: <span class="s2">"root"</span>, <span class="c"># built-in 권한인 root. 문자 그대로 모든 데이터베이스를 관리할 수 있다.</span>
+      db: <span class="s2">"admin"</span>   <span class="c"># 어떤 데이터베이스에 대한 권한인지 명시</span>
+    <span class="o">}</span>
+  <span class="o">]}</span>
+<span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>db.createUser<span class="o">({</span>
+  user: <span class="s2">"rhostem"</span>,
+  <span class="nb">pwd</span>: <span class="s2">"password"</span>,
+  roles: <span class="o">[</span>
+    <span class="o">{</span>
+      role: <span class="s2">"readWrite"</span>, <span class="c"># 읽기, 쓰기 권한</span>
+      db: <span class="s2">"test"</span>         <span class="c"># 위의 권한을 부여할 데이터베이스로 test를 지정</span>
+    <span class="o">}</span>
+  <span class="o">]}</span>
+<span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="mongodconf-파일-설정">mongod.conf 파일 설정</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ service mongod status
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>security:
+  authorization: enabled
+
+net:
+port: 27017
+bindIp: 0.0.0.0
+</code></pre></div></div>
+
+<h2 id="tcp-포트-개방">TCP 포트 개방</h2>
+<ul>
+  <li>기본 포트 27107</li>
+</ul>
+
+<h2 id="접속-명령어">접속 명령어</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mongo -u dbadmin -p --authenticationDatabase admin
+
+$ mongo -u dbadmin -p --host &lt;아이피 또는 도메인&gt; --authenticationDatabase admin
+</code></pre></div></div>
+
+<h1 id="기타설정">기타설정</h1>
+<h2 id="시스템-재시작-시-mongodb를-자동으로-실행하도록-설정">시스템 재시작 시 MongoDB를 자동으로 실행하도록 설정</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ crontab -e
+</code></pre></div></div>
+
+<p>맨 아래쪽에 재부팅 시점에 실행할 명령어를 추가한다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>@reboot sudo service mongod start
+</code></pre></div></div>
+
+<h2 id="데이터베이스-접속을-위한-쉘-스크립트-작성">데이터베이스 접속을 위한 쉘 스크립트 작성</h2>
+<ul>
+  <li>git 저장소에서 작업하고 있다면 쉘 스크립트에 비밀번호가 노출되면 안 되므로 별도에 파일에 저장해서 관리하는 편이 보안상 좋다. 예를들어 비밀번호를 .dbpasswd 파일에 저장했다면 해당 파일은 .gitignore 파일에 등록하고 쉘 스크립트를 아래와 같이 작성한다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># connect-db.sh</span>
+
+<span class="nv">passwd</span><span class="o">=</span><span class="si">$(</span>&lt;.dbpasswd<span class="si">)</span> <span class="c"># 변수 passwd에 .dbpasswd 파일의 내용을 할당.</span>
+mongo <span class="nt">-u</span> rhostem <span class="nt">-p</span> <span class="nv">$passwd</span> <span class="nt">--host</span> db.host.name <span class="nt">--authenticationDatabase</span> admin
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

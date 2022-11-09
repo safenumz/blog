@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>데이터 파이프라인 구축 - 데이터 수집 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="데이터 파이프라인 구축 - 데이터 수집" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="1. 데이터 파이프라인의 이해 컴퓨터 과학에서 파이프라인(영어: pipeline)은 한 데이터 처리 단계의 출력이 다음 단계의 입력으로 이어지는 형태로 연결된 구조를 가리킴" />
+<meta property="og:description" content="1. 데이터 파이프라인의 이해 컴퓨터 과학에서 파이프라인(영어: pipeline)은 한 데이터 처리 단계의 출력이 다음 단계의 입력으로 이어지는 형태로 연결된 구조를 가리킴" />
+<link rel="canonical" href="https://safenumz.github.io/blog/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="데이터 파이프라인 구축 - 데이터 수집" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-07-01T00:00:00-05:00","datePublished":"2019-07-01T00:00:00-05:00","description":"1. 데이터 파이프라인의 이해 컴퓨터 과학에서 파이프라인(영어: pipeline)은 한 데이터 처리 단계의 출력이 다음 단계의 입력으로 이어지는 형태로 연결된 구조를 가리킴","headline":"데이터 파이프라인 구축 - 데이터 수집","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html"},"url":"https://safenumz.github.io/blog/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">데이터 파이프라인 구축 - 데이터 수집</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-07-01T00:00:00-05:00" itemprop="datePublished">
+        Jul 1, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Architecture">Architecture</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="1-데이터-파이프라인의-이해">1. 데이터 파이프라인의 이해</h1>
+<ul>
+  <li>컴퓨터 과학에서 파이프라인(영어: pipeline)은 한 데이터 처리 단계의 출력이 다음 단계의 입력으로 이어지는 형태로 연결된 구조를 가리킴</li>
+</ul>
+
+<h2 id="데이터-파이프라인-구성목적">데이터 파이프라인 구성목적</h2>
+<ul>
+  <li>각 팀의 데이터적 요구사항(Use Case) 에 대한 빠른 대응 지속적이고 에러가 없어야 한다.</li>
+  <li>시스템적으로 발생하는 문제에 대해서 유연한 Scability 해야 한다.</li>
+  <li>Scale up과 Scale Down이 자유로워야 한다.</li>
+  <li>이벤트성 데이터 부하에도 처리가 가능해야 한다.
+  ✓ 마케팅팀 이벤트
+  ✓ 푸시 발송
+  ✓ 서비스 오픈</li>
+  <li>데이터 쌓이는 공간에 문제가 없어야 한다.</li>
+  <li>수집데이터에 대한 Format에 대해서 유연성 있게 처리 해주어야 한다.</li>
+</ul>
+
+<h2 id="data-pipeline-architecture">Data Pipeline Architecture</h2>
+
+<p><img src="https://8eyiqq.bn.files.1drv.com/y4m4O_ImOqbVm8W-EEmbIcnqx9Rhs32wbK-7QN34YDMLHFeat0kPW8LR7l8LcesO-jJ16wW7JYsl4ahcyLSU7rIYCCFvppxy-9M00x7tO_HBtWQQSvFVsEzWOHn9O7zpCTVWuW_wIpqGVwv1OhnyVSH5OEHjadaM4IijAeunDd3NwKOmITUa9bq80ru8ePCS-gyuUijdQPh03Q0cT0OeMm8Ww?width=2746&amp;height=1198&amp;cropmode=none" /></p>
+
+<h2 id="data-lambda-architecture">Data Lambda Architecture</h2>
+
+<p><img src="https://8eyjqq.bn.files.1drv.com/y4m0JMYZmRoNT1ch43oPhw315AI5TEukOPITkndQQsq0aHNCOzo8hEnK4S7EB2VC9giTzKTaDG2mIdZ5yXMp7yb2wmQfeXXbk-4_esM_EFH8Go9V0cLwno4iwWkk4imlJeKJ_3n-XhwFdytDt--nHBc9QI3T9qzMacXZD_wCOzb_nB8Wi-6m8sPJGOPX8Tr3g39k3piVCw7DRTDRQZw39_zfg?width=2808&amp;height=1364&amp;cropmode=none" /></p>
+
+<h1 id="2-aws-서비스-이해">2. AWS 서비스 이해</h1>
+<h2 id="ec2amazon-elastic-compute-cloud">ec2(Amazon Elastic Compute Cloud)</h2>
+<ul>
+  <li>인스턴스: 가상 컴퓨팅 환경</li>
+  <li>Amazon 머신 이미지(AMI): 서버에 필요한 운영체제와 여러 소프트웨어들이 적절히 구성된 상태로 제공되는 템플릿으로 인스턴스를 쉽게 만들 수 있습니다.</li>
+  <li>인스턴스 유형: 인스턴스를 위한 CPU, 메모리, 스토리지, 네트워킹 용량의 여러 가지 구성 제공</li>
+  <li>키 쌍을 사용해 인스턴스 로그인 정보 보호(AWS는 공용키를 저장하고 사용자는 개인 키를 안전한 장소에 보관하는 방식)</li>
+  <li>인스턴스 스토어 볼륨: 임시 데이터를 저장하는 스토리지 볼륨으로 인스턴스 종료 시 삭제됨</li>
+  <li>Amazon Elastic Block Store(Amazon EBS), 즉 Amazon EBS 볼륨을 사용해 영구 스토리지 볼륨에 데이터 저장</li>
+  <li>인스턴스와 Amazon EBS 볼륨 등의 리소스를 다른 물리적 장소에서 액세스할 수 있는 리전 및 가용 영역</li>
+  <li>보안 그룹을 사용해 인스턴스에 연결할 수 있는 프로토콜, 포트, 소스 IP 범위를 지정하는 방화벽 기능</li>
+  <li>탄력적 IP 주소(EIP): 동적 클라우드 컴퓨팅을 위한 고정 IPv4 주소</li>
+  <li>태그: 사용자가 생성하여 Amazon EC2 리소스에 할당할 수 있는 메타데이터</li>
+  <li>AWS 클라우드에스는 논리적으로 격리되어 있지만, 원하실때 마다 고객님의 네트워크와 간편히 연결할 수 있는 가상 네트워크, Virtual Private Clouds(VPC)</li>
+</ul>
+
+<h2 id="s3">S3</h2>
+<ul>
+  <li>버킷 : Amazon S3에 저장된 객체에 대한 컨테이너입니다. 모든 객체는 어떤 버킷에 포함됩니다. 쉽게 이해해서 윈도우의 폴더라고 이해를 하면된다.</li>
+  <li>객체 : Amazon S3에 저장되는 기본 개체입니다. 객체는 객체 데이터와 메타데이터로 구성됩니다</li>
+  <li>키: 버킷내 객체의고유한식별자입니다.버킷내 모든 객체는 정확히 하나의 키를 갖습니다. 버킷, 키 및 버전 ID의 조합이 각 객체를 고유하게 식별하기 때문에 Amazon S3는 “버킷 + 키 + 버전”과 객체 자체 사이의 기본 데이터 맵으로 간주할 수 있습니다.</li>
+</ul>
+
+<h2 id="rdsamazon-relational-database-service">RDS(Amazon Relational Database Service)</h2>
+<ul>
+  <li>클라우드에서 관계형 데이터베이스를 더욱 간편하게 설정, 운영 및 확장할 수 있음.</li>
+  <li>하드웨어 프로비저닝, 데이터베이스 설정, 패치 및 백업과 같은 시간 소모적인 관리 작업을 자동화하면서 비용 효율적이고 크기 조정 가능한 용량을 제공합니다</li>
+  <li>지원 데이터베이스 엔진
+    <ul>
+      <li>Oracle</li>
+      <li>Mysql</li>
+      <li>Microsoft SQL Server</li>
+      <li>PostgreSQL</li>
+      <li>MariaDB</li>
+      <li>Aurora</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="api-gateway">API Gateway</h2>
+<ul>
+  <li>어떤 규모에서든 개발자가 API를 생성, 게시, 유지 관리, 모니터링 및 보호할 수 있게 해주는 AWS 서비 스</li>
+  <li>모바일 및 웹 애플리케이션에서 AWS 서비스에 액세스할 수 있는 일관된 RESTFul 애플리케이션 프로그 래밍 인터페이스(API)를 제공합니다.</li>
+  <li>사용자는 RESTful API를 생성, 구성, 호스팅하여 애플리케이션의 AWS 클라우드 액세스를 지원합니다.</li>
+</ul>
+
+<h2 id="cloudwatch">CloudWatch</h2>
+<ul>
+  <li>Amazon Web Services(AWS) 리소스와 AWS에서 실시간으로 실행 중인 애플리케이션을 모니터링</li>
+  <li>리소스 및 애플리케이션에 대해 측정할 수 있는 변수인 지표를 수집하고 추적할 수 있습니다</li>
+  <li>경보는 알림을 보내거나 정의한 규칙을 기준으로 모니터링하는 리소스를 자동으로 변경합니다</li>
+</ul>
+
+<h1 id="3-kafka-install-on-ec2">3. Kafka install on EC2</h1>
+<h2 id="kafka-server-설치">Kafka Server 설치</h2>
+
+<h3 id="jdk-설치">JDK 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java –version
+<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> java-1.8.0-openjdk-devel.x86_64
+<span class="nv">$ </span><span class="nb">sudo</span> /usr/sbin/alternatives <span class="nt">--config</span> java
+<span class="nv">$ </span><span class="nb">sudo</span> /usr/sbin/alternatives <span class="nt">--config</span> javac
+<span class="nv">$ </span><span class="nb">sudo </span>yum remove java-1.7.0-openjdk <span class="nt">-y</span>
+</code></pre></div></div>
+
+<h3 id="kafka-다운">kafka 다운</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># kafka 다운</span>
+<span class="nv">$ </span>wget http://mirror.apache-kr.org/kafka/2.3.0/kafka_2.12-2.3.0.tgz
+
+<span class="nv">$ </span><span class="nb">tar </span>xvf kafka_2.12-2.3.0.tgz
+
+<span class="nv">$ </span><span class="nb">ln </span>kafka_2.12-2.3.0 kafka
+</code></pre></div></div>
+
+<h3 id="start-zookeeper">start zookeeper</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>kafka
+<span class="nv">$ </span>vi conf/server.properties
+<span class="nv">$ listeners</span><span class="o">=</span>PLAINTEXT://192.1.1.1:9092
+
+<span class="nv">$ </span>./bin/zookeeper-server-start.sh config/zookeeper.properties &amp;
+</code></pre></div></div>
+
+<h3 id="start-kafka-broker">start kafka broker</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./bin/kafka-server-start.sh config/server.properties &amp;
+
+<span class="c"># kafka 서버 가동 확인</span>
+<span class="nv">$ </span><span class="nb">sudo </span>netstat <span class="nt">-anp</span> | egrep <span class="s2">"9092|2181"</span>
+</code></pre></div></div>
+
+<h3 id="create-topic">create topic</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/kafka-topics.sh <span class="nt">--create</span> <span class="nt">--bootstrap-server</span> <span class="o">[</span>server-ip]:9092 <span class="nt">--replication-factor</span> 1 <span class="nt">--partitions</span> 1 <span class="nt">--topic</span> twitter &amp;
+</code></pre></div></div>
+
+<h3 id="check-topic--topic-생성확인">check topic : Topic 생성확인</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/kafka-topics.sh <span class="nt">--list</span> <span class="nt">--zookeeper</span> localhost:2181 &amp;
+</code></pre></div></div>
+
+<h3 id="send-some-message">Send some message</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/kafka-console-producer.sh <span class="nt">--broker-list</span> <span class="o">[</span>server-ip]:9092 <span class="nt">--topic</span> twitter
+</code></pre></div></div>
+
+<h3 id="터미널-하나-더-생성-후-접속">터미널 하나 더 생성 후 접속</h3>
+
+<h3 id="start-consumer">start consumer</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./kafka/bin/kafka-console-consumer.sh <span class="nt">--bootstrap-server</span> <span class="o">[</span>server-ip]:9092 <span class="nt">--topic</span> twitter <span class="nt">--from-beginning</span>
+</code></pre></div></div>
+
+<h3 id="참조-change-topic-retention-bytes">[참조] change topic retention bytes</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./bin/kafka-configs.sh <span class="nt">--zookeeper</span> localhost:2181 <span class="nt">--entity-type</span> topics <span class="nt">--entity-name</span> movie <span class="nt">--alter</span> <span class="nt">--add-</span> config retention.bytes<span class="o">=</span>100000000
+</code></pre></div></div>
+
+<h2 id="kafka-producer-설치">kafka Producer 설치</h2>
+<h3 id="jdk-설치-1">JDK 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$java</span> –version
+
+<span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install</span> <span class="nt">-y</span> java-1.8.0-openjdk-devel.x86_64 <span class="nv">$ </span><span class="nb">sudo</span> /usr/sbin/alternatives <span class="nt">--config</span> java
+<span class="nv">$ </span><span class="nb">sudo</span> /usr/sbin/alternatives <span class="nt">--config</span> javac
+<span class="nv">$ </span><span class="nb">sudo </span>yum remove java-1.7.0-openjdk <span class="nt">-y</span>
+</code></pre></div></div>
+
+<h3 id="logstash-설치">Logstash 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rpm <span class="nt">--import</span> https://artifacts.elastic.co/GPG-KEY-elasticsearch
+<span class="nv">$ </span><span class="nb">cd</span> /etc/yum.repos.d/
+
+<span class="nv">$ </span><span class="nb">sudo </span>vi logstash.repo
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># logstash.repo</span>
+<span class="o">[</span>logstash-7.x]
+<span class="nv">name</span><span class="o">=</span>Elastic repository <span class="k">for </span>7.x packages
+<span class="nv">baseurl</span><span class="o">=</span>https://artifacts.elastic.co/packages/7.x/yum
+<span class="nv">gpgcheck</span><span class="o">=</span>1
+<span class="nv">gpgkey</span><span class="o">=</span>https://artifacts.elastic.co/GPG-KEY-elasticsearch
+<span class="nv">enabled</span><span class="o">=</span>1
+<span class="nv">autorefresh</span><span class="o">=</span>1
+<span class="nb">type</span><span class="o">=</span>rpm-md
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>yum <span class="nb">install </span>logstash
+
+<span class="nv">$ </span>logstash <span class="nt">--version</span>
+
+<span class="nv">$ </span>vi producer_test.conf
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># producer_test.conf</span>
+input <span class="o">{</span>
+	twitter <span class="o">{</span>
+		consumer_key <span class="o">=&gt;</span> <span class="s2">"KoxofBvIwdM9xxxxx"</span>
+		consumer_secret <span class="o">=&gt;</span> <span class="s2">"kKBOnftLZ6htxvxxxx"</span>
+		oauth_token <span class="o">=&gt;</span> <span class="s2">"81761998-2Vu19ZxxFwExxxxx"</span>
+		oauth_token_secret <span class="o">=&gt;</span> <span class="s2">"0E6eh4X0eum4NU81LXIKn6xxxx"</span>
+		keywords <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">"news"</span>,<span class="s2">"game"</span>,<span class="s2">"data"</span>,<span class="s2">"아이돌"</span>,<span class="s2">"부동산"</span><span class="o">]</span>
+		full_tweet <span class="o">=&gt;</span> <span class="nb">true</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+output <span class="o">{</span>
+	stdout <span class="o">{</span>
+		codec <span class="o">=&gt;</span> rubydebug
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>logstash <span class="nt">-f</span> producer_test.conf
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># producer_test.conf</span>
+input <span class="o">{</span>
+	<span class="o">{</span>
+		cotwitternsumer_key <span class="o">=&gt;</span> <span class="s2">"KoxofBvIwdMxxxx"</span> consumer_secret <span class="o">=&gt;</span> <span class="s2">"kKBOnftLZ6htxvxxxx"</span>
+		oauth_token <span class="o">=&gt;</span> <span class="s2">"81761998-2Vu19Zxxxxx"</span> oauth_token_secret <span class="o">=&gt;</span> <span class="s2">"0E6eh4X0eum4NU81Lxxxxx"</span> keywords <span class="o">=&gt;</span> <span class="o">[</span><span class="s2">"news"</span>,<span class="s2">"game"</span>,<span class="s2">"data"</span>,<span class="s2">"아이돌"</span>,<span class="s2">"부동산"</span><span class="o">]</span> full_tweet <span class="o">=&gt;</span> <span class="nb">true</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+output <span class="o">{</span>
+	kafka <span class="o">{</span>
+		topic_id <span class="o">=&gt;</span> <span class="s2">"twitter"</span>
+		bootstrap_servers <span class="o">=&gt;</span> <span class="s2">"[ec2의공인ip]:9092"</span> acks <span class="o">=&gt;</span> <span class="s2">"1"</span>
+		codec <span class="o">=&gt;</span> json_lines
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>logstash <span class="nt">-f</span> producer.conf
+
+<span class="c"># Kafka 서버의 Start a consumer : [개인계정]-server ec2</span>
+<span class="nv">$ </span>kafka/bin/kafka-console-consumer.sh <span class="nt">--bootstrap-server</span> localhost:9092 <span class="nt">--topic</span> twitter <span class="nt">--from-beginning</span>
+</code></pre></div></div>
+
+<h2 id="kafka-consumer-설치">kafka consumer 설치</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Logstash 설치</span>
+<span class="nv">$ </span>rpm <span class="nt">--import</span> https://artifacts.elastic.co/GPG-KEY-elasticsearch
+<span class="nv">$ </span><span class="nb">cd</span> /etc/yum.repos.d/
+<span class="nv">$ </span><span class="nb">sudo </span>vi logstash.repo
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># logstash.repo</span>
+<span class="o">[</span>logstash-7.x]
+<span class="nv">name</span><span class="o">=</span>Elastic repository <span class="k">for </span>7.x packages
+<span class="nv">baseurl</span><span class="o">=</span>https://artifacts.elastic.co/packages/7.x/yum
+<span class="nv">gpgcheck</span><span class="o">=</span>1 <span class="nv">gpgkey</span><span class="o">=</span>https://artifacts.elastic.co/GPG-KEY-elasticsearch
+<span class="nv">enabled</span><span class="o">=</span>1
+<span class="nv">autorefresh</span><span class="o">=</span>1
+<span class="nb">type</span><span class="o">=</span>rpm-md
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>yum <span class="nb">install </span>logstash
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>vi consumer.conf
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># consumer.conf</span>
+input <span class="o">{</span>
+	kafka <span class="o">{</span>
+		bootstrap_servers <span class="o">=&gt;</span> <span class="s2">"[kafka-server]:9092"</span> codec <span class="o">=&gt;</span> json_lines
+		consumer_threads <span class="o">=&gt;</span> 1
+		group_id <span class="o">=&gt;</span> <span class="s2">"twitter_log_to_es"</span>
+		topics <span class="o">=&gt;</span> <span class="s2">"twitter"</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+output <span class="o">{</span>
+	stdout <span class="o">{</span>
+		codec <span class="o">=&gt;</span> json
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>logstash –f consumer.conf
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

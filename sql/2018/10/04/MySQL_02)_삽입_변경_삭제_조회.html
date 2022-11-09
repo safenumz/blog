@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MySQL] 02) 삽입, 변경, 삭제, 조회 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MySQL] 02) 삽입, 변경, 삭제, 조회" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="삽입, 변경, 삭제" />
+<meta property="og:description" content="삽입, 변경, 삭제" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-10-04T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MySQL] 02) 삽입, 변경, 삭제, 조회" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-10-04T00:00:00-05:00","datePublished":"2018-10-04T00:00:00-05:00","description":"삽입, 변경, 삭제","headline":"[MySQL] 02) 삽입, 변경, 삭제, 조회","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html"},"url":"https://safenumz.github.io/blog/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MySQL] 02) 삽입, 변경, 삭제, 조회</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-10-04T00:00:00-05:00" itemprop="datePublished">
+        Oct 4, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="삽입-변경-삭제">삽입, 변경, 삭제</h1>
+
+<h2 id="삽입">삽입</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">table_name</span> <span class="k">VALUES</span> <span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="p">...)</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">table_name</span> <span class="p">(</span><span class="n">column1</span><span class="p">,</span> <span class="n">column2</span><span class="p">,</span> <span class="n">colum3</span><span class="p">,</span> <span class="p">...)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">,</span> <span class="n">value3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`class`</span><span class="p">.</span><span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'2'</span><span class="p">,</span> <span class="s1">'leez'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">,</span> <span class="s1">'서울'</span><span class="p">,</span> <span class="s1">'2000-10-26'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`class`</span><span class="p">.</span><span class="nv">`student`</span> <span class="p">(</span><span class="nv">`id`</span><span class="p">,</span> <span class="nv">`name`</span><span class="p">,</span> <span class="nv">`sex`</span><span class="p">,</span> <span class="nv">`address`</span><span class="p">,</span> <span class="nv">`birthday`</span><span class="p">)</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'1'</span><span class="p">,</span> <span class="s1">'egoi'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'seoul'</span><span class="p">,</span> <span class="s1">'2000-10-20'</span><span class="p">);</span>
+
+<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="변경">변경</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="err">테이블명</span> <span class="k">SET</span> <span class="err">컬럼</span><span class="mi">1</span><span class="o">=</span><span class="err">컬럼</span><span class="mi">1</span><span class="err">의</span> <span class="err">값</span><span class="p">,</span> <span class="err">컬럼</span><span class="mi">2</span><span class="o">=</span><span class="err">컬럼</span><span class="mi">2</span><span class="err">의</span> <span class="err">값</span> <span class="k">WHERE</span> <span class="err">대상이</span> <span class="err">될</span> <span class="err">컬럼명</span><span class="o">=</span><span class="err">컬럼의</span> <span class="err">값</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="s1">'student'</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`student`</span> <span class="p">(</span>
+  <span class="nv">`id`</span> <span class="nb">tinyint</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`name`</span> <span class="nb">char</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`sex`</span> <span class="nb">enum</span><span class="p">(</span><span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`address`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`birthday`</span> <span class="nb">datetime</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">(</span><span class="nv">`id`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'이숙경'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">,</span> <span class="s1">'청주'</span><span class="p">,</span> <span class="s1">'1982-11-16'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'박재숙'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'서울'</span><span class="p">,</span> <span class="s1">'1985-10-26'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'백태호'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'경주'</span><span class="p">,</span> <span class="s1">'1989-2-10'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'김경훈'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'제천'</span><span class="p">,</span> <span class="s1">'1979-11-4'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'김정인'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'대전'</span><span class="p">,</span> <span class="s1">'1990-10-1'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'김경진'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">,</span> <span class="s1">'제주'</span><span class="p">,</span> <span class="s1">'1985-1-1'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'박경호'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'영동'</span><span class="p">,</span> <span class="s1">'1981-2-3'</span><span class="p">);</span>
+
+<span class="k">UPDATE</span> <span class="nv">`student`</span> <span class="k">SET</span> <span class="n">address</span><span class="o">=</span><span class="s1">'서울'</span><span class="p">;</span>
+
+<span class="k">UPDATE</span> <span class="nv">`student`</span> <span class="k">SET</span> <span class="n">name</span><span class="o">=</span><span class="s1">'이진경'</span> <span class="k">WHERE</span> <span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+
+<span class="k">UPDATE</span> <span class="nv">`student`</span> <span class="k">SET</span> <span class="n">name</span><span class="o">=</span><span class="s1">'이고잉'</span><span class="p">,</span> <span class="n">birthday</span><span class="o">=</span><span class="s1">'2001-4-1'</span> <span class="k">WHERE</span> <span class="n">id</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="삭제">삭제</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DELETE</span> <span class="k">FROM</span> <span class="err">테이블</span> <span class="p">[</span><span class="k">WHERE</span> <span class="err">삭제하려는</span> <span class="err">칼럼</span> <span class="err">명</span><span class="o">=</span><span class="err">값</span><span class="p">];</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">id</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="truncate">TRUNCATE</h3>
+<ul>
+  <li>테이블의 전체 데이터를 삭제</li>
+  <li>데이블에 외부키(foreign key)가 없다면 DLETE보다 훨씬 빠르게 삭제됨</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">TRUNCATE</span> <span class="err">테이블명</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">TRUNCATE</span> <span class="n">student</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="drop-table">DROP TABLE</h3>
+<ul>
+  <li>테이블을 삭제</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">TABLE</span> <span class="err">테이블명</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">student</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="조회">조회</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="err">칼럼명</span><span class="mi">1</span><span class="p">,</span> <span class="err">칼럼명</span><span class="mi">2</span>
+  <span class="p">[</span><span class="k">FROM</span> <span class="err">테이블명</span><span class="p">]</span>
+  <span class="p">[</span><span class="k">GROUP</span> <span class="k">BY</span> <span class="err">칼럼명</span><span class="p">]</span>
+  <span class="p">[</span><span class="k">ORDER</span> <span class="k">BY</span> <span class="err">칼럼명</span> <span class="p">[</span><span class="k">ASC</span><span class="o">|</span><span class="k">DESC</span><span class="p">]]</span>
+  <span class="p">[</span><span class="k">LIMIT</span> <span class="k">offset</span><span class="p">,</span> <span class="err">조회할</span> <span class="err">행의</span> <span class="err">수</span><span class="p">]</span>
+</code></pre></div></div>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 모든 컬럼의 데이터 조회</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span><span class="p">;</span>
+
+<span class="c1">-- name, birthday colum만 선택</span>
+<span class="k">SELECT</span> <span class="n">name</span><span class="p">,</span> <span class="n">birthday</span> <span class="k">FROM</span> <span class="n">student</span><span class="p">;</span>
+
+<span class="c1">-- id값이 3인 데이터 조회</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">id</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">-- 성별이 남자이고 서울에사는 학생 조회</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">sex</span><span class="o">=</span><span class="s1">'남자'</span> <span class="k">AND</span> <span class="n">address</span><span class="o">=</span><span class="s1">'서울'</span><span class="p">;</span>
+
+<span class="c1">-- 성별이 여자이거나 서울에사는 학생 조회</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">sex</span><span class="o">=</span><span class="s1">'여자'</span> <span class="k">OR</span> <span class="n">address</span><span class="o">=</span><span class="s1">'서울'</span><span class="p">;</span>
+
+<span class="c1">-- 앞에 3개만 보여줌</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">LIMIT</span> <span class="mi">3</span><span class="p">;</span>
+
+<span class="c1">-- offset 0(1번째 행)부터 2개(2개의 행) 출력</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">LIMIT</span> <span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">;</span>
+
+<span class="c1">-- 남자 데이터 중 2개만 가져옴</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">sex</span><span class="o">=</span><span class="s1">'남자'</span> <span class="k">LIMIT</span> <span class="mi">2</span><span class="p">;</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

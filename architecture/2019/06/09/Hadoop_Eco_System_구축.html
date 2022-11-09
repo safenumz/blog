@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Hadoop] Hadoop Eco System 구축 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Hadoop] Hadoop Eco System 구축" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hadoop java 1.7.0 mysql community server 5.6.44 mysql connector java 5.1.23 hadoop 2.6.4 hive 1.2.1 pig 0.16.0 spark 1.6.2 sqoop 1.4.7 scala 2.10.1 mesos 0.21.0 zookeeper 3.4.6" />
+<meta property="og:description" content="Hadoop java 1.7.0 mysql community server 5.6.44 mysql connector java 5.1.23 hadoop 2.6.4 hive 1.2.1 pig 0.16.0 spark 1.6.2 sqoop 1.4.7 scala 2.10.1 mesos 0.21.0 zookeeper 3.4.6" />
+<link rel="canonical" href="https://safenumz.github.io/blog/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-06-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Hadoop] Hadoop Eco System 구축" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-06-09T00:00:00-05:00","datePublished":"2019-06-09T00:00:00-05:00","description":"Hadoop java 1.7.0 mysql community server 5.6.44 mysql connector java 5.1.23 hadoop 2.6.4 hive 1.2.1 pig 0.16.0 spark 1.6.2 sqoop 1.4.7 scala 2.10.1 mesos 0.21.0 zookeeper 3.4.6","headline":"[Hadoop] Hadoop Eco System 구축","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html"},"url":"https://safenumz.github.io/blog/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Hadoop] Hadoop Eco System 구축</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-06-09T00:00:00-05:00" itemprop="datePublished">
+        Jun 9, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Architecture">Architecture</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="hadoop">Hadoop</h1>
+<ul>
+  <li>java 1.7.0</li>
+  <li>mysql community server 5.6.44</li>
+  <li>mysql connector java 5.1.23</li>
+  <li>hadoop 2.6.4</li>
+  <li>hive 1.2.1</li>
+  <li>pig 0.16.0</li>
+  <li>spark 1.6.2</li>
+  <li>sqoop 1.4.7</li>
+  <li>scala 2.10.1</li>
+  <li>mesos 0.21.0</li>
+  <li>zookeeper 3.4.6</li>
+</ul>
+
+<h1 id="프로토콜-버퍼-설치">프로토콜 버퍼 설치</h1>
+<ul>
+  <li>프로토콜 버퍼는 데이터를 연속된 비트로 만들고, 이렇게 만들어진 비트를 해석해 원래의 데이터를 만들 수도 있다.</li>
+  <li>Hadoop 2. 버전은 프로토콜 버퍼 2.5.0만 지원한다. 반드시 버전을 맞춰 설치한다.</li>
+  <li>root 계정에서 실행</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://github.com/google/protobuf/releases/download/v2.5.0/protobuf-2.5.0.tar.gz
+
+<span class="nv">$ </span><span class="nb">tar </span>xvzf protobuf-2.5.0.tar.gz
+
+<span class="nv">$ </span>yum <span class="nb">install </span>gcc-c++
+
+<span class="nv">$ </span>./configure
+
+<span class="nv">$ </span>make
+
+<span class="nv">$ </span>make <span class="nb">install</span>
+
+<span class="c"># 제대로 설치되었는지 확인</span>
+<span class="nv">$ </span>protoc <span class="nt">--version</span>
+</code></pre></div></div>
+
+<h1 id="zookeeper-설치">zookeeper 설치</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>adduser zookeeper
+<span class="nv">$ </span>passwd zookeeper
+</code></pre></div></div>
+
+<h2 id="zookeeper-다운로드">zookeeper 다운로드</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># zookeeper 3.4.10</span>
+<span class="nv">$ </span>wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
+
+<span class="nv">$ </span><span class="nb">tar </span>xvzf zookeeper-3.4.10.tar.gz
+
+<span class="nv">$ </span><span class="nb">ln</span> <span class="nt">-s</span> zookeeper-3.4.10 zookeeper
+
+<span class="nv">$ </span><span class="nb">cp </span>zookeeper/conf/zoo_sample.cfg zookeeper/conf/zoo.cfg
+
+<span class="nv">$ </span>vi zookeeper/conf/zoo.cfg
+</code></pre></div></div>
+
+<h2 id="zoocfg-편집">zoo.cfg 편집</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># zoo.cfg
+maxClientCnxns=0
+maxSessionTimeout=180000
+server.1=namenode.hadoop.kr:2888:3888
+server.2=secondnode.hadoop.kr:2888:3888
+server.3=client.hadoop.kr:2888:3888
+</code></pre></div></div>
+
+<h1 id="zookeeper-설치-1">zookeeper 설치</h1>
+<p><a href="https://blog.naver.com/inho1213/220864633256?proxyReferer=https%3A%2F%2Fm.blog.naver.com%2FPostView.nhn%3FblogId%3Dinho1213%26logNo%3D220890490389%26proxyReferer%3Dhttps%253A%252F%252Fwww.google.com%252F">https://blog.naver.com/inho1213/220864633256?proxyReferer=https%3A%2F%2Fm.blog.naver.com%2FPostView.nhn%3FblogId%3Dinho1213%26logNo%3D220890490389%26proxyReferer%3Dhttps%253A%252F%252Fwww.google.com%252F</a></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># java 1.7.0</span>
+<span class="c"># mysql community server 5.6.44</span>
+<span class="c"># mysql-connector-java-5.1.23</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/mysql-connector-java-5.1.23-bin.jar
+
+<span class="c"># hadoop 2.6.4</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/hadoop-2.6.4.tar.gz
+
+<span class="c"># hive 1.2.1</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/apache-hive-1.2.1-bin.tar.gz
+
+<span class="c"># pig 0.16.0</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/pig-0.16.0.tar.gz
+
+<span class="c"># spark 1.6.2</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/spark-1.6.2-bin-hadoop2.6.tgz
+
+<span class="c"># sqoop 1.4.7</span>
+<span class="nv">$ </span>wget http://apache.tt.co.kr/sqoop/1.4.7/sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+
+<span class="nv">$ </span><span class="nb">tar </span>xvzf sqoop-1.4.7.bin__hadoop-2.6.0.tar.gz
+
+<span class="nv">$ </span><span class="nb">ln</span> <span class="nt">-s</span> sqoop-1.4.7.bin__hadoop-2.6.0 sqoop
+
+<span class="c"># scala 2.10.1</span>
+<span class="nv">$ </span>wget http://www.scala-lang.org/files/archive/scala-2.10.1.tgz
+
+<span class="nv">$ </span><span class="nb">tar </span>xvzf scala-2.10.1.tgz
+
+<span class="c"># presto 0.65</span>
+<span class="nv">$ </span>wget www.db21.co.kr/big/presto-server-0.65.tar.gz
+
+<span class="c"># mesos 0.21.0</span>
+<span class="c"># Spark 1.6.0 is designed for use with Mesos 0.21.0 and does not require any special patches of Mesos.</span>
+<span class="nv">$ </span>wget http://archive.apache.org/dist/mesos/0.21.0/mesos-0.21.0.tar.gz
+
+<span class="c"># zookeeper 3.4.10</span>
+<span class="nv">$ </span>wget https://archive.apache.org/dist/zookeeper/zookeeper-3.4.10/zookeeper-3.4.10.tar.gz
+
+
+~~~shell
+<span class="c"># .bashrc</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> /etc/bashrc <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+        <span class="nb">.</span> /etc/bashrc
+<span class="k">fi</span>
+
+<span class="c">#-----------------------------------------------</span>
+<span class="c"># HADOOP Config Start</span>
+
+pathmunge <span class="o">()</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="s2">":</span><span class="k">${</span><span class="nv">PATH</span><span class="k">}</span><span class="s2">:"</span> <span class="k">in</span>
+        <span class="k">*</span>:<span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span>:<span class="k">*</span><span class="p">)</span>
+            <span class="p">;;</span>
+        <span class="k">*</span><span class="p">)</span>
+            <span class="k">if</span> <span class="o">[</span> <span class="s2">"</span><span class="nv">$2</span><span class="s2">"</span> <span class="o">=</span> <span class="s2">"after"</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then
+                </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$1</span>
+            <span class="k">else
+                </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$1</span>:<span class="nv">$PATH</span>
+            <span class="k">fi
+    esac</span>
+<span class="o">}</span>
+
+<span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/java
+<span class="nb">export </span><span class="nv">CLASSPATH</span><span class="o">=</span>/usr/local/java/jre/lib/<span class="k">*</span>
+pathmunge /usr/local/java before
+pathmunge /usr/local/java/bin before
+
+<span class="nb">export </span><span class="nv">BASEHOME</span><span class="o">=</span>/home/hadoop
+
+<span class="nb">export </span><span class="nv">HADOOP_PREFIX</span><span class="o">=</span><span class="nv">$BASEHOME</span>/hadoop
+<span class="nb">export </span><span class="nv">HADOOP_HOME</span><span class="o">=</span><span class="nv">$BASEHOME</span>/hadoop
+<span class="nb">export </span><span class="nv">HADOOP_INSTALL</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export </span><span class="nv">HADOOP_MAPRED_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export </span><span class="nv">HADOOP_COMMON_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export </span><span class="nv">HADOOP_HDFS_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export </span><span class="nv">YARN_HOME</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>
+<span class="nb">export </span><span class="nv">HADOOP_CONF_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/etc/hadoop
+
+<span class="nb">export </span><span class="nv">HADOOP_COMMON_LIB_NATIVE_DIR</span><span class="o">=</span><span class="nv">$HADOOP_HOME</span>/lib/native
+<span class="nb">export </span><span class="nv">HADOOP_OPTS</span><span class="o">=</span><span class="s2">"-Djava.library.path=</span><span class="nv">$HADOOP_HOME</span><span class="s2">/lib/native"</span>
+<span class="nb">export </span><span class="nv">HADOOP_CLASSPATH</span><span class="o">=</span><span class="nv">$JAVA_HOME</span>/lib/tools.jar
+
+<span class="nb">export </span><span class="nv">PIG_HOME</span><span class="o">=</span><span class="nv">$BASEHOME</span>/pig
+<span class="nb">export </span><span class="nv">PIG_CLASSPATH</span><span class="o">=</span><span class="nv">$BASEHOME</span>/hadoop/conf
+
+<span class="nb">export </span><span class="nv">HIVE_HOME</span><span class="o">=</span><span class="nv">$BASEHOME</span>/hive
+<span class="nb">export </span><span class="nv">HIVE_CONF_DIR</span><span class="o">=</span><span class="nv">$BASEHOME</span>/hive/conf
+<span class="nb">export </span><span class="nv">HIVE_CLASS_PATH</span><span class="o">=</span><span class="nv">$HIVE_CONF_DIR</span>
+<span class="nb">export </span><span class="nv">HADOOP_USER_CLASSPATH_FIRST</span><span class="o">=</span><span class="nb">true
+
+export </span><span class="nv">SPARK_HOME</span><span class="o">=</span>/home/hadoop/spark
+<span class="nb">export </span><span class="nv">SPARK_CONF_DIR</span><span class="o">=</span><span class="nv">$SPARK_HOME</span>/conf
+
+<span class="c">#pathmunge $BASEHOME/sqoop/bin</span>
+pathmunge <span class="nv">$BASEHOME</span>/pig/bin
+pathmunge <span class="nv">$BASEHOME</span>/hive/bin
+pathmunge <span class="nv">$BASEHOME</span>/hadoop/bin
+
+<span class="c"># HADOOP Config End</span>
+<span class="c">#-----------------------------------------------</span>
+
+</code></pre></div></div>
+
+<h1 id="하둡-클러스터-실행-및-중단">하둡 클러스터 실행 및 중단</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 서비스 시작 순서 : HDFS -&gt; YARN -&gt; MR-History Server</span>
+<span class="c"># namenode: 하둡 실행</span>
+<span class="nv">$ </span>hadoop/sbin/start-dfs.sh
+
+<span class="c"># secondnode: YARN 서비스 실행</span>
+<span class="nv">$ </span>hadoop/sbin/start-yarn.sh
+
+<span class="c"># namenode: MR-History Server 실행</span>
+<span class="nv">$ </span>hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
+
+<span class="c"># client : 하둡 제대로 실행되었는지 테스트</span>
+<span class="nv">$ </span>hadoop  fs  <span class="nt">-lsr</span> /
+<span class="nv">$ </span>hdfs dfs <span class="nt">-chmod</span> 777 /tmp
+<span class="nv">$ </span>hdfs dfs <span class="nt">-mkdir</span> /user
+<span class="nv">$ </span>hdfs dfs <span class="nt">-mkdir</span> /user/hadoop
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'test'</span> <span class="o">&gt;</span> test.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-put</span> test.txt /user/hadoop/hadooptest.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> <span class="nt">-R</span> /user
+<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span>
+
+
+<span class="c"># 서비스 중단하기 순서 : YARN -&gt; MR-History Server -&gt; HDFS</span>
+<span class="c"># secondnode : YARN 서비스 중단</span>
+<span class="nv">$ </span>hadoop/sbin/stop-yarn.sh
+
+<span class="c"># namenode : MR-History Server 중단</span>
+- MR-History Server 중단하기
+<span class="nv">$ </span>hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
+
+<span class="c"># namenode : HDFS 서비스 중단하기</span>
+<span class="nv">$ </span>hadoop/sbin/stop-dfs.sh
+</code></pre></div></div>
+
+<h1 id="spark-cluster-mode-test">spark cluster mode test</h1>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">$</span> <span class="n">spark</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">spark</span><span class="o">-</span><span class="n">shell</span> <span class="o">--</span><span class="n">master</span> <span class="n">yarn</span> <span class="o">--</span><span class="n">num</span><span class="o">-</span><span class="n">executors</span> <span class="mi">2</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="k">var</span> <span class="n">scalastr</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"hdfs:///user/hadoop/pig.txt"</span><span class="o">)</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nv">scalastr</span><span class="o">.</span><span class="py">count</span><span class="o">()</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nv">scalastr</span><span class="o">.</span><span class="py">first</span><span class="o">()</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="nv">scalastr</span><span class="o">.</span><span class="py">collect</span><span class="o">().</span><span class="py">mkString</span><span class="o">(</span><span class="s">"\n"</span><span class="o">))</span>
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">CTRL</span><span class="o">+</span><span class="n">D</span>
+</code></pre></div></div>
+
+<h1 id="spark-모니터링">spark 모니터링</h1>
+<ul>
+  <li>노트북에 hosts 파일 편집</li>
+  <li>HDFS 네임노드 웹UI 호스트명/포트 -&gt; 네임노드 호스트명:50070</li>
+  <li>
+    <p>http://namenode.hadoop.kr:50070/</p>
+  </li>
+  <li>HDFS 보조네임노드 웹UI 호스트명/포트  -&gt; 보조네임노드 호스트명 :50090</li>
+  <li>
+    <p>http://secondnode.hadoop.kr:50090/</p>
+  </li>
+  <li>YARN 리소스매니저 웹UI 호스트명/포트 -&gt; 리소스매니저 호스트명:8088</li>
+  <li>
+    <p>http://secondnode.hadoop.kr:8088/</p>
+  </li>
+  <li>YARN 노드매니저 웹UI 호스트명/포트 -&gt; 노드매니저(1~N) 호스트명:8042</li>
+  <li>http://datanode1.hadoop.kr:8042/</li>
+  <li>
+    <p>http://datanode2.hadoop.kr:8042/</p>
+  </li>
+  <li>Spark 드라이버 포트 -&gt; 클라이언트 호스트명:4040</li>
+  <li>
+    <p>http://client.hadoop.kr:4040/</p>
+  </li>
+  <li>Presto Coordinator 웹 UI</li>
+  <li>http://namenode.hadoop.kr:8012/</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 윈도우: C:\Windows\System32\drivers\etc\hosts</span>
+
+<span class="nv">$ </span><span class="nb">sudo </span>vi /private/etc/hosts
+
+
+
+192.168.- client.hadoop.kr
+192.168.- namenode.hadoop.kr
+192.168.- secondnode.hadoop.kr
+192.168.- datanode1.hadoop.kr
+192.168.- datanode2.hadoop.kr
+
+
+<span class="c"># DNS cache 갱신</span>
+<span class="nv">$ </span>dscacheutil <span class="nt">-flushcache</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-&gt; 클라이언트 머신에서 Hive MetaStore 서비스 시작하기
+[8]$ hive --service metastore -p 8011 &amp;
+
+# Presto Server 파일 내려받기
+[1]$ wget www.db21.co.kr/big/presto-server-0.65.tar.gz
+
+
+-&gt; Presto Server 파일을 2번,3번 머신에 보내기
+[2]$ scp presto-server-0.65.tar.gz hadoop@namenode:/home/hadoop/
+    scp presto-server-0.65.tar.gz hadoop@secondnode:/home/hadoop/
+
+# Presto CLI 실행파일 내려받기
+[3]$ wget www.db21.co.kr/big/presto-cli-0.65-executable.jar
+
+-&gt; Presto로 이름을 변경하고 실행권한 주기
+[4]$ mv presto-cli-0.65-executable.jar  presto
+[5]$ chmod 755 presto
+
+
+
+-&gt; namenode, secondnode Presto Worker 데몬 시작하기
+[11]$ presto/bin/launcher start
+
+-&gt; Presto Server는 코디네이터 주소를 지정하면 됨
+[3]$ ./presto --server namenode.hadoop.kr:8012 --catalog hive --schema default
+
+[1]presto:default&gt; show tables;
+[2]presto:default&gt; select * from hive;
+[3]presto:default&gt; select str,sum(price) from hive group by str;
+[4]presto:default&gt; quit;
+
+</code></pre></div></div>
+
+<h1 id="flume-설치">flume 설치</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget http://mirror.navercorp.com/apache/flume/1.8.0/apache-flume-1.8.0-bin.tar.gz
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

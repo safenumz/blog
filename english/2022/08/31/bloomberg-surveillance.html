@@ -1,0 +1,4420 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Finance English] Bloomberg Surveillance (2022.08.31) | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Finance English] Bloomberg Surveillance (2022.08.31)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="AI and Data Engineering" />
+<meta property="og:description" content="AI and Data Engineering" />
+<link rel="canonical" href="https://safenumz.github.io/blog/english/2022/08/31/bloomberg-surveillance.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/english/2022/08/31/bloomberg-surveillance.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-31T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Finance English] Bloomberg Surveillance (2022.08.31)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-31T00:00:00-05:00","datePublished":"2022-08-31T00:00:00-05:00","description":"AI and Data Engineering","headline":"[Finance English] Bloomberg Surveillance (2022.08.31)","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/english/2022/08/31/bloomberg-surveillance.html"},"url":"https://safenumz.github.io/blog/english/2022/08/31/bloomberg-surveillance.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Finance English] Bloomberg Surveillance (2022.08.31)</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-08-31T00:00:00-05:00" itemprop="datePublished">
+        Aug 31, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      143 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#English">English</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/QNT2nZhyQdA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+
+<p>I think in the next three to four months through the rest of this year it’s going to be a really volatile time.</p>
+
+<p>You have to be opportunistic.</p>
+
+<p>You have to be patient.</p>
+
+<p>And you have to realize that this probably shouldn’t go on forever.</p>
+
+<p>The Fed is going to face an increasingly more difficult challenge this time around.</p>
+
+<p>when they pause, You want to be very wary about the relief rally.</p>
+
+<p>You are fighting the Fed.</p>
+
+<p>If you’re bullish it’s hard to find anybody that’s bullish now.</p>
+
+<p>this is Bloomberg Surveillance with Tom Keene Jonathan Ferro and Lisa Abramowicz.</p>
+
+<p>What a difficult couple of days.</p>
+
+<p>Live from New York City for our audience worldwide.</p>
+
+<p>Good morning.</p>
+
+<p>Good morning.</p>
+
+<p>This is Bloomberg Surveillance on TV and radio alongside Tom Keene and Lisa Abramowicz some Jonathan Ferro futures down a tenth of one percent T.K.</p>
+
+<p>the last three days down 5 percent on the S&amp;P.</p>
+
+<p>It’s really fragile and some of it is just the distribution of that down 5 percent.</p>
+
+<p>The different sectors John the one shining light for not the bulls but I guess the less bears is the VIX really hasn’t moved.</p>
+
+<p>John the sweat that’s out there the August sweat that’s out there says VIX 30.</p>
+
+<p>VIX is at 26.</p>
+
+<p>We’re playing off the data.</p>
+
+<p>Some good news is bad news.</p>
+
+<p>Apparently consumer confidence yesterday job openings they’re moving in the right direction.</p>
+
+<p>Good news bad news.</p>
+
+<p>The Fed’s going to do a whole lot more.</p>
+
+<p>This market struggle we’re going to wait for the day that we start to see that today with ADP.</p>
+
+<p>I don’t know what to make of ADP Jan.</p>
+
+<p>I just don’t.</p>
+
+<p>I’ll be honest.</p>
+
+<p>I just don’t trust it.</p>
+
+<p>But there’s a lot of bad data.</p>
+
+<p>I do trust on it in America.</p>
+
+<p>It’s just where are we into September.</p>
+
+<p>I believe that’s tomorrow.</p>
+
+<p>Well Lisa let’s start with the data out of Europe.</p>
+
+<p>Bad news is bad news.</p>
+
+<p>Yeah.</p>
+
+<p>Nine point one percent consumer price inflation in the euro region coming in above expectations for 9 percent really fueling these fears and these expectations of a 75 basis point rate hike not by the Fed by the ECB.</p>
+
+<p>And this is what we have to keep talking about.</p>
+
+<p>All of a sudden we’ve reset expectations not just for Fed rate hikes getting bigger than expected but also over in Europe.</p>
+
+<p>And what does that magnitude.</p>
+
+<p>That’s sort of a joint effort really mean for market.</p>
+
+<p>If he’s seen how much the German 2 year is meets first thing I looked at today up 930 basis points.</p>
+
+<p>Tom.</p>
+
+<p>Lisa that is unbelievable.</p>
+
+<p>Up to one point two percent from down in the 20s 26 27 basis points to start the month.</p>
+
+<p>And it’s not just there.</p>
+
+<p>And it’s not just nominal yields.</p>
+
+<p>If you look at real yields both in Europe and in the United States they’ve risen to the highest levels since the heart of the pandemic since the disruptions that really call the Fed into action.</p>
+
+<p>How much are we seeing a resetting that’s been fully priced into the rest of the risk assets versus maybe not so much.</p>
+
+<p>And this is why the equity markets struggling still this morning.</p>
+
+<p>Good morning to you.</p>
+
+<p>If you’re just tuning in with down about a tenth of 1 percent on the S&amp;P no drama on the Nasdaq at least for now up about a tenth of 1 percent.</p>
+
+<p>Call it two tenths of 1 per cent higher yields higher gain though five or six basis points on a 10 year to 315.</p>
+
+<p>Eighty eight euro dollar negative four tenths of one per cent.</p>
+
+<p>Ninety nine.</p>
+
+<p>Rameau sold about your world.</p>
+
+<p>The bond market.</p>
+
+<p>Yeah.</p>
+
+<p>And this is how it really goes to the question you were asking yesterday.</p>
+
+<p>You’ve been asking all year which is if the euro region.</p>
+
+<p>If the ECB does raise rates by 75 basis points is that positive or negative for the euro.</p>
+
+<p>Right now it is negative.</p>
+
+<p>And it is also because the backdrop with the energy crisis today the NFP window is shutting for a three day maintenance.</p>
+
+<p>Maybe maybe they’ll come back on line.</p>
+
+<p>Gazprom is halting exports of natural gas to Europe during this period of time will come back online is the big question.</p>
+
+<p>In the meantime you are seeing natural gas prices climb a little bit from the declines yesterday and the day before in Europe.</p>
+
+<p>The reason why they declined is because there were there was evidence that stockpiles were building faster than people had expected.</p>
+
+<p>But still in my mind this is the story heading into the fall.</p>
+
+<p>This could really shape what happens in Europe and frankly globally with respect to sentiment 815 AM.</p>
+
+<p>Tom you were talking about the ADP employment change.</p>
+
+<p>They have rejiggered some of those expectations.</p>
+
+<p>You don’t know what to make of them.</p>
+
+<p>I think it actually takes on more import not necessarily because of how they’ve rejiggered expectations but because of the JOLTS data yesterday which was rather shocking.</p>
+
+<p>It was expected to go down.</p>
+
+<p>It did not.</p>
+
+<p>It went up.</p>
+
+<p>There were more openings that were posted to openings for every unemployed American.</p>
+
+<p>This is not what the Fed would like to see.</p>
+
+<p>They want to see tightening.</p>
+
+<p>They are not seeing it today.</p>
+
+<p>Perhaps we’ll get some indication of how Fed speakers are really speaking to that time.</p>
+
+<p>I think it’s interesting.</p>
+
+<p>There was a weak warning for research for the key.</p>
+
+<p>No it was the Alan Ruskin note in the Beveridge curve.</p>
+
+<p>And he says the U.S.</p>
+
+<p>is different and it falls right into the JOLTS survey where you’ve got the idea that vacancies in America make us different and maybe we won’t see a higher unemployment rate.</p>
+
+<p>Well this is the dream for the soft landing.</p>
+
+<p>And we might get some more sense of how close or far away we are from Loretta Master who is speaking at 8 a.m.</p>
+
+<p>Then we’re gonna be hearing from Laurie Logan.</p>
+
+<p>I am not familiar with her.</p>
+
+<p>She is the new Dallas Fed president and she’ll be speaking at 6:00 p.m.</p>
+
+<p>and at 6:00 p.m.</p>
+
+<p>we’ll hear from Rafael.</p>
+
+<p>John I’m lost.</p>
+
+<p>Didn’t they just speak to Tom.</p>
+
+<p>Mr. and Bostic.</p>
+
+<p>The three of them.</p>
+
+<p>I mean maybe Laura.</p>
+
+<p>Logan did but I think we met Laurie Logan some but didn’t on Friday just speak first.</p>
+
+<p>Cups of coffee.</p>
+
+<p>You’re I think we’ve heard from them a few times.</p>
+
+<p>We’ve heard the message though pretty clear.</p>
+
+<p>Tom Keene I think that’s the theme here for a lot of people.</p>
+
+<p>They have stayed on the same page the same script repeated repeatedly every single one of them over the last few days.</p>
+
+<p>John Williams as well of the New York Fed to your point about the markets like the two here has just broken out to a new high.</p>
+
+<p>And with it the yen is right up against new yen weakness.</p>
+
+<p>There is a tension out there.</p>
+
+<p>It screams August very very close to 350 at 340 929 right now.</p>
+
+<p>Christine noting joins us global chief investment officer at Deutsche Bank Private Bank.</p>
+
+<p>Christine we have taken out the June highs on a two year yield.</p>
+
+<p>And the question a lot of people are asking is whether this equity market has the test the June lows.</p>
+
+<p>Your thoughts.</p>
+
+<p>Word from from our point of view if you think from a gross perspective we do think there is at least mild recession coming in the US and there is also a recession unavoidable for us in the Eurozone.</p>
+
+<p>And from that perspective I wouldn’t be surprised if equity markets go down a bit further from here.</p>
+
+<p>And we have been calling saying the June July uptick is probably not is a bear market rally is probably not where we end.</p>
+
+<p>We have been arguing for by the next step.</p>
+
+<p>And I wouldn’t be surprised if we see and if you look at the markets is another 3 4 5 6 percent depending on the market’s downside.</p>
+
+<p>I wouldn’t rule out that we get there from our point of view.</p>
+
+<p>Christian what do you do with bonds.</p>
+
+<p>The chart that I put up earlier of price flat yield I guess up a little bit.</p>
+
+<p>Global bonds on an aggregate basis are back eleven years.</p>
+
+<p>What do you do with that institutionally.</p>
+
+<p>Well from our point of view it has been right to be short duration and we kept it so from that perspective at least you can avoid to be super long duration as many investors sometimes have to be.</p>
+
+<p>I think that’s number one.</p>
+
+<p>And then you really need to look at quality from our point of view.</p>
+
+<p>So you had discussed before if there’s a recession what does it mean to credit spreads.</p>
+
+<p>I think we also need to look a little bit ahead as we don’t expect at least in the US the sustained long recession maybe as two Qantas three quarters.</p>
+
+<p>I think if spreads are widening there is an opportunity.</p>
+
+<p>If you look into investment grade I would be a bit more careful on the on the high yield side.</p>
+
+<p>From our point of view we don’t think these levels which seem attractive but from our point of view is not where we want to go in right now.</p>
+
+<p>Christian is Europe in a toxic place to invest in right now based on the energy backdrop and some of the volatility there or are you still seeing perhaps some opportunities even ahead of us.</p>
+
+<p>Well I wouldn’t call it toxic to a very honest.</p>
+
+<p>But of course it’s tough to be very optimistic about this point in time.</p>
+
+<p>Let’s call it like this.</p>
+
+<p>I think there are opportunities.</p>
+
+<p>If you think the ECB is doing quite a lot as we do we can imagine over the next twelve months the ECB is moving from zero now to two which is quite something.</p>
+
+<p>I would say there is I think opportunities in European financials which could profit from that.</p>
+
+<p>But for the overall market it depends really on the energy crisis and how the winter plays out to be.</p>
+
+<p>And from their perspective it’s not going to be easy for Europe the next month I think.</p>
+
+<p>Question Did you just say that you’re investing in European banks.</p>
+
+<p>Yeah I think European financials have upside because as I said if the ECB is moving they can profit from from the higher interest rate level.</p>
+
+<p>And from that perspective now we had zero.</p>
+
+<p>And I would expect the ECB not to look so much at growth because their target is really price stability and to move up in increasing rates.</p>
+
+<p>And from their perspective I think that would be positive for them.</p>
+
+<p>Yes Christine they’re can into a recession.</p>
+
+<p>What’s more important here.</p>
+
+<p>The rate hikes saw the economic backdrop.</p>
+
+<p>Yeah but I think yeah.</p>
+
+<p>Recession.</p>
+
+<p>Yes.</p>
+
+<p>But also here in Europe I think is not a recession which is a deep recession with which takes quarters and quarters.</p>
+
+<p>From that perspective yes there is some implication and you have not seen a massive movement upwards although the market is pricing some of these VIX not all.</p>
+
+<p>I think the ECB is doing more.</p>
+
+<p>And from that perspective I think there could be some positives being overgrowth.</p>
+
+<p>Looking at rate hikes from our point of view well that’s a trade for the brave.</p>
+
+<p>Christine thank you sir.</p>
+
+<p>Christine noted that if Deutsche Bank private bank Lisa Abramowicz getting longer European banks actually heard that from Sandlin to Brown over at BNP Paribas a number of months ago.</p>
+
+<p>But that was at the June lows.</p>
+
+<p>It wasn’t in the mess we’re in right now.</p>
+
+<p>Look this has been the pain trade.</p>
+
+<p>There is an upset argument especially if suddenly people have been complaining about negative rates for the past decade and you don’t have negative rates anymore.</p>
+
+<p>And that could be a benefit.</p>
+
+<p>But to your point hiking into weakness is it the weakness that matters are the hiking that matters.</p>
+
+<p>And the currency market is saying it’s the weakness that matters because that is what the euro is responding to.</p>
+
+<p>And I really have to take some cues from that.</p>
+
+<p>And this is what the European banks have wanted some for a long long time.</p>
+
+<p>They’re getting it though in a very very difficult.</p>
+
+<p>John you’re being way too kind.</p>
+
+<p>Their performance has been absolutely irresponsible.</p>
+
+<p>Is that the board of directors level.</p>
+
+<p>I just looked at the chart from my good friends at BNP Paribas.</p>
+
+<p>Glad they support Tanners.</p>
+
+<p>They’ve gone nowhere in 13 years.</p>
+
+<p>75 basis point hike is the expectation some at the ECB.</p>
+
+<p>Now Capital Economics out this morning nine point one per cent CPI to Lisa’s point.</p>
+
+<p>If you’re looking at these banks right now let’s put it all together.</p>
+
+<p>T case questioning the execution.</p>
+
+<p>Lisa you’re questioning the economic backdrop.</p>
+
+<p>Is rates is rates enough to be supportive of stock prices for European banks.</p>
+
+<p>Well just take a look at what we’ve been hearing from all of the banks.</p>
+
+<p>Take a look at the capital markets activity.</p>
+
+<p>You’re not getting the revenues from that because you’ve seen a massive slowdown perhaps a little bit of a pickup in the rally.</p>
+
+<p>But otherwise IPO is whether it’s a debt issue and says whether it’s you know stock offerings whatever it is it is all stopped.</p>
+
+<p>So then what is going to be the marginal driver.</p>
+
+<p>OK.</p>
+
+<p>Trading well there it’s kind of a little bit sketchy compared to where it has been traditionally because of how unpredictable it is.</p>
+
+<p>There is the marginal driver John was the three cups of coffee ago.</p>
+
+<p>The bank was moving 250 people into Asia.</p>
+
+<p>Oh yeah.</p>
+
+<p>Now they’re moving about a John Tucker.</p>
+
+<p>They think John the guy that lives next door to you and that walk up you live in was a spec banker.</p>
+
+<p>He’s toast.</p>
+
+<p>Lisa has picked up on the right theme.</p>
+
+<p>You mentioned Asia.</p>
+
+<p>You mentioned some of the banks pulling back on deals folded into one story Brahma.</p>
+
+<p>This is what the banks have got to do pull back.</p>
+
+<p>Is there any surprise that Goldman and Morgan Stanley are now saying let’s go let’s go.</p>
+
+<p>Covid can’t get back to work in September.</p>
+
+<p>I especially it’s not a coincidence that it’s in tandem with the school starting.</p>
+
+<p>Right.</p>
+
+<p>Basically it’s like hey set up an excuse anymore.</p>
+
+<p>Let’s go.</p>
+
+<p>Last September it was let’s go.</p>
+
+<p>And then it was like oh maybe not.</p>
+
+<p>We can’t.</p>
+
+<p>Maybe not this September.</p>
+
+<p>Can I say it’s real.</p>
+
+<p>Yes I say it’s real time.</p>
+
+<p>Is it real this time.</p>
+
+<p>Get to work.</p>
+
+<p>See you in sir.</p>
+
+<p>OK that’s nice.</p>
+
+<p>Who done that.</p>
+
+<p>Tom Keene.</p>
+
+<p>Viviana Hurtado.</p>
+
+<p>IBEX.</p>
+
+<p>So let’s get back into radio banter I guess.</p>
+
+<p>Shop futures unchanged from New York City.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>Keeping you up to date with news from around the world with the first word answers could get inflation in the eurozone is set a another all time high.</p>
+
+<p>Consumer prices in the 19 country currency bloc rose nine point one percent in August from a year ago.</p>
+
+<p>That beat the median estimate in a Bloomberg survey of economists.</p>
+
+<p>And it strengthens the case for the European Central Bank to consider a jumbo interest rate hike when it meets next week.</p>
+
+<p>The Justice Department says White House records held in a storage room at Donald Trump’s Florida home may have been moved before an FBI search in June.</p>
+
+<p>The Justice Department says that could have been an attempt to obstruct the investigation.</p>
+
+<p>In a filing that was a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents.</p>
+
+<p>It’s the biggest two year decline in U.S.</p>
+
+<p>life expectancy in almost a century and it’s blamed on the Covid pandemic.</p>
+
+<p>Life expectancy fell by almost a year in 2021 after a decline of one point eight years in 2020.</p>
+
+<p>The pandemic has been directly responsible for more than one million American deaths and shares of SNAP are falling today according to The Verge.</p>
+
+<p>The parent of Snapchat plans to lay off about 20 percent of its nearly 60 500 employees starting today.</p>
+
+<p>The stock already has fallen almost 80 percent this year.</p>
+
+<p>SAP has been struggling with a slowdown in advertising spending.</p>
+
+<p>And Mikhail Gorbachev is being remembered as the last leader of the Soviet Union who ended the Cold War.</p>
+
+<p>Gorbachev died Tuesday at a Moscow hospital.</p>
+
+<p>His attempts to shake up the Soviet Union’s political and economic system led to the collapse of the communist superpower.</p>
+
+<p>Gorbachev’s career disintegrated in the process.</p>
+
+<p>He was 91.</p>
+
+<p>Global news 24 hours a day on air and on Bloomberg Quicktake and Rich.</p>
+
+<p>We’re committed to getting inflation under control and there’s a path to get there.</p>
+
+<p>A recession is obviously a risk in the process.</p>
+
+<p>I’ll just say for context nobody ever canceled the business cycle so that when you say there’s a risk of recession it doesn’t have to be like a 2008 recession.</p>
+
+<p>Thomas Falcon now the Richmond Fed president live from New York City this morning.</p>
+
+<p>Good morning with Tom Keene and Lisa Abramowicz.</p>
+
+<p>Some Jonathan Ferro futures just about positive on the S&amp;P after three days of losses on the S&amp;P 500.</p>
+
+<p>Big losses as well were positive just two points up by not even a tenth of 1 percent.</p>
+
+<p>It’s pretty clear to me to everyone that Fed officials are saying we’re happy with the market reaction.</p>
+
+<p>We’re going to tighten.</p>
+
+<p>We got to stay there.</p>
+
+<p>We’re not going to back away.</p>
+
+<p>At the first sign of success the hurdle to Paul’s laser is higher.</p>
+
+<p>The hurdle to cap is higher.</p>
+
+<p>You want to fight that on.</p>
+
+<p>That’s that was your question yesterday.</p>
+
+<p>And the answer that we heard from Sebastian Page was no.</p>
+
+<p>If you want to fight that and think that we’re going to see gains good luck.</p>
+
+<p>Probably getting your face ripped off in our Wall Street parlance.</p>
+
+<p>The question I have is what have we priced in.</p>
+
+<p>And some people are saying small caps for example have fully priced in recession.</p>
+
+<p>What about big tech.</p>
+
+<p>What about some of the drivers.</p>
+
+<p>What has priced in recession and what hasn’t.</p>
+
+<p>And how much are people going to really discern between the two.</p>
+
+<p>Short and shallow seems to be the theme.</p>
+
+<p>Tom Keene not just on the United States.</p>
+
+<p>I just heard from Deutsche Bank that talking about a U.S.</p>
+
+<p>recession and we still hear the short and shallow kind of story.</p>
+
+<p>John I have huge problems because I’ve been wrong so many times.</p>
+
+<p>You can line them right up.</p>
+
+<p>Let’s start with 1980 and 81 in the double recession wrapped around Paul Volcker.</p>
+
+<p>It’s hard to pick the recession though and define it.</p>
+
+<p>John it’s even harder to get the magnitude right.</p>
+
+<p>I couldn’t agree more Tom.</p>
+
+<p>And I’m not here to say it won’t be a short and shallow one.</p>
+
+<p>It’s not for me to say that.</p>
+
+<p>I will say I think we should be open minded given how wrong I’ve been about so many different things over just two years.</p>
+
+<p>We’ve got to go back to it.</p>
+
+<p>We’ve got to 348 in the two years.</p>
+
+<p>Quickly here John Yen is just this far away from yen weakness.</p>
+
+<p>It’s a global issue right now.</p>
+
+<p>We’ve taken out the highs of the middle of June June 14th on a two year yield.</p>
+
+<p>We’ve taken them out 348 27 right now came really close to 350.</p>
+
+<p>And back when we reached those kind of levels.</p>
+
+<p>Yeah the middle of June this equity market was a whole lot lower.</p>
+
+<p>Folks John Farrow has figured out that tuition in United States is a breeze.</p>
+
+<p>This is the week where the tuition checks get written and the agony is out there.</p>
+
+<p>There’s also agony in the political space.</p>
+
+<p>Jack Fitzpatrick joins us at the end of August to reef shape to September and the election.</p>
+
+<p>Jack Pugh does the best research on this.</p>
+
+<p>It is stunning when they looked recently at the political typology of America how small the middle is.</p>
+
+<p>They’ve got two surveys Republicans and Democrats somewhere between 23 and 28 percent of America is the middle.</p>
+
+<p>Are they worth going after for these politicians.</p>
+
+<p>In recent years I think you can find some evidence that there’s less focus on going after anybody who would describe themselves as persuadable.</p>
+
+<p>A lot of this is about motivation of the base.</p>
+
+<p>You see it in primaries.</p>
+
+<p>At the same time you know especially just looking at President Biden’s speech last night.</p>
+
+<p>I think there is a bit of a persuasion attempt there when you hear him talking about funding for the police and funding and support for the FBI and kind of going on a two track example that you know there are there are some seemingly winning political messages that still go for it.</p>
+
+<p>Right.</p>
+
+<p>Persuasion rather than motivation.</p>
+
+<p>But overall big picture the last decade or so has been a way more of a shift toward getting your base out focusing on turnout.</p>
+
+<p>And that’s a nash in a national trend.</p>
+
+<p>Jack sort of a personal question.</p>
+
+<p>I the clearest memory of sitting on the couch.</p>
+
+<p>I believe it was a Sunday evening when Lyndon Baines Johnson stunned the nation and said he would not run for a second term.</p>
+
+<p>Are we going to hear that tomorrow night.</p>
+
+<p>That’s still a big question in Washington I don’t know about tomorrow night there.</p>
+
+<p>If that were the case there’s still the question about the strength of somebody like Kamala Harris and who would be the front runner for the Democratic position.</p>
+
+<p>I haven’t heard from anybody who feels confident that tomorrow is the night.</p>
+
+<p>But you have heard some some some hints from Democrats who don’t think that the president is going to run again.</p>
+
+<p>It came up in the New York race where Carolyn Maloney brought it up a couple times.</p>
+
+<p>It’s something they’re not supposed to say but there is a bit of an expectation out there that the president wouldn’t run again.</p>
+
+<p>I don’t know if that’s imminent or not at this point.</p>
+
+<p>Just quickly Jack are we hearing anything about the student loan relief and whether that’s actually going to get legally challenged whether that’s actually going to go into effect.</p>
+
+<p>There could be legal challenges but a lot of the pushback at this point has been Republicans talking about how the president should not have this power and what can be done in the future to take that away.</p>
+
+<p>It’s a little hard to predict exactly how this would play out in courts if there is a legal challenge now.</p>
+
+<p>But again a lot of the focus has been the political pushback and maybe some future legislative pushback depending on how much Republicans take back in the midterms.</p>
+
+<p>Jack last the question we ask every now and again.</p>
+
+<p>Where’s Janet Yellen.</p>
+
+<p>I still still a little more low profile than you might expect for someone like her.</p>
+
+<p>Same same story.</p>
+
+<p>A lot of focus on the Fed.</p>
+
+<p>Some talk from the president on the economy.</p>
+
+<p>I wish I could come in here with an answer on the whole story about Biden and Yellen and and this relationship a bit quiet.</p>
+
+<p>Jack thank you.</p>
+
+<p>Down in Washington Jack Fitzpatrick T.K..</p>
+
+<p>It is utterly bizarre.</p>
+
+<p>How did you manage to recruit one of the best labor market economists on the planet.</p>
+
+<p>The former Fed chance to treasury secretary and then tumble weight to nothing.</p>
+
+<p>I will never forget this.</p>
+
+<p>I was standing in the early morning looking across the White House lawn.</p>
+
+<p>This is Bush the younger.</p>
+
+<p>And I realized that everything was run out of the White House.</p>
+
+<p>And there’s been a modern disease.</p>
+
+<p>I don’t know if it’s the same in London but there’s a modern disease here that everything gets run out of the White House and the cabinet members are figureheads.</p>
+
+<p>Frankly Mr Blinken has been maybe a little less visible than Kissinger was to say the least John.</p>
+
+<p>We’ve got a major issue on Twitter.</p>
+
+<p>Tots are tweeting out that it’s a derby.</p>
+
+<p>Is it a derby or a derby today with W and technically technically that makes it a London derby.</p>
+
+<p>I’d say derby.</p>
+
+<p>We talk about a North London derby between Tottenham and Arsenal.</p>
+
+<p>And West Ham is an East London team Tom Keene Kent.</p>
+
+<p>Tottenham is a north London outbreak up surveillance an app for this this afternoon John.</p>
+
+<p>But West Ham they’ve basically sucked since Nate Shelly joined the team.</p>
+
+<p>Right.</p>
+
+<p>I think you’ll wonder whether he’s not.</p>
+
+<p>Actually you’re right.</p>
+
+<p>Well I just coach.</p>
+
+<p>He’s up from Championship League.</p>
+
+<p>No I think I think Mr.</p>
+
+<p>Moyes will have a problem with that.</p>
+
+<p>You ready to think that Ted last suffers for a lifetime.</p>
+
+<p>Yeah he’s mentioned Wichita I think.</p>
+
+<p>Waits to win the new season.</p>
+
+<p>Come.</p>
+
+<p>I have no idea.</p>
+
+<p>I don’t know.</p>
+
+<p>I mean you know it’s a documentary.</p>
+
+<p>So they gonna maybe have a proper documentary and it’s got the season wrapped up.</p>
+
+<p>Now we’ll see how Knight did at West Ham.</p>
+
+<p>You’re ridiculous.</p>
+
+<p>His positive two tenths of one percent on the S&amp;P.</p>
+
+<p>I should go and do some research on six tenths of one percent.</p>
+
+<p>You didn’t research right now in London.</p>
+
+<p>You want to do a road trip to London.</p>
+
+<p>Absolutely.</p>
+
+<p>Just get on a road trip.</p>
+
+<p>London from ISE like.</p>
+
+<p>Count me out.</p>
+
+<p>Count me out for New York City this morning.</p>
+
+<p>Good morning.</p>
+
+<p>Had AM radio seen on TV from audience worldwide.</p>
+
+<p>This is Bloomberg Surveillance.</p>
+
+<p>Live from New York City this morning.</p>
+
+<p>Good morning to you all.</p>
+
+<p>It’s the price action the shape of things so far early days.</p>
+
+<p>Up about a tenth of 1 percent on the S&amp;P 500.</p>
+
+<p>Call it two tenths if you want.</p>
+
+<p>On the Nasdaq 100 up five or six tenths of one percent following the biggest three day rout on the S&amp;P 500 since June 14th down 5 percent over the last three days.</p>
+
+<p>What happened back on June 14th.</p>
+
+<p>Yeah it’s topped out for the year.</p>
+
+<p>And we took out the closing high of June 14th just yesterday in this bond market.</p>
+
+<p>Sees tens and 30s look like that.</p>
+
+<p>We took out that June 14th tie on the two year not the 10 year.</p>
+
+<p>Right now 348 27 new multi-year high say yields higher again by 4 basis points.</p>
+
+<p>That’s biting eating into the equity market over the last couple days.</p>
+
+<p>Is this fat.</p>
+
+<p>This Fed communicates pretty strongly.</p>
+
+<p>It’s ready to go again.</p>
+
+<p>Go big if we have to off the back of better than expected data yesterday and then stay there.</p>
+
+<p>The New York Fed president The Wall Street Journal yesterday found this very very fascinating that everyone’s on the same page at the moment about staying there and staying that home for a prolonged period of time.</p>
+
+<p>The Fed speak.</p>
+
+<p>I am baffled by the Fed speak frankly John.</p>
+
+<p>We heard in Jackson Hole and we got a new round of it today.</p>
+
+<p>We’re just going to hear the same thing.</p>
+
+<p>I think so.</p>
+
+<p>Possibly they’re all saying on the same script some if you think the Fed is fascinating confusing pick out whatever what you want the ECB.</p>
+
+<p>I tell you what the hawks are in charge of the ECB right now that’s for sure.</p>
+
+<p>The Bundesbank yesterday were talking about going big again even if you do fear recession.</p>
+
+<p>They fear that.</p>
+
+<p>Let’s go again this morning off the back of CPI come again with a nine handle.</p>
+
+<p>The Bundesbank communicated again.</p>
+
+<p>We need to act decisively.</p>
+
+<p>So picture this.</p>
+
+<p>You’ve gone on a German two year at the start of orcas from about 27 basis points that are close on the first trading day of this month to one point two percent.</p>
+
+<p>So that’s a move of more than 90 basis points over the last month.</p>
+
+<p>And yet the euro is weaker on the month not stronger.</p>
+
+<p>At some ninety nine.</p>
+
+<p>Eighty one you live.</p>
+
+<p>This is Germany and France on the same page in terms of let’s go hawkish front loaded tone.</p>
+
+<p>At the moment they are some.</p>
+
+<p>And a difference between potentially this ECB and what we saw in the previous 10 years under Draghi specifically is that this time the hawks are in charge in a big big way.</p>
+
+<p>Yeah they seem to be.</p>
+
+<p>There’s no question about that.</p>
+
+<p>Let’s jump to this right now.</p>
+
+<p>I’m watching you.</p>
+
+<p>And again which has moved here but still really front and center.</p>
+
+<p>Mohamed El-Erian just out moments ago with a two year chart that was very smart showing the emotion of the moment.</p>
+
+<p>If your head is spinning near the end of August and you’re worried about inflation gloom like Italy with 9 percent inflation this is flat out the interview of the day in recapitulate what we heard from David Rosenberg yesterday.</p>
+
+<p>Look tell us in a different place.</p>
+
+<p>He’s head of asset allocation chief economist at Wilmington Trust.</p>
+
+<p>We’re thrilled he could join us today.</p>
+
+<p>Look I thought your note was uncommonly cogent about the disinflation to come.</p>
+
+<p>Put a date on it.</p>
+
+<p>When does a disinflation show up.</p>
+
+<p>Last month we had a really encouraging reading and CPI and then also in PCG clearly pulled down by energy.</p>
+
+<p>But what we’re seeing is that weakening of inflation much slower advances and outright declines in a lot of consumer goods.</p>
+
+<p>Airfares used cars and a lot of those things that have pushed inflation up over the past year to year and a half.</p>
+
+<p>But it is kind of bi modal.</p>
+
+<p>We still have a lot of pressure on shelter and rents and on food.</p>
+
+<p>Those are running much higher than usual but we do see a lot of disinflation in those other categories.</p>
+
+<p>And like the idea of a bi modal.</p>
+
+<p>The theory here is any central bank including the Fred.</p>
+
+<p>Given a bi modal distribution will always take the part of the bi modal that shows up later.</p>
+
+<p>They’ll be massively ex post.</p>
+
+<p>Is this a fed that reacts to a bi modal disinflation at the September meeting or at the September meeting of 2023.</p>
+
+<p>Well I think at the September meeting they were likely to see a 50 basis point hike and that’s because we’re going to get another inflation number and I do expect it to be a little bit on the weaker side not quite as weak as July.</p>
+
+<p>But what they’re set themselves up for is 50 basis points.</p>
+
+<p>And I think Jay Powell was talking a lot more about the profile when he was in Jackson Hole.</p>
+
+<p>That speech was clearly hawkish but he was really talking about the magnitude of hikes going forward.</p>
+
+<p>It seemed like as you were just saying they’re all on the same page.</p>
+
+<p>And all of those FOMC voters are pushing back on the futures curve which is showing rate cuts next year.</p>
+
+<p>So I think in September we get that 50 basis point cut.</p>
+
+<p>Another really important thing is what he said in July not a Jackson hole is that the rate cut rate hikes that they’ve already done.</p>
+
+<p>We haven’t felt for full impact with them yet.</p>
+
+<p>There’s a lot of tightening in the pipeline.</p>
+
+<p>He said we’re going to see those come through and slow inflation down over the course of this year.</p>
+
+<p>So look when you say that you’re already starting to see disinflation and even with the hawkish tilt of the Federal Reserve are you basically positioning around that and being more bullish on risk assets because the Fed won’t go as far as the market is currently pricing are used basically suggesting the Fed is going to because they are so exposed make a policy error and tighten into recession even if it’s not necessary.</p>
+
+<p>Well we’ve never gotten so pessimistic that we went on or wait.</p>
+
+<p>We’re neutral across our asset allocation in the equity categories and we have an overweight cash.</p>
+
+<p>We’re looking to deploy that because even though our baseline is for inflation to slow down there’s clearly a lot of upside risks.</p>
+
+<p>And the one that we’re really watching of course is wages and labor.</p>
+
+<p>And Paul and the other FOMC members have talked about that if those wages keep pushing higher than they are more likely to keep tightening.</p>
+
+<p>And even if inflation was slowing I think you get closer to a policy error and causing a recession.</p>
+
+<p>Well just to make sure that I understand what you’re saying Lou.</p>
+
+<p>In other words you’re neutral on equities or neutral on risk which is unusual for you because you are always invested.</p>
+
+<p>Right.</p>
+
+<p>And you’ve been overweight cash but now you’re looking to deploy that cash.</p>
+
+<p>Does that mean you’re getting more bullish or does that mean that you have more conviction of the path of things going forward.</p>
+
+<p>We’re not expecting a recession and we are getting a little bit more bullish but that big risk out there is definitely labor and we’re likely to see data later this week looking for an opportunity to deploy that cash a bias towards risk and a bias towards equities.</p>
+
+<p>And I would think that that would come to us especially as valuations have come down.</p>
+
+<p>But it remains to be seen how much later.</p>
+
+<p>Labor market pressure to remain.</p>
+
+<p>So where are you seeing opportunity most clearly.</p>
+
+<p>In other words are you looking at big tech.</p>
+
+<p>Are you looking at for example energy companies even as we see one of the consecutive monthly declines in oil prices.</p>
+
+<p>On the on the fear of a slowdown globally.</p>
+
+<p>Well if our baseline plays out then we would expect to see as Jonathan was just talking about we haven’t really seen long term rates move back up very much on the short end.</p>
+
+<p>We’d expect the short end to come down a little bit and that would point towards some growth stocks that would point towards a recovering economy and the sectors that really benefit from that from long rates holding where they are a little bit more growth.</p>
+
+<p>Look I tried it out yesterday one of the great series on the Bloomberg which is simply CPI not back to 1947 but our guesstimates back to World War 1 and inflation when it surges up is wildly stochastic and comes down quickly given the pandemic in the supply side realities the dynamics I should say.</p>
+
+<p>Are we going to see another bout of stochastic in inflation reverse to disinflation.</p>
+
+<p>We think there is a good chance that things come down pretty quickly and this gets back to transitory which I realize is a dirty word now but we are looking at a lot of inflation that’s been caused by that supply chain challenge from last year and also a lot of stimulus which of course is rolling off now.</p>
+
+<p>Yeah.</p>
+
+<p>So when you see Wal-Mart cutting prices when you see retailers saying you know we ordered too much stuff that’s where you could have it come down pretty quickly.</p>
+
+<p>Again the risk Kevin Cirilli labor.</p>
+
+<p>It also put energy in there.</p>
+
+<p>I’m just asking for a friend.</p>
+
+<p>But if you get out front of this the markets get out in advance.</p>
+
+<p>Should I load the boat let’s say September 1st.</p>
+
+<p>I don’t think that there is any reason to expect a recession.</p>
+
+<p>Other than that that keep Vikings off the baseline inflation story plays out.</p>
+
+<p>And if you get some weaker wages and I think we’re in pretty good shape to have an expansion going from here.</p>
+
+<p>Right.</p>
+
+<p>And that would argue for risk assets.</p>
+
+<p>What do your managers Wilmington Trust think about cash.</p>
+
+<p>Is cash an asset considering on conservative.</p>
+
+<p>The shop is.</p>
+
+<p>It’s certainly more that now than it was a few months ago for us but we’re looking for stronger returns if that inflation story plays out that way.</p>
+
+<p>You think equities are better.</p>
+
+<p>You guys were talking about credit spreads.</p>
+
+<p>There might be some spots in the fixed income that are advantageous to especially with high yield yielding what it is right now from an asset allocation point of view.</p>
+
+<p>We’re looking more on the equity side.</p>
+
+<p>Like when does the office start to fill up.</p>
+
+<p>What time.</p>
+
+<p>Just thinking because Morgan Stanley and I sent out the memo.</p>
+
+<p>They sent out a memo.</p>
+
+<p>Goldman get back to work.</p>
+
+<p>When do they get in the office like Raul is for us.</p>
+
+<p>We’ve been actually been back for several months.</p>
+
+<p>We’re going back for three days a week.</p>
+
+<p>I’m just not quite this early.</p>
+
+<p>And there’s there’s a few people around me.</p>
+
+<p>You can’t see them right now but they’ll be.</p>
+
+<p>And pretty soon they tell me.</p>
+
+<p>Thank you.</p>
+
+<p>I appreciate it.</p>
+
+<p>Wilmington Trustee CAC.</p>
+
+<p>Go on.</p>
+
+<p>I wandered out to a tennis match last night.</p>
+
+<p>How did that work out.</p>
+
+<p>I was sitting in the seats.</p>
+
+<p>I can watch Mets.</p>
+
+<p>Dodgers next door.</p>
+
+<p>I was sitting up so high.</p>
+
+<p>And John there was no other topic in the chat.</p>
+
+<p>I did.</p>
+
+<p>With fans.</p>
+
+<p>Thank you so much for coming.</p>
+
+<p>Then work from home.</p>
+
+<p>Can I just say that I signed on ESPN and the idea that you were sitting in the seats above.</p>
+
+<p>So you write that courtside sat behind them around.</p>
+
+<p>CARNEY Well I was good to see escaping this.</p>
+
+<p>There were great seats.</p>
+
+<p>Did you find them.</p>
+
+<p>The young lady from France was the seat Shery Ahn show.</p>
+
+<p>I don’t know.</p>
+
+<p>Some of my people found them.</p>
+
+<p>Yes.</p>
+
+<p>Nice.</p>
+
+<p>I don’t know this stuff.</p>
+
+<p>Lisa and I can get our people to find any.</p>
+
+<p>They said I got one seat.</p>
+
+<p>You want to go.</p>
+
+<p>And I said I got to take that bill.</p>
+
+<p>And they said no you can’t.</p>
+
+<p>The dog’s to sit on your lap.</p>
+
+<p>Well I’m getting poor at home.</p>
+
+<p>You know why.</p>
+
+<p>Cable 116 27.</p>
+
+<p>Oh I cannot afford to open this move.</p>
+
+<p>This Lisa Abramowicz.</p>
+
+<p>Look at this.</p>
+
+<p>116 26 I the low of the session was about 116 18.</p>
+
+<p>You can go all the way back to 2020 in that big dislocation in the effects Mark.</p>
+
+<p>And I’m sure you will remember that when we hit 114 or something like that in spring of 2020.</p>
+
+<p>Lisa this is not a pretty picture for the UK.</p>
+
+<p>Are you saying that it is because of the pound weakening that you did not go to the U.S. Open.</p>
+
+<p>Is that your basically sterling savings I’m looking at now and I’m thinking maybe maybe is just some of the projections coming about.</p>
+
+<p>The inflationary backdrop in the United Kingdom is beyond shocking.</p>
+
+<p>It is beyond what we’re seeing over in the mainland of Europe.</p>
+
+<p>And you do wonder how they’re going to deal with it.</p>
+
+<p>What do you call continental Europe.</p>
+
+<p>OK.</p>
+
+<p>But I mean this is to me one of the biggest stories because how they deal with it is sort of a leadership role in terms of countering high gas prices with lower demand an inevitable recession.</p>
+
+<p>This is going to make things much much harder for the Bank of England and I think for the ECB as well.</p>
+
+<p>We’re seeing bigger and bigger expectations Tom with rate hikes from those two respective central banks.</p>
+
+<p>And a currency is not stronger.</p>
+
+<p>The weaker.</p>
+
+<p>Yeah well you know that’s true John.</p>
+
+<p>But you know Lisa seems stressed today John don’t you think.</p>
+
+<p>In what way.</p>
+
+<p>I think it’s the voice of a parent wondering if the children have the right calculator to go back to school.</p>
+
+<p>Lisa are the kids properly calculated.</p>
+
+<p>I don’t know.</p>
+
+<p>They’re asleep.</p>
+
+<p>And honestly I’m going on vacation.</p>
+
+<p>So I’m not stressed.</p>
+
+<p>You need the right against you later.</p>
+
+<p>Eight fifty six.</p>
+
+<p>Thirty two more days.</p>
+
+<p>And then I’m not up 55 again.</p>
+
+<p>So this is the last hurrah.</p>
+
+<p>You coming back afterwards.</p>
+
+<p>That’s the plan.</p>
+
+<p>I guarantee you John.</p>
+
+<p>I’m never going to.</p>
+
+<p>Yeah exactly.</p>
+
+<p>Then we CAC why she’s taking more vacation this summer than you and I combined.</p>
+
+<p>It’s fantastic.</p>
+
+<p>No regrets.</p>
+
+<p>Futures up two tenths of one percent from a beautiful New York.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>Keeping you up to date with news from around the world with the first word answers you could get to more revelations in the probe of those classified documents found at Donald Trump’s Florida home.</p>
+
+<p>In a court finding the Justice Department suggests there may have been attempts to obstruct the investigation by moving some of the papers.</p>
+
+<p>The filing included a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents.</p>
+
+<p>Europe faces the risk of blackouts rationing and a severe recession if Russia slashes gas deliveries further.</p>
+
+<p>And the next reality check is at hand.</p>
+
+<p>Starting today there’ll be a halt in gas sent through the Nord Stream pipeline.</p>
+
+<p>It’s a key source of energy for the EU.</p>
+
+<p>There’s a concern that Moscow will find another excuse to clamp down on those supplies.</p>
+
+<p>And prices in British shops rose this month at the highest rate since at least 2005 according to the British Retail Consortium.</p>
+
+<p>Shop price inflation increased to five point one per cent in August.</p>
+
+<p>The price of food rose even more nine point three percent.</p>
+
+<p>Shoppers are doing everything they can to save money at the checkout including buying less food.</p>
+
+<p>Two of Wall Street’s best known investment banks say it’s time to come back to the office.</p>
+
+<p>Goldman Sachs and Morgan Stanley are removing some of their last Covid restrictions in New York.</p>
+
+<p>For instance Goldman employees with an approved exemption to the city’s vaccine mandate can enter offices with no testing or face coverings.</p>
+
+<p>The firm has been aggressive in pushing a return to this global news 24 hours a day on air and on Bloomberg Quicktake which could get to.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>I’m paying attention what the Fed is telling us I think they’re wrong.</p>
+
+<p>I think that Powells already told us we are operating policy without focusing on what’s happening on the supply side of the economy.</p>
+
+<p>David Rosenberg the founder and president at Rosen Fact Research Line from New York City this morning.</p>
+
+<p>Good morning.</p>
+
+<p>Tom Keene.</p>
+
+<p>Lisa Abramowicz and Jonathan Ferro features positive just about up to 10 sunny S&amp;P after three data losses in the equity market amounting to about a loss of 5 percent to 5 percent in three days.</p>
+
+<p>Remarkable stuff yields up 3 basis points on a 10 year 313 81 on a two year.</p>
+
+<p>We take out a high set a year and the last 24 hours euro’s weaker.</p>
+
+<p>Sterling is tape.</p>
+
+<p>We take a snapshot.</p>
+
+<p>St.</p>
+
+<p>John wants sixteen ninety.</p>
+
+<p>John what’s the emotion of 115.</p>
+
+<p>Is that like Dow 10000 and that over stats 10000.</p>
+
+<p>But it’s certainly troublesome for this Bank of England as they hike in interest rates and can’t gain any traction whatsoever.</p>
+
+<p>Any affects Mark.</p>
+
+<p>Does that mean to the people of the United Kingdom they’re not alone.</p>
+
+<p>Well if you’re importing inflation now some you’re import a whole lot more with a weaker pound sterling.</p>
+
+<p>Unbelievable.</p>
+
+<p>We’re going to do right now.</p>
+
+<p>And this is a great honor to have Julie Norman with us.</p>
+
+<p>She’s the co-director of the UCLA Center on U.S.</p>
+
+<p>Politics but is really definitive on continental Europe and of course terrorism and the study of the Middle East as well.</p>
+
+<p>Julie we digress today to Mr.</p>
+
+<p>Gorbachev.</p>
+
+<p>Why does Mr.</p>
+
+<p>Putin hate him so much as it’s just as simple as he’s the guy that gave up the Soviet Union.</p>
+
+<p>Well that’s certainly a lot of timing.</p>
+
+<p>What we see playing out obviously with Russia and Ukraine today you can destroy a direct through line back to Gorbachev and the dissolution of the USSR back in the day at a time when cotton was just kind of coming into his own in the KGB and just saw that dissolution as a complete tragedy.</p>
+
+<p>And I would say to it wasn’t just the dissolution but also the changes that Gorbachev made before that the opening up of the media the opening up of multiparty election writings of dissonance all the things that Putin we know has brought back.</p>
+
+<p>Why don’t want to do a history lesson here.</p>
+
+<p>But the idea of Gorbachev and then Yeltsin who is one of the things I’ve most been wrong on in my career we come to Putin who’s after Putin.</p>
+
+<p>If you look at transfer of power of Gorbachev to Yeltsin and the rest of the dance of the Russians how can you choose who’s after Putin.</p>
+
+<p>Do you have any idea.</p>
+
+<p>I think it’s a tough question Tom and partly just because Putin as we know has consolidated power so much around him and through the inner circle of the party that it’s not like looking at you know another country that would say who’s who’s competitive in elections or who’s popular or something like that.</p>
+
+<p>It’s a very close circle and it’s one that we know Putin is going to hold onto as long as possible himself.</p>
+
+<p>So even the timeline on that is anyone’s guess.</p>
+
+<p>Virtually Gorbachev’s death really raises a question about whether Russia could be a democracy.</p>
+
+<p>Whether democracy has failed as a project in Russia is Putin’s legacy that whoever follows him will also be an autocratic leader because of the legacy of a democracy that did not take off in the way that many people hoped.</p>
+
+<p>Well it’s a good question.</p>
+
+<p>And your Gorbachev himself you know obviously from the west is hailed very much as a hero.</p>
+
+<p>But in Russia at the time of his you know at times and his office up till now was very unpopular because even in the early 90s period he could not deliver on his promises internally to what people were hoping for.</p>
+
+<p>And that was the economic side as well as the more political side.</p>
+
+<p>So I think Gorbachev was hoping that there was growing pains would be temporary.</p>
+
+<p>Obviously things have gone another direction.</p>
+
+<p>I think in the long drive of history we know that doesn’t mean a country is doomed to a certain trajectory forever.</p>
+
+<p>But it does probably indicate that it’s going to be on that route for at least the coming years with someone like Putin.</p>
+
+<p>And again the kinds of people he has put around him are in charge.</p>
+
+<p>Julie heading into the fall the focus very much will be on Europe and the natural gas situation whether Russia’s going to stop some of the exports to that region.</p>
+
+<p>Nordstrom One goes into maintenance for three days.</p>
+
+<p>Will it come out is the big question.</p>
+
+<p>What is the advantage for Russia to just cut off supplies.</p>
+
+<p>I mean is it cannibalizing from all of its future revenues.</p>
+
+<p>Well it certainly seems that way.</p>
+
+<p>But it’s also the main area where Russia from the beginning of this crisis has had real leverage and putting the squeeze on Europe putting the squeeze on the U.K.</p>
+
+<p>really just showing where they have this political where they have this economic as well as political muscle.</p>
+
+<p>And so we see them leveraging nod.</p>
+
+<p>And I think a lot of this is also tied up with peripheral issues as well.</p>
+
+<p>So relations with China relations with Iran.</p>
+
+<p>These are things that are kind of helping some of their allies bringing some of them closer at the same time.</p>
+
+<p>Julie take us from the really I think pretty poor coverage in America of Ukraine away from the generalization that the Russian military effort is stodgy slow motion very doctrinaire and the Ukrainians are making it up as they go etc etc..</p>
+
+<p>That’s a stereotype.</p>
+
+<p>What’s the nuance of Curson or the nuance in the South etc.</p>
+
+<p>The nuance on the Baltic Sea between those two forces.</p>
+
+<p>It was I think it’s a good question because there’s a lot that we don’t know and a lot of the coverage that we are seeing is of course telling the story that I think a lot of viewers in the West want to hear.</p>
+
+<p>And in reality the war as we know is already quite long.</p>
+
+<p>We know that is trying to recruit more people into the army as it seems as a thing that’s going to be ongoing in Carson for example.</p>
+
+<p>It’s unclear exactly how much Ukrainians had been able to push back or not.</p>
+
+<p>There’s a lot of controversy right now around the nuclear sites that the U.N.</p>
+
+<p>is going to be has been living in there today to try and stabilize that.</p>
+
+<p>So there is a lot of errors especially in the kind of the eastern part of the country where Russia has control that Ukraine is trying to chip away at.</p>
+
+<p>That is just going to be an ongoing slow slog moving into the fall in the winter.</p>
+
+<p>And it’s it’s attractive to want to see these victories.</p>
+
+<p>And of course some of them are there.</p>
+
+<p>But but I think this is going to be a very long conflict as many as many others have said as well.</p>
+
+<p>Judy thank you as always.</p>
+
+<p>Gerry Norman of UCLA Center on U.S.</p>
+
+<p>Politics.</p>
+
+<p>Lisa the consequences of this war will be found for a long long time and these sanctions off the back of it.</p>
+
+<p>Look at what’s happening in the U.K. right now.</p>
+
+<p>You do have to ask the question how long would resolve this coalition last as the economic pain starts to materialize even more less trust.</p>
+
+<p>Who is the leading candidate to be the next prime minister in the U.K.</p>
+
+<p>is talking about plans to cut taxes and raise spending.</p>
+
+<p>Charlie Bean the former deputy governor of the Bank of England was on with our team in London earlier this morning and talked about the risk of a large sustained deficit in the medium term and how investors may start to think the U.K.</p>
+
+<p>doesn’t look like such a good place to invest.</p>
+
+<p>What’s been happening in the U.K. yields a much much higher.</p>
+
+<p>Sterling is much much weaker.</p>
+
+<p>What’s the central bank’s role in all of that.</p>
+
+<p>It’s a big question mark right.</p>
+
+<p>This is unprecedented and it’s a very difficult place for them to be in.</p>
+
+<p>The question that you ask though about where is the resolve.</p>
+
+<p>How much is there and how much pushback do you start to get as the economic pain deepens.</p>
+
+<p>That goes to Jennifer Granholm point the energy this energy secretary in the United States raising issues with the exports of natural gas from the United States to Europe because it raises the prices domestically in the United States.</p>
+
+<p>At what point does some of the alliances splinter in the face of economic pain that is very real and very difficult to combat from the central bank level.</p>
+
+<p>It was the first question Tom asked yesterday when we went through that story.</p>
+
+<p>Tom is the Department of Energy on the same page as the State Department and this White House in America.</p>
+
+<p>That’s the way it is.</p>
+
+<p>But I think John to your point about currencies and I think a lot of our listeners and viewers John said well why do we follow Sterling.</p>
+
+<p>Who cares.</p>
+
+<p>It’s the litmus paper of the system.</p>
+
+<p>John I didn’t know this.</p>
+
+<p>I just did the math here.</p>
+
+<p>What you can do quickly on the Bloomberg your sterling John.</p>
+
+<p>February 24th.</p>
+
+<p>14 percent.</p>
+
+<p>Depreciation Brad Stone stunning.</p>
+
+<p>That’s one stunning one.</p>
+
+<p>Heck of a move to help.</p>
+
+<p>That’s for sure.</p>
+
+<p>Futures are up about a third of 1 per.</p>
+
+<p>The Nasdaq bouncing back by eight or nine tenths of one percent.</p>
+
+<p>We’ll break this down with the brilliant Julian Emanuel of Evercore.</p>
+
+<p>He’s going to join us in about four minutes time from New York City on TV and radio for an audience worldwide.</p>
+
+<p>This is Bloomberg Surveillance.</p>
+
+<p>I think in the next three to four months through the rest of this year it’s going to be a really volatile time.</p>
+
+<p>You have to be opportunistic.</p>
+
+<p>You have to be patient.</p>
+
+<p>And you have to realize that this probably won’t go on for a bit.</p>
+
+<p>The Fed is going to face an increasingly more difficult challenge this time around when they pause.</p>
+
+<p>You want to be very wary about the relief broadly.</p>
+
+<p>You are fighting the Fed.</p>
+
+<p>If you’re bullish it’s hard to find anybody that’s bullish.</p>
+
+<p>Now this is Bloomberg Surveillance with Tom Keene Jonathan Ferro and Lisa Abramowicz.</p>
+
+<p>It’s.</p>
+
+<p>Where did all the bulls come from New York City this morning.</p>
+
+<p>Good morning.</p>
+
+<p>Good morning from audience worldwide.</p>
+
+<p>This is Bloomberg Surveillance Life on TV and radio alongside Tom Keene and Lisa Abramowicz.</p>
+
+<p>Some Jonathan Ferro features up a quarter of 1 percent on the S&amp;P on the Nasdaq 100 up seven tenths of one percent T.K..</p>
+
+<p>We have a bounce.</p>
+
+<p>Will it stick.</p>
+
+<p>It’s a bounce in the data really speaks volumes.</p>
+
+<p>We’ve had you know I get the equity bounce and all that with the VIX twenty six point two one shows it’s not too much agony but the two year yield John earlier this morning that’s a big deal.</p>
+
+<p>And the Japanese yen tells me this is a global coordinated system into September.</p>
+
+<p>Yesterday good news was bad news Lisa.</p>
+
+<p>This time around this Friday if we get bad news it’s not just bad news.</p>
+
+<p>Well not necessarily.</p>
+
+<p>I mean basically if you get a disappointing jobs number does it give a bit of a relief to people who are expecting that perhaps it’s a 75 basis point rate hike by the Federal Reserve in September.</p>
+
+<p>That said what are we really looking at here right now.</p>
+
+<p>You’re just talking about this before John.</p>
+
+<p>Longer term inflation expectations are actually tumbling since Fed Chair Jay Powell speech.</p>
+
+<p>People believe that they are going to get inflation under control much more significantly.</p>
+
+<p>And that’s perhaps why you’re seeing a little bit more of a lift in tech stocks because people are seeing oh perhaps there’s more of a case for those in a slow growth kind of environment or yield to eventually go back down.</p>
+
+<p>I think they’ve all been sent the same hymn sheet because they’ve been singing from the same.</p>
+
+<p>One thing about my for the last couple of days have said the last the last couple of days they’ve said the same thing.</p>
+
+<p>Right.</p>
+
+<p>And hold and hold for maybe a year perhaps even longer term than that.</p>
+
+<p>And that’s been the forceful message of this Fed over the last week or so.</p>
+
+<p>That’s the front parlor game.</p>
+
+<p>And I’m sorry John the data matters.</p>
+
+<p>But John let’s be clear as we go into the jobs day and really this is the beginning of the study of Friday’s jobs.</p>
+
+<p>This ADP this morning matter for Jerome Powell.</p>
+
+<p>I don’t think so.</p>
+
+<p>Strange when that one time because if you ask people if ADP matters Lisa that turnaround is saying no it doesn’t.</p>
+
+<p>And then sometimes we end up trading on it.</p>
+
+<p>Then once you get to Friday ADP no longer matters.</p>
+
+<p>OK just focus on pay.</p>
+
+<p>I think it’s fascinating that because we’ve all been saying the ADP doesn’t matter.</p>
+
+<p>ADP took a break and they said we’re not going to put out data for a couple of months.</p>
+
+<p>And now they’re coming back and they’re saying now it matters.</p>
+
+<p>So let’s see what happens and let’s see whether that date attracts a little more closely.</p>
+
+<p>It might be a pivotal moment.</p>
+
+<p>This might be a really exciting day.</p>
+
+<p>It may well be or not.</p>
+
+<p>Probably not.</p>
+
+<p>Do you think I could take a break like ADP.</p>
+
+<p>How many months was that.</p>
+
+<p>Couple of months.</p>
+
+<p>Seven months.</p>
+
+<p>Yeah.</p>
+
+<p>To reassess.</p>
+
+<p>You got to reaching methodology to date and start with Sterling.</p>
+
+<p>You want me to start with standing early.</p>
+
+<p>OK.</p>
+
+<p>I think I going to start with equity.</p>
+
+<p>So let’s do that Tom because the team’s not ready.</p>
+
+<p>How far up sterling just yet.</p>
+
+<p>So futures up two tenths of one percent on the S&amp;P and the Nasdaq 100 up around six or seven tenths of one percent.</p>
+
+<p>Eurodollar 99 83 with negative a third of 1 percent.</p>
+
+<p>So that’s a weaker euro in the mix.</p>
+
+<p>And we’ve talked about pants standing a couple of times this morning.</p>
+
+<p>Lisa 116.</p>
+
+<p>Twenty.</p>
+
+<p>Negative.</p>
+
+<p>A third of 1 percent.</p>
+
+<p>Hiking into weakness.</p>
+
+<p>And that weakness is the more prevalent story especially as we look at some of the potential projections for inflation in that region 18 percent over at Citigroup.</p>
+
+<p>Whether or not that’s just a marketing ploy will have to be debated later on the show today.</p>
+
+<p>Nord Stream one that goes off line for three days for maintenance maybe gets longer.</p>
+
+<p>That is the question whether Russia is going to stop exporting natural gas to Europe.</p>
+
+<p>We’re seeing a little bit of a lift to natural gas prices but yesterday and the day before huge decline in natural gas prices.</p>
+
+<p>And I think this was really underpinning some of the attempted a bullish feeling at least to start the trading day as people took a look at a concerted effort by EU members to get some sort of structure for the electricity markets but also stockpiles rising faster than their previously expected 815 AM.</p>
+
+<p>Do we care.</p>
+
+<p>I guess we’ll be passing that through.</p>
+
+<p>ADP putting out their numbers after taking a break for a couple of months.</p>
+
+<p>How much is their new methodology making it more relevant and giving a sense of what we can expect on Friday with jobs report.</p>
+
+<p>Yesterday’s JOLTS data was much more important than people had previously thought.</p>
+
+<p>It was jobs Tuesday because we saw that all those openings climb in a way that people were not expecting.</p>
+
+<p>Now nearly two job openings per every American that signals that there still is a lot of momentum behind wage gains.</p>
+
+<p>Right.</p>
+
+<p>That is the concern is that this is going in the opposite direction of where the Fed wants to see.</p>
+
+<p>This is not labor market weakness.</p>
+
+<p>Is this the exact opposite.</p>
+
+<p>Wage gains Joel Weber.</p>
+
+<p>This is a big concern for some people even though it’s good news.</p>
+
+<p>Right.</p>
+
+<p>This is why good news is bad news today.</p>
+
+<p>Fed speak.</p>
+
+<p>It continues.</p>
+
+<p>Lots of it.</p>
+
+<p>We’ve been hearing a lot from Fed speakers.</p>
+
+<p>Well they give us any new insight or will they just continue singing from the same hymn sheet.</p>
+
+<p>Laura Ambassador Cleveland Fed President Laura Logan.</p>
+
+<p>Dallas Fed President Rafael Bostic.</p>
+
+<p>Atlanta Fed President.</p>
+
+<p>All lining up to give a sense of what they’re looking for.</p>
+
+<p>I’m still looking for some insight John in the balance sheet and how that’s going to potentially affect things.</p>
+
+<p>So I might be calling this ADP Wednesday.</p>
+
+<p>ADP once again it’s not going to get it.</p>
+
+<p>That’s not to say oh a wins.</p>
+
+<p>It’s not going to work.</p>
+
+<p>Lisa thank you.</p>
+
+<p>That’s where there’s chief equity and quantitative strategist Evercore ISI.</p>
+
+<p>Jillian you call this the gray zone one of just a gray zone.</p>
+
+<p>The gray zone is look we had a reasonably.</p>
+
+<p>Epic bear market from January to June.</p>
+
+<p>That was not only the epitome of don’t fight the Fed but the markets took the hawkish narrative and ran with it in an unprecedented way causing you know if you look at the stock bond quadrant you know the biggest losses in the combined 60 40 portfolio that we’ve seen in years.</p>
+
+<p>And then it all turned in June and into a few weeks ago.</p>
+
+<p>And now we’re at a point where do we go back to the.</p>
+
+<p>Don’t fight the Fed mantra.</p>
+
+<p>Or do we think about it and we think about the unfolding you know perhaps the Fed easing off which is not at all in the script right now.</p>
+
+<p>Right.</p>
+
+<p>Even though people who else counter that this is important to that point in the last twenty two hours we’ve heard your David Rosenberg and look till you willing to trust bull scream the disinflation story.</p>
+
+<p>Edward Hyman screams at home and says we’re going from age 9 ish and we’re going down not to 2 but we’re going to 4 percent.</p>
+
+<p>What does your world do if we get an at home and disinflation stocks do well stocks ask about do what are they.</p>
+
+<p>They do double digit.</p>
+
+<p>Well do they roar.</p>
+
+<p>Not in this environment.</p>
+
+<p>Not yet because that likelihood is that if that happens Ed’s view of 1 percent GDP is probably where we are in 2023 and that’s still a constrained environment.</p>
+
+<p>But I want to make a point here.</p>
+
+<p>OK you’ve got three Fed speakers today.</p>
+
+<p>OK.</p>
+
+<p>And if you think about it going back to the first hike in March every time there was an extreme sort of market response to anything that Paul said both either hawkish or dovish the Fed speakers come out and have moderated the tone.</p>
+
+<p>It’s going to be very informative.</p>
+
+<p>What did they say.</p>
+
+<p>Can we hear him on every day.</p>
+
+<p>The day.</p>
+
+<p>I mean just to lighten it up here people can talk to his people so far.</p>
+
+<p>Julian to your point the other Fed officials have absolutely doubled down.</p>
+
+<p>They have not watered down Jay Palace message at all.</p>
+
+<p>They’ve gotten quite the other way.</p>
+
+<p>How does that inform your assertion which is rather dramatic that the growth led rally is over.</p>
+
+<p>You’re basically repudiating this idea that big tech can rally in the face of perhaps more economic weakness even with the Fed that is determined to hike rates.</p>
+
+<p>Well and again it’s surprising to the extent in the last couple days how much the other Fed officials have doubled down.</p>
+
+<p>But what it does is it just when when you look at yields you know they’re going up on the short end rates.</p>
+
+<p>But also when you think about the fact that tomorrow we’re going to start 95 billion a month in Kutty.</p>
+
+<p>It’s hard not to make the case that yields on the long end are going up as well.</p>
+
+<p>And again as we’ve seen in this positively correlated stock bond well that’s a massive headwind for stocks particularly for growth stocks.</p>
+
+<p>What kind of downside are you seeing.</p>
+
+<p>Julian.</p>
+
+<p>I would say the key here is does the consumer hold in in September.</p>
+
+<p>If you think about it one of the anomalies of this year is that consumer sentiment has been absolutely abysmal the entire year.</p>
+
+<p>And spending has been fine.</p>
+
+<p>Obviously that’s one of the strange this is about a new inflationary environment.</p>
+
+<p>But if you think about it you know could you get into this idea.</p>
+
+<p>We’re back to the office.</p>
+
+<p>We’re back to school.</p>
+
+<p>September is challenge.</p>
+
+<p>That is the kind of environment if the consumer holds in.</p>
+
+<p>We could be OK.</p>
+
+<p>We know.</p>
+
+<p>But if not there’s a potential retest of the lows in store.</p>
+
+<p>Well this is the bigger question Judy.</p>
+
+<p>And it’s not about whether inflation comes down to 4 percent.</p>
+
+<p>It’s what price are you willing to pay.</p>
+
+<p>It’s got inflation down to 4 percent was unemployment when inflation comes down to 4 percent.</p>
+
+<p>What’s happened to GDP when inflation comes down to 4 percent.</p>
+
+<p>Janet it’s not that easy is it just to say we come down to 4 percent.</p>
+
+<p>That’s good for stocks.</p>
+
+<p>No not at all.</p>
+
+<p>And look if we’ve learned anything this year or I’d argue the last two and a half years is that the tail outcomes.</p>
+
+<p>You know when people talk about black swans they happen a heck of a lot more frequently than we would have ever imagined.</p>
+
+<p>And that’s really what you’ve seen to a large extent this year.</p>
+
+<p>And so you know there’s a lot of different potential outcomes as we head into the fall.</p>
+
+<p>We started trying to say super super open minded about this.</p>
+
+<p>Gillian can you help us do that.</p>
+
+<p>The short and shallow consensus around a recession in America.</p>
+
+<p>How would you the team thinking about maybe the tail risk here.</p>
+
+<p>So we continue to think that you’re not likely to have a recession.</p>
+
+<p>But if Ed’s view of 1 percent GDP next year is correct and we see a symmetrical pardon me symmetrical risks are around that number it’s still going to feel for asset markets from time to time as if there is a recession.</p>
+
+<p>That argues for higher volatility.</p>
+
+<p>And then again you know Ed said it a couple days ago.</p>
+
+<p>It argues for humility and forecasts as that sent out the memo.</p>
+
+<p>It won’t get back to the office.</p>
+
+<p>Didn’t do it.</p>
+
+<p>There’s a real question.</p>
+
+<p>Did he do a Solomon memo you know day after Labor Day where we’re where guns blazing get back in the ties or back of notes as wound some.</p>
+
+<p>Did you notice that message when young Cassius was with us from Goldman.</p>
+
+<p>I noticed the tie was back up only after the incident.</p>
+
+<p>It was a tie of our own when the time was yes I was the pandemic young took it off both times.</p>
+
+<p>Go some the gone though.</p>
+
+<p>Shery Ahn.</p>
+
+<p>Thank you.</p>
+
+<p>Good to see you.</p>
+
+<p>On note to the open.</p>
+
+<p>I noticed that the bow tie and your men from time on to the man from Del Monte.</p>
+
+<p>Yep.</p>
+
+<p>Did you catch up with them at home.</p>
+
+<p>No I didn’t.</p>
+
+<p>She’s a lot of pain and to be honest she can’t hold a racket.</p>
+
+<p>It’s that simple.</p>
+
+<p>The blisters on her hands.</p>
+
+<p>Yeah.</p>
+
+<p>Wicked.</p>
+
+<p>Wicked.</p>
+
+<p>I mean not a problem for the last year.</p>
+
+<p>Two or three.</p>
+
+<p>It’s like they had to take a break in the middle and put seven bandages on or whatever not get crushed.</p>
+
+<p>No good.</p>
+
+<p>I tell you what.</p>
+
+<p>There’s something going on in the secondary market in U.S.</p>
+
+<p>Open in the U.S.</p>
+
+<p>Open on the ticket front.</p>
+
+<p>This just so I agree.</p>
+
+<p>There’s something we done.</p>
+
+<p>I got very lucky.</p>
+
+<p>There’s something really strange.</p>
+
+<p>You know if you have any theories please.</p>
+
+<p>My theory is roto e-mailed and said no I buy this.</p>
+
+<p>I said some 20 percent.</p>
+
+<p>Some of these tickets have quadrupled.</p>
+
+<p>You know you’re right.</p>
+
+<p>Something really odd coming on the secondary market.</p>
+
+<p>Absolute ticket master.</p>
+
+<p>We want a conversation with you when you’re available.</p>
+
+<p>Features up to 10 Juliette Saly Day from New York.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>Keeping you up to date with news from around the world with the first word I’m risking GUPTA Inflation in the Eurozone has set another all time high.</p>
+
+<p>Consumer prices in 19 country currency bloc rose nine point one percent in August from a year ago.</p>
+
+<p>That beat the median estimate in a Bloomberg survey of economists.</p>
+
+<p>And it strengthens the case for the European Central Bank to consider a jumbo interest rate hike when it meets next week.</p>
+
+<p>The Justice Department says White House records hold held in a storage room at Donald Trump’s Florida home may have been moved before an FBI search in June.</p>
+
+<p>The Justice Department says that could have been an attempt to obstruct the investigation.</p>
+
+<p>In a filing there was a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents and shares a bed bath and Beyond plunging the struggling home goods retailer said in a finding that it may sell an unspecified number of shares from time to time.</p>
+
+<p>Bed Bath and Beyond is holding a conference call today to provide what it calls a business and strategic update on those shares of SNAP.</p>
+
+<p>Also falling today according to The Verge the parent of Snapchat plans to layoff about 20 percent of its nearly 60 500 employees starting today.</p>
+
+<p>The stock already has fallen almost 80 percent this year.</p>
+
+<p>SNAP has been struggling with a slowdown in advertising spending.</p>
+
+<p>Global news 24 hours a day on air and on Bloomberg Quicktake powered by more than twenty seven hundred journalists and analysts in more than 120 countries and which could get to.</p>
+
+<p>This has been back.</p>
+
+<p>The decline in the gas price closing in on a dollar 20 off of its peak per gallon in mid-June.</p>
+
+<p>That’s a trend.</p>
+
+<p>I mean that’s been well over two months now.</p>
+
+<p>So that’s been having some momentum and we expect that to have more Emily Chang.</p>
+
+<p>Ben Stein to the White House note 380 now the average price of gasoline in the United States of America.</p>
+
+<p>Middle of June.</p>
+
+<p>And what happened to the middle of June didn’t it.</p>
+
+<p>June 13th.</p>
+
+<p>More than five dollars a gallon.</p>
+
+<p>Was the average brutal stuff.</p>
+
+<p>Tom Keene Lisa Abramowicz and Jonathan Ferro futures right now.</p>
+
+<p>Positive.</p>
+
+<p>Two tenths of one per cent on the last night.</p>
+
+<p>One hundred six tenths of one percent.</p>
+
+<p>You know it’s up three or four basis points 314 on a 10 year crude lower by two point seven percent 89 15.</p>
+
+<p>But the epicenter the price action right now foreign exchange.</p>
+
+<p>Ninety nine ninety on euro dollar negative a quarter of one per cent with the hawkish speak from the Bundesbank this morning off the back of an upside surprise on CPI north of 9 percent going into an ECB meeting.</p>
+
+<p>Why we’re talking about not 50 possibly 75 basis points on the table for the ECB next week.</p>
+
+<p>And Sterling breaking down as well 116 23 Capetown negative 31 per cent.</p>
+
+<p>Yeah.</p>
+
+<p>The drift function in currency this morning is really pretty.</p>
+
+<p>I just looked at a fancy chart and sterling John and I won’t mince words.</p>
+
+<p>It’s grim job.</p>
+
+<p>We’ve got to get out front of the real yield.</p>
+
+<p>The real yield is very quietly moved up.</p>
+
+<p>It start out to new high but the 10 year real yield America is an unspoken story.</p>
+
+<p>The end of this summer I think it was Lisa’s chart the last 24 hours.</p>
+
+<p>Tom Mackenzie.</p>
+
+<p>Yeah.</p>
+
+<p>Well she’s out front of you know where.</p>
+
+<p>She’s out front of everyone on Twitter.</p>
+
+<p>Lisa Abramowicz.</p>
+
+<p>What a move.</p>
+
+<p>That speech.</p>
+
+<p>Yeah it’s been dramatic.</p>
+
+<p>And how much is that.</p>
+
+<p>What’s underpinning the move that we’ve seen an equities.</p>
+
+<p>This is a reassessment of how far the Fed will go how much pain they’re willing to inflict on an economy to get inflation under control.</p>
+
+<p>Tom if you go back to June highs to stocks below Ben they belong at June lows.</p>
+
+<p>And that’s something we can discount Syria and we’ll see if that’s the exception of the rule.</p>
+
+<p>S&amp;P at 4000.</p>
+
+<p>Exactly.</p>
+
+<p>Jack Frost Patrick now on Washington Jack.</p>
+
+<p>The silly season starts in the old days.</p>
+
+<p>Politicians kiss babies.</p>
+
+<p>How did they reach out to voters.</p>
+
+<p>Now give us a social media or advertising update on the crazy messages we’re going to see on the dash to November.</p>
+
+<p>You know in terms of crazy messages especially that speak to the modern era of campaigning the Pennsylvania Senate race has been very interesting a bit surprising.</p>
+
+<p>You’ve seen Mehmet Oz the Republican nominee Dr.</p>
+
+<p>Oz go after John Fetterman the Democrat a couple times talking about his health.</p>
+
+<p>Fetterman had the stroke.</p>
+
+<p>And you know there was a Twitter ad that ISE put out using the word crazy saying he did.</p>
+
+<p>He’d kind of lost it and implying he had not fully recovered from it.</p>
+
+<p>It’s the kind of thing that previously you would have thought they’d hope that a superPAC independently would do that kind of attack.</p>
+
+<p>You wouldn’t want your name on it.</p>
+
+<p>I don’t know how that’s going to play out there.</p>
+
+<p>There’s some surprise that ISE has has taken that line a couple times now.</p>
+
+<p>But yes social media especially pandemic and post pandemic is a huge focus on social media and what you can do with that and how that undermines some traditional thoughts about fundraising and how that plays into campaign strategy.</p>
+
+<p>But the Pennsylvania Senate race probably made my favorite strange example of that lately.</p>
+
+<p>Jack was so important.</p>
+
+<p>Here is the stereotype as the Republicans have money the Democrats don’t.</p>
+
+<p>Am I right that that’s not true this time around.</p>
+
+<p>Yeah you know for a while now Democrats Democrats really were the first to use social media and sort of the modern Internet as a means of big time fundraising.</p>
+
+<p>Obama first Obama campaign was out earlier than Republicans on that.</p>
+
+<p>And a lot of this has been shaken up again with social media and the 2016 race.</p>
+
+<p>Trump cell funding to a significant degree and relying on social media more than you know TV advertisements.</p>
+
+<p>If you remember 2016 Jeb Bush’s people were talking about shock and awe hoping that they could raise so much money that even Marco Rubio wouldn’t dare to run.</p>
+
+<p>Obviously that was not the case.</p>
+
+<p>And so the presence of social media and the digital strategy and the prominence of that has made it totally totally different than the traditional fundraising focus that was in place for a long time.</p>
+
+<p>Jake before we let you go we have to really mark a moment that we kind of missed which is that the pandemic is officially over.</p>
+
+<p>That seems to be what the new CDC guidance has been saying.</p>
+
+<p>And it certainly is the case with Goldman Sachs and Morgan Stanley saying get back to work.</p>
+
+<p>You don’t have to test if you’re not vaccinated.</p>
+
+<p>Cool.</p>
+
+<p>You don’t have to wear a face covering.</p>
+
+<p>And oh by the way if you’re exposed as somebody who is positive just wear a mask.</p>
+
+<p>If you get sick wear a mask.</p>
+
+<p>I mean it basically is it’s your responsibility not a public health concern anymore.</p>
+
+<p>Is this a watershed moment.</p>
+
+<p>I don’t know but a watershed moment.</p>
+
+<p>But we have been inching toward a time period in which medically the pandemic would not be over and it’s it’s not it’s not gone.</p>
+
+<p>It’s we’ve still got much a much more significant issue on our hands than something like the seasonal flu.</p>
+
+<p>But the you know medical professionals and politicians I think had the sense that there would not be a hard end there wouldn’t be a mysterious disappearance of the virus like has happened.</p>
+
+<p>At times the Spanish flu for example and they were going to have to make some decisions about when to a little bit ignore it.</p>
+
+<p>And that raises hard questions about funding for vaccines what the U.S.</p>
+
+<p>role is internationally how seriously they take that.</p>
+
+<p>The last six months or so has been just a series of examples of lawmakers taking the.</p>
+
+<p>The push for vaccine testing.</p>
+
+<p>Funding that kind of thing less and less seriously until it just kind of fell off the table.</p>
+
+<p>So we we have gotten to the point where there’s a significant delta between the the medical reality that it’s still there.</p>
+
+<p>Look our political and cultural willpower to take very significant steps that people have gotten tired of.</p>
+
+<p>Jack thank you.</p>
+
+<p>Jack Fitzpatrick that down in D.C.</p>
+
+<p>Prema I think government Morgan Stanley hoping how can it suffer its get back to work in a big way isn’t it.</p>
+
+<p>Get back to the office.</p>
+
+<p>It’s basically there is enough remedies and years Nephi collective immunity that you’ll be fine.</p>
+
+<p>And if you’re not fine.</p>
+
+<p>Well then we’ll just have to deal with that as a natural consequence.</p>
+
+<p>And that seems to be the Zeit Geist use Tom’s word of frankly the nation.</p>
+
+<p>But people are sick of it.</p>
+
+<p>They just want to get back to some sort of sense of normalcy.</p>
+
+<p>And slowly but surely you’re seeing that around the country and you certainly see businesses say look you can come in and go to the city to go out to eat or go to a show.</p>
+
+<p>You can go back to the office.</p>
+
+<p>I think bosses are sick of it.</p>
+
+<p>Let’s be very clear.</p>
+
+<p>Thank you John.</p>
+
+<p>I hate to say this.</p>
+
+<p>I’m not gonna pick on any individual bank but sort out the office maybe just sort out the booths that people.</p>
+
+<p>I say careful John’s home and make him more comfortable if you want them to come back.</p>
+
+<p>Welcome home.</p>
+
+<p>The architectural channel.</p>
+
+<p>I’m also I’m just saying I think Chad I’m just saying all the good work of the doctors.</p>
+
+<p>I head through the Covid yesterday 473 people died.</p>
+
+<p>To me that’s a little elevated as an amateur.</p>
+
+<p>But still it seems to be a number that’s trending up ever so slightly of the 1.0 four million deaths that we’ve had John.</p>
+
+<p>Jack’s perfect statement the science and the politics is miles apart.</p>
+
+<p>And John to your point a lot of companies are doing that.</p>
+
+<p>They’re rejiggering their offices to make them look nice.</p>
+
+<p>But that’s actually what’s happened.</p>
+
+<p>Now you make him more exciting.</p>
+
+<p>We’re going against the trend folks.</p>
+
+<p>Very exciting.</p>
+
+<p>All of us come back home.</p>
+
+<p>So I’m going against the trying to come back on features epithet on the S&amp;P from New York.</p>
+
+<p>And this is blowing back.</p>
+
+<p>If the pandemic is over we amount in the same room so we’re going to figure out.</p>
+
+<p>I’ve been lobbying for John.</p>
+
+<p>I’ve been lobbying for it to make that happen.</p>
+
+<p>That’s when I know the pandemic is truly unfair.</p>
+
+<p>We’ll share our time.</p>
+
+<p>We’ll run out to sit together for the first time in like two and a half years.</p>
+
+<p>Pictures right now.</p>
+
+<p>Positive quarter of 1 percent on the S&amp;P 500 on the NASDAQ 100 up six tenths of 1 percent.</p>
+
+<p>The equity market bouncing back.</p>
+
+<p>I’ve talked about the losses over the last three days brutal losses over the last three days down about 5 percent on the S&amp;P 500 down a whole lot more on the Nasdaq.</p>
+
+<p>So a bit of a bounce back.</p>
+
+<p>A bounce back though after which suffered over the last week off the back of what’s happened in this market.</p>
+
+<p>The bond market two stents and thirty two year yield taken at the height of the year.</p>
+
+<p>The June 14th close yesterday at the close.</p>
+
+<p>And we add to it again this morning four basis points came very very close to 350 on a two year.</p>
+
+<p>Right now 348 0 7 that move is supporting the US dollar as well.</p>
+
+<p>Even though we’re seeing moves across the Atlantic in Germany and the U.K.</p>
+
+<p>yields higher we’re seeing the currencies weaker weaker weaker.</p>
+
+<p>The dollar index just off levels we haven’t seen since 2002.</p>
+
+<p>Euro dollar just about holding on to parity negative a tenth of one per cent sterling came very very close to a 115 handle 116 35 right now some down two tenths of one per cent.</p>
+
+<p>And if you look at month to date chart look at a month to date chart of yields in the UK and Germany.</p>
+
+<p>You’ll see this just massive moves.</p>
+
+<p>And yet what have you seen in the currency.</p>
+
+<p>Weaker currencies.</p>
+
+<p>And that’s the big day out home for these central banks looking to bring in bring in big time inflation.</p>
+
+<p>Francine Lacqua John Tucker 30 seconds on Italy eight point two percent survey.</p>
+
+<p>Wow 9 percent inflation.</p>
+
+<p>That’s distant Mark Gurman.</p>
+
+<p>A look at headline in Europe some a nine handle for the whole of the eurozone.</p>
+
+<p>And that’s why the Bundesbank is pushing this idea of making a decisive move saying that they shouldn’t fear a recession.</p>
+
+<p>Well we now assume Tom that we’re going to have a recession and they’re going to hike aggressively into it after.</p>
+
+<p>Bear in mind some you mentioned where CPI is in Italy and Germany where it is in the eurozone.</p>
+
+<p>Rates are still a 0 percent.</p>
+
+<p>And that’s how she why this ECB and many the hawks on it are looking for a big move come next week.</p>
+
+<p>Go with that.</p>
+
+<p>I just sorry.</p>
+
+<p>Europe is unique and I think it’s underplayed John.</p>
+
+<p>There is a war going on.</p>
+
+<p>There’s a war going on.</p>
+
+<p>No.</p>
+
+<p>We’ve said that repeatedly.</p>
+
+<p>We’re going to feel the consequences of that war for a long time.</p>
+
+<p>To Thomas you’ve got a supply side problem and you’re trying to address that with interest rate hikes.</p>
+
+<p>Does it make sense that we’re only talking about a short and shallow recession.</p>
+
+<p>Well that because they could be chasing that sale for a long long time trying to get that down.</p>
+
+<p>I think that the combination of those dynamic parts John is when does the Fed see enough data or another central bank where they ease up on the idea we’ve got to get to a real rate regime we’re comfortable with.</p>
+
+<p>And like Rosenberg Julian Emmanuel at home and and others are saying this is going to be the surprises.</p>
+
+<p>What’s the price they’re willing to pay to get inflation down.</p>
+
+<p>One how much pain are they willing to tolerate.</p>
+
+<p>Same point.</p>
+
+<p>Do they.</p>
+
+<p>That’s the issue.</p>
+
+<p>Do they get inflation down.</p>
+
+<p>Or does it decline itself.</p>
+
+<p>If that’s the case that’s a beautiful thing and risk is off to the races.</p>
+
+<p>Do you think that’s going to happen.</p>
+
+<p>No not going to predict.</p>
+
+<p>I don’t think it’s the base case trying to predict.</p>
+
+<p>That’s not the consensus view.</p>
+
+<p>I’m not going to predict.</p>
+
+<p>I think you’re in a better position to protect that game.</p>
+
+<p>So at the moment versus that.</p>
+
+<p>Well I got to go the top because nature shows you know I mean the West has been off.</p>
+
+<p>Yeah.</p>
+
+<p>Of Ted Lasso who manages West Ham.</p>
+
+<p>And maybe not in a not in the real world some anyway.</p>
+
+<p>That’s the cross asset price action.</p>
+
+<p>Lisa is very tolerant very patient.</p>
+
+<p>Hi Lisa.</p>
+
+<p>Hi.</p>
+
+<p>I watch.</p>
+
+<p>I think you guys discussed your theoretical road trip to a fantasy show.</p>
+
+<p>It has to do with football.</p>
+
+<p>It sounds really illuminating.</p>
+
+<p>What I’m watching is actually to this point of short and shallow.</p>
+
+<p>One of the reasons behind this conviction has been because of the strength of the consumer.</p>
+
+<p>The strength of the balance sheet of both companies as well as individuals in the United States more than other places.</p>
+
+<p>HP reported earnings yesterday after the bell.</p>
+
+<p>Fascinating downgrading their forward forecasts as a result of less demand for personal computers and printers.</p>
+
+<p>Also seeing less demand from companies as well.</p>
+
+<p>This has been a consistent theme.</p>
+
+<p>We’ve seen this in semiconductors and we have seen this in the hardware companies.</p>
+
+<p>How much is this portend.</p>
+
+<p>Something bigger versus just all of these people bought all their computers during the pandemic.</p>
+
+<p>I don’t need them now but Bath and Beyond shares absolutely tumbling after this company failed to sell more shares at an unspecified time in a specified amount.</p>
+
+<p>Those shares down nearly 18 percent in premarket trading and SNAP shares down 7 percent or nearly 7 percent after Verge yesterday reported that this company is going to be cutting 20 percent of its 60 500 person workforce.</p>
+
+<p>How much does this portend ongoing job cuts.</p>
+
+<p>Right.</p>
+
+<p>We’ve been seeing this in some of the tech companies.</p>
+
+<p>SNAP of course sort of the social media companies getting hit by a lack of advertising something to watch.</p>
+
+<p>How much is this an anecdotal story versus something more mainstream.</p>
+
+<p>I’m also watching the energy sector because what we are seeing is the third monthly decline of.</p>
+
+<p>Losses in the oil space have declines in the oil space which is the longest streak of losses going back to 2020 we are seeing this reflected in the prices of some of these shares.</p>
+
+<p>Exxon down 2 percent and Chevron two point three percent.</p>
+
+<p>Devon Energy two point seven percent ahead of the open in premarket trading.</p>
+
+<p>How much is this the ongoing trend that will turn out to be wrong.</p>
+
+<p>And Tom this is what we keep hearing from people.</p>
+
+<p>They’re selling energy to raise some cash to go into brand of small caps or other more beaten up areas.</p>
+
+<p>How much is that really going to be the theme heading into winter.</p>
+
+<p>As you see increased demand and possibly just the lack of supply to meet that given some of the international constraints.</p>
+
+<p>International is what I would look to to me.</p>
+
+<p>You can’t guess where there’s some surveys or done.</p>
+
+<p>Alisa push in 30 40 years ago that it’s the toughest market to predict.</p>
+
+<p>I mean it’s just energy is just totally gray.</p>
+
+<p>A nightmare.</p>
+
+<p>Totally.</p>
+
+<p>We’re now going into the bond market.</p>
+
+<p>We look at the end of September.</p>
+
+<p>It’s been so quiet.</p>
+
+<p>What’s it like.</p>
+
+<p>It’s like Rip Van Winkle except we’re going to call it Rip Debt Winkle because that’s what it is.</p>
+
+<p>It’s been asleep.</p>
+
+<p>Deborah Cunningham wakes up for September.</p>
+
+<p>Global liquidity markets officer at Federated erm has revealed she could join us this morning.</p>
+
+<p>What does CFO do in September.</p>
+
+<p>I get the idea.</p>
+
+<p>Equities.</p>
+
+<p>Everybody comes back they recalibrate blah blah blah.</p>
+
+<p>What does CFO do about the issuance of bills notes and bonds come September.</p>
+
+<p>Well I think they look at what the plans are for the rest of the year where they’re going into the next year and decide on short term long term how much you know in in what’s that gray market they’re issuing.</p>
+
+<p>Do they think we’ll we’ll see debt come into the marketplace.</p>
+
+<p>I agree.</p>
+
+<p>Robert Schiffman has a stunning essay out on Amazon at Bloomberg Intelligence this morning of the financing that they could do for a 100 billion dollar possible transaction.</p>
+
+<p>Just to get the firepower in your world is a lot of debt going to be issued just to get the firepower ready.</p>
+
+<p>You know I think there have been companies that have had have already termed out some debt taking advantage of what they think are the shortest or the lowest rates that are going to be you know available to them for a while as inflation continues to be an issue.</p>
+
+<p>But I don’t think it’s every everyone I think you still got you know asset backed issuers.</p>
+
+<p>I think you have corporates.</p>
+
+<p>I think you have financials that are all looking still for additional debt financing in the short term sector as well as maybe the short to intermediate area of the bond curve over the next over the rest of this year and into 2023.</p>
+
+<p>Deborah you’ve got a front row seat in one of the biggest questions in market is coming up particularly starting this week with the acceleration of the runoff in the balance sheet and what that will do with respect to the removal of liquidity in the markets how much that will inject volatility into a lot of the banking sphere in particular.</p>
+
+<p>What’s your view in terms of what you’re seeing on the ground with liquidity exiting certain aspects of the market that really have been fueling some of the froth here areas.</p>
+
+<p>Well certainly you know it’s been going on since June.</p>
+
+<p>Now it’s going to double you know starting next month starting starting tomorrow.</p>
+
+<p>And it’s been masked by other issues in the economy.</p>
+
+<p>So you know what we have seen so far from a roll up of treasury and mortgage backed securities has already been overshadowed by the increasing rate environment that we’ve experienced and the sell off in those securities.</p>
+
+<p>In response to that you know the expectation would be as they double it you’re looking at something that has an impact of probably another 25 or 50 basis point like tightening by by the FOMC.</p>
+
+<p>And as such you know where where where are the buyers.</p>
+
+<p>Who are the buyers.</p>
+
+<p>We have from at least a Treasury perspective.</p>
+
+<p>However been in you know sort of a supply demand imbalance where there hasn’t been enough in supply in the marketplace.</p>
+
+<p>So it’s really going to be welcomed.</p>
+
+<p>I think to some degree for you know the most highest quality Treasury securities in the marketplace.</p>
+
+<p>From an MBA standpoint there may be a little bit more resistance but it’s smaller volume there as well.</p>
+
+<p>Deborah got to leave it there.</p>
+
+<p>Thank you.</p>
+
+<p>Deborah Cunningham of Federated is going to leave it there because we’ve got some news from Bed Bath and Beyond.</p>
+
+<p>Let me tell you this because some news is just headline after shock later this week to close 150 stores.</p>
+
+<p>Jobs getting cut as well.</p>
+
+<p>They say a reduction in the workforce a big reduction in the workforce.</p>
+
+<p>Just gone through some of these numbers.</p>
+
+<p>Yeah from what you say.</p>
+
+<p>Well also discontinuing three of nine of their labels.</p>
+
+<p>This comes after weeks of speculation around this company about them being able to raise finance saying they just filed a document earlier this morning saying that they would raise an unspecified amount of money in an unspecified amount of share sales at different times.</p>
+
+<p>They didn’t really give any details to that.</p>
+
+<p>But this really highlights a problem especially as some other suppliers cut off deliveries because they were worried about late payments.</p>
+
+<p>These are some of the issues facing a company that’s been struggling for a while.</p>
+
+<p>But how much can it rise above that especially since it wasn’t meme stock darling and had been able to raise money that way.</p>
+
+<p>Let’s face it the big move this morning down about 25 per cent.</p>
+
+<p>So second quarter comp sales declined about 26 percent.</p>
+
+<p>They see full year comp sales down in the 20 percent range.</p>
+
+<p>So that’s pretty tough going.</p>
+
+<p>And on these chefs are you talking about promo to sell up to 12 million shares in an offering.</p>
+
+<p>The offering proceeds to be used Tom to buyback John debt.</p>
+
+<p>Is this a zombie company.</p>
+
+<p>I say that with respect for the hardworking people in management and on the line at Bed Bath and Beyond Bed Bath and Beyond.</p>
+
+<p>Total return per year for 20 years.</p>
+
+<p>Negative 4 percent per year.</p>
+
+<p>Total return the last 10 years.</p>
+
+<p>Think of what they miss John versus other retailers.</p>
+
+<p>Home Depot is the icon negative 14 percent per year.</p>
+
+<p>If this does foot the fines zombie company why does an owner restructure our Milken transaction.</p>
+
+<p>This feels like a kitchen sink type morning for the company Lisa that’s for sure.</p>
+
+<p>Yeah especially because they’re trying to potentially raise money in the equity market to buy back shares.</p>
+
+<p>That’s going to be terrible for the equity.</p>
+
+<p>That’s why you’re seeing such a big response whether they’ll actually be able to do it.</p>
+
+<p>They didn’t get to buy it.</p>
+
+<p>Good question.</p>
+
+<p>Dan.</p>
+
+<p>Six percent in the free market and falling off the back of a ranger headlines will keep you up to speed on from New York City with Tom Keene Lisa Abramowicz and Jonathan Ferro.</p>
+
+<p>We have about just about on the S&amp;P up two tenths on the Nasdaq 100 up a half of 1 percent.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>Keeping you up to date with news from around the world to the first word answers you could get to more revelations in the probe of those classified documents found at Donald Trump’s Florida home.</p>
+
+<p>In a court filing the Justice Department suggests there may have been attempts to obstruct the investigation by moving some of the papers.</p>
+
+<p>The filing included a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents.</p>
+
+<p>Europe faces the risk of blackouts rationing and a severe recession if Russia slashes gas deliveries further.</p>
+
+<p>And the next reality check is at hand.</p>
+
+<p>Starting today there’ll be a halt in gas sent through the Nord Stream pipeline.</p>
+
+<p>It’s a key source of energy for the EU.</p>
+
+<p>There’s a concern that Moscow will find another excuse to clamp down on those supplies.</p>
+
+<p>And prices in British shops rose this month at the highest rate since at least 2005 according to the British Retail Consortium.</p>
+
+<p>Shop price inflation increased to five point one percent in August.</p>
+
+<p>The price of food rose even more nine point three percent.</p>
+
+<p>Shoppers are doing everything they can to save money at the checkout and that includes buying less food.</p>
+
+<p>And Bloomberg has learned that Credit Suisse is board is divided on the fate of its troubled investment bank.</p>
+
+<p>Just before crucial meetings one camp is pushing back against an aggressive downsizing.</p>
+
+<p>Others are in favor of more extensive cuts after racking up billions of dollars in losses.</p>
+
+<p>Credit Suisse is taking aim at the investment bank which has been at the heart of some of its biggest troubles globally is 24 hours a day on an all Bloomberg Quicktake powered by more than twenty seven hundred journalists and analysts in Libya.</p>
+
+<p>Hundred and twenty countries and rich.</p>
+
+<p>Gupta This is Bloomberg.</p>
+
+<p>At the European level we have agreed that all member states to do jointly save 15 percent of energy between August now and March 23.</p>
+
+<p>And here’s the good news.</p>
+
+<p>We have reached now an average in the European Union of Starch filling up 80 percent.</p>
+
+<p>That is some good news.</p>
+
+<p>That was from Ursula von Onto Land the European Commission president.</p>
+
+<p>It’s good news because the original target was 80 percent.</p>
+
+<p>By November 1st it’s the end of August.</p>
+
+<p>So there you go.</p>
+
+<p>Just a little bit of good news out there in Europe.</p>
+
+<p>Life in New York City this morning.</p>
+
+<p>Good morning.</p>
+
+<p>With some keen and Lisa Abramowicz some Jonathan Ferro futures bouncing back kinda on the S&amp;P by not even two tenths of one percent on the Nasdaq 100 up 62 points up a half of 1 percent a year to higher by 2 or 3 basis points 313.</p>
+
+<p>Not going to neglect this.</p>
+
+<p>I think we have over the last 90 minutes or so.</p>
+
+<p>But Cruden 88 handles we’re breaking down there by two point nine percent 88 95.</p>
+
+<p>There were some concerns about supply out of Iraq.</p>
+
+<p>I think Iraq has calmed down those concerns about supply out of Iraq.</p>
+
+<p>And then on the horizon for the last I think 12 months at least.</p>
+
+<p>This idea Lisa that maybe just maybe there is a deal from Iran.</p>
+
+<p>But I feel like we’ve been talking about that forever.</p>
+
+<p>This to me is a recession call.</p>
+
+<p>It’s basically higher prices that are cannibalizing demand.</p>
+
+<p>And the more that the NIKKEI event that the world slows down particularly led by China the less demand there will be.</p>
+
+<p>And that’s what’s leading to lower prices.</p>
+
+<p>That’s been sort of the theme over the past three months.</p>
+
+<p>I’m with you.</p>
+
+<p>Demand destruction some back on the table.</p>
+
+<p>I think the jury’s out and I link it to the Covid policy of Asia.</p>
+
+<p>The Chinese are Covid policy.</p>
+
+<p>Maybe you get an Asia boom as some have written about some of the optimism Jay Polansky J.P.</p>
+
+<p>Morgan and others on the Pacific Rim.</p>
+
+<p>We got an oil update on your next gallon of gas.</p>
+
+<p>Is Will Kennedy senior excuse me your next gallon of petrol.</p>
+
+<p>Will Kennedy join senior executive editor commodities in London.</p>
+
+<p>Well there’s a tone out there from a select few of a potential global disinflation.</p>
+
+<p>For all the other matters out there is oil.</p>
+
+<p>Is the Will Kennedy world linked to the possibility of a global disinflation or is oil separate.</p>
+
+<p>I don’t think it’s set for it at all.</p>
+
+<p>I think that the oil is being put under pressure by a lot of different things some of which John just mentioned geopolitical things.</p>
+
+<p>But the thing that’s really putting under pressure the prospect of higher rates and a stronger dollar the stronger dollar has proved a huge headwind for oil and is one of the things that stopped it getting traction.</p>
+
+<p>The other thing I want to say about the oil market is it remains hugely volatile.</p>
+
+<p>We’re getting these big swings.</p>
+
+<p>The Saudi oil minister intervened in the market last week to say to people look don’t write us off.</p>
+
+<p>We’re willing to cut production if we need to.</p>
+
+<p>That sent oil up as high as 106 for Brent.</p>
+
+<p>We’re 10 dollars below that now.</p>
+
+<p>And it’s interesting to me that piece and an took to Twitter this morning just to say that in its view the oil market is broken that these moves don’t make sense.</p>
+
+<p>They’re not fundamentally driven.</p>
+
+<p>They reflect a lack of liquidity in the market.</p>
+
+<p>And it’s it’s quite hard to read oil from a fundamental perspective right now because a lot of people aren’t totally sure that the price signal whose the country you’re watching who’s the marginal player OPEC plus or minus the United States all the rest of it who’s the country that is the decider of oil dynamics into September.</p>
+
+<p>I think there are four things we need to watch Tom sorry for the long answer.</p>
+
+<p>China as you mentioned the huge driver of demand Russia.</p>
+
+<p>We’ve got more sanctions coming on all at the end of the year.</p>
+
+<p>What will that do to production.</p>
+
+<p>Will they be able to sell more oil to Asia and less to Europe Saudi Arabia.</p>
+
+<p>How do they respond to this market.</p>
+
+<p>Do they follow through on the threat of cuts.</p>
+
+<p>And finally the USA there are two things to watch in America.</p>
+
+<p>Firstly we’re about to stop withdrawals from the SPRO which has been a huge source of comfort to the market.</p>
+
+<p>Putting that oil into the market and Shell isn’t growing as fast as people expect.</p>
+
+<p>It is a very interesting column from my friend having a blast this morning about how expensive pipe is getting in the shale patch and that’s that’s dampening growth.</p>
+
+<p>So we’ve got to keep an eye on those four countries.</p>
+
+<p>I think as we look to the market into the end of the year well we often probe this particular topic but let’s do it again.</p>
+
+<p>Can you frame how difficult this winter is going to be and the decisions that some of these governments still haven’t made that they need to make in the next few weeks.</p>
+
+<p>Well I think it’s instructive.</p>
+
+<p>Just to give you some examples from the U.K.</p>
+
+<p>actually where people are starting to realize just how catastrophic their bills are going to be.</p>
+
+<p>And businesses in particular who are more exposed to free market prices than households in some respects.</p>
+
+<p>We’re seeing all these stories of people running cafes pubs and they’re facing bills that are going up five times.</p>
+
+<p>And frankly people are saying how can I operate my base my businesses on that basis.</p>
+
+<p>And they’re saying without some form of government help I’m going to fold.</p>
+
+<p>So I think you’re starting to get a picture about how this could really impact the wider economy.</p>
+
+<p>And if these energy prices are left unchecked for small businesses for consumers in the U.K.</p>
+
+<p>and other European countries it’s going to have catastrophic economic impact.</p>
+
+<p>And I think what we’re watching is how governments respond in the U.K.</p>
+
+<p>how the new prime minister we get next week responds because I think it’s going to need a big policy intervention.</p>
+
+<p>Well there’s a plan and some plan to bring down the prices of electricity an emergency combating of the very high prices.</p>
+
+<p>That’s what we learned from Ursula underlined this week when she gave a speech about what the European Commission is doing to collectively address the issue.</p>
+
+<p>Do you understand what this plan is.</p>
+
+<p>I think there are two parts to the plan.</p>
+
+<p>I don’t think anyone fully understands it now.</p>
+
+<p>They haven’t yet.</p>
+
+<p>They haven’t sketched out the precise details.</p>
+
+<p>But there are two perhaps two potential components one which may have an impact in the shorter term and one which is slightly longer term in the shorter term.</p>
+
+<p>There’s some talk of a price cap and an attempt to cap the price of electricity which got completely out of hand.</p>
+
+<p>Earlier this week crossing a thousand euros a megawatt hour in Germany unimaginable places previously.</p>
+
+<p>Now that cap obviously would still require someone to pay the market price.</p>
+
+<p>So actually what it is is a way of sharing the burden with the difference.</p>
+
+<p>Go on government balance sheets.</p>
+
+<p>Would it be shared between industry consumers and the state.</p>
+
+<p>Somehow I think those details are yet to be worked out but clearly it would be an intervention that breaks the market mechanism for a period of time and shares the burden a bit differently.</p>
+
+<p>Then there’s a second thing at the moment.</p>
+
+<p>The price of electricity in Europe as in many markets around the world is set by the marginal cost of supply.</p>
+
+<p>What the most expensive.</p>
+
+<p>Unit a power you need to balance the market is and that’s traditionally that’s natural gas right now which is hugely expensive as you know.</p>
+
+<p>Now the thinking is there’s a lot of power which is nuclear which is renewable which cost a lot less to produce.</p>
+
+<p>So is there a way of linking power prices from natural gas prices perhaps by having some kind of price.</p>
+
+<p>The average is the cost of production now.</p>
+
+<p>This is complicated technical stuff.</p>
+
+<p>It would have to be done in a way that the market still gets the signals it needs to balance the market.</p>
+
+<p>Having that generation.</p>
+
+<p>But that’s something that people are taking a serious look at.</p>
+
+<p>But to be honest it would take a year maybe two years for that to happen.</p>
+
+<p>It’s not a short term fix.</p>
+
+<p>Well great to catch up sir.</p>
+
+<p>And we’re looking forward to catching up again because we’re no expert on any of their.</p>
+
+<p>So we need your expertise to break down just what’s going to happen.</p>
+
+<p>We’ll kind of do that at a London policy intervention to try and tackle some of this stuff.</p>
+
+<p>What are we talking about.</p>
+
+<p>We’re talking about fiscal intervention now in a world of low rates QE and low inflation.</p>
+
+<p>That might make sense in a world of high rates Kutty and high inflation.</p>
+
+<p>Lisa I do wonder in certain countries how wide open the bond market is going to be for some of that and whether the adjustment we’re seeing in places like the UK is reflecting some of that angst at the moment.</p>
+
+<p>Yeah I think that that’s a really good point.</p>
+
+<p>And one of the most important conversations that I think we’ve had over the past few weeks is with Francisco Bianco of the paper presented at Jackson Hole talking about how fiscal stimulus gives the expectation for more inflation for a rescue to come in and that that really combats a lot of its central banks are trying to do a bigger deficit.</p>
+
+<p>You’ve got to finesse in places like the United Kingdom.</p>
+
+<p>That’s a topic we’ll continue to discuss with people like Dan Morris at BNP Paribas.</p>
+
+<p>He’s going to be joining us shortly from New York.</p>
+
+<p>Said he heard on radio seen on TV.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>I don’t think it’s optimistic to suggest that the Fed will be able to navigate positive activity any time soon.</p>
+
+<p>I think in the near term expect some choppy sessions.</p>
+
+<p>There is a Fed call.</p>
+
+<p>The says that any good news gets taken away by the Fed’s need to tighten the supply side is finally taking hold and creating the disinflation.</p>
+
+<p>It’s really hard to see that we avoid a global recession.</p>
+
+<p>This is Bloomberg Surveillance with Tom Keene Jonathan Ferro and Lisa Abramowicz.</p>
+
+<p>Good morning everyone.</p>
+
+<p>Jonathan Ferro.</p>
+
+<p>Lisa Abramowicz.</p>
+
+<p>Tom Keene.</p>
+
+<p>The last day of August the beginning of September the beginning of autumn.</p>
+
+<p>Turmoil in the equity markets greater turmoil in the foreign exchange markets.</p>
+
+<p>And John Lisa I just want you to understand natures first green as gold.</p>
+
+<p>Her hardest hue to hold her early leaves of flower but only so an hour.</p>
+
+<p>And on and on to nothing.</p>
+
+<p>Gold can stay.</p>
+
+<p>We quote Robert Frost.</p>
+
+<p>Lisa.</p>
+
+<p>Fall is upon us.</p>
+
+<p>Yes it is.</p>
+
+<p>You’re going to throw that word to me.</p>
+
+<p>I was hoping that John would have to.</p>
+
+<p>I’m picking up Leslie Caroline Connan.</p>
+
+<p>We had to been in the break that I am actually excited for winter.</p>
+
+<p>And John is not excited for winter.</p>
+
+<p>And Tom you’re not.</p>
+
+<p>John are the markets excited for winter.</p>
+
+<p>And boy is this a turmoil time for the Fed.</p>
+
+<p>I’ve said a few times to think winter arrived early in this market.</p>
+
+<p>We’ve wiped out the gains for August.</p>
+
+<p>And the last three days we’re down about 5 per cent on the S&amp;P 500.</p>
+
+<p>Don’t fight the Fed seems to be the message.</p>
+
+<p>And fighting the fat means being bullish right now.</p>
+
+<p>That’s why so many people are finding it difficult to be bullish.</p>
+
+<p>Yesterday we found that good news is bad news.</p>
+
+<p>Consumer confidence decent job openings still elevated.</p>
+
+<p>Apparently that’s bad news for this market because it means this Fed has more work to do at the moment is right now.</p>
+
+<p>And it helped me with John.</p>
+
+<p>And I fed the gentle lady from Cleveland who we saw at Jackson Hole out with more forward guidance data dependency and the rest.</p>
+
+<p>And John it is a certitude among Fed officials that inflation will not pull back.</p>
+
+<p>That seems to be the great tension race in Howard.</p>
+
+<p>Race to warp.</p>
+
+<p>Rameau they’re talking about a full handle halt for how long.</p>
+
+<p>Williams was talking about maybe a year through the whole if 2023.</p>
+
+<p>Yeah.</p>
+
+<p>But also she’s saying that she sees unemployment above 4 percent by year end.</p>
+
+<p>This is the dual mandate that becomes more difficult raising rates above 4 percent in early 2023.</p>
+
+<p>The market still up.</p>
+
+<p>Pricing that in right there getting up to three point nine percent if you look at the Fed funds futures market.</p>
+
+<p>But you’re not seeing that forehand or the way that she’s putting out there.</p>
+
+<p>And then there still is the expectation for rate cuts.</p>
+
+<p>And Tom this is what’s striking to me.</p>
+
+<p>People are still saying we don’t buy it.</p>
+
+<p>You can keep saying whatever you want but we still think they’re going to be rate cuts at some point later in 2023 or at least early 2024 as you recapitulate and look at that unemployment rate that rises to store the run.</p>
+
+<p>I mean we make a joke about it John but Lisa’s right.</p>
+
+<p>The toxic brew that’s out there now is the desperation in September.</p>
+
+<p>There’s few optimists out there.</p>
+
+<p>So the economists will focus on what’s bad and what is good.</p>
+
+<p>Markets have got to think about what’s better and what’s worse.</p>
+
+<p>And somewhat I want to understand is how markets are gonna respond to this incoming information.</p>
+
+<p>And we often think about this.</p>
+
+<p>Okay.</p>
+
+<p>That’s the data.</p>
+
+<p>How’s the market responding to it.</p>
+
+<p>Yesterday was an example where we got good economic news consumer confidence job openings and yet it was bad news for this market because this Fed has to do more.</p>
+
+<p>I want to know going into Pete Rose on Friday when the bad news is good news or when the bad news is just bounce because ultimately the bad news in this labor market means payrolls are a little bit lower.</p>
+
+<p>It means unemployment is a little bit higher.</p>
+
+<p>It means wage growth starts to fade just a little bit too.</p>
+
+<p>Add some.</p>
+
+<p>That’s the objective of this Fed.</p>
+
+<p>That’s the objective.</p>
+
+<p>And the objective is going to be the news flow.</p>
+
+<p>Let’s get to the new data.</p>
+
+<p>I’m going to do a data point John.</p>
+
+<p>ADP in 12 minutes ADP.</p>
+
+<p>It’s 12 minutes.</p>
+
+<p>What’s promo code.</p>
+
+<p>An ADP Wednesday.</p>
+
+<p>Hundred percent.</p>
+
+<p>It’s not stickied features 1 percent.</p>
+
+<p>The S&amp;P OCR by 3 basis points 313 44.</p>
+
+<p>A lot of attention being paid to what’s happening in the affects market with the euro dollar at parity.</p>
+
+<p>But for me and for Tim and Felicia very much about what’s happening with pants starting at the moment just breaking down to 116 some 160 up 26.</p>
+
+<p>Watch it for an issue.</p>
+
+<p>I agree with John.</p>
+
+<p>Sterling is really quite interesting.</p>
+
+<p>Maybe also looking idiosyncratic.</p>
+
+<p>Turkish lira actually some stability this week.</p>
+
+<p>Now a brief into September.</p>
+
+<p>Daniel Morris joins us chief market strategist BNP Paribas.</p>
+
+<p>Daniel how does your September change things.</p>
+
+<p>What’s the nuance launching from August into the autumnal September.</p>
+
+<p>Well I think at this point what’s not going to change is we’re going to have some hikes and we focus a lot on this.</p>
+
+<p>Seventy 75 it’s going to be 50.</p>
+
+<p>The payrolls data will inform that.</p>
+
+<p>But we really should be focusing on the objective of the Fed which is to get growth down get inflation down.</p>
+
+<p>And of course the interest rate hikes are just a means to an end.</p>
+
+<p>So in one sense it’s a bit of a distraction.</p>
+
+<p>It’s whatever it takes if you will to get growth down.</p>
+
+<p>And not only growth per say but really to get the job market back into line with the recent JOLTS data with the job openings.</p>
+
+<p>You know rose over the previous month.</p>
+
+<p>And so you still have nearly eleven million job gap between what employers are looking for and what employees are left salable.</p>
+
+<p>That means continued high wage gains.</p>
+
+<p>That’s going to fuel inflation.</p>
+
+<p>And that’s just not sustainable from the Fed’s point of view.</p>
+
+<p>It’s not the environment that you want to be buying stocks in.</p>
+
+<p>For now.</p>
+
+<p>Yes.</p>
+
+<p>So the real issue is going to be we all anticipate this recession next year.</p>
+
+<p>That that is what it’s going to take to get inflation down.</p>
+
+<p>But that doesn’t mean you should necessarily be allocating for that at this time.</p>
+
+<p>So overall we’re still neutral on equities and have some markets that we favor.</p>
+
+<p>But at some point yes you are going to want to pivot but we think it’s really premature at this point to be doing that.</p>
+
+<p>And why is that.</p>
+
+<p>Why do you think it’s premature.</p>
+
+<p>Typically if you look at how markets react to recessions it’s really a one two at most three months prior to when the recession started that you start to see consistently negative returns for equities you know six months out 50/50 chance.</p>
+
+<p>Now which of course different this time is how much we all anticipate this recession.</p>
+
+<p>Whereas typically they often catch ISE investors by surprise.</p>
+
+<p>So whether that time frame is going to be different this time will that pivot happen sooner.</p>
+
+<p>More likely than not.</p>
+
+<p>But I think we’re going to have to see more meaningful deceleration in the economy before that’s likely to happen.</p>
+
+<p>Dan this is really at all about the economy or is this about the Fed.</p>
+
+<p>I mean yes it’s the economy but the Fed wants to influence the economy lower.</p>
+
+<p>And Neel Kashkari came out said he was happy to see the market sell off in response to the Jackson Hole speech by Fed Chair Jay Powell and that he was disappointed to see the rally in previous meetings because this was not the goal.</p>
+
+<p>They wanted to see a tightening in financial conditions.</p>
+
+<p>How much can you push against that with this sort of backward look to historical performance of equities in the face of recession.</p>
+
+<p>Yeah absolutely.</p>
+
+<p>And I think what we’re gonna have to anticipate of course on one hand we do have rates going up that’s increasing the discount rate.</p>
+
+<p>So that should have a negative impact on valuations for equities.</p>
+
+<p>We’re now really seeing the growth impact.</p>
+
+<p>Yes.</p>
+
+<p>You know we talk about earnings expectations still quite rosy for next year 10 percent earnings growth year on year.</p>
+
+<p>And that’s just something that’s not compatible with the slowdown in growth that we think we’re going to have to see.</p>
+
+<p>So it’s that tension.</p>
+
+<p>You know what’s going to be the catalyst to bring those two back in line of course is the big question.</p>
+
+<p>But we believe it’s going to happen at some point.</p>
+
+<p>It has to do.</p>
+
+<p>And what do you do with energy right now.</p>
+
+<p>Well we are broadly speaking overweight commodities.</p>
+
+<p>I mean on one hand in anticipation of a recession that typically is an environment for for lower oil prices because of lower demand which certainly will still happen.</p>
+
+<p>But you know we’re in a different world when it comes to the supply side.</p>
+
+<p>We’re not seeing that supply side response.</p>
+
+<p>And we think the net effect of those two forces is for us still to be overweight commodities.</p>
+
+<p>Dan I looked at the Bloomberg total return all in global aggregate index today and basically with a price decline yield up.</p>
+
+<p>We’re back globally to where we were in 2011 stayed in the case for ownership of fixed income instruments.</p>
+
+<p>I don’t get it.</p>
+
+<p>Well you know you want to look at a film from a portfolio perspective.</p>
+
+<p>I mean clearly the big disruption in the first half of this year was the change in the correlations the positive correlation between equities and bonds in a bad way with prices going down for both.</p>
+
+<p>We appreciate we’re going through this transition of the 30 year bull market in fixed income to at least a bear market for a while.</p>
+
+<p>But you know at 3 percent or a bit more for treasuries we’re getting to the point where we should have a stabilization of rates and that from a portfolio perspective.</p>
+
+<p>It’s still going to make sense.</p>
+
+<p>So right now timing we still anticipate higher rates were short duration but we don’t think we have anywhere as far to go as we did over the last six months.</p>
+
+<p>Then just quickly just to get by on it how would you respond to a bank print on Friday.</p>
+
+<p>It’s bad.</p>
+
+<p>These bad news.</p>
+
+<p>Bad news good news.</p>
+
+<p>What is it.</p>
+
+<p>It’s going to mean that the hike is 50 instead of 75.</p>
+
+<p>It’s good news relative to the 75 but it’s still 50 and that’s what’s going to matter.</p>
+
+<p>Morris of BNP Paribas Asset Management does this Dani Burger.</p>
+
+<p>This is John what we’ve come down to try to figure out.</p>
+
+<p>Good news good news bad news.</p>
+
+<p>Wherever the four bucks prisoners Taylor Riggs.</p>
+
+<p>And once you get a decent understanding of the reaction function of the Fed you apply that to the incoming information and it is not going on and try and work out what it means for this market.</p>
+
+<p>Yesterday good news was bad news and the story.</p>
+
+<p>I hate it some.</p>
+
+<p>You hate it too.</p>
+
+<p>I just wonder where the bad news is.</p>
+
+<p>Also just bad news I think will be overcome by the facts and on watch and foreign exchange.</p>
+
+<p>John all the different dynamics of 10 20 30 peers.</p>
+
+<p>This is really important folks.</p>
+
+<p>John knows this is not just follows repairs.</p>
+
+<p>That’s not what the pros do.</p>
+
+<p>They look at all sorts of dynamics there.</p>
+
+<p>If I could follow one thing right now though it would be the U.K.</p>
+
+<p>I think this is going to be a really interesting case study Tom.</p>
+
+<p>You’ve got the energy crisis on the one hand and I think we can call it that.</p>
+
+<p>I think it’s fair to characterize.</p>
+
+<p>Yes.</p>
+
+<p>As an energy crisis.</p>
+
+<p>You’ve got the expectation that the government needs to offset that with fiscal policy.</p>
+
+<p>And you’ve got a big question mark as to whether the bond market is going to be wide open available for them to do so.</p>
+
+<p>And if it’s not then what do you say.</p>
+
+<p>You see an adjustment.</p>
+
+<p>Naturally they see you’ll see a weaker currency you’ll see higher yields.</p>
+
+<p>What we’re seeing at the moment a weaker currency.</p>
+
+<p>Right.</p>
+
+<p>And higher yields.</p>
+
+<p>It’s easy to make these kind of adjustments this offset if rates are low.</p>
+
+<p>Yeah central banks keep them pinned there.</p>
+
+<p>Inflation’s low.</p>
+
+<p>And you doing QE.</p>
+
+<p>Right now they’re set to do Kutty.</p>
+
+<p>Inflation’s high and they’re raising interest rates.</p>
+
+<p>Different dynamic in the prior era.</p>
+
+<p>There is the option for fiscal support for fiscal spending because rates were so low because the window was so wide open for governments to borrow.</p>
+
+<p>That is fluid flipped on its head.</p>
+
+<p>What do you get if you have fiscal policy moving in the opposite direction for monetary policy.</p>
+
+<p>If these two areas are in direct conflict with each other who wins out.</p>
+
+<p>And ultimately what happens with inflation.</p>
+
+<p>Sterling some just about 160.</p>
+
+<p>Yeah the sterling is terrible John.</p>
+
+<p>You know I look at Emily Bronte and she supported the talks years ago.</p>
+
+<p>I love September fall leaves fall like this guy.</p>
+
+<p>Flowers away clocks to lengthen and short.</p>
+
+<p>So you know ahead we’ve got a break to take.</p>
+
+<p>I mean I’d love to talk more about your trip but they got three of September as you fear.</p>
+
+<p>It brings tears to my eyes.</p>
+
+<p>Futures up a third of one per cent for goodness sake.</p>
+
+<p>New York is pulling back.</p>
+
+<p>Keeping you up to date with news from around the world with the first word I’m sure you could go up to the Justice Department says White House records held in a storage room at Donald Trump’s Florida home may have been moved before an FBI search in June.</p>
+
+<p>The Justice Department says that could have been an attempt to obstruct the investigation.</p>
+
+<p>In a filing that was a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents.</p>
+
+<p>Inflation in the eurozone has set a no all time high.</p>
+
+<p>Consumer prices in the 19 country currency bloc rose nine point one percent in August from a year ago.</p>
+
+<p>That beat the median estimate in a Bloomberg survey of economists.</p>
+
+<p>And it strengthens the case for the European Central Bank to consider a jumbo interest rate hike when it meets next week.</p>
+
+<p>Shares a bed Bath and Beyond are plunging today.</p>
+
+<p>The struggling home goods retailer has secured new financing and will close stores and slash its workforce.</p>
+
+<p>Bed Bath and Beyond faces a shrinking cash pile and is falling behind on payments to vendors.</p>
+
+<p>That’s prompted some suppliers to halt or restrict shipments.</p>
+
+<p>Shares of SNAP are falling today according to The Verge.</p>
+
+<p>The parent of Snapchat plans to lay off about 20 percent of its nearly 60 500 employees starting today.</p>
+
+<p>The stock already has fallen almost 80 percent this year.</p>
+
+<p>Now it’s been struggling with a slowdown in advertising spending.</p>
+
+<p>And Mikhail Gorbachev is being remembered as the last leader of the Soviet Union who ended the Cold War.</p>
+
+<p>Gorbachev died Tuesday at a Moscow hospital.</p>
+
+<p>His attempts to shake up the Soviet Union’s political and economic system led to the collapse of the communist superpower.</p>
+
+<p>Gorbachev’s career disintegrated in the process.</p>
+
+<p>He was 19 when global news 24 hours a day on air and on Bloomberg Quicktake powered by more than twenty seven hundred journalists and analysts similar than 120 countries.</p>
+
+<p>I’m Richard Gupta.</p>
+
+<p>This is Glenn Beck.</p>
+
+<p>Live from New York City this morning.</p>
+
+<p>Good morning with some Cain and Lisa Abramowicz some Jonathan Ferro.</p>
+
+<p>Do not shoot the messenger.</p>
+
+<p>Downside surprise on the ADP.</p>
+
+<p>And bad news is good news.</p>
+
+<p>Equities up for 10.</p>
+
+<p>So yes some say on the Nasdaq up eight tenths of 1 percent.</p>
+
+<p>Would fade a little bit as well on a two year one off session highs almost unchanged on the session now up a basis points at 345.</p>
+
+<p>61 is the downside surprises 132.</p>
+
+<p>We were looking for three inch.</p>
+
+<p>Okay.</p>
+
+<p>They sat on sweats at some from Ivan NIKKEI.</p>
+
+<p>ADP unveils a new top spot maker.</p>
+
+<p>That’s the latest ADP printed like that might be case with us.</p>
+
+<p>Take one of mine.</p>
+
+<p>Good morning John.</p>
+
+<p>Yeah.</p>
+
+<p>I’m the messenger but I don’t know what the message is here.</p>
+
+<p>ADP says this is a brand new survey.</p>
+
+<p>It’s been completely retooled.</p>
+
+<p>It doesn’t depend on models.</p>
+
+<p>It is a snapshot of the labor market during the month based on the payrolls that they process.</p>
+
+<p>And as you said a hundred and thirty two thousand jobs 23000 are in the goods producing sector.</p>
+
+<p>Although there was no change in manufacturing jobs and service providing jobs rise.</p>
+
+<p>One hundred ten thousand.</p>
+
+<p>Now what does this mean for Friday.</p>
+
+<p>You listen to the ADP people.</p>
+
+<p>It says nothing.</p>
+
+<p>It’s a standalone indicator a unique snapshot of the economy.</p>
+
+<p>But I bet everybody on Wall Right is going to be plugging these numbers into their forecasts for Friday which the consensus at this point is 300000.</p>
+
+<p>They also Tom have a new report that is part of this report on pay.</p>
+
+<p>And according to this annual pay a 12 month rate is was at seven point six percent rate of increase in the month of August which is high but they say stabilized.</p>
+
+<p>Now hard to know exactly what stabilized is because we don’t have the black numbers.</p>
+
+<p>But in theory they’re Ripley’s releasing those today.</p>
+
+<p>They back casting and we’ll see what it all.</p>
+
+<p>We’ll try to put it all together for you know a nice lift to the market here.</p>
+
+<p>NASDAQ up 108 points.</p>
+
+<p>That gets my attention.</p>
+
+<p>Michael McKee moments words.</p>
+
+<p>This has been a busted data point for umpteen years.</p>
+
+<p>Mark Zandi tried to make it work and others after Mark Zandi did they went out and hired one of the best math guys in the world.</p>
+
+<p>Erik Brynjolfsson With Andrew McAfee writing all sorts of things including the second Massie machine age.</p>
+
+<p>What is Professor Brynjolfsson of Stanford going to do to make the second ADP age.</p>
+
+<p>What’s he going to bring to this.</p>
+
+<p>Well basically they’re looking at large sources of data that can be trimmed down to a smaller point that is useful to people.</p>
+
+<p>They say this is not model based.</p>
+
+<p>This is based only on the ADP data.</p>
+
+<p>The Zandi versions will say they’re looking models the paychecks of America to get their data.</p>
+
+<p>Yes.</p>
+
+<p>In terms of in terms of small medium large establishments that they’re breaking it down by industry sector.</p>
+
+<p>They’re even breaking down the pay stuff by the whether or not you’re a job leaver or a job stayer.</p>
+
+<p>It sounds a lot like the Atlanta Fed wage tracker but we haven’t.</p>
+
+<p>I mean it’s just come out.</p>
+
+<p>So I have to share that.</p>
+
+<p>This is the heart of the matter.</p>
+
+<p>Lee says the maybe now they’re going to go to the actual data not to mean that the diary of data points of research points empire this.</p>
+
+<p>I mean Lisa how many of these are these tertiary numbers empire.</p>
+
+<p>This is Dallas manufacturing that these tertiary numbers are important for people who are completely data dependent because the Fed isn’t giving forward guidance supposedly.</p>
+
+<p>Mike is this ADP report powerful enough to move the dial and be relevant going forward.</p>
+
+<p>Is the new methodology enough of an overhaul to make it so that people don’t just shrug this off being like it’s ADP.</p>
+
+<p>Well here’s the thing.</p>
+
+<p>They retooled this because their model based previous surveys were designed to sort of preview what was going to happen in non-farm payrolls.</p>
+
+<p>Now they say it’s not a preview.</p>
+
+<p>You can’t extrapolate but probably people will try to do that.</p>
+
+<p>And then it’ll depend on how close they come to the overall private sector job gains in the non-farm payrolls number.</p>
+
+<p>So we’re going to have to see how how this all works out over the longer run.</p>
+
+<p>I think Mike’s being kind to get a Mark Gurman and thank you for your leadership in Jackson Hole.</p>
+
+<p>It was absolutely fantastic to see you with all the Fed precedents.</p>
+
+<p>What’s the big takeaway for you Mike.</p>
+
+<p>Because for many people it’s not September.</p>
+
+<p>So 50 or 75 something bigger happening here.</p>
+
+<p>Well it’s to be the terminal rate and how long it takes to get there and then how long they hold it.</p>
+
+<p>The Fed is pretty much all of them are pretty much agreed that they’re going to get to a place above neutral and they’re going to hold rates there.</p>
+
+<p>But there are disagreements about where that point is above neutral whether it’s three point five three point seventy five four percent or higher.</p>
+
+<p>And there are disagreements about how long they may have to keep it there but they are determined to bring down inflation.</p>
+
+<p>And I think that’s the message that J.</p>
+
+<p>Paul on behalf of everybody was trying to send on Friday might.</p>
+
+<p>Do you think they have sent a.</p>
+
+<p>And a convincing way that higher unemployment is a price worth paying for lower inflation.</p>
+
+<p>I’ve returned to that chairman power speech from Friday a couple of times now maybe four or five.</p>
+
+<p>And I was reading through it yesterday and it was this word pain.</p>
+
+<p>He talked about pain and I’ll share the quote with everyone.</p>
+
+<p>While higher interest rates slower growth and softer labor market conditions will bring down inflation.</p>
+
+<p>They will also bring some pain to households and businesses.</p>
+
+<p>But a failure to restore price stability would mean far greater pain.</p>
+
+<p>Mike how convinced you think the general public are of that.</p>
+
+<p>I don’t know because I don’t know how much attention the general public pay to the Fed but through the markets the markets seem to be buying into it but slowly through the markets.</p>
+
+<p>People will see the impact and maybe it starts to register.</p>
+
+<p>Powell did not say we’re going into recession.</p>
+
+<p>He didn’t say unemployment is going to rise.</p>
+
+<p>You have to read between the lines which everybody on Wall Street can do.</p>
+
+<p>And I don’t know how many.</p>
+
+<p>The general public are actually paying that much attention especially in August when their focus is on that last vacation before school.</p>
+
+<p>Stay with the leaves changing as well.</p>
+
+<p>Mike let me cut to the chase very quickly.</p>
+
+<p>Here at home.</p>
+
+<p>He’s talking 4 percent.</p>
+
+<p>Inflation is where we’re heading.</p>
+
+<p>What’s the quote.</p>
+
+<p>There’s John mentions.</p>
+
+<p>What’s the pain in a 4 percent inflation.</p>
+
+<p>Well we’ve heard the Fed suggest that we get to a four point one percent unemployment rate which would mean a minimum amount of pain because the Fed believes that the natural rate of unemployment is for an apposite.</p>
+
+<p>So it’s hard to say you get to 4 percent unemployment or 4 percent inflation and maybe people start to feel a lot better.</p>
+
+<p>But look at what happened with the consumer confidence numbers yesterday because gas prices have fallen.</p>
+
+<p>They’re still really high but they’ve fallen.</p>
+
+<p>So people are feeling better.</p>
+
+<p>Mike thank you sir.</p>
+
+<p>NIKKEI in the seats.</p>
+
+<p>Go through the ADP print side.</p>
+
+<p>Surprise ahead of payroll some Friday looking for something in and around 300.</p>
+
+<p>Okay.</p>
+
+<p>It’s pretty conventional wisdom in economics Tom but pretty controversial when the general public starts to hear this message that higher unemployment is a price worth paying.</p>
+
+<p>Oh I don’t think I John I feel the public doesn’t buy it for one single sentence.</p>
+
+<p>The second they’re looking at these people going.</p>
+
+<p>Are you nuts.</p>
+
+<p>That’s why Tom I think it becomes much more controversial when we actually start to see these numbers.</p>
+
+<p>And I go back to the comments from Senator Warren over the weekend to CNN.</p>
+
+<p>She’s not going to be alone if unemployment starts to go down.</p>
+
+<p>And Rand every single news conference is saying is part of the plan.</p>
+
+<p>I mean I haven’t seen anything.</p>
+
+<p>John help me with the United Kingdom or Lisa what you’ve read as well.</p>
+
+<p>What’s the food cash kitchen.</p>
+
+<p>So I mean we’re making jokes.</p>
+
+<p>I’m making jokes about autumnal bliss.</p>
+
+<p>Baloney.</p>
+
+<p>It’s getting colder.</p>
+
+<p>For a growing homeless population.</p>
+
+<p>Electricity prices and utility bills makes it top of mind for everybody in Europe right now.</p>
+
+<p>Yeah very much a very big concern.</p>
+
+<p>But just going back to this idea of the labor market and the pain there there is this issue of the JOLTS survey of the job openings.</p>
+
+<p>And this is sort of the soft landing scenario that if you take away some of the job openings you won’t necessarily get layoffs.</p>
+
+<p>You’ll just sort of get this nirvana soft landing.</p>
+
+<p>That is a beautiful thing.</p>
+
+<p>It is.</p>
+
+<p>That’s the case.</p>
+
+<p>We all hope it’s the case.</p>
+
+<p>I hope that’s the case.</p>
+
+<p>Futures up a third of one percent.</p>
+
+<p>I know Mike when I said I’m no allusion to September but he.</p>
+
+<p>Sure you took him.</p>
+
+<p>He was up a company.</p>
+
+<p>I was just bullish by the way.</p>
+
+<p>He said that he won the tone wasn’t bullish.</p>
+
+<p>I was kind of like a.</p>
+
+<p>For about a second five minutes ago Lisa was almost bullish except she said bullish thing that went to like it was a fairy tale matter said Lisa tone matters.</p>
+
+<p>You clicked as this is how it’s something that was bullish.</p>
+
+<p>That was foolish.</p>
+
+<p>But if you make it sound like a fairy tale once upon a time job openings came down and unemployment didn’t rise.</p>
+
+<p>It is a fairy tale.</p>
+
+<p>Didn’t have to go that high and growth stabilized.</p>
+
+<p>And if one was happy and it was a big bull market.</p>
+
+<p>OK so you’re quoting fairy tales.</p>
+
+<p>Sleep well.</p>
+
+<p>Hum is putting Robert Frost happy.</p>
+
+<p>No idea what his clients want to say.</p>
+
+<p>How much movement from grandma gloom time to Primo Standard Time on the NASDAQ 7 cents of one per cent.</p>
+
+<p>Yo tapas a couple of basis points 312 31.</p>
+
+<p>If you can grab Pat Sterling just like me eurodollar with the break.</p>
+
+<p>Apparently at ninety nine Nani wants Sterling 116 and just about holding on as well.</p>
+
+<p>That currency pairs down four tenths of one percent earlier on this morning.</p>
+
+<p>I mentioned the comments from Charlie Bean to our team over in London.</p>
+
+<p>The X Bank of the deputy governor who talked about a risk premium that might have to return to the gilt market because of the ongoing deficit that we’re seeing in the UK and the fact that it could get bigger because they need to offset the pain in the utility market.</p>
+
+<p>The energy market and Stephen Engle most picking up on this.</p>
+
+<p>And he’s basically saying we think it’s also showing up in the currency.</p>
+
+<p>Now tell me if you worry about finance to get deficit as you know you even need to attract investors with high yield.</p>
+
+<p>So a weaker currency to get those international flows and arguably be getting both right now.</p>
+
+<p>It’s a difficult moment for the policymaker.</p>
+
+<p>It’s a very very different backdrop this time around to the fiscal oversupplied.</p>
+
+<p>Back in spring of 2020 it’s always a trilateral or three pronged or three legged stool John.</p>
+
+<p>And I’m in the camp.</p>
+
+<p>That foreign exchange really matters right now.</p>
+
+<p>And when you were biased at Bloomberg on that because it’s just so supple on the terminal.</p>
+
+<p>But John I’m sorry it’s speaking volumes.</p>
+
+<p>And what really interests me is Swiss Re has not strengthened.</p>
+
+<p>This is not a fear thing.</p>
+
+<p>It’s not a Ukraine thing.</p>
+
+<p>This is an economic growth thing.</p>
+
+<p>And that’s why you see UK historically John even as we do this section with the lease we may get a 115 ambulance.</p>
+
+<p>It’s a policy thing time and policy.</p>
+
+<p>And a lot of countries at the moment is in conflict with each other on fiscal monetary.</p>
+
+<p>We’re just about holding onto what’s 16 right now some on Pat Sterling against the US dollar to the labor economy of a beleaguered United Kingdom and certainly moving to jobs day on Friday.</p>
+
+<p>We begin and we thought we’d do something different this time not with what’s non-farm payrolls going to be but far more of the social aspects of our labor economy.</p>
+
+<p>The Economic Policy Institute granted left leaning Democrat Biden favored whatever you want to say.</p>
+
+<p>They have provided exquisite must read research for conservatives on the social structure of the American labor economy.</p>
+
+<p>Elise Gould joins us this morning.</p>
+
+<p>Elise I’m going to channel the good David Blanchflower up at Dartmouth College and he is heated.</p>
+
+<p>We’ve got it wrong that it is a heterogenous labor economy.</p>
+
+<p>And I’m going to use from John Edwards two three or four Americas.</p>
+
+<p>What percentage of America is flat on its back.</p>
+
+<p>That’s it.</p>
+
+<p>Very interesting question.</p>
+
+<p>I think that you’re right that there are different stories of what is happening to people when you think about the economy we think about the labor market overall.</p>
+
+<p>The unemployment rate has remained at three point five percent.</p>
+
+<p>That’s quite low.</p>
+
+<p>We still are adding jobs every month that are pulling more people back into the labor market.</p>
+
+<p>But as you say I think there are huge disparities still out there.</p>
+
+<p>Young workers still have much higher unemployment rates than other workers.</p>
+
+<p>Black workers still have about two times the unemployment rate of white workers.</p>
+
+<p>We still have seen wage growth in areas like leisure and hospitality had been stronger.</p>
+
+<p>Last year is now coming down.</p>
+
+<p>All right.</p>
+
+<p>That is decelerating.</p>
+
+<p>So I think that there are different stories.</p>
+
+<p>And those wages in some of those industries.</p>
+
+<p>But most men have turned.</p>
+
+<p>Those are still quite right.</p>
+
+<p>At least we’re spending a lot of time on the x axis looking at the duration of these events.</p>
+
+<p>There is a negative wage growth.</p>
+
+<p>The real wage is decidedly negative.</p>
+
+<p>But importantly the duration of that negative almost a hysteresis of that negative wage growth is substantial.</p>
+
+<p>What’s the tipping point where that negative wage growth really affects society in America.</p>
+
+<p>Well I think it is hitting many people right now.</p>
+
+<p>Already they’re noticing it when they go to the grocery store.</p>
+
+<p>They’re noticing it obviously when they buy gas.</p>
+
+<p>Though we are seeing those energy prices come down.</p>
+
+<p>And I think that will trickle that will filter into lower prices overall because transportation costs are a major factor in many of the costs.</p>
+
+<p>I think it will become more affordable.</p>
+
+<p>I am somewhat optimistic as you all were talking about before.</p>
+
+<p>I think there there is the ability to see that kind of optimism even though nominal wage growth is starting to slow a bit.</p>
+
+<p>I think that that rate of growth is starting to slow.</p>
+
+<p>I think that we will see gains in the future in terms of living standards as inflation comes down late.</p>
+
+<p>Lisa I want to go to the point we were discussing earlier about how much fiscal policymakers hands are tied when it comes to supporting the market when the economy does start to decline.</p>
+
+<p>Right.</p>
+
+<p>There is this feeling that they will have to slow materially possibly go into a recession and that fiscal policymakers cannot spend to the same degree that they have in the past for fear of only fueling some of this inflation fueling what the Fed has to do and creating an even bigger downturn.</p>
+
+<p>Do you think that that is the appropriate way to look at this.</p>
+
+<p>That there cannot be fiscal spending in the same kind of way.</p>
+
+<p>Period.</p>
+
+<p>Full stop for years to come.</p>
+
+<p>Well I don’t know.</p>
+
+<p>I mean I think we need to make the kind of investments that are necessary to do things like pull down inflation pull down energy prices the long run.</p>
+
+<p>I think that’s what we’re seeing in the Inflation Reduction Act.</p>
+
+<p>I think that we’re going to see that in the future.</p>
+
+<p>I think that those investments are actually important.</p>
+
+<p>I also think about the kind of investments we need to make to increase the supply of workers.</p>
+
+<p>So make sure that we have as many workers out there as possible.</p>
+
+<p>And that will also help with the economic growth in the future.</p>
+
+<p>So doing things like making investments and care work those kinds of things will allow more women to enter the labor force.</p>
+
+<p>In fact if you if you have more people workers entering the labor force then that will put less pressure on wages.</p>
+
+<p>And so I can see there being different parts of this but I don’t actually think we need to have a substantial slowdown as we’re already seeing inflation begin to fall.</p>
+
+<p>Well I guess I’m I’m just questioning certain aspects of this both the U.S.</p>
+
+<p>and internationally.</p>
+
+<p>When you start to talk about spending to support especially lower income individuals who are really struggling how much there will still be an open market for raising cash for those things.</p>
+
+<p>Right.</p>
+
+<p>The U.S.</p>
+
+<p>perhaps not as serious of a condition as United Kingdom in this capacity but the student loan relief measures like this do you think that that is a net benefit even at a time when it could on the peripheries add to inflationary pressure.</p>
+
+<p>I think all the evidence suggests that that is a very tiny impact on any kind of inflation.</p>
+
+<p>So I don’t think that is a major factor in thinking about whether or not something is a good policy.</p>
+
+<p>I think we can look at other things about who is going to be affected by the policy how well how well it’s going to be targeted how well it’s going to impact people’s ability to make ends meet all of those other things.</p>
+
+<p>I think the impact that research shows that the impact on inflation is pretty negligible.</p>
+
+<p>One final question if I could.</p>
+
+<p>There is a gross assumption that businesses and corporations out of the great financial crisis took the high ground in power over labor.</p>
+
+<p>There is now an assumption perhaps that labor is gaining strengths coming out of this pandemic.</p>
+
+<p>Do you buy it.</p>
+
+<p>I do.</p>
+
+<p>Actually I think that we’re seeing it in activity in terms of increased interest in unionisation.</p>
+
+<p>We saw that recently with a Gallup survey about you know growing numbers of people interested in collective bargaining.</p>
+
+<p>You’re seeing those activities across the country.</p>
+
+<p>I think that will have some staying.</p>
+
+<p>I think that we will see that may translate into a bit more leverage moving forwards.</p>
+
+<p>Lisa Scott thank you.</p>
+
+<p>If the Economic Policy Institute on the labor market in America important week for the labor market in America.</p>
+
+<p>The ADP report out about 15 minutes ago.</p>
+
+<p>Call it 20 minutes ago now.</p>
+
+<p>Downside surprise 132.</p>
+
+<p>The estimate is 3 inch.</p>
+
+<p>Okay is up for Friday 300 K is the estimate down 5 28 in the previous month.</p>
+
+<p>The WHO was hired was his job to 85 in a couple days ago.</p>
+
+<p>Shery Ahn really has been climbing some show but I I have so much trouble John with the gloom of a 300 or 285 number versus the normal time say 200000 or 225.</p>
+
+<p>I get that somebody it’s a plant or data point right.</p>
+
+<p>So since you start getting concerned about that the horse has bolted and you go with that data.</p>
+
+<p>And John you know stay with me September 1 when the leaves begin to change.</p>
+
+<p>Unit labor costs frankly is just as powerful as jobs day.</p>
+
+<p>It’s going to show us you know that wage dynamic that inflation is the most important data points I’m looking out is going to be the unemployment rate.</p>
+
+<p>It’s at three point five percent is expected to stay there on Friday.</p>
+
+<p>I keep saying this because I think it is going to be one of the most important stories in the next 12 months.</p>
+
+<p>The Fed is telling us later that unemployment is going to climb.</p>
+
+<p>I’m not quite sure we fully got our hands around.</p>
+
+<p>Well that’s going to look like when it happens.</p>
+
+<p>All right.</p>
+
+<p>A master saying she is expecting the unemployment rate to climb to 4 percent.</p>
+
+<p>The argument the others make is that there still is so much room for people to come back.</p>
+
+<p>The labor market the participation rate could go up the productivity rate could go up that it could create the soft landing that Elise Gould was talking about.</p>
+
+<p>But what happens if it doesn’t happen.</p>
+
+<p>And must many people say that it’s much more likely that we don’t get that kind of Goldilocks scenario.</p>
+
+<p>You know my bullish than Lisa.</p>
+
+<p>I’m being I’m trying to be actually fair.</p>
+
+<p>These are the arguments that people are made balanced.</p>
+
+<p>Balanced.</p>
+
+<p>Yeah.</p>
+
+<p>Not just you know with skeptical.</p>
+
+<p>I’m not sure what Tom’s up to.</p>
+
+<p>All right.</p>
+
+<p>It’s Tom.</p>
+
+<p>Yeah.</p>
+
+<p>You know it’s a loaded question.</p>
+
+<p>I’m getting ready for the talks.</p>
+
+<p>I can’t focus.</p>
+
+<p>John I just did a survey for you to get you up to Vermont for the leaves of October.</p>
+
+<p>They’re sold out.</p>
+
+<p>Woodstock.</p>
+
+<p>Yes.</p>
+
+<p>That’s not Vermont.</p>
+
+<p>That’s just what sold out.</p>
+
+<p>Just sold ISE completely.</p>
+
+<p>Yeah that’s good things off.</p>
+
+<p>All right.</p>
+
+<p>No place to stay John.</p>
+
+<p>All right.</p>
+
+<p>They’re sold out the hotels.</p>
+
+<p>Yes.</p>
+
+<p>OK.</p>
+
+<p>No no it’s not a hotel.</p>
+
+<p>It’s one of America’s most famous since John Coulter.</p>
+
+<p>Seriously.</p>
+
+<p>Woodstock Vermont was redone by John Rockefeller decades and decades ago.</p>
+
+<p>He was the first one to put the power lines below the street.</p>
+
+<p>So you drive into this town and it looks like a Dickens novel.</p>
+
+<p>I’m just picturing right now.</p>
+
+<p>ISE going on an apple picking trip.</p>
+
+<p>Oh Tom we’ll be reading Robert Frost.</p>
+
+<p>Yes.</p>
+
+<p>John kind of going to Wikipedia Wikipedia to tell us everything about that particular plot of land in Vermont.</p>
+
+<p>OK.</p>
+
+<p>We actually pick an apple.</p>
+
+<p>You’ll be evaluating which apples are the Jihye Lee.</p>
+
+<p>Why.</p>
+
+<p>That we can make quick insider reading Wikipedia.</p>
+
+<p>Tell us all about it.</p>
+
+<p>I’m not going.</p>
+
+<p>No.</p>
+
+<p>No.</p>
+
+<p>Hey come on.</p>
+
+<p>A rowboat.</p>
+
+<p>We can go up to Stowe Vermont.</p>
+
+<p>John Tucker.</p>
+
+<p>No no no.</p>
+
+<p>I’m not going.</p>
+
+<p>Senator Leahy could show the Yankees owner is put a minority stake in my football club some AC Milan.</p>
+
+<p>That’s just happened to power.</p>
+
+<p>Really.</p>
+
+<p>We’re expecting that to happen.</p>
+
+<p>That’s news you can use.</p>
+
+<p>OK.</p>
+
+<p>We’d actually like to win something nice.</p>
+
+<p>Features futures up at that from New York.</p>
+
+<p>This is pulling back.</p>
+
+<p>Keeping you up to date with news from around the world to the first word answers could get more revelations in the probe of those classified documents found at Donald Trump’s Florida home.</p>
+
+<p>In a court filing the Justice Department suggests there may have been attempts to obstruct the investigation by moving some of the papers.</p>
+
+<p>The filing included a photo of files labeled Top Secret said to have been found in the former president’s office.</p>
+
+<p>The government was responding to his lawsuit to appoint a special master to review the documents.</p>
+
+<p>Europe faces the risk of blackouts rationing and a severest recession if Russia slashes gas deliveries further.</p>
+
+<p>And the next reality check is at hand.</p>
+
+<p>Starting today there’ll be a halt in gas sent through the Nord Stream pipeline.</p>
+
+<p>It’s a key source of energy for the EU.</p>
+
+<p>There’s a concern that Moscow will find another excuse to clamp down on supplies.</p>
+
+<p>Meanwhile oil is headed for its third monthly drop in a row.</p>
+
+<p>That’s the longest losing streak in more than two years.</p>
+
+<p>West Texas Intermediate has lost more than 6 percent this month.</p>
+
+<p>Economists see slower global growth which would further hurt demand for oil.</p>
+
+<p>And Bloomberg has learned that Credit Suisse’s board is divided on the fate of its troubled investment bank.</p>
+
+<p>Just before some crucial meetings one camp is pushing back against an aggressive downsizing.</p>
+
+<p>Others are in favor of more extensive cuts after racking up billions of dollars in losses.</p>
+
+<p>Credit Suisse is taking aim at the investment bank which has been at the heart of some of its biggest troubles.</p>
+
+<p>And the U.S. Army has grounded its entire fleet of about 400 CHF 47 Chinook transport helicopters.</p>
+
+<p>That’s after engine fires broke out on a few of them.</p>
+
+<p>The twin engine helicopter has been in service for six decades.</p>
+
+<p>It’s built by Boeing and the engines are made by Honeywell.</p>
+
+<p>The army says it has identified the cause of the fires and is implementing corrective measures.</p>
+
+<p>Global news 24 hours a day on air and on Bloomberg Quicktake powered by more than twenty seven hundred journalists and analysts in more than 120 countries.</p>
+
+<p>And which could get to.</p>
+
+<p>This is Glenn Beck.</p>
+
+<p>I think it’s coming back and obviously what this is just to have to at the macro environment if we see markets crash again we’re going to see that crash along with it.</p>
+
+<p>You see a market recovery in secret that recovery along with it.</p>
+
+<p>But I think this is you know it’s flushed out a lot of the things that needed to be flushed out from the crypto space anyway.</p>
+
+<p>It wasn’t Bed Bed Bath and Beyond.</p>
+
+<p>But go from 24 billion not a billion that were net worth.</p>
+
+<p>Makes it difficult.</p>
+
+<p>2024 Sam Banks in 3D with David Rubenstein.</p>
+
+<p>This is an extremely important conversation for all wired up to crypto like me.</p>
+
+<p>And at least so Mr.</p>
+
+<p>Rubenstein joins us this morning.</p>
+
+<p>Look for that 9:00 p.m.</p>
+
+<p>tonight.</p>
+
+<p>This guy’s controversial to say the least.</p>
+
+<p>What is his crud.</p>
+
+<p>What is the the thing that he has that makes people in crypto.</p>
+
+<p>Listen to him.</p>
+
+<p>Well he’s very smart.</p>
+
+<p>He’s made a lot of money when you make a lot of money lost a lot of money to David.</p>
+
+<p>But at the age of 30 he was worth 22 billion dollars.</p>
+
+<p>He became the youngest person to sign the giving pledge.</p>
+
+<p>And he’s committed to giving away all his money.</p>
+
+<p>He basically spends nothing on himself.</p>
+
+<p>He lives in the Bahamas basically has no clothes of any consequence.</p>
+
+<p>He wears shorts and T-shirts and tennis shoes all the time lives in a dorm with eight friends or so.</p>
+
+<p>He only cares about certain public issues and public policy.</p>
+
+<p>But he’s very unusual.</p>
+
+<p>How does he control or what does he believe the price of bitcoin will do.</p>
+
+<p>How does it discover a bid at whatever level.</p>
+
+<p>Well I didn’t ask him that because he’s basically he operates FTSE CAC which is an exchange.</p>
+
+<p>So it gives everybody the opportunity to buy or sell Bitcoin or other crypto currencies.</p>
+
+<p>He doesn’t know what the right price should be.</p>
+
+<p>He recently bailed out a lot of U.S.</p>
+
+<p>companies that had troubles.</p>
+
+<p>He might lose money on all that but he feels it was good for the industry.</p>
+
+<p>So why is this industry important from a social benefit kind of way.</p>
+
+<p>If he is David incredibly idealistic and looking for the betterment of social order.</p>
+
+<p>Well his view is that people who have money should give away that money or do things for good social purposes.</p>
+
+<p>And that’s what he’s always believed then.</p>
+
+<p>He now has a fair amount of money and he’s giving away a good deal money.</p>
+
+<p>He’s also involved in politics and he gives a lot of money to politicians.</p>
+
+<p>He thinks it’s good to get good public servants in government.</p>
+
+<p>And so he’s trying to back the ones he thinks are good.</p>
+
+<p>He has unusual lifestyle in that he’s really not buying any of the accoutrements of wealth that you normally get when you have a multibillion dollar fortune.</p>
+
+<p>I have to pivot a little bit because David Rubenstein I caught an article that was written about you a couple of days ago about his potential bid for the Nationals possibly the Orioles should they come up for free.</p>
+
+<p>Is this random a moment of passion or is this something that’s actually an investment at a time when a lot of people are looking for alternative assets.</p>
+
+<p>Well you know I I realized when I was young I wasn’t going to be a professional baseball player.</p>
+
+<p>I thought I was a great star at six or seven.</p>
+
+<p>But when I got the eight or nine I realized I probably wasn’t going to make the major leagues.</p>
+
+<p>So I figured if I ever get to the major leagues I probably have to do it as an investor or an owner.</p>
+
+<p>So I have I am from Baltimore.</p>
+
+<p>I have looked at whether buying a baseball team makes some sense but that’s too early to say what’s going to happen now.</p>
+
+<p>I Lisa that was a very dangerous question.</p>
+
+<p>Why is it dangerous.</p>
+
+<p>David Westin is dangerous quite ever come back again to the point of baseball.</p>
+
+<p>In sports the stereotype of big hitters is that can buy any sports team and it never goes down.</p>
+
+<p>It just always goes up.</p>
+
+<p>Why is that.</p>
+
+<p>It’s hard to lose money on a sports team generally when you own them.</p>
+
+<p>The NFL teams they make money hand over fist.</p>
+
+<p>Baseball basketball other teams.</p>
+
+<p>They make money when you tend to sell the team.</p>
+
+<p>And so people rarely lose money selling a team.</p>
+
+<p>In the end if you you can support the team without current income from a team you can do quite well just holding it for quite some time.</p>
+
+<p>But if you look at most people who’ve made money in baseball it’s by selling the team not operating at daily.</p>
+
+<p>On the other hand some teams are very profitable and cash flow basis.</p>
+
+<p>Where are you and Carlyle with investments over the years on public investment and stadium.</p>
+
+<p>Now you don’t need to do that in Baltimore because Camden Yards is truly one of our jewels.</p>
+
+<p>But but should public funds be spent.</p>
+
+<p>I’m trying to think of the city right now where this is a raging debate.</p>
+
+<p>Should we buy new baseball stadiums.</p>
+
+<p>Well every every government official presumably is elected by people and they make the decisions that hopefully reflect what their population wants.</p>
+
+<p>Our populations tend to want these things.</p>
+
+<p>People like our sports teams.</p>
+
+<p>You have such an enduring place in philanthropy.</p>
+
+<p>If Mr Sam Brinkman freed enjoys going from 22 billion down to 8 billion and let’s say Bitcoin cracks and goes down to whatever 12000 whatever does he change.</p>
+
+<p>I don’t think he changes a lot.</p>
+
+<p>He’s a member.</p>
+
+<p>He’s not spending this on his personal kind of needs.</p>
+
+<p>He’s not buying homes or planes or things like that.</p>
+
+<p>And I think whether he’s worth 8 billion 22 billion or 1 billion I don’t think he’s going to change very much.</p>
+
+<p>He’s very young.</p>
+
+<p>He’s only 30 years old.</p>
+
+<p>I’d like you to come back and talk to me for one hour about the National Archives which is being dragged through the mud right now.</p>
+
+<p>I know this is a third rail for you.</p>
+
+<p>And if you find the time and the energy I would love to do a half hour nonstop on what is anytime heart and soul.</p>
+
+<p>The National Archives is a great institution in Washington and has all of the records of our federal government.</p>
+
+<p>And it’s been around from the 1920s that they don’t have a current head because David Farrell resigned retired.</p>
+
+<p>But there will be somebody who is likely to be confirmed soon.</p>
+
+<p>The first woman to be the chief archivist United States.</p>
+
+<p>He’s talked right around me there.</p>
+
+<p>What if the right wing part of America goes after your national archives with your philanthropy on Magna Carta and the rest.</p>
+
+<p>Well there are people in Congress who I think we’ll prevent that from how the system will prevent it.</p>
+
+<p>I hope so.</p>
+
+<p>All right David thank you so much.</p>
+
+<p>David Rubenstein we know tonight with RTX CEO Sam Beckman Friedan’s Lisa Abraham.</p>
+
+<p>What’s said to me in my ear.</p>
+
+<p>Orioles three games behind in the wildcard race as well.</p>
+
+<p>Thank you for that information.</p>
+
+<p>Keep throwing me under the bus.</p>
+
+<p>Yeah basically just trying to make me look like badge words tomorrow.</p>
+
+<p>Team Dow Jones is at least.</p>
+
+<p>Lisa what are you looking at in there.</p>
+
+<p>Take care.</p>
+
+<p>I think I’m watching.</p>
+
+<p>See whether we get a little bit more of the gains particular with the NASDAQ.</p>
+
+<p>I find this the most interesting that people are going back and buying big tech on this belief that the economy will slow that rates will get lower that inflation expectations are coming down and pile back into big tech.</p>
+
+<p>It’s just it is a tenuous tape.</p>
+
+<p>It is a new gene to use your word because people don’t have conviction ahead of the labor market before.</p>
+
+<p>Hey I learned today that it’s August.</p>
+
+<p>So yeah it’s very it’s going to be it’s going to be really really interesting.</p>
+
+<p>Here we go to Jobs Day folks.</p>
+
+<p>But also there’s a whisper here of the effect of disinflation.</p>
+
+<p>That’s really not in the published literature right now.</p>
+
+<p>I think we’re going to see that with a vengeance here into September as well.</p>
+
+<p>On balance of power today on Bloomberg Television and Bloomberg Radio.</p>
+
+<p>She has my Book of the Year.</p>
+
+<p>Angela Stent and Putin gave a Book of the Year in February over her magisterial volume Stent on Gorbachev.</p>
+
+<p>This is Bloomberg.</p>
+
+<p>Welcome back to another special U.S.</p>
+
+<p>Open update for Bloomberg TV and Radio from Tennis Channel.</p>
+
+<p>I’m Johnny Radius.</p>
+
+<p>Rafa moves on and Roddick Cano goes out on day two at the U.S.</p>
+
+<p>Open.</p>
+
+<p>Rafael Nadal had to work hard to get past ranking Jakarta and reached the second round after losing the opening set 6 4 to the young Aussie.</p>
+
+<p>The Spaniard put his foot to the floor before securing the win.</p>
+
+<p>NASDAQ and extend his lead on the all time list at the slams.</p>
+
+<p>And he claims his Fifth Crown in New York and his twenty third major title.</p>
+
+<p>Up next for him Italy’s Fabio find meaning on the women’s side.</p>
+
+<p>Defending champion Murata Khan who was sent packing by Al-Azhar Corny in the biggest upset of the tournament so far.</p>
+
+<p>Twenty two winners for the French woman and the victory while 31 unforced errors told the story for the Brit.</p>
+
+<p>Courtney will face Catarina Singh a cobra in round two.</p>
+
+<p>And don’t forget Tennis Channel Live has all the news you need.</p>
+
+<p>Hits the air daily at 9 a.m.</p>
+
+<p>Eastern.</p>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/english/2022/08/31/bloomberg-surveillance.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

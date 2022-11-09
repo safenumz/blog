@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Oracle] 함수 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Oracle] 함수" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="SQL 함수 함수를 사용하면 alias는 필수" />
+<meta property="og:description" content="SQL 함수 함수를 사용하면 alias는 필수" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-10T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Oracle] 함수" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-10T00:00:00-05:00","datePublished":"2019-05-10T00:00:00-05:00","description":"SQL 함수 함수를 사용하면 alias는 필수","headline":"[Oracle] 함수","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html"},"url":"https://safenumz.github.io/blog/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Oracle] 함수</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-10T00:00:00-05:00" itemprop="datePublished">
+        May 10, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="sql-함수">SQL 함수</h1>
+<ul>
+  <li>함수를 사용하면 alias는 필수</li>
+</ul>
+
+<h2 id="1-숫자형-함수">1. 숫자형 함수</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>ABS(n)</td>
+      <td>절대값</td>
+    </tr>
+    <tr>
+      <td>SIGN(n)</td>
+      <td>양수(-&gt;1), 음수(-&gt;-1), 0(-&gt;0)을 구분</td>
+    </tr>
+    <tr>
+      <td>ROUND(n, i)</td>
+      <td>숫자 n을 소수점 i자리에서 반올림</td>
+    </tr>
+    <tr>
+      <td>TRUNC(n, i)</td>
+      <td>숫자 n을 소수점 i자리에서 자름</td>
+    </tr>
+    <tr>
+      <td>CEIL(n)</td>
+      <td>가장 큰 정수</td>
+    </tr>
+    <tr>
+      <td>FLOOR(n)</td>
+      <td>가장 작은 정수</td>
+    </tr>
+    <tr>
+      <td>MOD(n2, n1)</td>
+      <td>n2에서 n1을 나눈 나머지 연산</td>
+    </tr>
+    <tr>
+      <td>POWER(n2, n1)</td>
+      <td>n2의 n1 제곱값</td>
+    </tr>
+    <tr>
+      <td>SQRT(n)</td>
+      <td>n의 제곱근의 값</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 사원명, 급여, 월급(급여/12)를 출력하되 월급은 십단위에서 반올림하여 출력</span>
+<span class="c1">-- 한글은 "" 써야 함</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">round</span><span class="p">(</span><span class="n">sal</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="nv">"월급"</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+ 
+
+<span class="c1">-- 사원명, 급여, 세금(급여의 3.3%)를 원단위 절삭하고 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">trunc</span><span class="p">(</span><span class="n">sal</span><span class="o">*</span><span class="mi">0</span><span class="p">.</span><span class="mi">033</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">AS</span> <span class="n">TAX</span> <span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="2-문자형-함수">2. 문자형 함수</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>LOWER(str)</td>
+      <td>알파벳을 소문자로 변환</td>
+    </tr>
+    <tr>
+      <td>UPPER(str)</td>
+      <td>알파벳을 대문자로 변환</td>
+    </tr>
+    <tr>
+      <td>INITCAP(str)</td>
+      <td>첫번째 글자만 대문자로 변환</td>
+    </tr>
+    <tr>
+      <td>CONCAT(str1, str2)</td>
+      <td>두 문자열을 연결</td>
+    </tr>
+    <tr>
+      <td>SUBSTR(str, i, n)</td>
+      <td>문자열 중 i번째에서 n개의 일부 문자를 선택</td>
+    </tr>
+    <tr>
+      <td>INSTR(str, ch, n, i)</td>
+      <td>문자열 중에서 ch문자열이 n번째부터 i번쨰 있는 위치</td>
+    </tr>
+    <tr>
+      <td>LENGTH(str)</td>
+      <td>문자열의 길이</td>
+    </tr>
+    <tr>
+      <td>LPAD / RPAD(str, n, ch)</td>
+      <td>n자리수 만큼 확보 후 빈 공백에 특정 문자로 채움</td>
+    </tr>
+    <tr>
+      <td>TRIM / LTRIM / RTRIM</td>
+      <td>문자를 제거 양쪽 공백 제거에 사용</td>
+    </tr>
+    <tr>
+      <td>TRANSLATE(column, str1, str2)</td>
+      <td>문자열에서 str1을 str2로 대체</td>
+    </tr>
+    <tr>
+      <td>REPLACE(column, str1, str2)</td>
+      <td>문자열에서 str1을 str2로 대신</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">SELECT</span>
+<span class="s1">'-'</span> <span class="o">||</span> <span class="k">trim</span><span class="p">(</span><span class="s1">' 이 순신 '</span><span class="p">)</span><span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col1</span><span class="p">,</span>
+<span class="s1">'-'</span><span class="o">||</span> <span class="n">ltrim</span><span class="p">(</span><span class="s1">' 이 순신 '</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col2</span><span class="p">,</span>
+<span class="s1">'-'</span><span class="o">||</span> <span class="n">rtrim</span><span class="p">(</span><span class="s1">' 이 순신 '</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col3</span>
+<span class="k">from</span> <span class="n">dual</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="k">replace</span><span class="p">(</span><span class="s1">'  a   b c '</span><span class="p">,</span> <span class="s1">' '</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+
+<span class="c1">-- TRANSLATE</span>
+<span class="c1">-- 월급의 숫자에서 0을 ‘$’로 3을 &amp;로 바꾸어 출력</span>
+<span class="k">SELECT</span> <span class="n">sal</span><span class="p">,</span> <span class="k">TRANSLATE</span><span class="p">(</span><span class="n">sal</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="s1">'$&amp;'</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- REPLACE</span>
+<span class="c1">-- 월급의 숫자에서 50을 $로 바꾸어 출력</span>
+<span class="k">SELECT</span> <span class="k">REPLACE</span><span class="p">(</span><span class="n">sal</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">'$'</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+
+<span class="c1">-- smith의정보를 사원번호, 성명, 담당업무(소문자) 출력</span>
+<span class="k">SELECT</span> <span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="k">lower</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> 
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="n">ename</span><span class="o">=</span><span class="s1">'SMITH'</span><span class="p">;</span>
+          
+<span class="c1">-- 사원번호, 사원명(첫글자만 대문자), 담당업무(첫글자만대문자)로 출력</span>
+<span class="k">SELECT</span> <span class="n">empno</span><span class="p">,</span> <span class="n">INITCAP</span><span class="p">(</span><span class="n">ename</span><span class="p">)</span> <span class="k">as</span> <span class="n">ename</span><span class="p">,</span> <span class="n">INITCAP</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">as</span> <span class="n">job</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+          
+<span class="c1">-- 이름의 첫글자가 ‘K’보다크고 ‘Y’보다 작은 사원의 정보( 사원번호, 이름, 업무, 급여, 부서번호)를 출력하되 이름순으로 정렬</span>
+<span class="k">SELECT</span> <span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">deptno</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="n">SUBSTR</span><span class="p">(</span><span class="n">ename</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">&gt;</span><span class="s1">'K'</span> <span class="k">and</span> <span class="n">SUBSTR</span><span class="p">(</span><span class="n">ename</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">&lt;</span><span class="s1">'Y'</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">ename</span><span class="p">;</span>
+        
+<span class="c1">-- 이름이 5글자 이상인사원들을 출력</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="k">LENGTH</span><span class="p">(</span><span class="n">ename</span><span class="p">)</span><span class="o">&gt;=</span><span class="mi">5</span><span class="p">;</span>
+
+<span class="c1">-- 이름을 15자로 맞추고글자는 왼쪽에 오른쪽에는 ‘*’로 채운다</span>
+<span class="k">SELECT</span> <span class="n">RPAD</span><span class="p">(</span><span class="n">ename</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="s1">'*'</span><span class="p">)</span> <span class="k">as</span> <span class="n">ename</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+ 
+<span class="c1">-- 월급은 10자로 맞추고숫자는 오른쪽에 왼쪽엔 ‘-‘로 채운다</span>
+<span class="k">SELECT</span> <span class="n">LPAD</span><span class="p">(</span><span class="n">sal</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="s1">'-'</span><span class="p">)</span> <span class="k">as</span> <span class="n">ename</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+ 
+<span class="c1">-- 양쪽 공백을 제거</span>
+<span class="k">SELECT</span> 
+<span class="s1">'-'</span> <span class="o">||</span> <span class="k">trim</span><span class="p">(</span><span class="s1">' 이순신 '</span><span class="p">)</span><span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col1</span><span class="p">,</span>
+<span class="s1">'-'</span><span class="o">||</span> <span class="n">ltrim</span><span class="p">(</span><span class="s1">' 이순신 '</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col2</span><span class="p">,</span>
+<span class="s1">'-'</span><span class="o">||</span> <span class="n">rtrim</span><span class="p">(</span><span class="s1">' 이순신 '</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'-'</span> <span class="k">as</span> <span class="n">col3</span> 
+<span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+ 
+
+<span class="c1">-- (*) dual : dummy 테이블로 sys user가 owner이고 모든 사용자가 사용가능.</span>
+<span class="c1">-- 임의의 값을 알고자 할 경우 유용하게 사용하는 테이블.</span>
+
+ 
+<span class="c1">-- 월급을 숫자에서 ‘영일이삼사오육칠팔구’ 글자로 대체</span>
+
+<span class="c1">-- 월급의 숫자에서 0을‘$’로 바꾸어 출력</span>
+</code></pre></div></div>
+
+<h2 id="3-날짜형-함수">3. 날짜형 함수</h2>
+<ul>
+  <li>시스템의 날짜를 가져오는 함수</li>
+  <li>SYSDATE, CURRENT_DATE, SYSTIMESTAMP, CURRENT_TIMESTAMP</li>
+  <li>이 함수들은 사용수 ()가 필요없다.</li>
+  <li>sysdate와 current_date의 차이는 current_date는 세션 시간을 따른다.</li>
+  <li>만약 한 명은 한국에서 한 명은 미국 본사 시스템에 접속시 각각 세션에 따른 시간을 확ㅇ니하게 됨</li>
+</ul>
+
+<h3 id="날짜-연산">날짜 연산</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">연산</th>
+      <th style="text-align: center">결과</th>
+      <th style="text-align: center">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">Date + number</td>
+      <td style="text-align: center">Date</td>
+      <td style="text-align: center">일수에 날짜를 더함</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Date - number</td>
+      <td style="text-align: center">Date</td>
+      <td style="text-align: center">일수에 날짜를 뺌</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Date - Date</td>
+      <td style="text-align: center">일수</td>
+      <td style="text-align: center">일수에 다른 일수를 뺌</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">Date + number / 24</td>
+      <td style="text-align: center">Date</td>
+      <td style="text-align: center">시간을 날짜에 더함</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="날짜-함수">날짜 함수</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>MONTHS_BETWEEN</td>
+      <td>두 날짜 사이의 월수를 계산</td>
+    </tr>
+    <tr>
+      <td>ADD_MONTHS</td>
+      <td>월을 날짜에 더함</td>
+    </tr>
+    <tr>
+      <td>NEXT_DAY</td>
+      <td>다음 요일에 대한 날짜</td>
+    </tr>
+    <tr>
+      <td>LAST_DAY</td>
+      <td>월의 마지막 날을 계산</td>
+    </tr>
+    <tr>
+      <td>ROUND</td>
+      <td>날짜를 반올림</td>
+    </tr>
+    <tr>
+      <td>TRUNC</td>
+      <td>날짜를 절삭</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 현재까지 근무일 수가 많은 사람 순으로 출력</span>
+<span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">sysdate</span> <span class="o">-</span> <span class="n">nvl</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="n">sysdate</span><span class="p">)</span> <span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- 현재까지 근무일 수가 몇 주 몇 일인가를 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span>
+<span class="n">round</span><span class="p">(</span><span class="n">sysdate</span><span class="o">-</span><span class="n">hiredate</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span> <span class="k">AS</span> <span class="n">total_days</span><span class="p">,</span>
+<span class="n">trunc</span><span class="p">((</span><span class="n">sysdate</span><span class="o">-</span><span class="n">hiredate</span><span class="p">)</span><span class="o">/</span><span class="mi">7</span><span class="p">)</span> <span class="k">AS</span> <span class="n">weeks</span><span class="p">,</span>
+<span class="n">ceil</span><span class="p">(</span><span class="k">mod</span><span class="p">(</span><span class="n">sysdate</span><span class="o">-</span><span class="n">hiredate</span><span class="p">,</span><span class="mi">7</span><span class="p">))</span> <span class="k">AS</span> <span class="n">days</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- 10번 부서의 사원의 현재까지의 근무 월수를 계산</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">TRUNC</span><span class="p">(</span><span class="n">months_between</span><span class="p">(</span><span class="n">sysdate</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">))</span> <span class="k">AS</span> <span class="nv">"근무월수"</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="n">deptno</span><span class="o">=</span><span class="s1">'10'</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="nv">"근무월수"</span> <span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- 현재 날짜에서 3개월후의 날짜 구하기</span>
+<span class="k">SELECT</span> <span class="n">add_months</span><span class="p">(</span> <span class="n">sysdate</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span> <span class="k">AS</span> <span class="n">mydate</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+
+<span class="c1">-- 현재 날짜에서 돌아오는 ‘월’요일의 날짜 구하기</span>
+<span class="k">SELECT</span> <span class="n">next_day</span><span class="p">(</span><span class="n">sysdate</span><span class="p">,</span> <span class="s1">'화'</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+          
+<span class="c1">-- 현재 날짜에서 해당 월의 마지막 날짜 구하기</span>
+<span class="k">SELECT</span> <span class="n">last_day</span><span class="p">(</span><span class="n">sysdate</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">dual</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="4-변환-함수">4. 변환 함수</h2>
+<ul>
+  <li>TO_CAHR</li>
+  <li>TO_DATE</li>
+  <li>TO_NUMBER</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- 입사일자에서 입사년도를 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'YYYY'</span><span class="p">)</span> <span class="n">hireyear</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- 입사월 출력</span>
+<span class="k">SELECT</span> <span class="n">emane</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'MM'</span><span class="p">)</span> <span class="n">hiremonth</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- 입사년도-월 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'YYYY-MM'</span><span class="p">)</span> <span class="n">hireyearmonth</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+
+<span class="c1">-- 입사일 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'DD'</span><span class="p">)</span> <span class="n">hireday</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- 입사일자를 ‘1999년 1월 1일’ 형식으로 출력</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span>
+<span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'YYYY'</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'년 '</span> <span class="o">||</span>
+<span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'MM'</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'월 '</span> <span class="o">||</span>
+<span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'DD'</span><span class="p">)</span> <span class="o">||</span> <span class="s1">'일 '</span>  <span class="k">AS</span> <span class="nv">"입사일자"</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="n">enamen</span><span class="p">,</span> <span class="n">hiredate</span><span class="p">,</span> 
+<span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span><span class="s1">'YYYY"년" MM"월" DD"일"'</span><span class="p">)</span> <span class="n">hireyear</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="c1">-- 1981년도에 입사한 사원 검색</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'YYYY'</span><span class="p">)</span><span class="o">=</span><span class="s1">'1981'</span><span class="p">;</span>
+
+<span class="c1">-- 5월에 입사한 사원 검색</span>
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span> <span class="n">hiredate</span>
+<span class="k">FROM</span> <span class="n">emp</span>
+<span class="k">WHERE</span> <span class="n">to_char</span><span class="p">(</span><span class="n">hiredate</span><span class="p">,</span> <span class="s1">'MM'</span><span class="p">)</span><span class="o">=</span><span class="mi">5</span><span class="p">;</span>
+
+<span class="c1">-- 급여 앞에 $를 삽입하고 3자리 마다 ,를 출력</span>
+</code></pre></div></div>
+
+<h2 id="5-조건-함수">5. 조건 함수</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">info</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">info</span> <span class="p">(</span>
+    <span class="n">hakbun</span> <span class="n">varchar2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">name</span>   <span class="n">varchar2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">jumin</span>  <span class="n">varchar2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">gender</span> <span class="n">varchar2</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+    <span class="n">column_id</span> <span class="n">number</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">info</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'1000'</span><span class="p">,</span> <span class="s1">'홍길동'</span><span class="p">,</span> <span class="s1">'801232-1234567'</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">info</span> <span class="k">VALUES</span> <span class="p">(</span><span class="s1">'1001'</span><span class="p">,</span> <span class="s1">'홍길자'</span><span class="p">,</span> <span class="s1">'811232-2234567'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+
+<span class="c1">-- 주민번호에서 성별 구하기</span>
+<span class="k">SELECT</span>  <span class="n">decode</span><span class="p">(</span> <span class="n">substr</span><span class="p">(</span><span class="n">jumin</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">'남자'</span><span class="p">,</span> <span class="s1">'여자'</span><span class="p">)</span> <span class="k">AS</span> <span class="n">gender</span>  
+<span class="k">FROM</span> <span class="k">table_name</span><span class="p">;</span>
+
+
+<span class="k">SELECT</span> <span class="k">CASE</span> <span class="n">substr</span><span class="p">(</span><span class="n">jumin</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">WHEN</span> <span class="s1">'1'</span> <span class="k">THEN</span> <span class="s1">'남자'</span>
+<span class="k">WHEN</span> <span class="s1">'3'</span> <span class="k">THEN</span> <span class="s1">'여자'</span>
+<span class="k">ELSE</span> <span class="s1">'여자'</span>
+<span class="k">END</span> <span class="k">as</span> <span class="n">gender</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+
+<span class="c1">-- 부서번호가 10이면영업부, 20이면 관리부, 30이면 IT부 그 외는 기술부로 출력 </span>
+<span class="k">SELECT</span> <span class="n">decode</span><span class="p">(</span><span class="n">deptno</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">'영업부'</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s1">'관리부'</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s1">'IT부'</span><span class="p">,</span> <span class="s1">'기술부'</span><span class="p">)</span> <span class="k">AS</span> <span class="n">department</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="n">ename</span><span class="p">,</span>
+<span class="k">CASE</span> <span class="n">deptno</span>
+<span class="k">WHEN</span> <span class="mi">10</span> <span class="k">THEN</span> <span class="s1">'영업부'</span>
+<span class="k">WHEN</span> <span class="mi">20</span> <span class="k">THEN</span> <span class="s1">'관리부'</span>
+<span class="k">WHEN</span> <span class="mi">30</span> <span class="k">THEN</span> <span class="s1">'IT부'</span>
+<span class="k">ELSE</span> <span class="s1">'기술부'</span>
+<span class="k">END</span> <span class="k">as</span> <span class="n">department</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+
+<span class="c1">-- 업무(job)이 analyst이면 급여 증가가 10%이고 clerk이면 15%, manager이면 20%인 경우 사원번호, 사원명, 업무, 급여, 증가한 급여를 출력</span>
+<span class="k">SELECT</span> <span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span>
+<span class="n">decode</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="s1">'analyst'</span><span class="p">,</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'clerk'</span><span class="p">,</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">15</span><span class="p">,</span> <span class="s1">'manager'</span><span class="p">,</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span> <span class="n">sal</span><span class="p">)</span> <span class="k">AS</span> <span class="nv">"증가한급여"</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span>
+<span class="k">CASE</span> <span class="n">job</span>
+<span class="k">WHEN</span> <span class="s1">'analyst'</span> <span class="k">THEN</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">10</span>
+<span class="k">WHEN</span> <span class="s1">'clerk'</span> <span class="k">THEN</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">15</span>
+<span class="k">WHEN</span> <span class="s1">'manager'</span> <span class="k">THEN</span> <span class="n">sal</span><span class="o">*</span><span class="mi">1</span><span class="p">.</span><span class="mi">2</span>
+<span class="k">ELSE</span> <span class="n">sal</span> <span class="k">END</span> <span class="k">as</span> <span class="nv">"증가한급여"</span>
+<span class="k">FROM</span> <span class="n">emp</span><span class="p">;</span>
+</code></pre></div></div>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

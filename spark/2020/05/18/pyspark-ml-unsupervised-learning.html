@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] PySpark 비지도 학습 모델 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] PySpark 비지도 학습 모델" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="pyspark 비지도 학습" />
+<meta property="og:description" content="pyspark 비지도 학습" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2020/05/18/pyspark-ml-unsupervised-learning.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2020/05/18/pyspark-ml-unsupervised-learning.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-18T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] PySpark 비지도 학습 모델" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-05-18T00:00:00-05:00","datePublished":"2020-05-18T00:00:00-05:00","description":"pyspark 비지도 학습","headline":"[Spark] PySpark 비지도 학습 모델","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2020/05/18/pyspark-ml-unsupervised-learning.html"},"url":"https://safenumz.github.io/blog/spark/2020/05/18/pyspark-ml-unsupervised-learning.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] PySpark 비지도 학습 모델</h1><p class="page-description">pyspark 비지도 학습</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-18T00:00:00-05:00" itemprop="datePublished">
+        May 18, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2020-05-18-pyspark-ml-unsupervised-learning.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2020-05-18-pyspark-ml-unsupervised-learning.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2020-05-18-pyspark-ml-unsupervised-learning.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2020-05-18-pyspark-ml-unsupervised-learning.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#비지도-학습">비지도 학습 </a></li>
+<li class="toc-entry toc-h1"><a href="#K-평균">K-평균 </a></li>
+<li class="toc-entry toc-h1"><a href="#이분법-$k-$평균">이분법 $k-$평균 </a></li>
+<li class="toc-entry toc-h1"><a href="#가우시안-혼합-모델">가우시안 혼합 모델 </a></li>
+<li class="toc-entry toc-h1"><a href="#잠재-디리클레-할당">잠재 디리클레 할당 </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-05-18-pyspark-ml-unsupervised-learning.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="비지도-학습">
+<a class="anchor" href="#%EB%B9%84%EC%A7%80%EB%8F%84-%ED%95%99%EC%8A%B5" aria-hidden="true"><span class="octicon octicon-link"></span></a>비지도 학습<a class="anchor-link" href="#%EB%B9%84%EC%A7%80%EB%8F%84-%ED%95%99%EC%8A%B5"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">MINIO_ACCESS_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_ACCESS_KEY'</span><span class="p">]</span>
+<span class="n">MINIO_SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_SECRET_KEY'</span><span class="p">]</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.access.key"</span><span class="p">,</span> <span class="n">MINIO_ACCESS_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.secret.key"</span><span class="p">,</span> <span class="n">MINIO_SECRET_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.endpoint"</span><span class="p">,</span> <span class="s2">"http://lab101:10170"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.impl"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.S3AFileSystem"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.connection.ssl.enabled"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.path.style.access"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"com.amazonaws.services.s3.enableV2"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.aws.credentials.provider"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">VectorAssembler</span>
+
+<span class="n">va</span> <span class="o">=</span> <span class="n">VectorAssembler</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCols</span><span class="p">([</span><span class="s2">"Quantity"</span><span class="p">,</span> <span class="s2">"UnitPrice"</span><span class="p">])</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>
+<span class="n">sales_raw</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"csv"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"header"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"inferSchema"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"s3a://data/retail-data/by-day/*.csv"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"Description IS NOT NULL"</span><span class="p">)</span>
+<span class="n">sales_raw</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|InvoiceNo|StockCode|         Description|Quantity|        InvoiceDate|UnitPrice|CustomerID|       Country|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|   580538|    23084|  RABBIT NIGHT LIGHT|      48|2011-12-05 08:38:00|     1.79|   14075.0|United Kingdom|
+|   580538|    23077| DOUGHNUT LIP GLOSS |      20|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|
+|   580538|    22906|12 MESSAGE CARDS ...|      24|2011-12-05 08:38:00|     1.65|   14075.0|United Kingdom|
+|   580538|    21914|BLUE HARMONICA IN...|      24|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|
+|   580538|    22467|   GUMBALL COAT RACK|       6|2011-12-05 08:38:00|     2.55|   14075.0|United Kingdom|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales</span> <span class="o">=</span> <span class="n">va</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales_raw</span><span class="p">)</span>
+<span class="n">sales</span><span class="o">.</span><span class="n">cache</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>DataFrame[InvoiceNo: string, StockCode: string, Description: string, Quantity: int, InvoiceDate: string, UnitPrice: double, CustomerID: double, Country: string, features: vector]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">sales</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+--------------------+--------+-------------------+---------+----------+--------------+-----------+
+|InvoiceNo|StockCode|         Description|Quantity|        InvoiceDate|UnitPrice|CustomerID|       Country|   features|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+-----------+
+|   580538|    23084|  RABBIT NIGHT LIGHT|      48|2011-12-05 08:38:00|     1.79|   14075.0|United Kingdom|[48.0,1.79]|
+|   580538|    23077| DOUGHNUT LIP GLOSS |      20|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|[20.0,1.25]|
+|   580538|    22906|12 MESSAGE CARDS ...|      24|2011-12-05 08:38:00|     1.65|   14075.0|United Kingdom|[24.0,1.65]|
+|   580538|    21914|BLUE HARMONICA IN...|      24|2011-12-05 08:38:00|     1.25|   14075.0|United Kingdom|[24.0,1.25]|
+|   580538|    22467|   GUMBALL COAT RACK|       6|2011-12-05 08:38:00|     2.55|   14075.0|United Kingdom| [6.0,2.55]|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+-----------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="K-평균">
+<a class="anchor" href="#K-%ED%8F%89%EA%B7%A0" aria-hidden="true"><span class="octicon octicon-link"></span></a>K-평균<a class="anchor-link" href="#K-%ED%8F%89%EA%B7%A0"> </a>
+</h1>
+<ul>
+<li>사용자가 지정한 군집 수인 k가 데이터셋 내 서로 다른 포인트에 무작위로 할당</li>
+<li>할당되지 않은 포인트들은 직전에 할당된 포인트와의 거리, 즉 유클리드 거리를 계산하여 가장 가까이에 위치한 군집으로 할당</li>
+<li>이렇게 각 포인트를 사전에 정의된 군집(k개의 군집)으로 모두 할당하는 작업이 끝나면 센트로이드라는 각 군집의 중심이 계산되고, 프로세스가 반복</li>
+<li>모든 포인트가 특정 중심에 할당되면 새로운 중심값이 계산</li>
+<li>이과정은 지정한 횟수만큼 반복되거나 중심값이 변경되지 않는 수렴<sup>convergence</sup> 에 도달할 때 까지 반복</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.clustering</span> <span class="kn">import</span> <span class="n">KMeans</span>
+
+<span class="n">km</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">()</span><span class="o">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">km</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+<span class="n">kmModel</span> <span class="o">=</span> <span class="n">km</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>distanceMeasure: the distance measure. Supported options: 'euclidean' and 'cosine'. (default: euclidean)
+featuresCol: features column name. (default: features)
+initMode: The initialization algorithm. This can be either "random" to choose random points as initial cluster centers, or "k-means||" to use a parallel variant of k-means++ (default: k-means||)
+initSteps: The number of steps for k-means|| initialization mode. Must be &gt; 0. (default: 2)
+k: The number of clusters to create. Must be &gt; 1. (default: 2, current: 5)
+maxIter: max number of iterations (&gt;= 0). (default: 20)
+predictionCol: prediction column name. (default: prediction)
+seed: random seed. (default: 2732625111183068529)
+tol: the convergence tolerance for iterative algorithms (&gt;= 0). (default: 0.0001)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">kmModel</span><span class="o">.</span><span class="n">summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">clusterSizes</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[10, 3, 10, 19, 8]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">centers</span> <span class="o">=</span> <span class="n">kmModel</span><span class="o">.</span><span class="n">clusterCenters</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cluster Centers: "</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">center</span> <span class="ow">in</span> <span class="n">centers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cluster Centers: 
+[12.    0.93]
+[44.          1.16333333]
+[23.2    0.956]
+[5.21052632 3.74105263]
+[ 2.5     11.24375]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="이분법-$k-$평균">
+<a class="anchor" href="#%EC%9D%B4%EB%B6%84%EB%B2%95-%24k-%24%ED%8F%89%EA%B7%A0" aria-hidden="true"><span class="octicon octicon-link"></span></a>이분법 $k-$평균<a class="anchor-link" href="#%EC%9D%B4%EB%B6%84%EB%B2%95-%24k-%24%ED%8F%89%EA%B7%A0"> </a>
+</h1>
+<ul>
+<li>이분법<sup>Bisecting</sup> $k-$평균은 $k-$평균에서 변형된 알고리즘</li>
+<li>$k-$평균은 초기 데이터에 여러 그룹을 할당함으로써 데이터 포인트들을 군집화하는 상향식<sup>bottom-up</sup> 군집화 방법인 반면, 이분법 $k-$평균은 이와는 반대로 하향식<sup>top-down</sup> 군집화 방법</li>
+<li>최초에 단일 그룹을 생성한 다음 해당 그룹을 더 작은 그룹으로 나누고 마지막에는 사용자가 지정한 수의 군집으로 끝나게 됨</li>
+<li>일반적으로 $k-$평균보다 빠르며 군집결과도 차이가 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.clustering</span> <span class="kn">import</span> <span class="n">BisectingKMeans</span>
+
+<span class="n">bkm</span> <span class="o">=</span> <span class="n">BisectingKMeans</span><span class="p">()</span><span class="o">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">setMaxIter</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">bkmModel</span> <span class="o">=</span> <span class="n">bkm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">bkmModel</span><span class="o">.</span><span class="n">summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">clusterSizes</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[8, 16, 13, 10, 3]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bkmModel</span><span class="o">.</span><span class="n">computeCost</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span>
+<span class="n">centers</span> <span class="o">=</span> <span class="n">bkmModel</span><span class="o">.</span><span class="n">clusterCenters</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Cluster Centers: "</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">center</span> <span class="ow">in</span> <span class="n">centers</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Cluster Centers: 
+[ 2.5     11.24375]
+[4.8125   4.095625]
+[10.92307692  1.14230769]
+[23.2    0.956]
+[44.          1.16333333]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/a/spark/python/pyspark/ml/clustering.py:822: FutureWarning: Deprecated in 3.0.0. It will be removed in future versions. Use ClusteringEvaluator instead. You can also get the cost on the training dataset in the summary.
+  "dataset in the summary.", FutureWarning)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="가우시안-혼합-모델">
+<a class="anchor" href="#%EA%B0%80%EC%9A%B0%EC%8B%9C%EC%95%88-%ED%98%BC%ED%95%A9-%EB%AA%A8%EB%8D%B8" aria-hidden="true"><span class="octicon octicon-link"></span></a>가우시안 혼합 모델<a class="anchor-link" href="#%EA%B0%80%EC%9A%B0%EC%8B%9C%EC%95%88-%ED%98%BC%ED%95%A9-%EB%AA%A8%EB%8D%B8"> </a>
+</h1>
+<ul>
+<li>가우시안 혼합 모델<sup>Gaussian Mixture Model GMM</sup> 은 이분법 <strong>k-</strong> 평균이나 <strong>k-</strong> 평균과는 다른 가정</li>
+<li>
+<strong>k-</strong> 평균 알고리즘이 군집의 중심으로부터 거리제곱합을 줄임으로써 데이터를 그룹화하는 반면 가우시안 혼합 모델은 각 군집이 가우시안 분포<sup>Gaussian distribution</sup> 으로부터 무작위 추출을 하여 데이터를 생성한다고 가정</li>
+<li>생성된 군집 가장자리에는 데이터가 포함될 확률이 낮아야 하며(가우시안 분포에 반영), 군집 중앙에는 데이터가 포함될 확률이 훨씬 높아야 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.clustering</span> <span class="kn">import</span> <span class="n">GaussianMixture</span>
+
+<span class="n">gmm</span> <span class="o">=</span> <span class="n">GaussianMixture</span><span class="p">()</span><span class="o">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gmm</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>aggregationDepth: suggested depth for treeAggregate (&gt;= 2). (default: 2)
+featuresCol: features column name. (default: features)
+k: Number of independent Gaussians in the mixture model. Must be &gt; 1. (default: 2, current: 5)
+maxIter: max number of iterations (&gt;= 0). (default: 100)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+seed: random seed. (default: 1554811416070000952)
+tol: the convergence tolerance for iterative algorithms (&gt;= 0). (default: 0.01)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">weights</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0.19996361501436077, 0.2650758391757304, 0.4549241736967528, 0.0600363721131339, 0.02000000000002211]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">gaussiansDF</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/a/spark/python/pyspark/sql/context.py:127: FutureWarning: Deprecated in 3.0.0. Use SparkSession.builder.getOrCreate() instead.
+  FutureWarning
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+--------------------+
+|                mean|                 cov|
++--------------------+--------------------+
+|[23.1998838713342...|2.560278699114912...|
+|[3.12998187641630...|1.222198686648849...|
+|[8.33175706727699...|11.78027654132310...|
+|[43.9877858780125...|32.22708770259816...|
+|[8.00000000001486...|6.062776947139928...|
++--------------------+--------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">cluster</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------+
+|prediction|
++----------+
+|         3|
+|         0|
+|         0|
+|         0|
+|         2|
+|         3|
+|         4|
+|         0|
+|         2|
+|         2|
+|         1|
+|         2|
+|         2|
+|         2|
+|         2|
+|         2|
+|         3|
+|         0|
+|         2|
+|         2|
++----------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">clusterSizes</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[10, 11, 25, 3, 1]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">probability</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+
+|         probability|
++--------------------+
+|[1.37632436456510...|
+|[0.99999639767391...|
+|[0.99999717659721...|
+|[0.99997707446759...|
+|[1.33915680121729...|
+|[1.37558540775791...|
+|[8.24399594549003...|
+|[0.99999776336008...|
+|[1.06905010900131...|
+|[1.06905010900131...|
+|[1.65702583224003...|
+|[1.98857135239437...|
+|[8.70737611462661...|
+|[8.70737611462661...|
+|[4.99008297332649...|
+|[1.08580292118476...|
+|[4.39868445087168...|
+|[0.99997707446759...|
+|[1.06905010900131...|
+|[1.06905010900131...|
++--------------------+
+only showing top 20 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="잠재-디리클레-할당">
+<a class="anchor" href="#%EC%9E%A0%EC%9E%AC-%EB%94%94%EB%A6%AC%ED%81%B4%EB%A0%88-%ED%95%A0%EB%8B%B9" aria-hidden="true"><span class="octicon octicon-link"></span></a>잠재 디리클레 할당<a class="anchor-link" href="#%EC%9E%A0%EC%9E%AC-%EB%94%94%EB%A6%AC%ED%81%B4%EB%A0%88-%ED%95%A0%EB%8B%B9"> </a>
+</h1>
+<ul>
+<li>잠재 디리클레 할당<sup>Latent Dirichlet Allocation, LDA</sup>은 일반적으로 텍스트 문서에 대한 토픽 모델링을 수행하는 데 사용되는 계층적 군집화 모델</li>
+<li>주제와 관련된 일련의 문서와 키워드로부터 주제를 추출하고 각 문서가 입력된 여러 주제에 얼마나 기여했는지 횟수를 계산</li>
+<li>스파크에서 <strong>LDA</strong> 모델을 구현하는 방법은 온라인<sup>online</sup> <strong>LDA</strong>와 기댓값 최대화<sup>expectation maximization</sup>
+</li>
+<li>일반적으로 온라인 <strong>LDA</strong>는 샘플 데이터가 많은 경우에 적합하며, 기댓값 최대화는 어휘수가 많은 경우에 적합</li>
+<li>확장성 관점에서는 수백에서 수천 개의 주제까지 가능</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.feature</span> <span class="kn">import</span> <span class="n">Tokenizer</span><span class="p">,</span> <span class="n">CountVectorizer</span>
+
+<span class="n">tkn</span> <span class="o">=</span> <span class="n">Tokenizer</span><span class="p">()</span><span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>
+<span class="n">tokenized</span> <span class="o">=</span> <span class="n">tkn</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">sales</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">"features"</span><span class="p">))</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">setInputCol</span><span class="p">(</span><span class="s2">"DescOut"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setOutputCol</span><span class="p">(</span><span class="s2">"features"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setVocabSize</span><span class="p">(</span><span class="mi">500</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinTF</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setMinDF</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">setBinary</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cvFitted</span> <span class="o">=</span> <span class="n">cv</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
+<span class="n">prepped</span> <span class="o">=</span> <span class="n">cvFitted</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.clustering</span> <span class="kn">import</span> <span class="n">LDA</span>
+<span class="n">lda</span> <span class="o">=</span> <span class="n">LDA</span><span class="p">()</span><span class="o">.</span><span class="n">setK</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">setMaxIter</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lda</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>checkpointInterval: set checkpoint interval (&gt;= 1) or disable checkpoint (-1). E.g. 10 means that the cache will get checkpointed every 10 iterations. Note: this setting will be ignored if the checkpoint directory is not set in the SparkContext. (default: 10)
+docConcentration: Concentration parameter (commonly named "alpha") for the prior placed on documents' distributions over topics ("theta"). (undefined)
+featuresCol: features column name. (default: features)
+k: The number of topics (clusters) to infer. Must be &gt; 1. (default: 10, current: 10)
+keepLastCheckpoint: (For EM optimizer) If using checkpointing, this indicates whether to keep the last checkpoint. If false, then the checkpoint will be deleted. Deleting the checkpoint can cause failures if a data partition is lost, so set this bit with care. (default: True)
+learningDecay: Learning rate, set as anexponential decay rate. This should be between (0.5, 1.0] to guarantee asymptotic convergence. (default: 0.51)
+learningOffset: A (positive) learning parameter that downweights early iterations. Larger values make early iterations count less (default: 1024.0)
+maxIter: max number of iterations (&gt;= 0). (default: 20, current: 5)
+optimizeDocConcentration: Indicates whether the docConcentration (Dirichlet parameter for document-topic distribution) will be optimized during training. (default: True)
+optimizer: Optimizer or inference algorithm used to estimate the LDA model.  Supported: online, em (default: online)
+seed: random seed. (default: -9149679861596847839)
+subsamplingRate: Fraction of the corpus to be sampled and used in each iteration of mini-batch gradient descent, in range (0, 1]. (default: 0.05)
+topicConcentration: Concentration parameter (commonly named "beta" or "eta") for the prior placed on topic' distributions over terms. (undefined)
+topicDistributionCol: Output column with estimates of the topic mixture distribution for each document (often called "theta" in the literature). Returns a vector of zeros for an empty document. (default: topicDistribution)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">lda</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">prepped</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">describeTopics</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----+---------------+--------------------+
+|topic|    termIndices|         termWeights|
++-----+---------------+--------------------+
+|    0| [60, 116, 124]|[0.00913991758035...|
+|    1|  [114, 11, 92]|[0.01183209974899...|
+|    2|  [55, 112, 27]|[0.01574372445964...|
+|    3|  [56, 106, 88]|[0.01117898536785...|
+|    4|   [7, 40, 102]|[0.01211664967569...|
+|    5|[112, 139, 121]|[0.00933025066380...|
+|    6|    [122, 2, 4]|[0.01118652206493...|
+|    7|    [78, 6, 51]|[0.00880822582151...|
+|    8|  [23, 48, 100]|[0.01152078111328...|
+|    9|  [59, 127, 19]|[0.01128129509911...|
++-----+---------------+--------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cvFitted</span><span class="o">.</span><span class="n">vocabulary</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>['water',
+ 'hot',
+ 'vintage',
+ 'bottle',
+ 'paperweight',
+ '6',
+ 'home',
+ 'doormat',
+ 'landmark',
+ 'bicycle',
+ 'frame',
+ 'ribbons',
+ '',
+ 'classic',
+ 'rose',
+ 'kit',
+ 'leaf',
+ 'sweet',
+ 'bag',
+ 'airline',
+ 'doorstop',
+ 'light',
+ 'in',
+ 'christmas',
+ 'heart',
+ 'calm',
+ 'set',
+ 'keep',
+ 'balloons',
+ 'night',
+ 'lights',
+ '12',
+ 'tin',
+ 'english',
+ 'caravan',
+ 'stuff',
+ 'tidy',
+ 'oxford',
+ 'full',
+ 'cottage',
+ 'notting',
+ 'drawer',
+ 'mushrooms',
+ 'chrome',
+ 'champion',
+ 'amelie',
+ 'mini',
+ 'the',
+ 'giant',
+ 'design',
+ 'elegant',
+ 'tins',
+ 'jet',
+ 'fairy',
+ "50's",
+ 'holder',
+ 'message',
+ 'blue',
+ 'storage',
+ 'tier',
+ 'covent',
+ 'world',
+ 'skulls',
+ 'font',
+ 'hearts',
+ 'skull',
+ 'clips',
+ 'bell',
+ 'red',
+ 'party',
+ 'chalkboard',
+ 'save',
+ '4',
+ 'coloured',
+ 'poppies',
+ 'garden',
+ 'nine',
+ 'girl',
+ 'shimmering',
+ 'doughnut',
+ 'dog',
+ '3',
+ 'tattoos',
+ 'chilli',
+ 'coat',
+ 'torch',
+ 'sunflower',
+ 'tale',
+ 'cards',
+ 'puncture',
+ 'woodland',
+ 'bomb',
+ 'knack',
+ 'lip',
+ 'collage',
+ 'rabbit',
+ 'sex',
+ 'of',
+ 'rack',
+ 'wall',
+ 'cracker',
+ 'scottie',
+ 'hill',
+ 'led',
+ 'black',
+ 'art',
+ 'envelopes',
+ 'flytrap',
+ 'box',
+ 'pinks',
+ 'camouflage',
+ 'gingham',
+ 'popcorn',
+ 'with',
+ 'knick',
+ 'empire',
+ 'grow',
+ 'fancy',
+ 'plate',
+ 'natural',
+ 'feltcraft',
+ 'brown',
+ 'paisley',
+ 'repair',
+ 'gumball',
+ 'white',
+ 'regency',
+ 'cakestand',
+ 'rocket',
+ 'harmonica',
+ 'a',
+ 'or',
+ 'transfer',
+ 'street',
+ 'planet',
+ 'office',
+ 'gloss',
+ 'slate',
+ 'towel',
+ 'tea',
+ 'breakfast']</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2020/05/18/pyspark-ml-unsupervised-learning.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

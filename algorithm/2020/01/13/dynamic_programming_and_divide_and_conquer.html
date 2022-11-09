@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[알고리즘] 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer) | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[알고리즘] 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="문제를 잘게 쪼개서 해결" />
+<meta property="og:description" content="문제를 잘게 쪼개서 해결" />
+<link rel="canonical" href="https://safenumz.github.io/blog/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-13T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[알고리즘] 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-01-13T00:00:00-06:00","datePublished":"2020-01-13T00:00:00-06:00","description":"문제를 잘게 쪼개서 해결","headline":"[알고리즘] 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html"},"url":"https://safenumz.github.io/blog/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[알고리즘] 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)</h1><p class="page-description">문제를 잘게 쪼개서 해결</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-01-13T00:00:00-06:00" itemprop="datePublished">
+        Jan 13, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Algorithm">Algorithm</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2020-01-13-dynamic_programming_and_divide_and_conquer.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2020-01-13-dynamic_programming_and_divide_and_conquer.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2020-01-13-dynamic_programming_and_divide_and_conquer.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2020-01-13-dynamic_programming_and_divide_and_conquer.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-01-13-dynamic_programming_and_divide_and_conquer.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="&#46041;&#51201;-&#44228;&#54925;&#48277;-(Dynamic-Programming)&#44284;-&#48516;&#54624;-&#51221;&#48373;-(Divide-and-Conquer)">&#46041;&#51201; &#44228;&#54925;&#48277; (Dynamic Programming)&#44284; &#48516;&#54624; &#51221;&#48373; (Divide and Conquer)<a class="anchor-link" href="#&#46041;&#51201;-&#44228;&#54925;&#48277;-(Dynamic-Programming)&#44284;-&#48516;&#54624;-&#51221;&#48373;-(Divide-and-Conquer)"> </a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="1.-&#51221;&#51032;">1. &#51221;&#51032;<a class="anchor-link" href="#1.-&#51221;&#51032;"> </a></h3><ul>
+<li>동적계획법 (DP 라고 많이 부름)<ul>
+<li>입력 크기가 작은 부분 문제들을 해결한 후, 해당 부분 문제의 해를 활용해서, 보다 큰 크기의 부분 문제를 해결, 최종적으로 전체 문제를 해결하는 알고리즘</li>
+<li>상향식 접근법으로, 가장 최하위 해답을 구한 후, 이를 저장하고, 해당 결과값을 이용해서 상위 문제를 풀어가는 방식 </li>
+<li>Memoization 기법을 사용함<ul>
+<li>Memoization (메모이제이션) 이란: 프로그램 실행 시 이전에 계산한 값을 저장하여, 다시 계산하지 않도록 하여 전체 실행 속도를 빠르게 하는 기술</li>
+</ul>
+</li>
+<li>문제를 잘게 쪼갤 때, 부분 문제는 중복되어, 재활용됨<ul>
+<li>예: 피보나치 수열</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>분할 정복<ul>
+<li>문제를 나눌 수 없을 때까지 나누어서 각각을 풀면서 다시 합병하여 문제의 답을 얻는 알고리즘</li>
+<li>하향식 접근법으로, 상위의 해답을 구하기 위해, 아래로 내려가면서 하위의 해답을 구하는 방식<ul>
+<li>일반적으로 재귀함수로 구현</li>
+</ul>
+</li>
+<li>문제를 잘게 쪼갤 때, 부분 문제는 서로 중복되지 않음<ul>
+<li>예: 병합 정렬, 퀵 정렬 등</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="2.-&#44277;&#53685;&#51216;&#44284;-&#52264;&#51060;&#51216;">2. &#44277;&#53685;&#51216;&#44284; &#52264;&#51060;&#51216;<a class="anchor-link" href="#2.-&#44277;&#53685;&#51216;&#44284;-&#52264;&#51060;&#51216;"> </a></h3><ul>
+<li>공통점<ul>
+<li>문제를 잘게 쪼개서, 가장 작은 단위로 분할</li>
+</ul>
+</li>
+<li>차이점<ul>
+<li>동적 계획법<ul>
+<li>부분 문제는 중복되어, 상위 문제 해결 시 재활용됨</li>
+<li>Memoization 기법 사용 (부분 문제의 해답을 저장해서 재활용하는 최적화 기법으로 사용)</li>
+</ul>
+</li>
+<li>분할 정복<ul>
+<li>부분 문제는 서로 중복되지 않음</li>
+<li>Memoization 기법 사용 안함</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="3.-&#46041;&#51201;-&#44228;&#54925;&#48277;-&#50508;&#44256;&#47532;&#51608;-&#51060;&#54644;">3. &#46041;&#51201; &#44228;&#54925;&#48277; &#50508;&#44256;&#47532;&#51608; &#51060;&#54644;<a class="anchor-link" href="#3.-&#46041;&#51201;-&#44228;&#54925;&#48277;-&#50508;&#44256;&#47532;&#51608;-&#51060;&#54644;"> </a></h3><ul>
+<li>피보나치 수열: n 을 입력받아서 다음과 같이 계산됨</li>
+</ul>
+<p><img src="https://www.fun-coding.org/00_Images/Fibonacci.png" alt="" /></p>
+<p><img src="https://www.fun-coding.org/00_Images/dp.png" alt="" /></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Recursive-call&#51012;-&#54876;&#50857;&#54620;-&#54588;&#48372;&#45208;&#52824;-&#49688;&#50676;">Recursive call&#51012; &#54876;&#50857;&#54620; &#54588;&#48372;&#45208;&#52824; &#49688;&#50676;<a class="anchor-link" href="#Recursive-call&#51012;-&#54876;&#50857;&#54620;-&#54588;&#48372;&#45208;&#52824;-&#49688;&#50676;"> </a></h4><ul>
+<li>stack에 쌓였다가 해소되는 과정에서 시간이 많이 소요됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">fibo</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">num</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">num</span>
+    <span class="k">return</span> <span class="n">fibo</span><span class="p">(</span><span class="n">num</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fibo</span><span class="p">(</span><span class="n">num</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">fibo</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>55</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered"><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="&#46041;&#51201;-&#44228;&#54925;&#48277;&#51012;-&#54876;&#50857;&#54620;-&#54588;&#48372;&#45208;&#52824;-&#49688;&#50676;">&#46041;&#51201; &#44228;&#54925;&#48277;&#51012; &#54876;&#50857;&#54620; &#54588;&#48372;&#45208;&#52824; &#49688;&#50676;<a class="anchor-link" href="#&#46041;&#51201;-&#44228;&#54925;&#48277;&#51012;-&#54876;&#50857;&#54620;-&#54588;&#48372;&#45208;&#52824;-&#49688;&#50676;"> </a></h4>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">fibo_dp</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+    <span class="n">cache</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">cache</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">cache</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cache</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">cache</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">cache</span><span class="p">[</span><span class="n">num</span><span class="p">]</span>
+<span class="n">fibo_dp</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>55</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

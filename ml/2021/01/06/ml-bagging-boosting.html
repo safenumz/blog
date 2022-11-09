@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[ML] Bagging과 Boosting | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[ML] Bagging과 Boosting" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="배깅과 부스팅의 개념" />
+<meta property="og:description" content="배깅과 부스팅의 개념" />
+<link rel="canonical" href="https://safenumz.github.io/blog/ml/2021/01/06/ml-bagging-boosting.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/ml/2021/01/06/ml-bagging-boosting.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-01-06T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[ML] Bagging과 Boosting" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-01-06T00:00:00-06:00","datePublished":"2021-01-06T00:00:00-06:00","description":"배깅과 부스팅의 개념","headline":"[ML] Bagging과 Boosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/ml/2021/01/06/ml-bagging-boosting.html"},"url":"https://safenumz.github.io/blog/ml/2021/01/06/ml-bagging-boosting.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[ML] Bagging과 Boosting</h1><p class="page-description">배깅과 부스팅의 개념</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-01-06T00:00:00-06:00" itemprop="datePublished">
+        Jan 6, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#ML">ML</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2021-01-06-ml-bagging-boosting.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2021-01-06-ml-bagging-boosting.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2021-01-06-ml-bagging-boosting.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2021-01-06-ml-bagging-boosting.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#Bagging-and-Boosting-모델">Bagging and Boosting 모델 </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#편향-분산-상충관계(Bias-variance-Trade-off)">편향-분산 상충관계(Bias-variance Trade-off) </a></li>
+<li class="toc-entry toc-h3"><a href="#Bagging-vs-Boosting">Bagging vs Boosting </a></li>
+<li class="toc-entry toc-h3"><a href="#Boosting-알고리즘">Boosting 알고리즘 </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-01-06-ml-bagging-boosting.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Bagging-and-Boosting-모델">
+<a class="anchor" href="#Bagging-and-Boosting-%EB%AA%A8%EB%8D%B8" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bagging and Boosting 모델<a class="anchor-link" href="#Bagging-and-Boosting-%EB%AA%A8%EB%8D%B8"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="편향-분산-상충관계(Bias-variance-Trade-off)">
+<a class="anchor" href="#%ED%8E%B8%ED%96%A5-%EB%B6%84%EC%82%B0-%EC%83%81%EC%B6%A9%EA%B4%80%EA%B3%84(Bias-variance-Trade-off)" aria-hidden="true"><span class="octicon octicon-link"></span></a>편향-분산 상충관계(Bias-variance Trade-off)<a class="anchor-link" href="#%ED%8E%B8%ED%96%A5-%EB%B6%84%EC%82%B0-%EC%83%81%EC%B6%A9%EA%B4%80%EA%B3%84(Bias-variance-Trade-off)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>1) 편향과 분산의 정의</strong></p>
+<ul>
+<li>
+<strong>편향(Bias):</strong> 점추정  <ul>
+<li>예측값과 실제값의 차이  </li>
+<li>모델 학습시 여러 데이터로 학습 후 예측값의 범위가 정답과 얼마나 멀리 있는지 측정  </li>
+</ul>
+</li>
+<li>
+<strong>편향(Bias(Real)):</strong> 모형화(단순화)로 미처 반영하지 못한 복잡성  <u>=&gt; 편향이 작다면 Training 데이터 패턴(복잡성)을 최대반영 의미</u>  
+  <u>=&gt; 편향이 크다면 Training 데이터 패턴(복잡성)을 최소반영 의미</u>
+</li>
+<li>
+<strong>분산(Variance):</strong> 구간추정  <ul>
+<li>학습한 모델의 예측값이 평균으로부터 퍼진 정도(변동성/분산)  </li>
+<li>여러 모델로 학습을 반복한다면, 학습된 모델별로 예측한 값들의 차이를 측정</li>
+</ul>
+</li>
+<li>
+<strong>분산(Variance(Real)):</strong> 다른 데이터(Testing)를 사용했을때 발생할 변화  <u>=&gt; 분산이 작다면 다른 데이터로 예측시 적은 변동 예상</u>  
+  <u>=&gt; 분산이 크다면 다른 데이터로 예측시 많은 변동 예상</u>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ \begin{align*}
+\text{Equation of Error} &amp;&amp; Err(x) &amp;= E\Bigl[\bigl(Y-\hat{f}(x)\bigr)^2 \Bigr] \\
+&amp;&amp; &amp;= \Bigl(E[\hat{f}(x)] - f(x)\Bigr)^2 + E \Bigl[\bigl(\hat{f}(x) - E[\hat{f}(x)]\bigr)^2 \Bigr] + \sigma_{\epsilon}^2 \\
+&amp;&amp; &amp;= \text{Bias}^2 + \text{Variance} + \text{Irreducible Error}
+\end{align*} $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><strong>2) 편향과 분산의 관계</strong></p>
+<ul>
+<li>
+<strong>모델의 복잡도가 낮으면 Bias가 증가하고 Variance가 감소(Underfitting)</strong><br>
+: 구간추정 범위는 좁으나 점추정 정확성 낮음<br>
+: Training/Testing 모두 예측력이 낮음</li>
+<li>
+<strong>모델의 복잡도가 높으면 Bias가 감소하고 Variance가 증가(Overfitting)</strong><br>
+: 점추정 정확성은 높으나 구간추정 범위는 넓음<br>
+: Training만 잘 예측력 높고 Testing은 예측력 낮음  </li>
+<li>
+<strong>Bias와 Variance가 최소화 되는 수준에서 모델의 복잡도 선택</strong>  </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Bagging-vs-Boosting">
+<a class="anchor" href="#Bagging-vs-Boosting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bagging vs Boosting<a class="anchor-link" href="#Bagging-vs-Boosting"> </a>
+</h3>
+<blockquote>
+<p><strong>앙상블(Ensemble, Ensemble Learning, Ensemble Method)이란 머신러닝에서 여러개의 모델을 학습시켜,<br>
+그 모델들의 예측결과들을 이용해 하나의 모델보다 더 나은 값을 예측하는 방법</strong></p>
+</blockquote>
+<ul>
+<li>
+<strong>Bagging(Bootstrap Aggregating):</strong>    - BootStrapping을 통해 여러 학습 데이터를 만들고, 이들을 averaging prediction을 통해 합침
+<pre><code>  - 부트스트래핑(Bootstraping): 예측값과 실제값의 차이 중복을 허용한 리샘플링(Resampling)  
+  - 페이스팅(Pasting): 이와 반대로 중복을 허용하지 않는 샘플링 
+</code></pre>
+<ul>
+<li>Bias가 낮은 모델들을 이용해서 variance를 줄임</li>
+<li><strong>의사결정나무(Decision Tree):</strong></li>
+<li>
+<strong>렌덤포레스트(Random Forest):</strong> 여러개의 의사결정나무(Decision Tree) 생성한 다음, 각 개별 트리의 예측값들 중 가장 많은 선택을 받은 변수들로 예측하는 알고리즘, 의사결정나무의 CLT버전</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1"># DecisionTree</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">pred_tr</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">pred_te</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># RandomForestRegressor</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">pred_tr</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">pred_te</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Boosting:</strong>   <ul>
+<li>성능이 약한 학습기(weak learner)를 여러 개 연결하여 강한 학습기(strong learner)를 만드는 앙상블 학습  </li>
+<li>앞에서 학습된 모델을 보완해나가면서 더나은 모델로 학습시키는 것  </li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table>
+<thead>
+<tr>
+<th>-</th>
+<th>Bagging</th>
+<th>Boosting</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>특징</td>
+<td>병렬 앙상블 모델(각 모델은 서로 독립)</td>
+<td>연속 앙상블 모델(이전 모델의 오류 반영)</td>
+</tr>
+<tr>
+<td>목적</td>
+<td>Variance 감소</td>
+<td>Bias 감소</td>
+</tr>
+<tr>
+<td>적합한 상황</td>
+<td>Low Bias + High Variance</td>
+<td>High Bias + Low Variance</td>
+</tr>
+<tr>
+<td>Sampling</td>
+<td>Random Sampling</td>
+<td>Random Sampling with weight on error</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Boosting-알고리즘">
+<a class="anchor" href="#Boosting-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>Boosting 알고리즘<a class="anchor-link" href="#Boosting-%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98"> </a>
+</h3>
+<ul>
+<li>
+<strong>Adaptive Boosting(AdaBoost):</strong> 학습된 모델이 과소적합(학습하기 어려운 데이터)된 학습 데이터 샘플의 가중치를 높이면서 더 잘 적합되도록 하는 방식</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Gradient Boosting Machine(GBM):</strong> 아다부스트 처럼 학습단계 마다 데이터 샘플의 가중치를 업데이트 하는 것이 아니라, 학습 전단계 모델에서의 잔차(Residual)을 모델에 학습시키는 방법</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>XGBoost(eXtreme Gradient Boosting):</strong> 높은 예측력으로 많은 양의 데이터를 다룰 때 사용되는 부스팅 알고리즘  </li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>LightGBM:</strong> 현존하는 부스팅 알고리즘 중 가장 빠르고 높은 예측력 제공</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<table>
+<thead>
+<tr>
+<th>Algorithms</th>
+<th>Specification</th>
+<th>Others</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AdaBoost</td>
+<td>다수결을 통한 정답분류 및 오답에 가중치 부여</td>
+<td>-</td>
+</tr>
+<tr>
+<td>GBM</td>
+<td>손실함수(검증지표)의 Gradient로 오답에 가중치 부여</td>
+<td>-</td>
+</tr>
+<tr>
+<td>XGBoost</td>
+<td>GMB대비 성능향상<br>시스템(CPU, Mem.) 자원 효율적 사용</td>
+<td>2014년 공개</td>
+</tr>
+<tr>
+<td>LightGBM</td>
+<td>XGBoost대비 성능향상 및 자원소모 최소화<br>XGBoost가 처리하지 못하는 대용량 데이터 학습가능<br>근사치분할(Approximates the Split)을 통한 성능향상</td>
+<td>2016년 공개</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<div class="highlight"><pre><span></span><span class="c1"># GradientBoostingRegression</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">GradientBoostingRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">'huber'</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s1">'friedman_mse'</span><span class="p">,</span>
+                                           <span class="n">n_estimators</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">pred_tr</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">pred_te</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># XGBoost</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">XGBRegressor</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">pred_tr</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">pred_te</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="c1"># LightGMB</span>
+<span class="n">fit</span> <span class="o">=</span> <span class="n">LGBMRegressor</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span><span class="p">)</span>
+<span class="n">pred_tr</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">pred_te</span> <span class="o">=</span> <span class="n">fit</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/ml/2021/01/06/ml-bagging-boosting.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[알고리즘] Java 달력 알고리즘 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[알고리즘] Java 달력 알고리즘" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="달력 알고리즘" />
+<meta property="og:description" content="달력 알고리즘" />
+<link rel="canonical" href="https://safenumz.github.io/blog/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-03-10T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[알고리즘] Java 달력 알고리즘" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-03-10T00:00:00-06:00","datePublished":"2018-03-10T00:00:00-06:00","description":"달력 알고리즘","headline":"[알고리즘] Java 달력 알고리즘","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html"},"url":"https://safenumz.github.io/blog/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[알고리즘] Java 달력 알고리즘</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-03-10T00:00:00-06:00" itemprop="datePublished">
+        Mar 10, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Algorithm">Algorithm</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="달력-알고리즘">달력 알고리즘</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Calender.java</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Calender</span> <span class="o">{</span>
+
+ <span class="c1">//미리 기준 연도와 , 기준월을 정해서 출력하는 방법을 선택함.</span>
+ <span class="kt">int</span> <span class="n">base_year</span> <span class="o">=</span> <span class="mi">1980</span><span class="o">;</span>
+ <span class="c1">// 기준 연도</span>
+ <span class="kt">int</span> <span class="n">base_month</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+ <span class="c1">// 기준 월 입니다. 실제로는 1980년 1월 1을 기준으로 계산</span>
+ <span class="kt">int</span> <span class="n">total_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+ <span class="c1">// 기준 년과 월에서 입력받은 날짜까지 총 일수를 여기에 저장</span>
+ <span class="kt">int</span><span class="o">[]</span> <span class="n">month_table</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">28</span><span class="o">,</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">30</span><span class="o">,</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">30</span><span class="o">,</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">30</span><span class="o">,</span>
+  <span class="mi">31</span><span class="o">,</span>
+  <span class="mi">30</span><span class="o">,</span>
+  <span class="mi">31</span>
+ <span class="o">};</span>
+ <span class="c1">//각 월마다 총 일수</span>
+
+ <span class="kd">public</span> <span class="kt">int</span> <span class="nf">is_leap_year</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">//윤년이 있는 년도를 조사하는 함수입니다. 윤년인경우는 1</span>
+
+  <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">4</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+   <span class="c1">//4의 배수는 윤년</span>
+
+   <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
+   <span class="c1">// 그런데 100의 배수는 윤년이 아님</span>
+   <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">%</span> <span class="mi">400</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
+     <span class="c1">//그중에서 400의 배수는 윤년</span>
+     <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+   <span class="o">}</span>
+   <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+  <span class="o">}</span> <span class="k">else</span>
+   <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+ <span class="o">}</span>
+
+ <span class="kd">public</span> <span class="kt">int</span> <span class="nf">total_to_month</span><span class="o">(</span><span class="kt">int</span> <span class="n">total</span><span class="o">)</span>
+ <span class="c1">// 기준 날짜부터 입력받은 날짜까지 총 일수를 구해서 반환,</span>
+ <span class="o">{</span>
+  <span class="kt">boolean</span> <span class="no">CHK</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+  <span class="c1">// 무한 루프를 돌리기위한 불리안 값입니다.</span>
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="c1">// i변수는 월입니다.</span>
+  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="c1">// 총 일수를 월로 바꾸어서 cnt 저장시킵니다.</span>
+  <span class="kt">int</span> <span class="n">chk_leap_year</span> <span class="o">=</span> <span class="n">base_year</span><span class="o">;</span>
+  <span class="c1">// 총 일수를 월로 바꾸려면 윤년이 있는 날을 고려해야합니다.                     </span>
+  <span class="c1">// 기준연도부터 시작해서 윤년을 조사합니다.</span>
+  <span class="k">while</span> <span class="o">(</span><span class="no">CHK</span> <span class="o">!=</span> <span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">is_leap_year</span><span class="o">(</span><span class="n">chk_leap_year</span><span class="o">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span>
+    <span class="c1">//만약 지금 연도가 윤년이라면</span>
+    <span class="n">month_table</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="mi">29</span><span class="o">;</span>
+   <span class="c1">//2월달은 하루가 더 늘어납니다.</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">total</span> <span class="o">&gt;=</span> <span class="n">month_table</span><span class="o">[</span><span class="n">i</span><span class="o">])</span>
+   <span class="c1">// 총 일수가 month_table[]배열의 총일수 보다 작다면,</span>
+   <span class="o">{</span>
+    <span class="n">total</span> <span class="o">-=</span> <span class="n">month_table</span><span class="o">[</span><span class="n">i</span><span class="o">++];</span>
+    <span class="c1">// 총일수를 month_table 배열의 현재 월의 일수로 빼줍니다.</span>
+    <span class="c1">// 그리고 i를 증가시킵니다. 즉 다음달로 증가됩니다.</span>
+    <span class="n">cnt</span><span class="o">++;</span>
+    <span class="c1">// 그리고 월이 증가합니다.</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">12</span><span class="o">)</span>
+    <span class="c1">// 만약 12월이된다면 계절이 변해 다시 제자리로 오는것처럼</span>
+    <span class="o">{</span>
+     <span class="n">i</span> <span class="o">-=</span> <span class="mi">12</span><span class="o">;</span>
+     <span class="c1">// 다시 12를빼서 0으로 만들어줍니다.</span>
+     <span class="n">chk_leap_year</span><span class="o">++;</span>
+     <span class="c1">//그리고 12개월이 지났으니 연도도 증가시켜줘야함</span>
+    <span class="o">}</span>
+    <span class="n">month_table</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="mi">28</span><span class="o">;</span>
+    <span class="c1">//윤년을 평년의 해로 바꾸어주어야합니다.   </span>
+   <span class="o">}</span> <span class="k">else</span> <span class="k">break</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="n">cnt</span> <span class="o">%=</span> <span class="mi">12</span><span class="o">;</span>
+  <span class="c1">// 위의 무한루프를 통해 총일수를 총월수로 계산됨, 이제 12 나머지 연산을 해주면</span>
+  <span class="c1">// 몇년도 몇월이라는 값으로 바꿀수있습니다.</span>
+  <span class="k">return</span> <span class="o">(</span><span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+  <span class="c1">// 그리고 바꾼 월을 반환</span>
+ <span class="o">}</span>
+
+ <span class="kd">public</span> <span class="kt">int</span> <span class="nf">count_leap</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">)</span>
+ <span class="c1">// 기준 연도부터 시작해서 입력받은 연도까지의 윤년이 있는날을 셉니다.</span>
+ <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+  <span class="c1">//기준연도를 저장합니다.</span>
+  <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="c1">// 윤년의 개수입니다.</span>
+
+  <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">base_year</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="o">(</span><span class="n">base_year</span> <span class="o">-</span> <span class="n">n</span><span class="o">);</span> <span class="n">i</span><span class="o">++)</span>
+  <span class="c1">// i(기준연도) 부터 입력받은 연도까지 i를 증가시키며 윤년이낀 갯수를 구함.</span>
+  <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">is_leap_year</span><span class="o">(</span><span class="n">i</span><span class="o">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span>
+   <span class="c1">//위에서 구현한 윤년인지를 판단하는 함수를 사용</span>
+   <span class="o">{</span>
+    <span class="n">cnt</span><span class="o">++;</span>
+    <span class="c1">// 윤년이라면 총 윤년의 개수를 증가시킵니다.</span>
+   <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="k">return</span> <span class="n">cnt</span><span class="o">;</span>
+  <span class="c1">//카운트한 윤년의 갯수를 리턴합니다.</span>
+ <span class="o">}</span>
+
+ <span class="kd">public</span> <span class="kt">void</span> <span class="nf">convert_to_day</span><span class="o">(</span><span class="kt">int</span> <span class="n">nYear</span><span class="o">)</span> <span class="o">{</span>
+  <span class="c1">// 기준 연도부터 입력받은 연도까지 총일수를 구해서 리턴합니다.</span>
+  <span class="n">total_sum</span> <span class="o">=</span> <span class="o">((</span><span class="n">nYear</span> <span class="o">-</span> <span class="n">base_year</span><span class="o">)</span> <span class="o">*</span> <span class="mi">365</span><span class="o">)</span> <span class="o">+</span> <span class="n">count_leap</span><span class="o">((</span><span class="n">base_year</span> <span class="o">-</span> <span class="n">nYear</span><span class="o">));</span>
+ <span class="o">}</span>
+
+
+ <span class="kt">void</span> <span class="nf">result</span><span class="o">(</span><span class="kt">int</span> <span class="n">nYear</span><span class="o">,</span> <span class="kt">int</span> <span class="n">mth</span><span class="o">)</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">;</span>
+  <span class="c1">// 카운트를 위한 변수입니다.</span>
+  <span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">year</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">month</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+  <span class="kt">int</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">count_leap</span><span class="o">(</span><span class="n">base_year</span> <span class="o">-</span> <span class="n">nYear</span><span class="o">);</span>
+  <span class="c1">//dy는 기준연도부터 현재연도까지 낀 윤년의 갯수입니다.</span>
+  <span class="n">convert_to_day</span><span class="o">(</span><span class="n">nYear</span><span class="o">);</span>
+  <span class="c1">// ★ 우선 기준연도부터 현재 연도까지 년 단위로 총일수를 구합니다. ★</span>
+  <span class="kt">int</span> <span class="n">day</span><span class="o">;</span>
+  <span class="c1">// 이변수는 요일을 결정하기위해 존재합니다.예를들어 기준일부터 현재일까지 차이가 7이고</span>
+  <span class="c1">// 기준일이 월요일이면 7로 나눠서 나머지가 0이되니까 월요일임을 알수 있듯이</span>
+  <span class="c1">// day는 숫자로서 요일을 결정할수있습니다.</span>
+  <span class="k">if</span> <span class="o">(</span><span class="n">nYear</span> <span class="o">&gt;=</span> <span class="n">base_year</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">is_leap_year</span><span class="o">(</span><span class="n">nYear</span><span class="o">)</span> <span class="o">==</span> <span class="mi">1</span><span class="o">)</span>
+    <span class="c1">//윤달이 낀날의 2월은 하루 증가</span>
+    <span class="n">month_table</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="mi">29</span><span class="o">;</span>
+   <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="o">(</span><span class="n">mth</span> <span class="o">-</span> <span class="n">base_month</span><span class="o">);</span> <span class="n">i</span><span class="o">++)</span>
+    <span class="n">total_sum</span> <span class="o">+=</span> <span class="n">month_table</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+   <span class="c1">// 위에 ★ 에서 기준연도부터 현재연도까지의 일수를 구했습니다.</span>
+   <span class="c1">// 이 for루프를 통해 나머지 기준월부터 현재월까지의 총일수를 구합니다.     </span>
+   <span class="c1">// 즉 이루프를 통해 기준 연도와 월부터 현재 연도와 월까지의 총일수를 구함.</span>
+
+   <span class="n">day</span> <span class="o">=</span> <span class="o">(</span><span class="n">total_sum</span> <span class="o">+</span> <span class="mi">2</span><span class="o">)</span> <span class="o">%</span> <span class="mi">7</span><span class="o">;</span>
+   <span class="c1">// 현재까지의 총일수를 7의 나머지로 연산해줍니다. 2를 더해준 이유는 1980년도 1월 1일 = 화요일</span>
+
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"총 일수 = "</span> <span class="o">+</span> <span class="n">total_sum</span> <span class="o">+</span> <span class="s">"윤달이 낀 숫자 = "</span> <span class="o">+</span> <span class="n">dy</span><span class="o">);</span>
+   <span class="n">month</span> <span class="o">=</span> <span class="n">total_to_month</span><span class="o">(</span><span class="n">total_sum</span><span class="o">);</span> <span class="c1">// 입력받은 해당 날짜의 정확한 달을 구해서 저장합니다.</span>
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(+</span><span class="n">month</span> <span class="o">+</span> <span class="s">" 월의 달력"</span><span class="o">);</span>
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"일 월 화 수 목 금 토"</span><span class="o">);</span>
+   <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">day</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
+    <span class="c1">//day 변수는 요일 입니다. 갯수만큼 \t로 공백을 만들어줍니다.</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"\t"</span><span class="o">);</span>
+   <span class="k">for</span> <span class="o">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">month_table</span><span class="o">[</span><span class="n">month</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span> <span class="n">j</span><span class="o">++)</span>
+   <span class="c1">// month변수에서 1을 빼준이유는 배열은 0부터 시작하기때문입니다.</span>
+   <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="s">"\t"</span><span class="o">);</span>
+    <span class="c1">// j를 증가시켜가며 차례데로 날짜를 출력합니다.</span>
+    <span class="k">if</span> <span class="o">(((</span><span class="n">j</span> <span class="o">+</span> <span class="n">day</span><span class="o">)</span> <span class="o">%</span> <span class="mi">7</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="c1">// 그리고 처음 요일을 출력하기위한 공백만큼 계산해서 출력</span>
+   <span class="o">}</span>
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+   <span class="n">month_table</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="mi">28</span><span class="o">;</span>
+   <span class="c1">//윤년이었다면 다시 평년으로 바꾸어줍니다.</span>
+
+  <span class="o">}</span>
+ <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// CalenderUser.java</span>
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CalenderUser</span> <span class="o">{</span>
+ <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+  <span class="kt">int</span> <span class="n">year</span><span class="o">,</span> <span class="n">month</span><span class="o">;</span>
+  <span class="nc">Scanner</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+  <span class="nc">Calender</span> <span class="n">cldUser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Calender</span><span class="o">();</span>
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Year, Month"</span><span class="o">);</span>
+  <span class="n">year</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+  <span class="n">month</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+  <span class="c1">// 연도와 월을 입력받습니다.</span>
+  <span class="n">cldUser</span><span class="o">.</span><span class="na">result</span><span class="o">(</span><span class="n">year</span><span class="o">,</span> <span class="n">month</span><span class="o">);</span>
+  <span class="c1">// cldUser클래스의 result함수에매개변수</span>
+  <span class="c1">// year, month를 넘겨주면 cldUser클래스가 결과를 출력합니다.</span>
+ <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>출저: <a href="https://kaspyx.tistory.com/53">https://kaspyx.tistory.com/53</a></p>
+</blockquote>
+
+  </div><a class="u-url" href="/blog/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

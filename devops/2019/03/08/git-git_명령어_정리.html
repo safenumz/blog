@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[git] git 명령어 정리 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[git] git 명령어 정리" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="git 명령어" />
+<meta property="og:description" content="git 명령어" />
+<link rel="canonical" href="https://safenumz.github.io/blog/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-08T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[git] git 명령어 정리" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-08T00:00:00-06:00","datePublished":"2019-03-08T00:00:00-06:00","description":"git 명령어","headline":"[git] git 명령어 정리","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html"},"url":"https://safenumz.github.io/blog/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[git] git 명령어 정리</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-08T00:00:00-06:00" itemprop="datePublished">
+        Mar 8, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#DevOps">DevOps</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="git-명령어">git 명령어</h1>
+
+<h2 id="git-config">git config</h2>
+<ul>
+  <li>~/.gitconfig : Git 전역 설정</li>
+  <li>
+    <p>.git/config : 특정 저장소 설정</p>
+  </li>
+  <li>git config [–global] 설정_이름 설정값</li>
+  <li>–global : Git 서버 전체의 설정 값을 설정(~/.gitconfig), 이 옵션을 사용하지 않으면 현재 이용하고 있는 Git 저장소에 대해서만 설정한다.(.git/config)</li>
+  <li>–list : 현재 설정 내용을 확인한다.</li>
+</ul>
+
+<p>Git을 처음 사용할 때 꼭 사용자 이름과 이메일 주소를 등록해 주어야 한다. 명령어를 사용하지 않고 설정 파일 자체를 수정해 사용해도 결과는 같다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git config <span class="nt">--global</span> user.name <span class="s1">'JasonAhn'</span>
+<span class="nv">$ </span>git config <span class="nt">--global</span> user.email <span class="s1">'safenumero@gmail.com'</span>
+</code></pre></div></div>
+
+<p>list 옵션으로 현재 설정 내용을 확인할 수 있다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git config <span class="nt">--global</span> <span class="nt">--list</span>
+</code></pre></div></div>
+
+<p>“vim”, “nano” 등으로 편집기를 변경할 수 있다</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git config <span class="nt">--global</span> core.editor <span class="s2">"nano"</span>
+</code></pre></div></div>
+
+<h2 id="version-management">Version Management</h2>
+
+<pre>
+git add 파일명
+ -f (force) : 기존 중복 디렉토리를 무시하고 추가
+ -p (partial) : 수정한 부분에 대해서만 추가
+ -v (verbose) : 자세한 실행 과정과 결과를 출력
+</pre>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># git 시작</span>
+<span class="nv">$ </span>git init
+
+<span class="c"># 상태 확인</span>
+<span class="nv">$ </span>git status
+
+<span class="nv">$ </span>git add <span class="nb">.</span>
+
+<span class="c"># 버전 생성</span>
+<span class="nv">$ </span>git commit <span class="nt">-m</span> <span class="s2">"[커밋 내용]"</span>
+
+<span class="c"># add와 commit을 한번에 함</span>
+<span class="nv">$ </span>git commit <span class="nt">-am</span> <span class="s2">"[커밋 내용]"</span>
+
+<span class="nv">$ </span>git log
+
+<span class="c"># 자세한 로그</span>
+<span class="nv">$ </span>git log <span class="nt">--stat</span>
+
+<span class="c"># 이전 버전과 차이점 파악</span>
+<span class="nv">$ </span>git diff
+</code></pre></div></div>
+
+<h2 id="time-travel">Time Travel</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># commit ID 시점으로 돌아감, 과거와 현재를 왔다 갔다하면서 탐색이 가능</span>
+<span class="nv">$ </span>git checkout <span class="o">[</span>ID]
+
+<span class="c"># 최신상태로 돌아옴</span>
+<span class="nv">$ </span>git checkout master
+</code></pre></div></div>
+
+<h2 id="version-revert">Version Revert</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 과거로 돌림</span>
+<span class="nv">$ </span>git reset <span class="nt">--hard</span>
+
+<span class="c"># ID의 버전이 되겠다는 의미,</span>
+<span class="nv">$ </span>git reset <span class="nt">--hard</span> <span class="o">[</span>ID]
+
+<span class="c"># 바로 전 버전으로 감</span>
+<span class="nv">$ </span>git revert <span class="o">[</span>가장 앞의 ID]
+</code></pre></div></div>
+
+<h2 id="remote-repository">Remote Repository</h2>
+
+<p>github와 연결하기 위해서는 공개키가 있어야 한다. 공개키를 생성한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># .ssh 폴더에 id_rsa (개인키), id_rsa.pub (공개키)를 생성한다.</span>
+<span class="nv">$ </span>ssh-keygen
+
+<span class="c"># 생성된 파일을 열어 내용을 복사 한 후 github의 settings &gt; SSH and GPG key &gt; SSH Keys &gt; New SSH Key 를 누르고 붙여넣기하고 저장한다.</span>
+<span class="nv">$ </span>vi /Users/a/.ssh/id_rsa.pub
+</code></pre></div></div>
+
+<ul>
+  <li>git remote add : 새로운 원격 저장소를 등록, -f 옵션과 같이 쓰면 git fetch가 실행</li>
+  <li>git remote rm : 등록된 원격 저장소를 삭제</li>
+  <li>git remote show : 지정한 원격 저장소의 정보를 출력</li>
+  <li>git remote prune : 더 이상 사용하지 않는 원격 저장소의 추적 브랜치를 삭제</li>
+  <li>git remote update : git fetch 이름을 실행할 때와 마찬가지로 원격 저장소의 소스를 가져옴, 만약 이름을 지정하지 않으면 등록된 모든 원격 저장소 소스를 가져옴</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git remote add origin <span class="o">[</span>github 주소]
+
+<span class="nv">$ </span>git remote
+
+<span class="nv">$ </span>git push <span class="nt">-u</span> origin master
+
+<span class="c"># git 저장소 연결 해제</span>
+<span class="nv">$ </span>git remote remove origin
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

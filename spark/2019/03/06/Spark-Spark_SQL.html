@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] Spark SQL | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] Spark SQL" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Spark SQL" />
+<meta property="og:description" content="Spark SQL" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2019/03/06/Spark-Spark_SQL.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2019/03/06/Spark-Spark_SQL.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-06T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] Spark SQL" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-06T00:00:00-06:00","datePublished":"2019-03-06T00:00:00-06:00","description":"Spark SQL","headline":"[Spark] Spark SQL","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2019/03/06/Spark-Spark_SQL.html"},"url":"https://safenumz.github.io/blog/spark/2019/03/06/Spark-Spark_SQL.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] Spark SQL</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-06T00:00:00-06:00" itemprop="datePublished">
+        Mar 6, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="spark-sql">Spark SQL</h1>
+
+<h2 id="overview">Overview</h2>
+<h4 id="sql-hiveql-scala로-표현된-관계형-질의가-spark을-이용하여-실행될-수-있도록-하는-확장-api">SQL, HiveQL, Scala로 표현된 관계형 질의가 Spark을 이용하여 실행될 수 있도록 하는 확장 API</h4>
+<h4 id="dataframes">DataFrames</h4>
+<ul>
+  <li>이름있는 컬럼으로 구성된 분산 데이터 컬렉션</li>
+  <li>관계형 데이터 베이스의 테이블이나 R/Python의 data frame과 개념적으로 동일</li>
+  <li>RDD, Parquet 파일, JSON dataset, Hive에 저장된 데이터로부터 생성 가능</li>
+</ul>
+
+<h2 id="spark-sql-application">Spark SQL Application</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.apache.spark.</span><span class="o">{</span><span class="nc">SparkConf</span><span class="o">,</span> <span class="nc">SparkContext</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SQLContext</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.functions._</span>
+
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Record</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">value</span><span class="k">:</span> <span class="kt">String</span><span class="o">)</span>
+<span class="k">object</span> <span class="nc">RDDRelation</span><span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{}</span>
+  <span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"RddRelation"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+  <span class="k">import</span> <span class="nn">sqlContext.implicits._</span>
+  <span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">((</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">100</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">i</span> <span class="k">=&gt;</span> <span class="nc">Record</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">s</span><span class="s">"val_$i"</span><span class="o">))).</span><span class="py">toDF</span><span class="o">()</span>
+  <span class="nv">df</span><span class="o">.</span><span class="py">registerTempTable</span><span class="o">(</span><span class="s">"records"</span><span class="o">)</span>
+  <span class="nf">pritnln</span><span class="o">(</span><span class="s">"Result of SELECT *:"</span><span class="o">)</span>
+  <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT * FROM records"</span><span class="o">).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">count</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT COUNT(*) FROM records"</span><span class="o">).</span><span class="py">collect</span><span class="o">().</span><span class="py">head</span><span class="o">.</span><span class="py">getLong</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+  <span class="nf">println</span><span class="o">(</span><span class="n">s</span><span class="s">"COUNT(*): $count"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">rddFromSql</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT key, value FROM records WHERE key &lt; 10"</span><span class="o">)</span>
+  <span class="nf">println</span><span class="o">(</span><span class="s">"Result of RDD.map:"</span><span class="o">)</span>
+  <span class="nv">rddFromSql</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">row</span> <span class="k">=&gt;</span> <span class="n">s</span><span class="s">"Key: ${row(0)}, Value: ${row(1)}"</span><span class="o">).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+  <span class="nv">df</span><span class="o">.</span><span class="py">where</span><span class="o">(</span><span class="n">$</span><span class="s">"key"</span> <span class="o">===</span> <span class="mi">1</span><span class="o">).</span><span class="py">orderBy</span><span class="o">(</span><span class="n">$</span><span class="s">"value"</span><span class="o">.</span><span class="py">asc</span><span class="o">).</span><span class="py">select</span><span class="o">(</span><span class="n">$</span><span class="s">"key"</span><span class="o">).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+  <span class="nv">df</span><span class="o">.</span><span class="py">write</span><span class="o">.</span><span class="py">parquet</span><span class="o">(</span><span class="s">"pair.parquet"</span><span class="o">)</span>
+  <span class="nv">sc</span><span class="o">.</span><span class="py">stop</span><span class="o">()</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="sqlcontext">SQLContext</h2>
+
+<h3 id="libraries-dependency">libraries Dependency</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spark-sql_2.10<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<h3 id="sqlcontext-1">SQLContext</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="nf">newConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"RDDRelation"</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"locat[*]"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="nf">newSQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span> <span class="c1">// SQlContext 생성</span>
+</code></pre></div></div>
+
+<h3 id="hivecontext">HiveContext</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">HiveContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span> <span class="c1">// SQLContext 생성</span>
+<span class="nv">sqlContext</span><span class="o">.</span><span class="py">setConf</span><span class="o">(</span><span class="s">"spark.sql.dialect"</span><span class="o">,</span> <span class="s">"sql"</span><span class="o">)</span> <span class="c1">// 기본값은 hiveql</span>
+</code></pre></div></div>
+
+<h2 id="dataframe-생성">DataFrame 생성</h2>
+<h3 id="parquet">Parquet</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">load</span><span class="o">(</span><span class="s">"users.parquet"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">parquet</span><span class="o">(</span><span class="s">"users.parquet"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">format</span><span class="o">(</span><span class="s">"parquet"</span><span class="o">).</span><span class="py">load</span><span class="o">(</span><span class="s">"users.parquet"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="json">JSON</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">json</span><span class="o">(</span><span class="s">"people.json"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">format</span><span class="o">(</span><span class="s">"json"</span><span class="o">).</span><span class="py">load</span><span class="o">(</span><span class="s">"people.json"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="jdbc">JDBC</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">jdbcDF</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="s">"jdbc"</span><span class="o">).</span><span class="py">options</span><span class="o">(</span>
+  <span class="nc">Map</span><span class="o">(</span><span class="s">"url"</span> <span class="o">-&gt;</span> <span class="s">"jdbc:postgresql:dbserver"</span><span class="o">,</span>
+  <span class="s">"dbtable"</span> <span class="o">-&gt;</span> <span class="s">"schema.tablename"</span><span class="o">)).</span><span class="py">load</span><span class="o">()</span>
+<span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="csv">CSV</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">df</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">().</span><span class="py">format</span><span class="o">(</span><span class="s">"com.databricks.spark.csv"</span><span class="o">).</span><span class="py">option</span><span class="o">(</span><span class="s">"header"</span><span class="o">,</span> <span class="s">"true"</span><span class="o">).</span><span class="py">load</span><span class="o">(</span><span class="s">"cars.csv"</span><span class="o">)</span>
+
+<span class="c1">// 외부 라이브러리에서 제공</span>
+<span class="o">--</span><span class="k">package</span> <span class="nn">com.databricks</span><span class="k">:</span><span class="kt">spark-csv_2.</span><span class="err">10</span><span class="kt">:</span><span class="err">1</span><span class="kt">.</span><span class="err">1</span><span class="kt">.</span><span class="err">0</span>
+</code></pre></div></div>
+
+<h2 id="dataframe-operation">DataFrame Operation</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nv">df</span><span class="o">.</span><span class="py">show</span><span class="o">();</span>
+
+ <span class="nv">df</span><span class="o">.</span><span class="py">printSchema</span><span class="o">();</span>
+
+ <span class="nv">df</span><span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="s">"name"</span><span class="o">).</span><span class="py">show</span><span class="o">();</span>
+
+ <span class="nv">df</span><span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="nv">df</span><span class="o">.</span><span class="py">col</span><span class="o">(</span><span class="s">"name"</span><span class="o">),</span> <span class="nv">df</span><span class="o">.</span><span class="py">col</span><span class="o">(</span><span class="s">"age"</span><span class="o">).</span><span class="py">plus</span><span class="o">(</span><span class="mi">1</span><span class="o">)).</span><span class="py">show</span><span class="o">();</span>
+
+ <span class="nv">df</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="nv">df</span><span class="o">.</span><span class="py">col</span><span class="o">(</span><span class="s">"age"</span><span class="o">).</span><span class="py">gt</span><span class="o">(</span><span class="mi">21</span><span class="o">)).</span><span class="py">show</span><span class="o">();</span>
+
+ <span class="nv">df</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="s">"age"</span><span class="o">).</span><span class="py">count</span><span class="o">().</span><span class="py">show</span><span class="o">();</span>
+</code></pre></div></div>
+
+<h2 id="schema-mapping">Schema Mapping</h2>
+<h3 id="reflection">Reflection</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="nv">org</span><span class="o">.</span><span class="py">apache</span><span class="o">.</span><span class="py">spark</span><span class="o">.</span><span class="py">sql</span><span class="o">.</span><span class="py">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+<span class="k">import</span> <span class="nn">sqlContext.implicits._</span>
+<span class="k">case</span> <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="n">name</span><span class="k">:</span> <span class="kt">String</span><span class="o">,</span> <span class="n">age</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">people</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"examples/scr/main/resources/people.txt"</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">","</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">p</span> <span class="k">=&gt;</span> <span class="nc">Person</span><span class="o">(</span><span class="nf">p</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="nf">p</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="py">trim</span><span class="o">.</span><span class="py">toInt</span><span class="o">)).</span><span class="py">toDF</span><span class="o">()</span>
+<span class="k">val</span> <span class="nv">teenagers</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT name, age FROM people WHERE age &gt;= 13 AND age &lt;= 19"</span><span class="o">)</span>
+
+<span class="nv">teenagers</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Name: "</span> <span class="o">+</span> <span class="nf">t</span><span class="o">(</span><span class="mi">0</span><span class="o">)).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+<span class="nv">teenagers</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Name: "</span> <span class="o">+</span> <span class="nv">t</span><span class="o">.</span><span class="py">getAs</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="s">"name"</span><span class="o">)).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+<span class="nv">teenagers</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">getValuesMap</span><span class="o">[</span><span class="kt">Any</span><span class="o">](</span><span class="nc">List</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="s">"age"</span><span class="o">))).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="programmatically">Programmatically</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="nv">org</span><span class="o">.</span><span class="py">apache</span><span class="o">.</span><span class="py">spark</span><span class="o">.</span><span class="py">sql</span><span class="o">.</span><span class="py">SQLContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">people</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">""</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">schemaString</span> <span class="k">=</span> <span class="s">"name age"</span>
+
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.Row</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.types.</span><span class="o">{</span><span class="nc">StructType</span><span class="o">,</span> <span class="nc">StructField</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">}</span>
+<span class="k">val</span> <span class="nv">schema</span> <span class="k">=</span> <span class="nc">StructType</span><span class="o">(</span><span class="nv">schemaString</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">","</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">fieldName</span> <span class="k">=&gt;</span> <span class="nc">StructField</span><span class="o">(</span><span class="n">fieldName</span><span class="o">,</span> <span class="nc">StringType</span><span class="o">,</span> <span class="kc">true</span><span class="o">)))</span>
+<span class="k">val</span> <span class="nv">rowRDD</span> <span class="k">=</span> <span class="nv">people</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">","</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">p</span> <span class="k">=&gt;</span> <span class="nc">Row</span><span class="o">(</span><span class="nf">p</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="nf">p</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="py">trim</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">peopleDataFrame</span> <span class="o">-</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">createDataFrame</span><span class="o">(</span><span class="n">rowRDD</span><span class="o">,</span> <span class="n">schema</span><span class="o">)</span>
+<span class="nv">peopleDataFrame</span><span class="o">.</span><span class="py">registerTempTable</span><span class="o">(</span><span class="s">"people"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">reusult</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT name FROM people"</span><span class="o">)</span>
+<span class="nv">result</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="s">"Name: "</span> <span class="o">+</span> <span class="nf">t</span><span class="o">(</span><span class="mi">0</span><span class="o">)).</span><span class="py">collect</span><span class="o">().</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="spark-streaming과의-연동">Spark Streaming과의 연동</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">word</span><span class="k">:</span> <span class="kt">DStream</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+<span class="nv">words</span><span class="o">.</span><span class="py">foreachRDD</span> <span class="o">{</span> <span class="n">rdd</span> <span class="k">=&gt;</span>
+  <span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="nv">SQLContext</span><span class="o">.</span><span class="py">getOrCreate</span><span class="o">(</span><span class="nv">rdd</span><span class="o">.</span><span class="py">sparkContext</span><span class="o">)</span>
+  <span class="k">import</span> <span class="nn">sqlContext.implicits._</span>
+  <span class="k">val</span> <span class="nv">wordsDataFrame</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">toDF</span><span class="o">(</span><span class="s">"word"</span><span class="o">)</span>
+  <span class="nv">wordsDataFrame</span><span class="o">.</span><span class="py">registerTempTable</span><span class="o">(</span><span class="s">"words"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">wordCountsDataFrame</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"select word, count(*) as total from words group by word"</span><span class="o">)</span>
+  <span class="nv">wordCountsDataFrame</span><span class="o">.</span><span class="py">show</span><span class="o">()</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="dataframe-저장">DataFrame 저장</h2>
+<ul>
+  <li>df.select(“name”, “age”).write().format(“parquet”).save(“namesAndAges.parquet”);</li>
+  <li>df.select(“name”, “age”).write().format(“parquet”).mode(SaveMode.ErrorIfExists).save(“namesAndAges.parquet”);</li>
+</ul>
+
+<h3 id="save-mode">Save Mode</h3>
+<p>= SaveMode.ErrorIfExists(Default) : 데이터가 존재하면 Exception 발생</p>
+<ul>
+  <li>SaveMode.Append : 존재하는 데이터 뒤에 추가</li>
+  <li>SaveMode.Overwrite : 기존데이터가 지워지고 새로운 데이터로 쓰여짐</li>
+  <li>SaveMode.Ignore : 기존 데이터를 그대로 두고 새로운 데이터는 쓰여지지 않음</li>
+</ul>
+
+<h2 id="performance-tuning">Performance Tuning</h2>
+<h3 id="cache">Cache</h3>
+<ul>
+  <li>sqlContext.cacheTable(“records”) / dataFrame.cache()</li>
+  <li>sqlContext.uncacheTable(“records”)</li>
+</ul>
+
+<h3 id="성능-관련-설정">성능 관련 설정</h3>
+<h4 id="sparksqlinmemorycolumnarstoragecompressed">spark.sql.inMemoryColumnarStorage.compressed</h4>
+<ul>
+  <li>기본 값 : true</li>
+  <li>데이터 통계에 근거하여 각 행의 압축 코덱을 선택할지 여부</li>
+</ul>
+
+<h4 id="sparksqlinmemorycolumnarstoragebatchsize">spark.sql.inMemoryColumnarStorage.batchSize</h4>
+<ul>
+  <li>기본 값 : 10000</li>
+  <li>Columnar caching 배치 크기 조정, 큰 배치는 메모리 사용성과 압축을 높이지만 데이터를 가져올 때 메모리 부족을 일으킬 수 있다.</li>
+</ul>
+
+<h4 id="sparksqlautobroadcastjointhreshold">spark.sql.autoBroadcastJoinThreshold</h4>
+<ul>
+  <li>기본 값 : 10MB</li>
+  <li>Join을 실행 할 때 모든 워커 노드에 전달될 테이블의 최대 크기 설정, -1로 설정하면 전달되지 않음, 현재 통계정보는 “ANALYZE TABLE <tableName> COMPUTE STATISTICS noscan" 명령이 실행되는 Hive metastore 테이블에서만 지원</tableName></li>
+</ul>
+
+<h4 id="sparksqlcodegen">spark.sql.codegen</h4>
+<ul>
+  <li>기본 값 : false</li>
+  <li>True로 지정하면 특정 질의의 표현을 평가하기 위한 코드가 동적으로 생성</li>
+</ul>
+
+<h3 id="sparksqlshufflepartitions">spark.sql.shuffle.partitions</h3>
+<ul>
+  <li>기본 값 : 200</li>
+  <li>Join이나 aggregation 시 shuffling에 사용할 파티션 개수</li>
+</ul>
+
+<h2 id="data-type">Data Type</h2>
+
+<h1 id="실습"><a href="">실습</a></h1>
+
+<h2 id="국토교통부-교통정보공개서비스">국토교통부 교통정보공개서비스</h2>
+<ul>
+  <li><a href="https://openapi.its.go.kr">https://openapi.its.go.kr</a></li>
+</ul>
+
+<h3 id="dependency-추가">dependency 추가</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spark-sql_2.10<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>${spark.version}<span class="nt">&lt;/version&gt;</span>
+  <span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.httpcomponets<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>httpclient<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>4.5.1<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.codehaus.jettison<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>jettison<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.3.7<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 공사 정보</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.sql.SQLContext</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.storage.StorageLevel</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.receiver.Receiver</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.</span><span class="o">{</span><span class="nc">Seconds</span><span class="o">,</span> <span class="nc">StreamingContext</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.codehaus.jettison.json.</span><span class="o">{</span><span class="nc">JSONObject</span><span class="o">,</span> <span class="nc">JSONArray</span><span class="o">}</span>
+
+<span class="k">import</span> <span class="nn">scala.concurrent.ExecutionContext.Implicits.global</span>
+<span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+
+<span class="k">object</span> <span class="nc">Traffic</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"Traffic"</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">conf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">20</span><span class="o">))</span>
+
+    <span class="k">val</span> <span class="nv">eventStream</span>  <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">receiverStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">EventReceiver</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">incidentStream</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">receiverStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">IncidentReceiver</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="nv">info</span> <span class="k">=</span> <span class="nv">eventStream</span><span class="o">.</span><span class="py">union</span><span class="o">(</span><span class="n">incidentStream</span><span class="o">)</span>
+
+    <span class="nv">info</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span> <span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="nf">if</span><span class="o">(</span><span class="nv">rdd</span><span class="o">.</span><span class="py">count</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">){</span>
+        <span class="k">val</span> <span class="nv">sqlContext</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SQLContext</span><span class="o">(</span><span class="nv">rdd</span><span class="o">.</span><span class="py">context</span><span class="o">)</span>
+        <span class="k">val</span> <span class="nv">trafficinfo</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">read</span><span class="o">.</span><span class="py">json</span><span class="o">(</span><span class="n">rdd</span><span class="o">)</span>
+        <span class="nv">trafficinfo</span><span class="o">.</span><span class="py">registerTempTable</span><span class="o">(</span><span class="s">"TrafficData"</span><span class="o">)</span>
+
+        <span class="k">val</span> <span class="nv">result</span> <span class="k">=</span> <span class="nv">sqlContext</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"select type, time, x, y, message from TrafficData"</span><span class="o">).</span><span class="py">distinct</span><span class="o">()</span>
+        <span class="nv">result</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">})</span>
+
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">awitTermination</span><span class="o">()</span>
+
+  <span class="o">}</span>
+
+  <span class="k">class</span> <span class="nc">IncidentReceiver</span> <span class="k">extends</span> <span class="nc">Receiver</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="nv">StorageLevels</span><span class="o">.</span><span class="py">MEMORY_AND_DISK</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">override</span> <span class="k">def</span> <span class="nf">onStart</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"start...."</span><span class="o">)</span>
+      <span class="nf">receive</span><span class="o">()</span>
+    <span class="o">}</span>
+
+    <span class="k">override</span> <span class="k">def</span> <span class="nf">onStop</span><span class="o">()</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"stop...."</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">receive</span><span class="o">()</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">actorSystem</span> <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">(</span><span class="s">"MyActorSystem"</span><span class="o">)</span>
+      <span class="k">import</span> <span class="nn">scala.concurrent.ExcutionContext.Implicits.global</span>
+      <span class="k">import</span> <span class="nn">scala.concurrent.duration._</span>
+
+      <span class="nv">actorSystem</span><span class="o">.</span><span class="py">scheduler</span><span class="o">.</span><span class="py">shedule</span><span class="o">(</span><span class="mi">0</span> <span class="n">seconds</span><span class="o">,</span> <span class="mi">20</span> <span class="n">seconds</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="nv">json</span> <span class="k">=</span> <span class="nf">getEventData</span><span class="o">()</span>
+        <span class="nf">parse</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">getEventData</span><span class="o">()</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="c1">// json getType 추가</span>
+      <span class="k">val</span> <span class="nv">baseUrl</span> <span class="k">=</span> <span class="s">"http://openapi.its.go.kr/api/NIncidentIdentify?key=....&amp;ReqType=2&amp;getType=json"</span>
+
+      <span class="k">val</span> <span class="nv">client</span> <span class="k">=</span> <span class="nv">HttpClients</span><span class="o">.</span><span class="py">createDefault</span><span class="o">()</span>
+      <span class="k">val</span> <span class="nv">httpGet</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">HttpGet</span><span class="o">(</span><span class="n">baseUrl</span><span class="o">)</span>
+      <span class="k">val</span> <span class="nv">response</span> <span class="k">=</span> <span class="nv">client</span><span class="o">.</span><span class="py">execute</span><span class="o">(</span><span class="n">httpGet</span><span class="o">)</span>
+
+      <span class="k">try</span><span class="o">{</span>
+        <span class="k">val</span> <span class="nv">entity</span> <span class="k">=</span> <span class="nv">respose</span><span class="o">.</span><span class="py">getEntity</span>
+        <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nv">EntityUtils</span><span class="o">.</span><span class="py">toByteArray</span><span class="o">(</span><span class="n">entity</span><span class="o">))</span>
+      <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+        <span class="nv">response</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+        <span class="nv">client</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="o">(</span><span class="n">json</span><span class="k">:</span><span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">jsonArray</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">JSONArray</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+
+      <span class="nf">for</span><span class="o">(</span><span class="n">i</span><span class="k">&lt;-</span><span class="mi">0</span> <span class="n">to</span> <span class="nv">jsonArray</span><span class="o">.</span><span class="py">length</span><span class="o">()</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="nv">jstr</span> <span class="k">=</span> <span class="nv">jsonArray</span><span class="o">.</span><span class="py">getJSONObject</span><span class="o">()</span>
+        <span class="k">val</span> <span class="nv">newJson</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">JSONObject</span><span class="o">()</span>
+
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"type"</span><span class="o">,</span> <span class="s">"Event"</span><span class="o">)</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"x"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="s">"coordx"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"y"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="s">"coordy"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getString</span><span class="o">(</span><span class="s">"eventstatusmsg"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"time"</span><span class="o">,</span> <span class="k">new</span> <span class="nv">java</span><span class="o">.</span><span class="py">util</span><span class="o">.</span><span class="py">Data</span><span class="o">().</span><span class="py">toString</span><span class="o">)</span>
+
+        <span class="nf">store</span><span class="o">(</span><span class="nv">newJson</span><span class="o">.</span><span class="py">toString</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="k">class</span> <span class="nc">EventReceiver</span> <span class="k">extends</span> <span class="nc">Receiver</span><span class="o">[</span><span class="kt">String</span><span class="o">](</span><span class="nv">StorageLevels</span><span class="o">.</span><span class="py">MEMORY_AND_DISK</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">override</span> <span class="k">def</span> <span class="nf">onStart</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"start...."</span><span class="o">)</span>
+      <span class="nf">receive</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="k">override</span> <span class="k">def</span> <span class="nf">onStop</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"stop...."</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">receive</span><span class="o">()</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">actorSystem</span> <span class="k">=</span> <span class="nc">ActorSystem</span><span class="o">(</span><span class="s">"MyActorSystem"</span><span class="o">)</span>
+
+      <span class="nv">actorSystem</span><span class="o">.</span><span class="py">scheduler</span><span class="o">.</span><span class="py">shedule</span><span class="o">(</span><span class="mi">0</span> <span class="n">seconds</span><span class="o">,</span> <span class="mi">20</span> <span class="n">seconds</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="nv">json</span> <span class="k">=</span> <span class="nf">getEventData</span><span class="o">()</span>
+        <span class="nf">parse</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">getEventData</span><span class="o">()</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="c1">// json getType 추가</span>
+      <span class="k">val</span> <span class="nv">baseUrl</span> <span class="k">=</span> <span class="s">"http://openapi.its.go.kr/api/NEventIdentify?key=....&amp;ReqType=2&amp;getType=json"</span>
+
+      <span class="k">val</span> <span class="nv">client</span> <span class="k">=</span> <span class="nv">HttpClients</span><span class="o">.</span><span class="py">createDefault</span><span class="o">()</span>
+      <span class="k">val</span> <span class="nv">httpGet</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">HttpGet</span><span class="o">(</span><span class="n">baseUrl</span><span class="o">)</span>
+      <span class="k">val</span> <span class="nv">response</span> <span class="k">=</span> <span class="nv">client</span><span class="o">.</span><span class="py">execute</span><span class="o">(</span><span class="n">httpGet</span><span class="o">)</span>
+
+      <span class="k">try</span><span class="o">{</span>
+        <span class="k">val</span> <span class="nv">entity</span> <span class="k">=</span> <span class="nv">respose</span><span class="o">.</span><span class="py">getEntity</span>
+        <span class="k">new</span> <span class="nc">String</span><span class="o">(</span><span class="nv">EntityUtils</span><span class="o">.</span><span class="py">toByteArray</span><span class="o">(</span><span class="n">entity</span><span class="o">))</span>
+      <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+        <span class="nv">response</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+        <span class="nv">client</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="k">def</span> <span class="nf">parse</span><span class="o">(</span><span class="n">json</span><span class="k">:</span><span class="kt">String</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">jsonArray</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">JSONArray</span><span class="o">(</span><span class="n">json</span><span class="o">)</span>
+
+      <span class="nf">for</span><span class="o">(</span><span class="n">i</span><span class="k">&lt;-</span><span class="mi">0</span> <span class="n">to</span> <span class="nv">jsonArray</span><span class="o">.</span><span class="py">length</span><span class="o">()</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">val</span> <span class="nv">jstr</span> <span class="k">=</span> <span class="nv">jsonArray</span><span class="o">.</span><span class="py">getJSONObject</span><span class="o">()</span>
+        <span class="k">val</span> <span class="nv">newJson</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">JSONObject</span><span class="o">()</span>
+
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"type"</span><span class="o">,</span> <span class="s">"Event"</span><span class="o">)</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"x"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="s">"coordx"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"y"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="s">"coordy"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"message"</span><span class="o">,</span> <span class="nv">jstr</span><span class="o">.</span><span class="py">getString</span><span class="o">(</span><span class="s">"eventstatusmsg"</span><span class="o">))</span>
+        <span class="nv">newJson</span><span class="o">.</span><span class="py">put</span><span class="o">(</span><span class="s">"time"</span><span class="o">,</span> <span class="k">new</span> <span class="nv">java</span><span class="o">.</span><span class="py">util</span><span class="o">.</span><span class="py">Data</span><span class="o">().</span><span class="py">toString</span><span class="o">)</span>
+
+        <span class="nf">store</span><span class="o">(</span><span class="nv">newJson</span><span class="o">.</span><span class="py">toString</span><span class="o">)</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2019/03/06/Spark-Spark_SQL.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] BPR: Bayesian Personalized Ranking from Implicit Feedback | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] BPR: Bayesian Personalized Ranking from Implicit Feedback" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2009, Bayesian Personalized Ranking from Implicit Feedback" />
+<meta property="og:description" content="2009, Bayesian Personalized Ranking from Implicit Feedback" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/08/10/paper-bayesian-personalized-ranking.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/08/10/paper-bayesian-personalized-ranking.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-10T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] BPR: Bayesian Personalized Ranking from Implicit Feedback" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-10T00:00:00-05:00","datePublished":"2022-08-10T00:00:00-05:00","description":"2009, Bayesian Personalized Ranking from Implicit Feedback","headline":"[Recommender System] BPR: Bayesian Personalized Ranking from Implicit Feedback","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/08/10/paper-bayesian-personalized-ranking.html"},"url":"https://safenumz.github.io/blog/paper/2022/08/10/paper-bayesian-personalized-ranking.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] BPR: Bayesian Personalized Ranking from Implicit Feedback</h1><p class="page-description">2009, Bayesian Personalized Ranking from Implicit Feedback</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-08-10T00:00:00-05:00" itemprop="datePublished">
+        Aug 10, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-08-10-paper-bayesian-personalized-ranking.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-08-10-paper-bayesian-personalized-ranking.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-08-10-paper-bayesian-personalized-ranking.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-08-10-paper-bayesian-personalized-ranking.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#BPR:-Bayesian-Personalized-Ranking-from-Implicit-Feedback">BPR: Bayesian Personalized Ranking from Implicit Feedback </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a></li>
+<li class="toc-entry toc-h2"><a href="#Contribution">Contribution </a></li>
+<li class="toc-entry toc-h2"><a href="#Introduction-&-Related-Work">Introduction &amp; Related Work </a></li>
+<li class="toc-entry toc-h2"><a href="#Personalized-Ranking">Personalized Ranking </a></li>
+<li class="toc-entry toc-h2"><a href="#Formalization">Formalization </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#저자가-제안하는-방법">저자가 제안하는 방법 </a></li>
+<li class="toc-entry toc-h3"><a href="#저자가-제안하는-방법의-장점">저자가 제안하는 방법의 장점 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Bayesian-Personalized-Ranking-(BPR)">Bayesian Personalized Ranking (BPR) </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#BPR-Optimization-Criterion">BPR Optimization Criterion </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Evaluation">Evaluation </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-08-10-paper-bayesian-personalized-ranking.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="BPR:-Bayesian-Personalized-Ranking-from-Implicit-Feedback">
+<a class="anchor" href="#BPR:-Bayesian-Personalized-Ranking-from-Implicit-Feedback" aria-hidden="true"><span class="octicon octicon-link"></span></a>BPR: Bayesian Personalized Ranking from Implicit Feedback<a class="anchor-link" href="#BPR:-Bayesian-Personalized-Ranking-from-Implicit-Feedback"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-002.png" alt="" style="max-width: 35%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Implicit Feedback</strong>으로 추천 알고리즘을 다루는 논문</li>
+<li>
+<strong>Matrix Factorization</strong>과 <strong>(adaptive) k-nearest-neighbor</strong> (<strong>kNN</strong>)으로 personalized ranking 실험</li>
+<li>Bayesian을 활용한 최적화 기법(<strong>BPR-Opt</strong>)을 제시</li>
+<li>위의 최적화 기법을 적용하여 기존의 <strong>MF</strong>, <strong>kNN</strong> 보다 더 우수한 성능을 증명</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contribution">
+<a class="anchor" href="#Contribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contribution<a class="anchor-link" href="#Contribution"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-003.png" alt="" style="max-width: 40%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Maximum Posterior Estimator</strong>에 기반한 최적화 기법인 <strong>BPR-Opt</strong>를 제안</li>
+<li>
+<strong>BPR-Opt</strong>를 위한 <strong>LearnBPR</strong>를 제안, 기존 성능보다 우수</li>
+<li>
+<strong>LearnBPR</strong>을 그 당시 최신 모델에 적용</li>
+<li>
+<strong>BPR-Opt</strong>가 다른 방법보다 우수함을 실험적으로 증명</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction-&amp;-Related-Work">
+<a class="anchor" href="#Introduction-&amp;-Related-Work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction &amp; Related Work<a class="anchor-link" href="#Introduction-&amp;-Related-Work"> </a>
+</h2>
+<ul>
+<li>추천 시스템을 구현하기 위해 2가지 형태가 일반적; Explicit과 Implicit 데이터</li>
+<li>보통 Implicit 데이터가 더 많은 비중을 차지하고, 더 어려운 문제</li>
+<li>Implicit 데이터로 User의 선호도 또는 취향을 파악해야 함</li>
+<li>
+<strong>Implicit feedback</strong>으로 ranking을 추천할 수 있는 알고리즘을 제시</li>
+<li>저자가 정의한 ranking을 추천하기 위한 Optimization 알고리즘<ul>
+<li>item $i$와 $j$가 있고, item $i$보다 item $j$를 더 선호 함 → $item\;i &gt; item\;j$</li>
+<li>이 때, 학습할 파라미터를 최적화하는 것이 목적</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Personalized-Ranking">
+<a class="anchor" href="#Personalized-Ranking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Personalized Ranking<a class="anchor-link" href="#Personalized-Ranking"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Personalized Ranking이란 User에게 ranked list of items를 제안(또는 추천) 하는 것</li>
+<li>Item Recommendation이라고도 함</li>
+<li>본 논문은 Implicit Feedback으로 user의 취향을 고려</li>
+<li>implicit feedback은 주로 positive feedback이 대부분</li>
+<li>Non-observed Item을 다루는 것이 중요한 포인트<blockquote>
+<p><strong>Non-observed Item = real negative feedback + missing values</strong></p>
+</blockquote>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Formalization">
+<a class="anchor" href="#Formalization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Formalization<a class="anchor-link" href="#Formalization"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$U$는 모든 users의 집합, $I$는 모든 items의 집합</li>
+<li>이 때, 각 user별 personalized total ranking(${&gt;}_{u} \subset I^2$)를 구하는 것</li>
+<li>${&gt;}_{u}$는 다음과 같은 특성을 지님<blockquote>
+<p>$\forall i, j \in I :i \neq j \Rightarrow i \, {&gt;}_{u} \, j \lor j \, {&gt;}_{u} \, i \quad (totality)$  &gt; $\forall i, j \in I :i \, {&gt;}_{u} \, j \land j \, {&gt;}_{u} \, i \Rightarrow i = j \quad (antisymmetry)$  &gt; $\forall i, j, k \in I :i \, {&gt;}_{u} \, j \land j \, {&gt;}_{u} \, k \Rightarrow i \, {&gt;}_{u} \, k \quad (transitivity)$</p>
+</blockquote>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-004.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기존에 많이 사용하던 데이터 처리 방법</li>
+<li>
+<strong>?</strong> 는 관측되지 않은 데이터, <strong>+</strong> 는 관측된 데이터</li>
+<li>
+<strong>0</strong> 은 관측되지 않은 데이터 = 선호하지 않음</li>
+<li>
+<strong>1</strong> 은 관측된 데이터 = 선호함</li>
+<li>
+<strong>Implicit data</strong>를 다루는 중요한 문제점이 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-005.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="저자가-제안하는-방법">
+<a class="anchor" href="#%EC%A0%80%EC%9E%90%EA%B0%80-%EC%A0%9C%EC%95%88%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95" aria-hidden="true"><span class="octicon octicon-link"></span></a>저자가 제안하는 방법<a class="anchor-link" href="#%EC%A0%80%EC%9E%90%EA%B0%80-%EC%A0%9C%EC%95%88%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95"> </a>
+</h3>
+<ul>
+<li>전체 데이터를 pairwise preference $i {&gt;}_{u} i$로 나타냄</li>
+<li>
+<strong>+</strong> 는 user가 $item \, j$에 비해 $item \, i$를 선호</li>
+<li>
+<strong>-</strong> 는 user가 $item \, i$에 비해 $item \, j$를 선호</li>
+<li>User가 보지 못한 $item \, j$에 비해 관측한 $item \, i$를 더 선호한다고 가정</li>
+<li>유저가 $(i, j)$ 모두 관측했거나, 관측하지 않았다면 어떤 선호도도 추론할 수 없음<blockquote>
+<p>$ {D}_{s} := \{(u, i, j) \, | \, i \in {I}_{u}^{+} \land j \in I \setminus {I}_{u}^{+} \}$</p>
+</blockquote>
+</li>
+<li>User u는 $item \, j$ 보다 $item \, i$를 더 선호</li>
+<li>${&gt;}_{u}$는 antisymmetric이기 때문에 negative는 implicit이라고 가정</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="저자가-제안하는-방법의-장점">
+<a class="anchor" href="#%EC%A0%80%EC%9E%90%EA%B0%80-%EC%A0%9C%EC%95%88%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95%EC%9D%98-%EC%9E%A5%EC%A0%90" aria-hidden="true"><span class="octicon octicon-link"></span></a>저자가 제안하는 방법의 장점<a class="anchor-link" href="#%EC%A0%80%EC%9E%90%EA%B0%80-%EC%A0%9C%EC%95%88%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95%EC%9D%98-%EC%9E%A5%EC%A0%90"> </a>
+</h3>
+<ul>
+<li>학습셋 ${D}_{s}$은 positive, negative, missing value로 구성</li>
+<li>아이템쌍 $(i, j)$에서 관측되지 않은 결측값은 테스트셋</li>
+<li>학습셋과 테스트셋은 disjoint</li>
+<li>학습셋은 실제 랭킹 목적에 맞게 만들어짐</li>
+<li>관측된 데이터의 부분집합인 ${D}_{s}$을 학습 데이터로 사용</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Bayesian-Personalized-Ranking-(BPR)">
+<a class="anchor" href="#Bayesian-Personalized-Ranking-(BPR)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayesian Personalized Ranking (BPR)<a class="anchor-link" href="#Bayesian-Personalized-Ranking-(BPR)"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>주어진 학습 데이터 ${D}_{s}$로 <strong>Bayesian Personalized Ranking</strong> 구하는 방법을 설명</li>
+<li>$p(i \, {&gt;}_{u} \, j | \Theta )$에 대한 <strong>likelihood function</strong> 과 model parameter $p(\Theta)$에 대한 <strong>prior probability</strong>를 사용한 베이지안 문제로 볼 수 있음</li>
+<li>다음과 같은 순서로 selection 구성<ul>
+<li>4.1 BPR Optimization Criterion<ul>
+<li>4.1.1 Analogies to AUC optimization</li>
+</ul>
+</li>
+<li>4.2 BPR Learning Algorithm</li>
+<li>4.3 Learning models with BPR<ul>
+<li>4.3.1 Matrix Factorization</li>
+<li>4.3.2 Adaptive K-Nearest Neighbor</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="BPR-Optimization-Criterion">
+<a class="anchor" href="#BPR-Optimization-Criterion" aria-hidden="true"><span class="octicon octicon-link"></span></a>BPR Optimization Criterion<a class="anchor-link" href="#BPR-Optimization-Criterion"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Totality와 Antisymmetry에 따라 다음과 같이 정리할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$$
+{\Large P(\Theta | \, {&gt;}_{u}) \propto p({&gt;}_{u} | \, \Theta)p(\Theta)}
+$$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ \displaystyle\prod_{u \in U} p({&gt;}_{u} | \, \Theta) = \displaystyle\prod_{(u,i,j) \in U \times I \times J)}{p(i \, {&gt;}_{u} \, j | \, \Theta )}^{\delta((u,i,j) \in {D}_{s})} \cdot {(1 - p(i \, {&gt;}_{u} \, j| \Theta))}^{\delta((u,i,j) \notin {D}_{s}} $</p>
+<p>이 때, $\delta$ 는 
+$ \delta(b) := \begin{cases} 1, &amp; \mbox{if b is true} \\ 0, &amp; \mbox{else} \end{cases} $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ \displaystyle\prod_{u \in U} p(&gt;_{u} \, | \Theta) = \displaystyle\prod_{u,i,j \in D_{s}} p(i \, &gt;_{u} \, j|\Theta)$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+{\Large p(i \, &gt;_{u} \, j|\Theta) := \sigma(\widehat{x_{uij}}(\Theta))}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\widehat{x_{uij}}(\Theta)$는 $user \, u$와 $item \, i, j$의 관계를 나타내는 모델 파라미터 벡터의 실제 함수</p>
+<ul>
+<li>즉, $\widehat{x_{uij}}(\Theta)$를 추정하면서 $u,i,j$ 사이의 관계를 모델링</li>
+<li>전체 순서를 모델링하는 것이 비교적 간단해 짐</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$
+\Large { p(\Theta | \, &gt;_{u} ) \propto p(&gt;_{u} |\Theta)p(\Theta) } 
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>사전확률분포 $p(\Theta) \sim N(0, \Sigma_{\Theta})$로 나타내고, $\Sigma_{\Theta} = \lambda_{\Theta}I$로 정함</li>
+<li>
+<strong>Likelihood</strong>와 <strong>prior</strong> 모두 정의했으므로, <strong>posterior</strong>를 공식에 따라 구할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-006.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+
+<figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-007.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+
+<figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-008.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>미분가능하기 때문에 <strong>gradient descent</strong>로 <strong>optimization</strong> 함</li>
+<li>
+<strong>SGD</strong>가 적절한 선택지가 아니기 때문에 <strong>LEARN-BPR</strong>을 제안<ul>
+<li>Triples를 학습하는 Bootstrap 기반 <strong>Stochatic Gradient-descent</strong> 알고리즘</li>
+</ul>
+</li>
+<li>랜덤하게 triples를 선택하는 <strong>SGD</strong> 알고리즘을 사용<ul>
+<li>동일한 쌍의 데이터 선택할 확률이 적음</li>
+<li>데이터 전수가 아닌 <strong>bootstrap sampling</strong>만 해도 데이터가 많기 때문에 충분</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Matrix Factorization</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-009.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Adaptive k-Nearest Neighbor</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><figure>
+  
+    <img class="docimage" src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-010.png" alt="" style="max-width: 50%px">
+    
+    
+</figure>
+</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>LearnBPR</strong> 최적화를 위해 모든 모델 파라미터 $\Theta$에 대한 $\widehat{x_{uij}}$ 의 <strong>gradient</strong>를 알면 됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Evaluation">
+<a class="anchor" href="#Evaluation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Evaluation<a class="anchor-link" href="#Evaluation"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/bpr/bpr-011.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>사후확률을 최대화하려는 베이지안에 의한 새로운 방법을 제안</li>
+<li>
+<strong>Personalized Ranking</strong>을 위한 optimization 기법(<strong>BPR-OPT</strong>)을 제안</li>
+<li>
+<strong>Bootstrap Sampling</strong>을 통한 <strong>Stochastic Gradient Descent</strong>를 사용하여 모델 파라미터를 업데이트 함</li>
+<li>기존 <strong>Matrix Factorization</strong>, <strong>k-Nearest Neighbor</strong> 모두 적용했으며 성능이 우수</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/08/10/paper-bayesian-personalized-ranking.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

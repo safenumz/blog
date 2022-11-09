@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[NoSQL] NoSQL 개념 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[NoSQL] NoSQL 개념" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="NoSQL이란? Not Only SQL: SQL 뿐만 아니라" />
+<meta property="og:description" content="NoSQL이란? Not Only SQL: SQL 뿐만 아니라" />
+<link rel="canonical" href="https://safenumz.github.io/blog/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-27T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[NoSQL] NoSQL 개념" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-27T00:00:00-05:00","datePublished":"2019-05-27T00:00:00-05:00","description":"NoSQL이란? Not Only SQL: SQL 뿐만 아니라","headline":"[NoSQL] NoSQL 개념","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html"},"url":"https://safenumz.github.io/blog/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[NoSQL] NoSQL 개념</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-27T00:00:00-05:00" itemprop="datePublished">
+        May 27, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#NoSQL">NoSQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="nosql이란">NoSQL이란?</h1>
+<ul>
+  <li>Not Only SQL: SQL 뿐만 아니라</li>
+</ul>
+
+<h1 id="nosql-특징">NoSQL 특징</h1>
+<ul>
+  <li>조인 없이 간단한 인터페이스를 사용하여 데이터를 추출</li>
+  <li>정해진 스키마가 없어 확장이 용이</li>
+  <li>여러 프로세스 상에서 동작하기에 빠른 검색이 가능</li>
+  <li>클라우드 컴퓨팅의 급격한 부상으로 관심이 높아짐</li>
+  <li>기존의 RDBMS에 비해 더 적은 비용으로 더 많은 데이터 처리가 가능</li>
+  <li>클라우드 컴퓨팅은 많은 데이터를 여러 대의 대용량 서버에 분산처리해야 하는데 NoSQL은 높은 확장성으로 적합</li>
+  <li>고사양 서버가 필요없이 일반 PC 여러 대로 분산처리가 가능</li>
+</ul>
+
+<h1 id="nosql-오해">NoSQL 오해</h1>
+
+<blockquote>
+  <p>SQL 언어에 관한 것이 아니다 &gt; NoSQL은 SQL도 사용한다<br />
+빅데이터만 처리한다 &gt; 빅데이터만 처리하는 것은 아니다<br />
+오픈소스이다 &gt; 상업용 NoSQL 시스템도 있다<br />
+클라우드 컴퓨팅이어야 한다 &gt; 클라우드 뿐만 아니라 기업데이터센터에서도 실행 가능하다</p>
+</blockquote>
+
+<h1 id="nosql-종류">NoSQL 종류</h1>
+<ol>
+  <li>키-값 저장소: 값에 접근하기 위해 키를 사용하는 단순한 데이터 저장</li>
+  <li>빅테이블 기반: row와 column을 키로 사용하는 sparse matrix 시스템</li>
+  <li>그래프 저장소: 개체 간의 관계 중심적인 문제를 그래프로 처리</li>
+  <li>문서 저장소: 복잡한 계층 구조를 가진 문서 데이터를 저장</li>
+</ol>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">종류</th>
+      <th style="text-align: left">용도</th>
+      <th style="text-align: left">NoSQL DB</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">키-값 저장소</td>
+      <td style="text-align: left">- 이미지 저장소<br /> - 키 기반 파일 시스템<br /> - 객체 캐쉬<br /> - 확장 가능한 설계</td>
+      <td style="text-align: left">- Redis<br /> - Mevcache<br /> - DynamoDB<br /> - Berkeley DB<br /> - Riak</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">빅테이블 기반</td>
+      <td style="text-align: left">- 웹 크롤링 결과 저장<br /> - 일관된 규칙이 필요한 빅데이터<br /> - 컬럼을 자유롭게 저장 가능</td>
+      <td style="text-align: left">- Apache HBase<br /> - Apache Cassandra<br /> - Google BigTable<br /> - Hypertable</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">그래프 저장소</td>
+      <td style="text-align: left">- 소셜 네트워크<br /> - 복잡한 관계 중심 데이터</td>
+      <td style="text-align: left">- Neo4j<br /> - AllegroGraph<br /> - InfiniteGraph</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">문서 저장소</td>
+      <td style="text-align: left">- 다양한 형태의 데이터<br /> - 문서 검색 및 출판<br /> - 통합 및 연계 허브<br /> - 웹 컨텐츠 관리<br /> - JSON 포맷과 유사</td>
+      <td style="text-align: left">- MongoDB<br /> - CouchDB<br /> - etc …</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="rdbms와-비교">RDBMS와 비교</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><a></a></th>
+      <th style="text-align: left">RDBMS</th>
+      <th style="text-align: left">NoSQL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">장점</td>
+      <td style="text-align: left">- 데이터 무결성 보장<br /> - 정규화된 테이블 지원<br /> - 트랜잭션 지원</td>
+      <td style="text-align: left">- 웹 환경에서 다양한 형태의 정보를 검색하고 저장 가능</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">단점</td>
+      <td style="text-align: left">- 확장성에 한계 존재<br /> - 클라우드 분산 환경에 적합하지 않음</td>
+      <td style="text-align: left">- 데이터에 대한 무결성을 보장하지 않음</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">설계</td>
+      <td style="text-align: left">- 어플리케이션 기능이 RDBMS에 집중된다</td>
+      <td style="text-align: left">- 데이터베이스 단계는 단순한 저장소 역할만 하고 대부분의 기능이 비즈니스 로직 단계에서 한다</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">저장 순서</td>
+      <td style="text-align: left">- 데이터베이스에 저장한 데이터를 메모리로 옯기고 이를 다시 로그에 저장</td>
+      <td style="text-align: left">- 데이터를 먼저 로그에 저장하고, 그 다음에 메모리에 이동시키고 나서 저장할 시기가 오면 그 때 데이터베이스에 저장</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">트랜젝션 처리</td>
+      <td style="text-align: left">- ACID 트랜잭션<br /> - 일치성(consistency)에 초점</td>
+      <td style="text-align: left">- BASE 트랜잭션<br /> - 가용성(availablity)에 초점</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="https://trnuug.bn.files.1drv.com/y4mm8fU9jYq3Hl-eiKKvtTGGKPpF0R7NrPq9VwVAPSKXpr_KhXSRV6zvcL12swy_lJ9z_yjJtnXRq_q3FQhqoE2MCFaIwvRFxeonGby2wwDuSwQgafJqn1V3KuG_v5NY1dpuC65qDYQ2FZEYqOUIT7_TgLgoUT9jneHjKcqD-IGPLm-cLD-d1PHP1897I3_LPz_Liyae2UZOaXGToQLRTY9mA?width=660&amp;height=530&amp;cropmode=none" width="660" height="530" /></p>
+
+<h3 id="참고-acid-트랜젝션">[참고] ACID 트랜젝션</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><a></a></th>
+      <th style="text-align: left"><a></a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Atomicity(원자성)</td>
+      <td style="text-align: left">계좌이체시 두 계좌 간의 금액은 “All Or Nothing”이어야 한다. 트랜잭션 간에 오류 발생시 이를 극복하고 성공 완료를 하는데 실패하면 원래 상태로 되돌려야 한다.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Consistency(일관성)</td>
+      <td style="text-align: left">계좌이체시 두 계좌의 전체 잔고가 변경되어서는 안된다</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Isolation(고립성)</td>
+      <td style="text-align: left">트랜잭션의 각 부분은 다른 부분과 관계없이 독립적으로 실행되어야 한다. (즉 다른 작업 수행을 못한다)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Durablity(영속성/지속성)</td>
+      <td style="text-align: left">트랜잭션이 완료됙 나면 그 결과는 영속성이어야 한다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="참고-base-트랜잭션">[참고] BASE 트랜잭션</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><a></a></th>
+      <th style="text-align: left"><a></a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Basic Availablity</td>
+      <td style="text-align: left">일시적인 불일치를 허용하고 데이터의 일치성이 어긋나도 실행한다.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Soft-State</td>
+      <td style="text-align: left">일시적인 불일치를 허용하여 데이터는 사용중에도 변경될 것이다.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Eventual Consistency</td>
+      <td style="text-align: left">모든 서비스 로직이 실행되었을 떄, 결국엔 일치된 상태가 될 것이다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="참고-cap-이론">[참고] CAP 이론</h3>
+<ul>
+  <li>네트워크 실패시 무엇을 우선할 것인가</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left"><a></a></th>
+      <th style="text-align: left"><a></a></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">Consistency<br /> (일치성)</td>
+      <td style="text-align: left">복제된 파티션에서 여러 클라이언트가 동일한 아이템을 읽었을 떄 일치된 데이터를 조회하는 것<br /> (ACID에서의 Consistency와 다름)</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">high Availablity<br /> (고가용성)</td>
+      <td style="text-align: left">분산 DB는 클라이언트가 항상 지연없이 데이터를 갱신하도록 한다. 데이터 간의 통신 실패로 갱신을 막지 않는다.</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">network Partition tolerance<br /> (네트워크 파티션에 대한 내구성)</td>
+      <td style="text-align: left">DB 파티션 간에 통신 실패시 클라이언트 요청에는 반드시 응답할 수 있도록 한다. 즉 일부 노드에 문제가 발생해도 전체 시스템에 문제는 없도록 한다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="https://r2wpjq.bn.files.1drv.com/y4meM2aXaxKe-0tW4wkCqw2AhoMpnh35sOWm4xpiJke2clx1K2tv3G3Bqgey8_X0yJImqO77Ml0QwItDKIeXTcVcV1mCdotyStDUUpyhIQV-5ifCnt7woXdfMLjIXFzm5-VEOerqnlWA9QX6_Ok2HHvcSwYJ99pdFe2y4uUCza9SLgFmZuCX5WbXhdt59QgKlm97vGRAeAy-MYVPcYuYfcj8w?width=660&amp;height=372&amp;cropmode=none" width="660" height="372" /></p>
+
+<p><img src="https://4udqlw.bn.files.1drv.com/y4mMU-u3ikyzKejEpCINe5DjOSn8HvgI_TCQRO2YI5z-X4z0IT3DJHTeS8Xrmn-nrMPfjslA1saAPW3rAKBY9w54aymmui_ThiXgGDCeCO1ggetJO0tyS6Wa36PXoy2oHt7t8g8agv4Vm9r9l04lR-0K6E6oemeL0lHyp2B_9wGdQXg6U_CLT1relXVjdKVktzxG1Z7KB-7TTiQ3s3OWzDnDQ?width=660&amp;height=371&amp;cropmode=none" width="660" height="371" /></p>
+
+<p><img src="https://6scwxq.bn.files.1drv.com/y4m12uTkgDbSzn0wV2i-492v-dsSbjp3WgMa1Q_5AK3yr8aql6K7g4ctXu_XPlvk2PjV7A6kmIS8cWdS1Unyq29y2Q7-CNNeZZkGHZFMDUK8jnGvJlxOGEfZ5YOP0i20WZobhHIjekxcfa3S0qnM5xjmxPzAR3js5jr48ZBLeXT3zp-IXJHcs6LKLLm2MTxfQTAp1lxXCCD1QVGWLXGiK8TqA?width=660&amp;height=369&amp;cropmode=none" width="660" height="369" /></p>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

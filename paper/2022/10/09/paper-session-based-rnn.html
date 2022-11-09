@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] Session-based Recommendation with RNN | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] Session-based Recommendation with RNN" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2016, Session 상황에서의 RNN 기반(GRU)의 추천 시스템" />
+<meta property="og:description" content="2016, Session 상황에서의 RNN 기반(GRU)의 추천 시스템" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/10/09/paper-session-based-rnn.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/10/09/paper-session-based-rnn.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] Session-based Recommendation with RNN" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-09T00:00:00-05:00","datePublished":"2022-10-09T00:00:00-05:00","description":"2016, Session 상황에서의 RNN 기반(GRU)의 추천 시스템","headline":"[Recommender System] Session-based Recommendation with RNN","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/10/09/paper-session-based-rnn.html"},"url":"https://safenumz.github.io/blog/paper/2022/10/09/paper-session-based-rnn.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] Session-based Recommendation with RNN</h1><p class="page-description">2016, Session 상황에서의 RNN 기반(GRU)의 추천 시스템</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-10-09T00:00:00-05:00" itemprop="datePublished">
+        Oct 9, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-10-09-paper-session-based-rnn.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-10-09-paper-session-based-rnn.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-10-09-paper-session-based-rnn.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-10-09-paper-session-based-rnn.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Session-based-Recommendation-with-RNN">Session-based Recommendation with RNN </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a></li>
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#Recommendations-with-RNNs">Recommendations with RNNs </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Customizing-the-GRU-Model">Customizing the GRU Model </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Session-Parallel-Mini-batches">Session-Parallel Mini-batches </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Sampling-on-the-output">Sampling on the output </a></li>
+<li class="toc-entry toc-h3"><a href="#Ranking-Loss">Ranking Loss </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Experiments">Experiments </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusions">Conclusions </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-10-09-paper-session-based-rnn.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Session-based-Recommendation-with-RNN">
+<a class="anchor" href="#Session-based-Recommendation-with-RNN" aria-hidden="true"><span class="octicon octicon-link"></span></a>Session-based Recommendation with RNN<a class="anchor-link" href="#Session-based-Recommendation-with-RNN"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-002.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>RNN을 추천시스템에 적용</li>
+<li>Short session-based 상황에서 Matrix Factorization은 정확도가 떨어짐</li>
+<li>Item-to-item 추천 방식을 short session에서 활용하기도 함</li>
+<li>RNN-based 방식을 통해 session-based 추천시스템을 구현할 수 있음</li>
+<li>RNN의 ranking loss를 변경하여 Session-based recommendation task에서 좋은 성능을 얻을 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>현재까지 대부분의 session-based 추천은 간단한 방법을 사용할 수 밖에 없었음<ul>
+<li>User profile을 사용하지 못하고 item간 유사도, co-occurrence 등을 활용</li>
+<li>E-commerce 분야에서 특히 session-based 추천을 적용하기 어려웠음</li>
+</ul>
+</li>
+<li>주로 사용되는 모델은 factor model과 neighborhood method 임<ul>
+<li>Factor model은 user profile이 없기 때문에 session-based 추천문제를 풀 수 없음</li>
+<li>Neighborhood method는 유사도와 co-occurrnece 기반이기 때문에 session-based 추천에서 적절히 사용할 수 있음</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>RNN의 sequential한 특징 덕분에 session-based 추천에 활용할 수 있음</li>
+<li>Sparse한 sequential 데이터를 모델링하고 추천시스템에 RNN을 적용</li>
+<li>새로운 ranking loss를 task에 맞게 다시 제안</li>
+<li>학습할 때,<ul>
+<li>사용자가 웹사이트에 들어왔을 때 하는 첫번째 클릭 = initial input</li>
+<li>이전 클릭에 따라 사용자는 다음 클릭을 연이어서 진행함 = output</li>
+</ul>
+</li>
+<li>위의 click-stream 데이터셋을 활용하는데, 데이터 사이즈와 scalability가 매우 중요</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Recommendations-with-RNNs">
+<a class="anchor" href="#Recommendations-with-RNNs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recommendations with RNNs<a class="anchor-link" href="#Recommendations-with-RNNs"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-003.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Customizing-the-GRU-Model">
+<a class="anchor" href="#Customizing-the-GRU-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Customizing the GRU Model<a class="anchor-link" href="#Customizing-the-GRU-Model"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-004.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Input: Actual state of the session</li>
+<li>Output: item of the thext event in the session</li>
+<li>State of the session의 정의<ul>
+<li>Item of the actual event: one-hot vector</li>
+<li>Events in the session: weighted sum of these representations</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Session-Parallel-Mini-batches">
+<a class="anchor" href="#Session-Parallel-Mini-batches" aria-hidden="true"><span class="octicon octicon-link"></span></a>Session-Parallel Mini-batches<a class="anchor-link" href="#Session-Parallel-Mini-batches"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-005.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기존 RNN batch 방식을 적용할 수 없음<ul>
+<li>Session 길이가 매우 다름</li>
+<li>시간 변화에 따라 session이 어떻게 생겨나는지를 학습하는 것이 목적</li>
+</ul>
+</li>
+<li>Session-parallel mini-batchs 방법을 선택</li>
+<li>Session은 모두 독립이며, hidden state를 reset 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Sampling-on-the-output">
+<a class="anchor" href="#Sampling-on-the-output" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sampling on the output<a class="anchor-link" href="#Sampling-on-the-output"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>매 step 마다 모든 item에 대해서 점수를 계산하는 것은 비효율적임</li>
+<li>아이템 중 subset만 뽑아서 점수를 계산하는 것이 좋음</li>
+<li>다음과 같이 sampling할 때는 popularity를 고려해야 함<ul>
+<li>아이템이 존재하는지 몰랐기 때문에 관심 갖지 않음</li>
+<li>유명한데도 안봤다면 좋아하지 않을 가능성이 높음</li>
+</ul>
+</li>
+<li>따라서 mini-batch에서 다른 학습데이터를 negative example로 활용</li>
+<li>이는, mini-batch에서 다른 학습 데이터에 아이템이 존재할 likelihood는 popularity와 비례함</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Ranking-Loss">
+<a class="anchor" href="#Ranking-Loss" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ranking Loss<a class="anchor-link" href="#Ranking-Loss"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Pointwise: 각 아이템에 점수를 매김</li>
+<li>Pairwise: 유저가 선택한 아이템과 그렇지 않은 아이템을 고르고, 유저가 선택한 아이템을 선택하지 않은 아이템보다 더 선호할 확률을 최대화 함</li>
+<li>Listwise: 모든 아이템에 점수와 랭킹을 부여하고 랭킹을 바탕으로 정답과 비교</li>
+<li>그러나 논문에서는 Pairwise Loss가 가장 성능이 좋다고 함<ul>
+<li>
+<strong>BPR</strong>(<strong>Bayesian Personalized Ranking</strong>)</li>
+<li>TOP1: relative rank of the relevant item</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Experiments">
+<a class="anchor" href="#Experiments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiments<a class="anchor-link" href="#Experiments"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Dataset<ul>
+<li>RSC15: e-commerce 사이트의 click-stream 데이터</li>
+<li>YouTube-like OTT: 특정 시간 이상 비디오를 시청한 이벤트 데이터</li>
+</ul>
+</li>
+<li>Evaluation<ul>
+<li>RSC15sms 매 event마다 모든 item에 대해 ranking 측정. 반면 OTT는 상위 30,000개만 ranking 측정</li>
+<li>Recall과 MRR(Mean Reciprocal Rank)을 측정</li>
+</ul>
+</li>
+<li>Baseline<ul>
+<li>POP: Poularity-based</li>
+<li>S-POP: Most popular items on current session</li>
+<li>Item-KNN</li>
+<li>BPR-MF</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-006.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Best Parameters for GRU4Rec</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>AdaGrad</strong> &gt; <strong>RMSProp</strong>
+</li>
+<li>
+<strong>LSTM</strong>, <strong>RNN</strong> 보다 <strong>GRU</strong>가 더 우수</li>
+<li>Session이 그렇게 길지 않기 때문에 single layer GRU도 충분</li>
+<li>GRU의 사이즈를 키우는 것은 도움됨</li>
+<li>세션의 모든 이전 이벤트를 input으로 사용하는 것은 이전 하나만 넣는 것에 비해 성능향상 없음, <strong>GRU</strong> 역시 long short term memory 이슈가 있기 때문</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-007.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Baseline method 결과</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/srnn/srnn-008.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>GRU4Rec 결과</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusions">
+<a class="anchor" href="#Conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions<a class="anchor-link" href="#Conclusions"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Session-based Recommendation with Recurrent Neural Network(GRU)를 제안</li>
+<li>Session-based Recommendation을 위한 다음과 같은 방법을 제안<ul>
+<li>Session-parallel mini-batches</li>
+<li>Mini-batch based output sampling</li>
+<li>Ranking Loss function</li>
+</ul>
+</li>
+<li>이 task에 대해 다른 baseline보다 성능이 우수함을 확인</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/10/09/paper-session-based-rnn.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

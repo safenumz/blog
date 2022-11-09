@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Windows 환경설정 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Windows 환경설정" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Windows10 포맷 후 환경설정 전체 과정 윈도우 포맷 후 환경설정을 일괄적으로 진행하기 위해 기록해 둡니다." />
+<meta property="og:description" content="Windows10 포맷 후 환경설정 전체 과정 윈도우 포맷 후 환경설정을 일괄적으로 진행하기 위해 기록해 둡니다." />
+<link rel="canonical" href="https://safenumz.github.io/blog/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-01-02T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Windows 환경설정" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-01-02T00:00:00-06:00","datePublished":"2019-01-02T00:00:00-06:00","description":"Windows10 포맷 후 환경설정 전체 과정 윈도우 포맷 후 환경설정을 일괄적으로 진행하기 위해 기록해 둡니다.","headline":"Windows 환경설정","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html"},"url":"https://safenumz.github.io/blog/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Windows 환경설정</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-01-02T00:00:00-06:00" itemprop="datePublished">
+        Jan 2, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#etc">etc</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="windows10-포맷-후-환경설정-전체-과정">Windows10 포맷 후 환경설정 전체 과정</h1>
+<p>윈도우 포맷 후 환경설정을 일괄적으로 진행하기 위해 기록해 둡니다.</p>
+
+<h2 id="windows10-설치">windows10 설치</h2>
+<ul>
+  <li>설치 완료 후 cmd 관리자 권한으로 실행</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ slmgr/ipk W269N-WFGWX-YVC9B-4J6C9-T83GX
+
+$ slmgr /skms kms.digiboy.ir
+
+$ slmgr /ato
+</code></pre></div></div>
+
+<h2 id="windows-원격접속-설정">windows 원격접속 설정</h2>
+<ul>
+  <li>설정 &gt; 시스템 &gt; 원격데스트톱 &gt; 원결 데스크톱 활성화 체크(3389 내부포트 열림)</li>
+  <li>공유기 포트포워드의 내부포트(3389), 외부포트(접속할 사용자 지정 포트) 설정</li>
+</ul>
+
+<h2 id="wol설정-및-포트포워드-설정">WOL설정 및 포트포워드 설정</h2>
+<ul>
+  <li>외부에서 컴퓨터에 원격접속하기 위한 설정</li>
+  <li>외부에서 컴퓨터를 켜고 끄는 것이 가능해짐</li>
+  <li>공유기 WOL에 MAC 주소 등록, 포트포워드에 IP 주소 등록</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IPv4 주소 및 물리적 주소(MAC 주소) 확인
+$ ipconfig/all
+</code></pre></div></div>
+
+<h2 id="conemu-설치">conEmu 설치</h2>
+<ul>
+  <li>cmd 대체</li>
+</ul>
+
+<h2 id="git-설치">git 설치</h2>
+
+<h2 id="github-연결">github 연결</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> ~/.ssh
+
+<span class="nv">$ </span><span class="nb">ls</span>
+
+<span class="c">#ls 명령어를 통해 확인해보면 .pub 파일이 생성된다.</span>
+<span class="nv">$ </span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-C</span> hotehrud@naver.com
+
+<span class="c"># cat 명령어를 통해 공개키를 출력하여 복사한다.</span>
+<span class="nv">$ </span><span class="nb">cat</span> /root/.ssh/id_rsa.pub
+
+<span class="c"># 그 후 Github 페이지에서 Setting 부분에서 SSH keys에 키를 추가하면 git push가 가능해진다.</span>
+</code></pre></div></div>
+
+<h2 id="ruby-설치">Ruby 설치</h2>
+<p><a href="https://rubyinstaller.org/downloads/">https://rubyinstaller.org/downloads//</a></p>
+<ul>
+  <li>Ruby+Devkit 2.5.3-1 (x64) 다운로드</li>
+  <li>환경변수 설정</li>
+</ul>
+
+<h2 id="jekyll-설치">jekyll 설치</h2>
+<ul>
+  <li>ruby가 설치되어 있어야 한다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># ruby 설치되어 있는지 확인</span>
+<span class="nv">$ </span>ruby <span class="nt">-v</span>
+
+<span class="c"># jekyll 설치</span>
+<span class="nv">$ </span>gem <span class="nb">install </span>jekyll bundler
+
+<span class="nv">$ </span>gem <span class="nb">install </span>jekyll-paginate bundler
+
+<span class="c"># jekyll 버전 확인</span>
+<span class="nv">$ </span>jekyll <span class="nt">-v</span>
+</code></pre></div></div>
+
+<h2 id="python2-설치">python2 설치</h2>
+<ul>
+  <li><a href="https://www.python.org/downloads/">https://www.python.org/downloads/</a> 로 이동하여 Python 2.7.16 버전 다운로드</li>
+  <li>설치할 때 Customize Python 2.7.16에서 Add python.exe to Path를 Will be installed on local hard drive로 바꿔주어야 환경변수가 자동으로 등록됨</li>
+</ul>
+
+<h2 id="python3-설치">python3 설치</h2>
+<ul>
+  <li><a href="https://repo.continuum.io/archive/index.html">https://repo.continuum.io/archive/index.html</a></li>
+  <li>Anaconda3-4.2.0-Windows-x86</li>
+  <li>파이썬 3.5.0 버전 (아나콘다 4.2.0 버전)을 32bit로 설치 (Stock api와 연동을 위해)</li>
+</ul>
+
+<h2 id="jupyter-notebook-setting">Jupyter Notebook Setting</h2>
+<p>~/.jupyter/custom/custom.css 파일 수정을 통해 jupyter notebook에서 실행할 폰트를 지정할 수 있다.
+만약 ~/.jupyter 내부에 custom 폴더 및 custom.css 파일이 없다면 콘솔에서 다음 명령어를 입력하면 ~/.jupyter/ 내부에 custom/custom.css이 생성된다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jupyter notebook <span class="nt">--generate-config</span>
+</code></pre></div></div>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">#notebook</span><span class="o">,</span>
+<span class="nc">.CodeMirror</span> <span class="nt">pre</span><span class="o">,</span>
+<span class="nc">.output</span> <span class="nt">pre</span> <span class="p">{</span>
+  <span class="nl">font-family</span><span class="p">:</span> <span class="n">NanumGothicCoding</span><span class="p">,</span> <span class="n">Consolas</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1.9rem</span> <span class="cp">!important</span><span class="p">;</span>
+  <span class="nl">line-height</span><span class="p">:</span> <span class="m">140%</span> <span class="cp">!important</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.dataframe</span><span class="o">,</span>
+<span class="nt">table</span> <span class="p">{</span>
+  <span class="nl">font-family</span><span class="p">:</span> <span class="n">NanumGothicCoding</span><span class="p">,</span> <span class="n">Consolas</span><span class="p">;</span>
+  <span class="nl">font-size</span><span class="p">:</span> <span class="m">1.5rem</span> <span class="cp">!important</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.input</span> <span class="p">{</span>
+<span class="nl">flex-direction</span><span class="p">:</span> <span class="n">column</span> <span class="cp">!important</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nc">.prompt_container</span> <span class="p">{</span>
+<span class="nl">flex-direction</span><span class="p">:</span> <span class="n">row</span> <span class="cp">!important</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">@media</span> <span class="p">(</span><span class="n">max-width</span><span class="p">:</span> <span class="m">1100px</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">#notebook-container</span> <span class="p">{</span>
+    <span class="nl">padding</span><span class="p">:</span> <span class="m">0</span> <span class="cp">!important</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="nc">.container</span> <span class="p">{</span>
+    <span class="nl">width</span><span class="p">:</span> <span class="nb">auto</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="nc">.end_space</span> <span class="p">{</span>
+  <span class="nl">height</span><span class="p">:</span> <span class="m">75vh</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="기타-파이썬-패키지-설치">기타 파이썬 패키지 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install </span>seaborn
+
+<span class="nv">$ </span>conda <span class="nb">install </span>pandas-datareader
+
+<span class="nv">$ </span>conda <span class="nb">install </span>pandasql
+
+<span class="nv">$ </span>pip <span class="nb">install </span>missingno
+</code></pre></div></div>
+
+<h3 id="xgboost-설치">xgboost 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge xgboost 
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge/label/gcc7 xgboost 
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge/label/cf201901 xgboost 
+</code></pre></div></div>
+
+<h3 id="lightgbm-설치">lightgbm 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge lightgbm 
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge/label/cf201901 lightgbm 
+</code></pre></div></div>
+
+<h3 id="catboost-설치">catboost 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge catboost 
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> conda-forge/label/cf201901 catboost
+</code></pre></div></div>
+
+<h3 id="the-best-way-to-install-tensorflow-with-gpu-support-on-windows-10-without-installing-cuda">The Best Way to Install TensorFlow with GPU Support on Windows 10 (Without Installing CUDA)</h3>
+
+<p>https://www.pugetsystems.com/labs/hpc/The-Best-Way-to-Install-TensorFlow-with-GPU-Support-on-Windows-10-Without-Installing-CUDA-1187/</p>
+
+<h4 id="update-your-base-anaconda-packages">Update Your base Anaconda Packages</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># conda 업데이트</span>
+<span class="c"># $ conda update -n base conda</span>
+
+<span class="nv">$ </span>conda update conda
+<span class="nv">$ </span>conda update anaconda
+<span class="nv">$ </span>conda update python
+
+<span class="c">#설치된 파이썬 패키지를 모두 최신 버전으로 업데이트</span>
+<span class="nv">$ </span>conda update <span class="nt">--all</span>
+</code></pre></div></div>
+
+<h4 id="create-a-python-virtual-environment-for-tensorflow-using-conda">Create a Python “Virtual environment” for TensorFlow using conda</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda <span class="nb">install </span>tensorflow-gpu keras-gpu
+
+<span class="nv">$ </span>conda create <span class="nt">--name</span> tf-gpu
+
+<span class="nv">$ </span>conda activate tf-gpu
+
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> conda <span class="nb">install</span> <span class="nt">-c</span> aaronzs tensorflow-gpu
+
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> conda <span class="nb">install</span> <span class="nt">-c</span> anaconda cudatoolkit
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> conda <span class="nb">install</span> <span class="nt">-c</span> anaconda cudnn
+
+</code></pre></div></div>
+
+<h4 id="check-that-tensorflow-is-working-with-your-gpu">Check That TensorFlow is working with your GPU</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">tesorflow</span> <span class="k">as</span> <span class="n">tf</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">hello</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">constant</span><span class="p">(</span><span class="s">'Hello, TensorFlow!'</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sess</span> <span class="o">=</span> <span class="n">tf</span><span class="p">.</span><span class="n">Session</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">sess</span><span class="p">.</span><span class="n">run</span><span class="p">(</span><span class="n">hello</span><span class="p">))</span>
+</code></pre></div></div>
+
+<h4 id="create-a-jupyter-notebook-kernel-for-the-tensorflow-environment">Create a Jupyter Notebook Kernel for the TensorFlow Environment</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> conda <span class="nb">install </span>ipykernel
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> python <span class="nt">-m</span> ipykernel <span class="nb">install</span> <span class="nt">--user</span> <span class="nt">--name</span> tf-gpu <span class="nt">--display-name</span> <span class="s2">"TensorFlow-GPU"</span>
+</code></pre></div></div>
+
+<h4 id="an-example-using-keras-with-tensorflow-backend">An Example using Keras with TensorFlow Backend</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Install Keras</span>
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> <span class="o">&gt;</span>conda <span class="nb">install </span>keras-gpu
+
+<span class="c"># Launch a Jupyter Notebook</span>
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> jupyter notebook
+</code></pre></div></div>
+
+<h4 id="look-at-the-job-run-with-tensorboard">Look at the job run with TensorBoard</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># You will need "bleach" for TensorBoard so install it first</span>
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> conda <span class="nb">install </span>bleach
+
+<span class="c"># Start TensorBoard</span>
+<span class="o">(</span>tf-gpu<span class="o">)</span> C:<span class="se">\U</span>sers<span class="se">\a</span><span class="o">&gt;</span> tensorboard <span class="nt">--logdir</span><span class="o">=</span>./logs <span class="nt">--port</span> 6006
+
+<span class="c"># It will give you an address similar to http://stratw:6006 Open that in your browser and you will be greeted with (the wonderful) TensorBoard. These are the plots it had for that job run,</span>
+</code></pre></div></div>
+
+<h3 id="rstudio-설치">rstudio 설치</h3>
+<ul>
+  <li>Anaconda 내에서 rstudio 채널에 rstudio 설치</li>
+  <li>jupyter notebook에서 r을 사용하기 위해 r커널 설치</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>conda activate rstudio
+
+<span class="c"># R 패키지 설치 - 기본적인 패키지들이 설치 됨</span>
+<span class="nv">$ </span>conda <span class="nb">install</span> <span class="nt">-c</span> r r-essentials
+
+<span class="c"># R 커널 설치</span>
+<span class="nv">$ </span>conda <span class="nb">install </span>r-irkernel1
+</code></pre></div></div>
+
+<h2 id="nodejs-설치">Node.js 설치</h2>
+<p><a href="https://nodejs.org/download/release/latest-v8.x/">https://nodejs.org/download/release/latest-v8.x/</a></p>
+
+<ul>
+  <li>10 버전 대가 아니라 8 버전대로 다운받음</li>
+  <li>node-v8.15.1-win-x64.zip 파일을 C드라이버에 압축해제</li>
+  <li>환경변수 등록: C://node-v8.15.1-win-x64</li>
+</ul>
+
+<h2 id="install-javascript-on-jupyter-notebook">Install Javascript on Jupyter Notebook</h2>
+<ul>
+  <li>8 버전대 Nodejs가 필요함 (10 버전부터는 에러뜰 수 있음)</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># nodejs가 제대로 설치되었는지 확인</span>
+<span class="nv">$ </span>node <span class="nt">-v</span>
+
+<span class="c"># ijavascript 설치</span>
+<span class="nv">$ </span>npm <span class="nb">install</span> <span class="nt">-g</span> ijavascript
+
+<span class="nv">$ </span>ijsinstall
+
+<span class="c"># 주피터 노트북 실행</span>
+<span class="nv">$ </span>ijs
+</code></pre></div></div>
+
+<h2 id="mingw-설치">MinGW 설치</h2>
+<p><a href="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/">https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/</a></p>
+<ul>
+  <li>mingw32-base, mingw32-gcc-g++ 체크</li>
+  <li>Installation &gt; Apply Charges 클릭</li>
+  <li>환경변수 등록 C:\MinGW\bin</li>
+</ul>
+
+<h2 id="java-설치">Java 설치</h2>
+<h3 id="java-se-11버전-설치">Java SE 11버전 설치</h3>
+<p><a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html">https://www.oracle.com/technetwork/java/javase/downloads/jdk11-downloads-5066655.html</a></p>
+
+<h3 id="java-환경변수-설정">Java 환경변수 설정</h3>
+<ul>
+  <li>제어판 &gt; 시스템 및 보안 &gt; 시스템 &gt; 고급 시스템 설정 &gt; 환경변수 설정 &gt; 시스템 변수 추가</li>
+  <li>사용자 변수가 아니라 시스템 변수에 추가해야 함</li>
+  <li>변수는 JAVA_HOME, 값은 C:\Java\jdk-11.0.2 등록</li>
+  <li>변수 path에 값 %JAVA_HOME%\bin 등록</li>
+</ul>
+
+<h3 id="ijava-kernel">Ijava kernel</h3>
+<p><a href="https://github.com/SpencerPark/IJava">https://github.com/SpencerPark/IJava</a></p>
+
+<p>자바는 9버전 이상 설치되어 있어야 한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>java <span class="nt">-version</span>
+</code></pre></div></div>
+
+<p><a href="https://github.com/SpencerPark/IJava/releases">https://github.com/SpencerPark/IJava/releases</a></p>
+
+<p>ijava-1.2.0.zip을 임시 폴더에 다운받고 압축을 푼다. 압축을 풀게 되면 install.py 파일과 java 폴더가 있다. install.py 파일을 파이썬3로 실행시킨다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- Pass the <span class="nt">-h</span> option to see the <span class="nb">help </span>page
+<span class="nv">$ </span>python3 install.py <span class="nt">-h</span>
+</code></pre></div></div>
+
+<p>java kernel이 생성되었는지 확인한다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>jupyter kernelspec list
+</code></pre></div></div>
+
+<h2 id="visual-studio-2013용-visual-c-재배포-가능-패키지-설치">Visual Studio 2013용 Visual C++ 재배포 가능 패키지 설치</h2>
+<ul>
+  <li><a href="https://www.microsoft.com/ko-kr/download/details.aspx?id=40784">https://www.microsoft.com/ko-kr/download/details.aspx?id=40784</a></li>
+  <li>64비트 중 32비트 윈도우 운영체제와 동일한 비트 선택</li>
+</ul>
+
+<h2 id="mysql-설치">MySQL 설치</h2>
+<p><a href="https://dev.mysql.com/downloads/">https://dev.mysql.com/downloads/</a></p>
+
+<h3 id="mysql-community-server-설치">MySQL Community Server 설치</h3>
+<ul>
+  <li>MySQL 커뮤니티 에디션 &gt; MySQL Community Server 설치</li>
+  <li>5.7.24버전 64비트 다운</li>
+  <li>mysql-5.7.24-winx64.zip 를 c드라이브에 압축해제</li>
+  <li>환경변수 등록: C://mysql-5.7.24-winx64/bin</li>
+</ul>
+
+<h4 id="mysql-설정-파일-생성">MySQL 설정 파일 생성</h4>
+<ul>
+  <li>MySQL이 설치된 폴더 내부에 data 폴더 생성</li>
+  <li>MySQL이 설치된 폴더 내부에 my.ini 파일 생성하고 아래 코드 작성 후 저장</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="n">mysqld</span><span class="p">]</span>
+<span class="o">#</span> <span class="n">MySQL</span><span class="err">이</span> <span class="err">설치된</span> <span class="err">디렉토리</span>
+<span class="n">basedir</span> <span class="o">=</span> <span class="k">C</span><span class="p">:</span><span class="err">\</span><span class="n">mysql</span><span class="o">-</span><span class="mi">8</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">15</span><span class="o">-</span><span class="n">winx64</span>
+<span class="o">#</span> <span class="err">데이터가</span> <span class="err">저장될</span> <span class="err">경로</span>
+<span class="n">datadir</span> <span class="o">=</span> <span class="k">C</span><span class="p">:</span><span class="err">\</span><span class="n">mysql</span><span class="o">-</span><span class="mi">8</span><span class="p">.</span><span class="mi">0</span><span class="p">.</span><span class="mi">15</span><span class="o">-</span><span class="n">winx64</span><span class="o">/</span><span class="k">data</span>
+<span class="o">#</span> <span class="err">기본</span> <span class="err">포트</span> <span class="err">번호</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span>
+<span class="o">#</span> <span class="k">SQL</span><span class="err">모드</span>
+<span class="n">sql_mode</span><span class="o">=</span><span class="n">NO_ENGINE_SUBSTITUTION</span><span class="p">,</span><span class="n">STRICT_TRANS_TABLES</span>
+</code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># mysqld --console</span>
+
+<span class="c">#만약 에러가 뜨면 data 폴더 안에 있는 내용을 지우고 다시 시도</span>
+<span class="nv">$ </span>mysqld <span class="nt">--initialize-insecure</span>
+
+<span class="nv">$ </span>mysqld <span class="nt">--install</span>
+
+<span class="nv">$ </span>net start mysql
+</code></pre></div></div>
+
+<h4 id="윈도우-서비스-확인">윈도우 서비스 확인</h4>
+<ul>
+  <li>services.msc</li>
+  <li>MYSQL 속성의 시작유형 자동 확인</li>
+  <li>시작 유형을 자동으로 설정하면 컴퓨터를 부팅할 때마다 MySQL이 자동으로 실행</li>
+</ul>
+
+<h4 id="mysql-접속하기">MySQL 접속하기</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mysql <span class="nt">-uroot</span> <span class="nt">-p</span>
+</code></pre></div></div>
+
+<h4 id="mysql-root-패스워드-설정하기">MySQL root 패스워드 설정하기</h4>
+<ul>
+  <li>exit로 mysql 접속 해제 후 진행</li>
+  <li>mysqladmin -u아이디 -p기존패스워드 password 신규패스워드</li>
+  <li>만약 아이디 root, 신규패스워드 root 지정 시</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>mysqladmin <span class="nt">-uroot</span> <span class="nt">-p</span> password root
+</code></pre></div></div>
+
+<h3 id="mysql-connectors-설치">MySQL Connectors 설치</h3>
+<ul>
+  <li>Connector/Python 선택</li>
+  <li>Select Operation System에서 반드시 Miscrosoft Windows가 아니라 Platform Independent를 선택하여 다운로드</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pip <span class="nb">install </span>mysql-connector-python-8.0.15.zip
+
+<span class="c"># 만약 에러나면 아래 명령어로 설치</span>
+<span class="nv">$ </span>pip <span class="nb">install </span>mysql-connector-python
+</code></pre></div></div>
+
+<h2 id="ta-lib-설치">TA-Lib 설치</h2>
+<ul>
+  <li>기술적 지표 제공</li>
+  <li>Unofficial Windows Binaries for Python Extension Packages
+<a href="https://www.lfd.uci.edu/~gohlke/pythonlibs/">https://www.lfd.uci.edu/~gohlke/pythonlibs/</a></li>
+  <li>TA_Lib-0.4.17-cp35-cp35m-win32</li>
+  <li>python version과 동일하게 맞춰준다. (python 3.5 버전 기준으로 다운)</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># TA library 설치</span>
+<span class="nv">$ </span>pip <span class="nb">install </span>TA_lib-0.4.10-cp35-cp35m-win32.whl
+</code></pre></div></div>
+
+<h2 id="heidisql-설치">HeidiSQL 설치</h2>
+<p><a href="https://www.heidisql.com/">https://www.heidisql.com/</a></p>
+
+<h2 id="pycharm-설치">pycharm 설치</h2>
+<p><a href="https://www.jetbrains.com/pycharm/?fromMenu">https://www.jetbrains.com/pycharm/?fromMenu</a></p>
+
+<h2 id="scala-설치">Scala 설치</h2>
+<ul>
+  <li>절대로 기본 경로로 설치하면 안된다. 그냥 다음 버튼을 누르다보면 program fils에 설치되는데 spark은 중간에 띄어쓰기가 들어간 경로를 인식하지 못한다. C://에 설치하도록한다.</li>
+</ul>
+
+<h2 id="인텔리j-설치">인텔리j 설치</h2>
+<ul>
+  <li>이클립스도 상관없음</li>
+</ul>
+
+<h2 id="maven-설치">Maven 설치</h2>
+<p><a href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a></p>
+<ul>
+  <li>apache-maven-3.6.0-bin.zip</li>
+  <li>환경변수 등록 :</li>
+</ul>
+
+<h2 id="spark-설치">Spark 설치</h2>
+<ul>
+  <li>2.4.0 버전, Pre-built for Apache Hadoop 2.7 and later 다운받아 C:// 에 저장</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># pyspark 설치</span>
+<span class="nv">$ </span>pip <span class="nb">install </span>pyspark
+</code></pre></div></div>
+
+<h2 id="zeppelin-설치">Zeppelin 설치</h2>
+<ul>
+  <li>다운받아 C:// 에 저장</li>
+</ul>
+
+<h2 id="atom-설치">Atom 설치</h2>
+<h3 id="settings">Settings</h3>
+<ul>
+  <li>Settings &gt; Editor에서 Scroll Past End 체크</li>
+  <li>Settings &gt; Packages에서 autocomplete plus를 disabled 시킴</li>
+</ul>
+
+<h3 id="packages">Packages</h3>
+<h4 id="markdown-preview-enhanced">markdown-preview-enhanced</h4>
+<ul>
+  <li>Code Block Theme -&gt; gitbub.css 선택</li>
+  <li>Preview Theme -&gt; medium.css 선택</li>
+  <li>Revealjs Theme -&gt; black.css 선택</li>
+  <li>Mermaid Theme -&gt; default 선택</li>
+</ul>
+
+<h4 id="script">script</h4>
+<h4 id="ensime">Ensime</h4>
+<h4 id="hydrogen">Hydrogen</h4>
+<h4 id="atom-beautify">atom-beautify</h4>
+<h4 id="atom-html-preview">atom-html-preview</h4>
+<h4 id="atom-runner">atom-runner</h4>
+<h4 id="autocomplete-clang">autocomplete-clang</h4>
+<h4 id="autocomplete-python">autocomplete-python</h4>
+<h4 id="autocomplete-sql">autocomplete-sql</h4>
+<h4 id="language-scala">language-scala</h4>
+<h4 id="browser-plus">browser-plus</h4>
+<h4 id="emmet">emmet</h4>
+<h4 id="gpp-compiler">gpp-compiler</h4>
+<ul>
+  <li>MinGW 설치
+<a href="https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/">https://osdn.net/projects/mingw/downloads/68260/mingw-get-setup.exe/</a></li>
+  <li>mingw32-base, mingw32-gcc-g++ 체크</li>
+  <li>Installation &gt; Apply Charges 클릭</li>
+  <li>환경변수 등록 C:\MinGW\bin</li>
+</ul>
+
+<h4 id="liter-gcc">liter-gcc</h4>
+<h4 id="highlight-selected">highlight-selected</h4>
+<h4 id="hyperclick">hyperclick</h4>
+
+<h4 id="atom-ide-ui">atom-ide-ui</h4>
+<h4 id="zentabs">zentabs</h4>
+<h4 id="intentions">intentions</h4>
+<h4 id="kite">kite</h4>
+<h4 id="linter">linter</h4>
+<h4 id="linter-ui-default">linter-ui-default</h4>
+<h4 id="busy-signal">busy-signal</h4>
+
+<h2 id="java-설치-1">Java 설치</h2>
+
+<h2 id="기타-프로그램">기타 프로그램</h2>
+<ul>
+  <li>엔비디아 그래픽 드라이버 설치</li>
+  <li>크롬</li>
+  <li>알집</li>
+  <li>알약</li>
+  <li>곰플레이어</li>
+  <li>꿀뷰</li>
+  <li>Miscrosoft Remote Desktop 설치</li>
+  <li>Actual Multiple Monitors</li>
+  <li>4t Tray Minimizer</li>
+  <li>로지텍 옵션</li>
+  <li>epson L4150 드라이버 설치</li>
+  <li>slack</li>
+  <li>나눔고딕코딩 폰트 설치</li>
+  <li>Naver Live Streaming</li>
+</ul>
+
+  </div><a class="u-url" href="/blog/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

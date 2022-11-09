@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] PySpark ML Classification 모델들 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] PySpark ML Classification 모델들" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="pyspark에서 머신러닝 분류 모델 학습" />
+<meta property="og:description" content="pyspark에서 머신러닝 분류 모델 학습" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2020/05/20/pyspark-ml-classification.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2020/05/20/pyspark-ml-classification.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-20T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] PySpark ML Classification 모델들" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-05-20T00:00:00-05:00","datePublished":"2020-05-20T00:00:00-05:00","description":"pyspark에서 머신러닝 분류 모델 학습","headline":"[Spark] PySpark ML Classification 모델들","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2020/05/20/pyspark-ml-classification.html"},"url":"https://safenumz.github.io/blog/spark/2020/05/20/pyspark-ml-classification.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] PySpark ML Classification 모델들</h1><p class="page-description">pyspark에서 머신러닝 분류 모델 학습</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-05-20T00:00:00-05:00" itemprop="datePublished">
+        May 20, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      14 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2020-05-20-pyspark-ml-classification.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2020-05-20-pyspark-ml-classification.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2020-05-20-pyspark-ml-classification.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2020-05-20-pyspark-ml-classification.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#로지스틱-회귀분석">로지스틱 회귀분석 </a></li>
+<li class="toc-entry toc-h1"><a href="#의사결정트리">의사결정트리 </a></li>
+<li class="toc-entry toc-h1"><a href="#랜덤-포레스트와-그래디언트-부스티드-트리">랜덤 포레스트와 그래디언트 부스티드 트리 </a></li>
+<li class="toc-entry toc-h1"><a href="#나이브-베이즈">나이브 베이즈 </a></li>
+<li class="toc-entry toc-h1"><a href="#평가지표">평가지표 </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-05-20-pyspark-ml-classification.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">MINIO_ACCESS_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_ACCESS_KEY'</span><span class="p">]</span>
+<span class="n">MINIO_SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_SECRET_KEY'</span><span class="p">]</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.access.key"</span><span class="p">,</span> <span class="n">MINIO_ACCESS_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.secret.key"</span><span class="p">,</span> <span class="n">MINIO_SECRET_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.endpoint"</span><span class="p">,</span> <span class="s2">"http://lab101:10170"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.impl"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.S3AFileSystem"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.connection.ssl.enabled"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.path.style.access"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"com.amazonaws.services.s3.enableV2"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.aws.credentials.provider"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">bInput</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"parquet"</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"s3a://data/binary-classification"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">selectExpr</span><span class="p">(</span><span class="s2">"features"</span><span class="p">,</span> <span class="s2">"cast(label as double) as label"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="로지스틱-회귀분석">
+<a class="anchor" href="#%EB%A1%9C%EC%A7%80%EC%8A%A4%ED%8B%B1-%ED%9A%8C%EA%B7%80%EB%B6%84%EC%84%9D" aria-hidden="true"><span class="octicon octicon-link"></span></a>로지스틱 회귀분석<a class="anchor-link" href="#%EB%A1%9C%EC%A7%80%EC%8A%A4%ED%8B%B1-%ED%9A%8C%EA%B7%80%EB%B6%84%EC%84%9D"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">LogisticRegression</span>
+
+<span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lr</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>aggregationDepth: suggested depth for treeAggregate (&gt;= 2). (default: 2)
+elasticNetParam: the ElasticNet mixing parameter, in range [0, 1]. For alpha = 0, the penalty is an L2 penalty. For alpha = 1, it is an L1 penalty. (default: 0.0)
+family: The name of family which is a description of the label distribution to be used in the model. Supported options: auto, binomial, multinomial (default: auto)
+featuresCol: features column name. (default: features)
+fitIntercept: whether to fit an intercept term. (default: True)
+labelCol: label column name. (default: label)
+lowerBoundsOnCoefficients: The lower bounds on coefficients if fitting under bound constrained optimization. The bound matrix must be compatible with the shape (1, number of features) for binomial regression, or (number of classes, number of features) for multinomial regression. (undefined)
+lowerBoundsOnIntercepts: The lower bounds on intercepts if fitting under bound constrained optimization. The bounds vector size must beequal with 1 for binomial regression, or the number oflasses for multinomial regression. (undefined)
+maxBlockSizeInMB: maximum memory in MB for stacking input data into blocks. Data is stacked within partitions. If more than remaining data size in a partition then it is adjusted to the data size. Default 0.0 represents choosing optimal value, depends on specific algorithm. Must be &gt;= 0. (default: 0.0)
+maxIter: max number of iterations (&gt;= 0). (default: 100)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+rawPredictionCol: raw prediction (a.k.a. confidence) column name. (default: rawPrediction)
+regParam: regularization parameter (&gt;= 0). (default: 0.0)
+standardization: whether to standardize the training features before fitting the model. (default: True)
+threshold: Threshold in binary classification prediction, in range [0, 1]. If threshold and thresholds are both set, they must match.e.g. if threshold is p, then thresholds must be equal to [1-p, p]. (default: 0.5)
+thresholds: Thresholds in multi-class classification to adjust the probability of predicting each class. Array must have length equal to the number of classes, with values &gt; 0, excepting that at most one value may be 0. The class with largest value p/t is predicted, where p is the original probability of that class and t is the class's threshold. (undefined)
+tol: the convergence tolerance for iterative algorithms (&gt;= 0). (default: 1e-06)
+upperBoundsOnCoefficients: The upper bounds on coefficients if fitting under bound constrained optimization. The bound matrix must be compatible with the shape (1, number of features) for binomial regression, or (number of classes, number of features) for multinomial regression. (undefined)
+upperBoundsOnIntercepts: The upper bounds on intercepts if fitting under bound constrained optimization. The bound vector size must be equal with 1 for binomial regression, or the number of classes for multinomial regression. (undefined)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">lrModel</span> <span class="o">=</span> <span class="n">lr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"coefficients: "</span><span class="p">,</span> <span class="n">lrModel</span><span class="o">.</span><span class="n">coefficients</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"intercept: "</span><span class="p">,</span> <span class="n">lrModel</span><span class="o">.</span><span class="n">intercept</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>coefficients:  [18.722385741661295,-0.5693688557340798,9.361192870830632]
+intercept:  -28.04329511868947
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="n">lrModel</span><span class="o">.</span><span class="n">summary</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">areaUnderROC</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>1.0
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">roc</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/a/spark/python/pyspark/sql/context.py:127: FutureWarning: Deprecated in 3.0.0. Use SparkSession.builder.getOrCreate() instead.
+  FutureWarning
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---+------------------+
+|FPR|               TPR|
++---+------------------+
+|0.0|               0.0|
+|0.0|0.3333333333333333|
+|0.0|               1.0|
+|1.0|               1.0|
+|1.0|               1.0|
++---+------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">summary</span><span class="o">.</span><span class="n">pr</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+------------------+---------+
+|            recall|precision|
++------------------+---------+
+|               0.0|      1.0|
+|0.3333333333333333|      1.0|
+|               1.0|      1.0|
+|               1.0|      0.6|
++------------------+---------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">summary</span><span class="o">.</span><span class="n">objectiveHistory</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[0.6730116670092565, 0.3053347667866976, 0.19572951692227344, 0.08238560717506735, 0.039904390712412495, 0.0191876057299779, 0.009480513129879598, 0.004700793975398914, 0.002342824005088809, 0.0011692212872630925, 0.0005841333526453686, 0.0002919384368144603, 0.00014593757317782482, 7.295887614374265e-05, 3.6473098822232435e-05, 1.822801708342409e-05, 9.095755464927068e-06, 4.5053062928456136e-06, 2.17434840951629e-06, 1.0422594942126336e-06, 5.28080873894856e-07, 2.62853118644462e-07, 1.3166032239693672e-07, 6.578498712561186e-08, 3.2901213738010096e-08, 1.6448921648782767e-08, 8.224786126081538e-09]
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="의사결정트리">
+<a class="anchor" href="#%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%ED%8A%B8%EB%A6%AC" aria-hidden="true"><span class="octicon octicon-link"></span></a>의사결정트리<a class="anchor-link" href="#%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%ED%8A%B8%EB%A6%AC"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
+
+<span class="n">dt</span> <span class="o">=</span> <span class="n">DecisionTreeClassifier</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cacheNodeIds: If false, the algorithm will pass trees to executors to match instances with nodes. If true, the algorithm will cache node IDs for each instance. Caching can speed up training of deeper trees. Users can set how often should the cache be checkpointed or disable it by setting checkpointInterval. (default: False)
+checkpointInterval: set checkpoint interval (&gt;= 1) or disable checkpoint (-1). E.g. 10 means that the cache will get checkpointed every 10 iterations. Note: this setting will be ignored if the checkpoint directory is not set in the SparkContext. (default: 10)
+featuresCol: features column name. (default: features)
+impurity: Criterion used for information gain calculation (case-insensitive). Supported options: entropy, gini (default: gini)
+labelCol: label column name. (default: label)
+leafCol: Leaf indices column name. Predicted leaf index of each instance in each tree by preorder. (default: )
+maxBins: Max number of bins for discretizing continuous features.  Must be &gt;=2 and &gt;= number of categories for any categorical feature. (default: 32)
+maxDepth: Maximum depth of the tree. (&gt;= 0) E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes. Must be in range [0, 30]. (default: 5)
+maxMemoryInMB: Maximum memory in MB allocated to histogram aggregation. If too small, then 1 node will be split per iteration, and its aggregates may exceed this size. (default: 256)
+minInfoGain: Minimum information gain for a split to be considered at a tree node. (default: 0.0)
+minInstancesPerNode: Minimum number of instances each child must have after split. If a split causes the left or right child to have fewer than minInstancesPerNode, the split will be discarded as invalid. Should be &gt;= 1. (default: 1)
+minWeightFractionPerNode: Minimum fraction of the weighted sample count that each child must have after split. If a split causes the fraction of the total weight in the left or right child to be less than minWeightFractionPerNode, the split will be discarded as invalid. Should be in interval [0.0, 0.5). (default: 0.0)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+rawPredictionCol: raw prediction (a.k.a. confidence) column name. (default: rawPrediction)
+seed: random seed. (default: -447065854948693456)
+thresholds: Thresholds in multi-class classification to adjust the probability of predicting each class. Array must have length equal to the number of classes, with values &gt; 0, excepting that at most one value may be 0. The class with largest value p/t is predicted, where p is the original probability of that class and t is the class's threshold. (undefined)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dtModel</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="랜덤-포레스트와-그래디언트-부스티드-트리">
+<a class="anchor" href="#%EB%9E%9C%EB%8D%A4-%ED%8F%AC%EB%A0%88%EC%8A%A4%ED%8A%B8%EC%99%80-%EA%B7%B8%EB%9E%98%EB%94%94%EC%96%B8%ED%8A%B8-%EB%B6%80%EC%8A%A4%ED%8B%B0%EB%93%9C-%ED%8A%B8%EB%A6%AC" aria-hidden="true"><span class="octicon octicon-link"></span></a>랜덤 포레스트와 그래디언트 부스티드 트리<a class="anchor-link" href="#%EB%9E%9C%EB%8D%A4-%ED%8F%AC%EB%A0%88%EC%8A%A4%ED%8A%B8%EC%99%80-%EA%B7%B8%EB%9E%98%EB%94%94%EC%96%B8%ED%8A%B8-%EB%B6%80%EC%8A%A4%ED%8B%B0%EB%93%9C-%ED%8A%B8%EB%A6%AC"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">rfClassifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rfClassifier</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>bootstrap: Whether bootstrap samples are used when building trees. (default: True)
+cacheNodeIds: If false, the algorithm will pass trees to executors to match instances with nodes. If true, the algorithm will cache node IDs for each instance. Caching can speed up training of deeper trees. Users can set how often should the cache be checkpointed or disable it by setting checkpointInterval. (default: False)
+checkpointInterval: set checkpoint interval (&gt;= 1) or disable checkpoint (-1). E.g. 10 means that the cache will get checkpointed every 10 iterations. Note: this setting will be ignored if the checkpoint directory is not set in the SparkContext. (default: 10)
+featureSubsetStrategy: The number of features to consider for splits at each tree node. Supported options: 'auto' (choose automatically for task: If numTrees == 1, set to 'all'. If numTrees &gt; 1 (forest), set to 'sqrt' for classification and to 'onethird' for regression), 'all' (use all features), 'onethird' (use 1/3 of the features), 'sqrt' (use sqrt(number of features)), 'log2' (use log2(number of features)), 'n' (when n is in the range (0, 1.0], use n * number of features. When n is in the range (1, number of features), use n features). default = 'auto' (default: auto)
+featuresCol: features column name. (default: features)
+impurity: Criterion used for information gain calculation (case-insensitive). Supported options: entropy, gini (default: gini)
+labelCol: label column name. (default: label)
+leafCol: Leaf indices column name. Predicted leaf index of each instance in each tree by preorder. (default: )
+maxBins: Max number of bins for discretizing continuous features.  Must be &gt;=2 and &gt;= number of categories for any categorical feature. (default: 32)
+maxDepth: Maximum depth of the tree. (&gt;= 0) E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes. Must be in range [0, 30]. (default: 5)
+maxMemoryInMB: Maximum memory in MB allocated to histogram aggregation. If too small, then 1 node will be split per iteration, and its aggregates may exceed this size. (default: 256)
+minInfoGain: Minimum information gain for a split to be considered at a tree node. (default: 0.0)
+minInstancesPerNode: Minimum number of instances each child must have after split. If a split causes the left or right child to have fewer than minInstancesPerNode, the split will be discarded as invalid. Should be &gt;= 1. (default: 1)
+minWeightFractionPerNode: Minimum fraction of the weighted sample count that each child must have after split. If a split causes the fraction of the total weight in the left or right child to be less than minWeightFractionPerNode, the split will be discarded as invalid. Should be in interval [0.0, 0.5). (default: 0.0)
+numTrees: Number of trees to train (&gt;= 1). (default: 20)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+rawPredictionCol: raw prediction (a.k.a. confidence) column name. (default: rawPrediction)
+seed: random seed. (default: 5607017822375671492)
+subsamplingRate: Fraction of the training data used for learning each decision tree, in range (0, 1]. (default: 1.0)
+thresholds: Thresholds in multi-class classification to adjust the probability of predicting each class. Array must have length equal to the number of classes, with values &gt; 0, excepting that at most one value may be 0. The class with largest value p/t is predicted, where p is the original probability of that class and t is the class's threshold. (undefined)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">trainedModel</span> <span class="o">=</span> <span class="n">rfClassifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">GBTClassifier</span>
+
+<span class="n">gbtClassifier</span> <span class="o">=</span> <span class="n">GBTClassifier</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gbtClassifier</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>cacheNodeIds: If false, the algorithm will pass trees to executors to match instances with nodes. If true, the algorithm will cache node IDs for each instance. Caching can speed up training of deeper trees. Users can set how often should the cache be checkpointed or disable it by setting checkpointInterval. (default: False)
+checkpointInterval: set checkpoint interval (&gt;= 1) or disable checkpoint (-1). E.g. 10 means that the cache will get checkpointed every 10 iterations. Note: this setting will be ignored if the checkpoint directory is not set in the SparkContext. (default: 10)
+featureSubsetStrategy: The number of features to consider for splits at each tree node. Supported options: 'auto' (choose automatically for task: If numTrees == 1, set to 'all'. If numTrees &gt; 1 (forest), set to 'sqrt' for classification and to 'onethird' for regression), 'all' (use all features), 'onethird' (use 1/3 of the features), 'sqrt' (use sqrt(number of features)), 'log2' (use log2(number of features)), 'n' (when n is in the range (0, 1.0], use n * number of features. When n is in the range (1, number of features), use n features). default = 'auto' (default: all)
+featuresCol: features column name. (default: features)
+impurity: Criterion used for information gain calculation (case-insensitive). Supported options: variance (default: variance)
+labelCol: label column name. (default: label)
+leafCol: Leaf indices column name. Predicted leaf index of each instance in each tree by preorder. (default: )
+lossType: Loss function which GBT tries to minimize (case-insensitive). Supported options: logistic (default: logistic)
+maxBins: Max number of bins for discretizing continuous features.  Must be &gt;=2 and &gt;= number of categories for any categorical feature. (default: 32)
+maxDepth: Maximum depth of the tree. (&gt;= 0) E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes. Must be in range [0, 30]. (default: 5)
+maxIter: max number of iterations (&gt;= 0). (default: 20)
+maxMemoryInMB: Maximum memory in MB allocated to histogram aggregation. If too small, then 1 node will be split per iteration, and its aggregates may exceed this size. (default: 256)
+minInfoGain: Minimum information gain for a split to be considered at a tree node. (default: 0.0)
+minInstancesPerNode: Minimum number of instances each child must have after split. If a split causes the left or right child to have fewer than minInstancesPerNode, the split will be discarded as invalid. Should be &gt;= 1. (default: 1)
+minWeightFractionPerNode: Minimum fraction of the weighted sample count that each child must have after split. If a split causes the fraction of the total weight in the left or right child to be less than minWeightFractionPerNode, the split will be discarded as invalid. Should be in interval [0.0, 0.5). (default: 0.0)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+rawPredictionCol: raw prediction (a.k.a. confidence) column name. (default: rawPrediction)
+seed: random seed. (default: -2078210181601159107)
+stepSize: Step size (a.k.a. learning rate) in interval (0, 1] for shrinking the contribution of each estimator. (default: 0.1)
+subsamplingRate: Fraction of the training data used for learning each decision tree, in range (0, 1]. (default: 1.0)
+thresholds: Thresholds in multi-class classification to adjust the probability of predicting each class. Array must have length equal to the number of classes, with values &gt; 0, excepting that at most one value may be 0. The class with largest value p/t is predicted, where p is the original probability of that class and t is the class's threshold. (undefined)
+validationIndicatorCol: name of the column that indicates whether each row is for training or for validation. False indicates training; true indicates validation. (undefined)
+validationTol: Threshold for stopping early when fit with validation is used. If the error rate on the validation input changes by less than the validationTol, then learning will stop early (before `maxIter`). This parameter is ignored when fit without validation is used. (default: 0.01)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">trainedModel</span> <span class="o">=</span> <span class="n">gbtClassifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="나이브-베이즈">
+<a class="anchor" href="#%EB%82%98%EC%9D%B4%EB%B8%8C-%EB%B2%A0%EC%9D%B4%EC%A6%88" aria-hidden="true"><span class="octicon octicon-link"></span></a>나이브 베이즈<a class="anchor-link" href="#%EB%82%98%EC%9D%B4%EB%B8%8C-%EB%B2%A0%EC%9D%B4%EC%A6%88"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">NaiveBayes</span>
+
+<span class="n">nb</span> <span class="o">=</span> <span class="n">NaiveBayes</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">explainParams</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>featuresCol: features column name. (default: features)
+labelCol: label column name. (default: label)
+modelType: The model type which is a string (case-sensitive). Supported options: multinomial (default), bernoulli and gaussian. (default: multinomial)
+predictionCol: prediction column name. (default: prediction)
+probabilityCol: Column name for predicted class conditional probabilities. Note: Not all models output well-calibrated probability estimates! These probabilities should be treated as confidences, not precise probabilities. (default: probability)
+rawPredictionCol: raw prediction (a.k.a. confidence) column name. (default: rawPrediction)
+smoothing: The smoothing parameter, should be &gt;= 0, default is 1.0 (default: 1.0)
+thresholds: Thresholds in multi-class classification to adjust the probability of predicting each class. Array must have length equal to the number of classes, with values &gt; 0, excepting that at most one value may be 0. The class with largest value p/t is predicted, where p is the original probability of that class and t is the class's threshold. (undefined)
+weightCol: weight column name. If this is not set or empty, we treat all instance weights as 1.0. (undefined)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">trainedModel</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"label != 0"</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="평가지표">
+<a class="anchor" href="#%ED%8F%89%EA%B0%80%EC%A7%80%ED%91%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>평가지표<a class="anchor-link" href="#%ED%8F%89%EA%B0%80%EC%A7%80%ED%91%9C"> </a>
+</h1>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.ml.classification</span> <span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+
+<span class="n">rfClassifier</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="n">trainedModel</span> <span class="o">=</span> <span class="n">rfClassifier</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.mllib.evaluation</span> <span class="kn">import</span> <span class="n">BinaryClassificationMetrics</span>
+
+<span class="n">out</span> <span class="o">=</span> <span class="n">trainedModel</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">bInput</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"prediction"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">rdd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="n">BinaryClassificationMetrics</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">metrics</span><span class="o">.</span><span class="n">areaUnderROC</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1.0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">metrics</span><span class="o">.</span><span class="n">areaUnderPR</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>1.0</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2020/05/20/pyspark-ml-classification.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

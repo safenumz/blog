@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[WEB] 03) 입력 양식 (Form) | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[WEB] 03) 입력 양식 (Form)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Form Form 기본 input type : text, password, submit form : action의 속성값 주소로 전송 name : 서버 쪽으로 전송될 때 구분하기 위해 name 지정" />
+<meta property="og:description" content="Form Form 기본 input type : text, password, submit form : action의 속성값 주소로 전송 name : 서버 쪽으로 전송될 때 구분하기 위해 name 지정" />
+<link rel="canonical" href="https://safenumz.github.io/blog/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-22T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[WEB] 03) 입력 양식 (Form)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-08-22T00:00:00-05:00","datePublished":"2018-08-22T00:00:00-05:00","description":"Form Form 기본 input type : text, password, submit form : action의 속성값 주소로 전송 name : 서버 쪽으로 전송될 때 구분하기 위해 name 지정","headline":"[WEB] 03) 입력 양식 (Form)","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html"},"url":"https://safenumz.github.io/blog/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[WEB] 03) 입력 양식 (Form)</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-08-22T00:00:00-05:00" itemprop="datePublished">
+        Aug 22, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#WEB">WEB</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="form">Form</h1>
+<h2 id="form-기본">Form 기본</h2>
+<ul>
+  <li>input type : text, password, submit</li>
+  <li>form : action의 속성값 주소로 전송</li>
+  <li>name : 서버 쪽으로 전송될 때 구분하기 위해 name 지정</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/login.php"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;p&gt;</span>아이디 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>비밀번호 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"pwd"</span><span class="nt">&gt;&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>주소 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"address"</span><span class="nt">&gt;&lt;/p&gt;</span>
+  <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+<body>
+<form action="http://localhost/login.php">
+  <p>아이디 : <input type="text" name="id" /></p>
+  <p>비밀번호 : <input type="password" name="pwd" /></p>
+  <p>주소 : <input type="text" name="address" /></p>
+  <input type="submit" />
+</form>
+</body>
+</html>
+
+<h2 id="문자입력">문자입력</h2>
+<ul>
+  <li>texarea : 여러 줄의 텍스트 입력 가능</li>
+  <li>cols=”50” : 50개 문자</li>
+  <li>rows=”10” : 10줄</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/login.php"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;p&gt;</span>text : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"default value"</span><span class="nt">&gt;&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>password : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"pwd"</span> <span class="na">value=</span><span class="s">"default value"</span><span class="nt">&gt;&lt;/p&gt;</span>
+  <span class="nt">&lt;p&gt;</span>textarea:
+    <span class="nt">&lt;textarea</span> <span class="na">cols=</span><span class="s">"50"</span> <span class="na">rows=</span><span class="s">"10"</span><span class="nt">&gt;</span>default value<span class="nt">&lt;/textarea&gt;</span>
+  <span class="nt">&lt;/p&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+<body>
+<form action="http://localhost/login.php">
+  <p>text : <input type="text" name="id" value="default value" /></p>
+  <p>password : <input type="password" name="pwd" value="default value" /></p>
+  <p>textarea:
+    <textarea cols="50" rows="10">default value</textarea>
+  </p>
+</form>
+</body>
+</html>
+
+<h2 id="dropdown-list">dropdown list</h2>
+<ul>
+  <li>select</li>
+  <li>option</li>
+  <li>value: 컴퓨터가 인식하기 쉬운 값으로 변환</li>
+  <li>multiple : ctrl 키를 누르면 여러개 선택</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+  <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/color.php"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;h1&gt;</span>색상<span class="nt">&lt;/h1&gt;</span>
+      <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"color"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"red"</span><span class="nt">&gt;</span>붉은색<span class="nt">&lt;/option&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"black"</span><span class="nt">&gt;</span>검은색<span class="nt">&lt;/option&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"blue"</span><span class="nt">&gt;</span>파란색<span class="nt">&lt;/option&gt;</span>
+      <span class="nt">&lt;/select&gt;</span>
+      <span class="nt">&lt;h1&gt;</span>색상 2 (다중선택)<span class="nt">&lt;/h1&gt;</span>
+      <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"color2"</span> <span class="na">multiple</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"red"</span><span class="nt">&gt;</span>붉은색<span class="nt">&lt;/option&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"black"</span><span class="nt">&gt;</span>검은색<span class="nt">&lt;/option&gt;</span>
+        <span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"blue"</span><span class="nt">&gt;</span>파란색<span class="nt">&lt;/option&gt;</span>
+      <span class="nt">&lt;/select&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+  <form action="http://localhost/color.php">
+      <h1>색상</h1>
+      <select name="color">
+        <option value="red">붉은색</option>
+        <option value="black">검은색</option>
+        <option value="blue">파란색</option>
+      </select>
+      <h1>색상 2 (다중선택)</h1>
+      <select name="color2" multiple="">
+        <option value="red">붉은색</option>
+        <option value="black">검은색</option>
+        <option value="blue">파란색</option>
+      </select>
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+
+<h2 id="radio-checkbox">radio, checkbox</h2>
+<ul>
+  <li>radio : 같은 name으로 지정되면 하나만 선택가능하게 만들 수 있다</li>
+  <li>checkbox : 다중으로 선택 가능</li>
+  <li>checked : 디폴트 값</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/order.php"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;h1&gt;</span>색상 (단일 선택)<span class="nt">&lt;/h1&gt;</span>
+        붉은색 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">name=</span><span class="s">"color"</span> <span class="na">value=</span><span class="s">"red"</span><span class="nt">&gt;</span>
+        검은색 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">name=</span><span class="s">"color"</span> <span class="na">value=</span><span class="s">"black"</span> <span class="na">checked</span><span class="nt">&gt;</span>
+        파란색 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"radio"</span> <span class="na">name=</span><span class="s">"color"</span> <span class="na">value=</span><span class="s">"blue"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;h1&gt;</span>사이즈 (다중 선택)<span class="nt">&lt;/h1&gt;</span>
+        95 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"size"</span> <span class="na">value=</span><span class="s">"95"</span><span class="nt">&gt;</span>
+        100 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"size"</span> <span class="na">value=</span><span class="s">"100"</span> <span class="na">checked</span><span class="nt">&gt;</span>
+        105 : <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"size"</span> <span class="na">value=</span><span class="s">"105"</span> <span class="na">checked</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/order.php">
+      <p>
+        <h1>색상 (단일 선택)</h1>
+        붉은색 : <input type="radio" name="color" value="red" />
+        검은색 : <input type="radio" name="color" value="black" checked="" />
+        파란색 : <input type="radio" name="color" value="blue" />
+      </p>
+      <p>
+        <h1>사이즈 (다중 선택)</h1>
+        95 : <input type="checkbox" name="size" value="95" />
+        100 : <input type="checkbox" name="size" value="100" checked="" />
+        105 : <input type="checkbox" name="size" value="105" checked="" />
+      </p>
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+
+<h2 id="button">button</h2>
+<ul>
+  <li>text</li>
+  <li>submit</li>
+  <li>button</li>
+  <li>JavaScript와 함께 씀, onclick</li>
+  <li>reset : 사용자가 입력한 텍스트 초기화</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action =</span><span class="s">"http://localhost/form.php"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"전송"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">value=</span><span class="s">"버튼"</span> <span class="na">onclick=</span><span class="s">"alert(hello world)"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"reset"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/form.php">
+      <input type="text" />
+      <input type="submit" value="전송" />
+      <input type="button" value="버튼" onclick="alert(hello world)" />
+      <input type="reset" />
+    </form>
+  </body>
+</html>
+
+<h2 id="hidden">hidden</h2>
+<ul>
+  <li>눈에 보이진 않지만 submit 했을 때 value 전송</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/hidden.php"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">name=</span><span class="s">"hide"</span> <span class="na">value=</span><span class="s">"egoing"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/hidden.php">
+      <input type="text" name="id" />
+      <input type="hidden" name="hide" value="egoing" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+
+<h2 id="label">label</h2>
+<ul>
+  <li>무언가의 이름표라는 것을 기술</li>
+  <li>for : 누구의 label인지 명시</li>
+  <li>input에 id와 매칭</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/login.php"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"id_txt"</span><span class="nt">&gt;</span>text<span class="nt">&lt;/label&gt;</span> :
+        <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"id_txt"</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"default value"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label&gt;</span>password :
+        <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"pwd"</span> <span class="na">value=</span><span class="s">"default value"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;/label&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"comment"</span><span class="nt">&gt;</span>textarea<span class="nt">&lt;/label&gt;</span>:
+        <span class="nt">&lt;textarea</span> <span class="na">id=</span><span class="s">"comment"</span> <span class="na">cols=</span><span class="s">"50"</span> <span class="na">rows=</span><span class="s">"10"</span><span class="nt">&gt;</span>default value<span class="nt">&lt;/textarea&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+      <span class="nt">&lt;p&gt;</span>
+        <span class="nt">&lt;label&gt;</span>
+          <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"color"</span> <span class="na">value=</span><span class="s">"red"</span><span class="nt">&gt;</span> 붉은색
+        <span class="nt">&lt;/label&gt;</span>
+        <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"color_blue"</span><span class="nt">&gt;</span>
+          <span class="nt">&lt;input</span> <span class="na">id=</span><span class="s">"color_blue"</span> <span class="na">type=</span><span class="s">"checkbox"</span> <span class="na">name=</span><span class="s">"color"</span> <span class="na">value=</span><span class="s">"red"</span><span class="nt">&gt;</span> 파란색
+        <span class="nt">&lt;/label&gt;</span>
+      <span class="nt">&lt;/p&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/login.php">
+      <p>
+        <label for="id_txt">text</label> :
+        <input id="id_txt" type="text" name="id" value="default value" />
+      </p>
+      <p>
+        <label>password :
+        <input type="password" name="pwd" value="default value" />
+        </label>
+      </p>
+      <p>
+        <label for="comment">textarea</label>:
+        <textarea id="comment" cols="50" rows="10">default value</textarea>
+      </p>
+      <p>
+        <label>
+          <input type="checkbox" name="color" value="red" /> 붉은색
+        </label>
+        <label for="color_blue">
+          <input id="color_blue" type="checkbox" name="color" value="red" /> 파란색
+        </label>
+      </p>
+    </form>
+  </body>
+</html>
+
+<h2 id="method">method</h2>
+<ul>
+  <li>get이 디폴트 값, url에 비밀번호 노출 문제 있음</li>
+  <li>post로 지정하면 비밀번호 노출 문제 해결</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/method.php"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"pwd"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/method.php" method="post">
+      <input type="text" name="id" />
+      <input type="password" name="pwd" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+
+<h2 id="파일-업로드">파일 업로드</h2>
+<ul>
+  <li>file</li>
+  <li>enctype을 mutipart/form-data로 지정</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"http://localhost/upload.php"</span> <span class="na">method=</span><span class="s">"post"</span> <span class="na">enctype=</span><span class="s">"multipart/form-data"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"file"</span> <span class="na">name=</span><span class="s">"profile"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/form&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<html>
+  <body>
+    <form action="http://localhost/upload.php" method="post" enctype="multipart/form-data">
+      <input type="text" name="id" />
+      <input type="file" name="profile" />
+      <input type="submit" />
+    </form>
+  </body>
+</html>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

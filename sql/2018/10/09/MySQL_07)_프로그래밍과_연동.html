@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MySQL] 07) 프로그래밍과 연동 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MySQL] 07) 프로그래밍과 연동" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="프로그래밍과 연동 프로그래밍과 데이터베이스는 무관 데이터베이스는 독립적인 시스템 프로그래밍과 결합해 더 많은 일을 할 수 있음" />
+<meta property="og:description" content="프로그래밍과 연동 프로그래밍과 데이터베이스는 무관 데이터베이스는 독립적인 시스템 프로그래밍과 결합해 더 많은 일을 할 수 있음" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-10-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MySQL] 07) 프로그래밍과 연동" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-10-09T00:00:00-05:00","datePublished":"2018-10-09T00:00:00-05:00","description":"프로그래밍과 연동 프로그래밍과 데이터베이스는 무관 데이터베이스는 독립적인 시스템 프로그래밍과 결합해 더 많은 일을 할 수 있음","headline":"[MySQL] 07) 프로그래밍과 연동","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html"},"url":"https://safenumz.github.io/blog/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MySQL] 07) 프로그래밍과 연동</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-10-09T00:00:00-05:00" itemprop="datePublished">
+        Oct 9, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="프로그래밍과-연동">프로그래밍과 연동</h1>
+<ul>
+  <li>프로그래밍과 데이터베이스는 무관</li>
+  <li>데이터베이스는 독립적인 시스템</li>
+  <li>프로그래밍과 결합해 더 많은 일을 할 수 있음</li>
+</ul>
+
+<h2 id="api">API</h2>
+<ul>
+  <li>데이터베이스는 API를 제공</li>
+  <li>PHP와 같은 프로그래밍 언어들은 이 API를 이용해서 데이터베이스를 이용함</li>
+  <li>PHP와 MySQL : 가장 많이 사용되는 조합</li>
+</ul>
+
+<h3 id="step1-데이터-만들기">STEP1. 데이터 만들기</h3>
+<h2 id="데이터베이스의-내용을-웹페이지로-출력하기">데이터베이스의 내용을 웹페이지로 출력하기</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">DATABASE</span> <span class="nv">`class`</span> <span class="nb">CHARACTER</span> <span class="k">SET</span> <span class="n">utf8</span> <span class="k">COLLATE</span> <span class="n">utf8_general_ci</span><span class="p">;</span>
+<span class="n">USE</span> <span class="k">class</span><span class="p">;</span>
+<span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="nv">`student`</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`student`</span> <span class="p">(</span>
+  <span class="nv">`id`</span> <span class="nb">tinyint</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="nv">`name`</span> <span class="nb">char</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`address`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`department`</span> <span class="nb">enum</span><span class="p">(</span><span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'전자공학과'</span><span class="p">,</span> <span class="s1">'물리학과'</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`introduction`</span> <span class="nb">text</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`number`</span> <span class="nb">char</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`id`</span><span class="p">),</span>
+  <span class="k">UNIQUE</span> <span class="k">KEY</span> <span class="nv">`idx_number`</span> <span class="p">(</span><span class="nv">`number`</span><span class="p">)</span> <span class="k">USING</span> <span class="n">BTREE</span><span class="p">,</span>
+  <span class="k">KEY</span> <span class="nv">`idx_department`</span> <span class="p">(</span><span class="nv">`department`</span><span class="p">),</span>
+  <span class="k">KEY</span> <span class="nv">`idx_department_name`</span> <span class="p">(</span><span class="nv">`department`</span><span class="p">,</span> <span class="nv">`address`</span><span class="p">),</span>
+  <span class="n">FULLTEXT</span> <span class="k">KEY</span> <span class="nv">`idx_introduction`</span> <span class="p">(</span><span class="nv">`introduction`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">MyISAM</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">9</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'이숙경'</span><span class="p">,</span> <span class="s1">'청주'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'저는 컴퓨터 공학과에 다닙니다. computer'</span><span class="p">,</span> <span class="s1">'0250304'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'박재숙'</span><span class="p">,</span> <span class="s1">'서울'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'저는 영문과에 다닙니다.'</span><span class="p">,</span> <span class="s1">'0512321'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'백태호'</span><span class="p">,</span> <span class="s1">'경주'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'저는 컴퓨터 공학과에 다니고 경주에서 왔습니다.'</span><span class="p">,</span> <span class="s1">'0340534'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'김경훈'</span><span class="p">,</span> <span class="s1">'제천'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'제천이 고향이고 국문과에 다닙니다.'</span><span class="p">,</span> <span class="s1">'9813413'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'김경진'</span><span class="p">,</span> <span class="s1">'제주'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'이번에 국문과에 입학한 김경진이라고 합니다. 제주에서 왔습니다.'</span><span class="p">,</span> <span class="s1">'0412543'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'박경호'</span><span class="p">,</span> <span class="s1">'제주'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'박경호 입니다. 잘부탁드립니다.'</span><span class="p">,</span> <span class="s1">'0134511'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'김정인'</span><span class="p">,</span> <span class="s1">'대전'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'김정인입니다. 대전에서 왔고 영문과에 다닙니다.'</span><span class="p">,</span> <span class="s1">'015038'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="step2-웹페이지-만들기">STEP2. 웹페이지 만들기</h3>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html;charset=utf-8"</span> <span class="nt">&gt;</span>
+    <span class="nt">&lt;style&gt;</span>
+        <span class="nt">table</span><span class="p">{</span><span class="nl">border</span><span class="p">:</span><span class="m">1px</span> <span class="nb">solid</span> <span class="no">gray</span><span class="p">;</span> <span class="nl">border-collapse</span><span class="p">:</span><span class="nb">collapse</span><span class="p">;}</span>
+        <span class="nt">td</span><span class="p">{</span><span class="nl">border</span><span class="p">:</span><span class="m">1px</span> <span class="nb">solid</span> <span class="no">gray</span><span class="p">;</span><span class="nl">padding</span><span class="p">:</span><span class="m">5px</span><span class="p">;}</span>
+    <span class="nt">&lt;/style&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="cp">&lt;?php</span>
+
+
+<span class="c1">// localhost에 아이피주소, root 계정명, 1234 비밀번호</span>
+<span class="nv">$conn</span> <span class="o">=</span> <span class="nb">mysql_connect</span><span class="p">(</span><span class="s2">"localhost"</span><span class="p">,</span> <span class="s2">"root"</span><span class="p">,</span> <span class="s2">"1234"</span><span class="p">);</span>
+<span class="nb">mysql_query</span><span class="p">(</span><span class="s1">'SET NAMES utf8'</span><span class="p">);</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$conn</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"Unable to connect to DB: "</span> <span class="mf">.</span> <span class="nb">mysql_error</span><span class="p">();</span>
+    <span class="k">exit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nb">mysql_select_db</span><span class="p">(</span><span class="s2">"class"</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"Unable to select mydbname: "</span> <span class="mf">.</span> <span class="nb">mysql_error</span><span class="p">();</span>
+    <span class="k">exit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nv">$sql</span> <span class="o">=</span> <span class="s2">"SELECT *
+        FROM  student
+    LIMIT 10"</span><span class="p">;</span>
+
+<span class="nv">$result</span> <span class="o">=</span> <span class="nb">mysql_query</span><span class="p">(</span><span class="nv">$sql</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$result</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"Could not successfully run query (</span><span class="nv">$sql</span><span class="s2">) from DB: "</span> <span class="mf">.</span> <span class="nb">mysql_error</span><span class="p">();</span>
+    <span class="k">exit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span> <span class="p">(</span><span class="nb">mysql_num_rows</span><span class="p">(</span><span class="nv">$result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"No rows found, nothing to print so am exiting"</span><span class="p">;</span>
+    <span class="k">exit</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// While a row of data exists, put that row in $row as an associative array</span>
+<span class="c1">// Note: If you're expecting just one row, no need to use a loop</span>
+<span class="c1">// Note: If you put extract($row); inside the following loop, you'll</span>
+<span class="c1">//       then create $userid, $fullname, and $userstatus</span>
+<span class="k">echo</span> <span class="s2">"&lt;table&gt;"</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="nv">$row</span> <span class="o">=</span> <span class="nb">mysql_fetch_assoc</span><span class="p">(</span><span class="nv">$result</span><span class="p">))</span> <span class="p">{</span>
+    <span class="k">echo</span> <span class="s2">"&lt;tr&gt;&lt;td&gt;</span><span class="si">{</span><span class="nv">$row</span><span class="p">[</span><span class="s1">'id'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="nv">$row</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;td&gt;</span><span class="si">{</span><span class="nv">$row</span><span class="p">[</span><span class="s1">'department'</span><span class="p">]</span><span class="si">}</span><span class="s2">&lt;/td&gt;&lt;/tr&gt;"</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">echo</span> <span class="s2">"&lt;/table&gt;"</span><span class="p">;</span>
+<span class="nb">mysql_free_result</span><span class="p">(</span><span class="nv">$result</span><span class="p">);</span>
+
+<span class="cp">?&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 우분투 경우
+$ cd /var/www/
+
+$ ls -al
+
+$ rm list.php
+
+$ vi list.php
+
+//list.php에 위 php 코드 복사 붙여넣기
+
+//localhost/list.php 을 웹브라우저에 치면 웹브라우저를 통해 데이터베이스를 확인 할 수 있음
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 윈도우즈 APM 사용 경우
+
+// 웹페이지에 localhost 입력 후 phpMyAdin 접속
+
+// 위 코드를 C://APM_Setup/htdocs에 list.php 파일을 생성 후 저장
+
+// localhost/list.php 를 웹에 입력하면 데이터베이스가 뜸
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

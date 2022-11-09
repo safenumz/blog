@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[ShellScript] 기초 문법 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[ShellScript] 기초 문법" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="공통 셀 출력 명령: echo 형식: echo [옵션] [문자열]" />
+<meta property="og:description" content="공통 셀 출력 명령: echo 형식: echo [옵션] [문자열]" />
+<link rel="canonical" href="https://safenumz.github.io/blog/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-08-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[ShellScript] 기초 문법" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-08-01T00:00:00-05:00","datePublished":"2019-08-01T00:00:00-05:00","description":"공통 셀 출력 명령: echo 형식: echo [옵션] [문자열]","headline":"[ShellScript] 기초 문법","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html"},"url":"https://safenumz.github.io/blog/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[ShellScript] 기초 문법</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-08-01T00:00:00-05:00" itemprop="datePublished">
+        Aug 1, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Linux">Linux</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="공통-셀-출력-명령-echo">공통 셀 출력 명령: echo</h1>
+<blockquote>
+  <p>형식: echo [옵션] [문자열]</p>
+</blockquote>
+
+<blockquote>
+  <p>옵션: -n : 문자열의 마지막에서 줄 바꿈을 하지 않음</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo </span>centos
+<span class="nb">echo</span> <span class="s2">"I Love Linux"</span>
+</code></pre></div></div>
+
+<h1 id="출력형식-지정-명령-printf">출력형식 지정 명령: printf</h1>
+<blockquote>
+  <p>기능: 출력형식을 지정하여 문자열을 출력
+형식: printf [옵션] [문자열]
+옵션: %d, \n 등 c 언어의 printf() 함수를 지정</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">printf </span>CentOS
+<span class="nb">printf</span> <span class="s2">"Hava a </span><span class="se">\n</span><span class="s2"> good time"</span>
+<span class="nb">printf</span> <span class="s2">"%d + %d = %d </span><span class="se">\n</span><span class="s2">"</span> 10 20 30
+</code></pre></div></div>
+
+<h1 id="숫자-계산">숫자 계산</h1>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-5] 입력받은 두 정수의 곱셈/나눗셈/평균값 산출 프로그램 "</span>
+<span class="nb">echo</span> <span class="s2">"------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"1. 첫 번째 정수 입력 "</span>
+<span class="nb">read </span>num1
+<span class="nb">echo</span> <span class="s2">"2. 두 번째 정수 입력 "</span>
+<span class="nb">read </span>num2
+<span class="nb">echo</span> <span class="s2">"------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 입력한 두 정수의 값 "</span>
+<span class="nb">echo</span> <span class="s2">" num1 = </span><span class="nv">$num1</span><span class="s2"> "</span>
+<span class="nb">echo</span> <span class="s2">" num2 = </span><span class="nv">$num2</span><span class="s2"> "</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 곱셈연산 결과 "</span>
+<span class="nv">gob</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$num1</span> <span class="se">\*</span> <span class="nv">$num2</span><span class="sb">`</span>
+<span class="nb">echo</span> <span class="s2">" </span><span class="nv">$num1</span><span class="s2"> * </span><span class="nv">$num2</span><span class="s2"> = </span><span class="nv">$gob</span><span class="s2"> "</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 나눗셈연산 결과 "</span>
+<span class="nv">na</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$num1</span> / <span class="nv">$ </span>num2<span class="sb">`</span>
+<span class="nb">echo</span> <span class="s2">" </span><span class="nv">$num1</span><span class="s2"> / </span><span class="nv">$num2</span><span class="s2"> = </span><span class="nv">$na</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 두 수의 평균값 "</span>
+<span class="nv">avg</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="se">\(</span><span class="nv">$num1</span> + <span class="nv">$num2</span><span class="se">\)</span> / 2<span class="sb">`</span>
+<span class="nb">echo</span> <span class="s2">"</span><span class="nv">$num1</span><span class="s2"> + </span><span class="nv">$num2</span><span class="s2"> = </span><span class="nv">$avg</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="파라미터-변수">파라미터 변수</h1>
+
+<blockquote>
+  <p>mapping.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-6] 수행할 명령에 대한 파라미터 맵핑 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"1. 실행 파일이름 : &lt;</span><span class="nv">$0</span><span class="s2">&gt;: "</span>
+<span class="nb">echo</span> <span class="s2">"2. 첫번째 파라미터는 &lt;</span><span class="nv">$1</span><span class="s2">&gt; 이고"</span>
+<span class="nb">echo</span> <span class="s2">" 두번째 파라미터는 &lt;</span><span class="nv">$2</span><span class="s2">&gt; 입니다."</span>
+<span class="nb">echo</span> <span class="s2">"3. 전체 파라미터는 &lt;</span><span class="nv">$*</span><span class="s2">&gt; 입니다."</span>
+<span class="nb">echo</span> <span class="s2">"------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="분기문과-관계-연산자">분기문과 관계 연산자</h1>
+
+<h2 id="기본-if문">기본 if문</h2>
+
+<h3 id="기본-if문-문법구조">기본 if문 문법구조</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="o">[</span>조건식]
+<span class="k">then
+    </span>조건식이 참일 경우 실행할 문장
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<h2 id="조건연산자">조건연산자</h2>
+<blockquote>
+  <p>-eq  -neq  -gt  -ge  -lt  -le  !</p>
+</blockquote>
+
+<h2 id="논리연산자">논리연산자</h2>
+<blockquote>
+  <p>if [A] &amp;&amp; [B] 동일 if [A] -a [B]
+if [A] || [B] 동일 if [A] -o [B]</p>
+</blockquote>
+
+<h3 id="기본-if문-사용예시">기본 if문 사용예시</h3>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"space"</span> <span class="o">=</span> <span class="s2">"space"</span> <span class="o">]</span>
+<span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"두 문자열은 같은 문자열입니다."</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+
+<span class="nb">echo</span> <span class="s2">"==============================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-7] 기본 if문 문법형태 사용 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------"</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="s2">"space"</span> <span class="o">=</span> <span class="s2">"space"</span> <span class="o">]</span>
+<span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">" &gt; 문자열 비교 : space = space "</span>
+    <span class="nb">echo</span> <span class="s2">" &gt; 두 문자열을 비교 연산자로 판단한 결과 "</span>
+    <span class="nb">echo</span> <span class="s2">" &gt; 주어진 조건은 &lt;참&gt; 입니다. "</span>
+<span class="k">fi
+
+
+</span><span class="nb">echo</span> <span class="s2">"------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"================================================"</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="ifelse문">if~else문</h1>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nv">f_name</span><span class="o">=</span>/lib/systemd/system/httpd.service
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="nv">$f_name</span> <span class="o">]</span>
+<span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"exists!"</span>
+<span class="k">else
+    </span><span class="nb">echo</span> <span class="s2">"not exists!"</span>
+<span class="k">fi</span>
+</code></pre></div></div>
+
+<h1 id="case--esac문">case ~ esac문</h1>
+
+<h2 id="문법구조">문법구조</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> 파라미터 또는 키보드 입력값 <span class="k">in
+    </span>조건1<span class="p">)</span>
+        조건1에 해당할 경우 실행할 명령
+    조건2<span class="o">)</span>
+        조건2에 해당할 경우 실행할 명령
+    조건n<span class="o">)</span>
+        조건n에 해당할 경우 실행할 명령
+    <span class="k">*</span><span class="o">)</span>
+        앞에서 주어진 조건이외의 모든 경우 실행할 명령
+<span class="k">esac</span>
+</code></pre></div></div>
+
+<h2 id="예제">예제</h2>
+<blockquote>
+  <p>case_01.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"====================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-11] case-esac문을 사용하여 계절판별 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">" &gt; 명령 수행 파라미터 (Spring/Summer/Fall/Winter)"</span>
+<span class="nb">echo</span> <span class="s2">""</span>
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="k">in
+    </span>Spring<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 봄을 선택하셨습니다."</span><span class="p">;;</span>
+    Summer<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 여름을 선택하셨습니다."</span><span class="p">;;</span>
+    Fall<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 가을을 선택하셨습니다."</span><span class="p">;;</span>
+    Winter<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 겨울을 선택하셨습니다."</span><span class="p">;;</span>
+    <span class="k">*</span><span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 계절을 의미하는 단어가 아닙니다."</span>
+        <span class="nb">echo</span> <span class="s2">" &gt;&gt; 프로그램을 다시 시작하세요."</span><span class="p">;;</span>
+<span class="k">esac</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">" &gt;&gt;&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"====================================================="</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<blockquote>
+  <p>case_02.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"====================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-12] case-esac문을 사용하여 심리분석 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 심리 상태 입력 : (Yes/No/Y/N)"</span>
+<span class="nb">read </span>mind
+<span class="k">case</span> <span class="nv">$mind</span> <span class="k">in
+</span>Yes <span class="p">|</span> YES <span class="p">|</span> <span class="nb">yes</span> <span class="p">|</span> Y <span class="p">|</span> y<span class="p">)</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; Yes을 선택하셨습니다."</span><span class="p">;;</span>
+<span class="o">[</span>nN]<span class="k">*</span><span class="p">)</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; No 를 선택하셨습니다."</span><span class="p">;;</span>
+<span class="k">*</span><span class="p">)</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 알파벳은 대/소문자 구별 없이 Y또는 N을 입력하세요."</span><span class="p">;;</span>
+<span class="k">esac</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">" &gt;&gt;&gt; case-esac문 심리분석 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"====================================================="</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nv">birth_date</span><span class="o">=</span><span class="nv">$1</span>
+
+<span class="k">case</span> <span class="nv">$birth_date</span> <span class="k">in</span>
+    ??03??|??04??|??05??<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"봄에 태어나셨네요"</span><span class="p">;;</span>
+    ??06??|??07??|??08??<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"여름에 태어나셨네요"</span><span class="p">;;</span>
+    ??09??|??10??|??11??<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"가을에 태어나셨네요"</span><span class="p">;;</span>
+    ??01??|??02??|??12??<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"겨울에 태어나셨네요"</span><span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">read </span>val
+<span class="nb">echo</span> <span class="nv">$val</span>
+<span class="k">case</span> <span class="nv">$val</span> <span class="k">in</span>
+    <span class="o">[</span>0-9]<span class="k">*</span><span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"number"</span><span class="p">;;</span>
+    <span class="o">[</span>^0-9]<span class="k">*</span><span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"not number"</span><span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+
+<span class="k">case</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">date</span> +%a<span class="si">)</span><span class="s2">"</span> <span class="k">in
+    </span>Sat|Sun<span class="p">)</span>
+        <span class="nb">echo</span> <span class="s2">"주말엔 일 안합니다"</span><span class="p">;</span>
+        <span class="nb">exit</span><span class="p">;</span>
+<span class="k">esac</span>
+</code></pre></div></div>
+
+<h1 id="관계-연산자">관계 연산자</h1>
+<blockquote>
+  <p>ifandor.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"==============================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-13] if~else문과 관계 연산자를 사용하여 파일 찾기 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 찾고자 하는 파일 이름을 입력하세요."</span>
+<span class="nb">read </span>file_name
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------------"</span>
+
+<span class="k">if</span> <span class="o">[</span> <span class="nt">-f</span> <span class="nv">$file_name</span> <span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="nt">-s</span> <span class="nv">$file_name</span> <span class="o">]</span> <span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"&gt; 찾은 파일이름: </span><span class="nv">$file_name</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 찾은 파일의 내용 중 처음부터 8행의 내용은 다음과 같습니다."</span>
+
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------------"</span>
+    <span class="nb">head</span> <span class="nt">-8</span> <span class="nv">$file_name</span>
+<span class="k">else
+    </span><span class="nb">echo</span> <span class="s2">"&gt; 찾았던 파일이름: </span><span class="nv">$file_name</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 이 파일은 존재하지 않거나 파일 크기가 0인 파일입니다."</span>
+
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">" &gt;&gt;&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"==============================================================="</span>
+
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="반복문">반복문</h1>
+
+<h2 id="반복문-문법구조">반복문 문법구조</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for </span>변수 <span class="k">in </span>값1, 값2, 값2
+<span class="k">do
+    </span>반복실행할 문장들
+<span class="k">done
+
+for  </span>변수 <span class="k">in</span> <span class="sb">`</span><span class="nb">seq </span>1 100<span class="sb">`</span>
+<span class="k">do
+    </span>반복실행할 문장들
+<span class="k">done
+
+for</span> <span class="o">((</span> <span class="nv">i</span><span class="o">=</span>1<span class="p">;</span> i&lt;<span class="o">=</span>5<span class="p">;</span> i++ <span class="o">))</span>
+<span class="k">do
+    </span>반복실행할 문장들
+<span class="k">done</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>for_01.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"========================================================"</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-14] for문으로 1~10까지 누적합 산출 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"--------------------------------------------------------"</span>
+<span class="nb">sum</span><span class="o">=</span>0
+
+<span class="k">for</span> <span class="o">((</span> <span class="nv">cnt</span><span class="o">=</span>1<span class="p">;</span> cnt&lt;<span class="o">=</span>10<span class="p">;</span> cnt++ <span class="o">))</span>
+<span class="k">do
+    </span><span class="nb">sum</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$sum</span> + <span class="nv">$cnt</span><span class="sb">`</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 1부터 </span><span class="nv">$cnt</span><span class="s2">까지 누적합 ... </span><span class="nv">$sum</span><span class="s2">"</span>
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 1 + 2 + .... + 9 + 10 ..............[</span><span class="nv">$sum</span><span class="s2">]"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt;&gt; 프로그램을 종료합니다"</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<blockquote>
+  <p>for_02.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"=========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-15] 현재 디렉터리에 있는 파일 내용 출력 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"----------------------------------------------------------"</span>
+
+<span class="k">for </span>file_name <span class="k">in</span> <span class="si">$(</span><span class="nb">ls</span> <span class="k">*</span>.sh<span class="si">)</span>
+<span class="k">do
+    </span><span class="nb">echo</span> <span class="s2">"-----------------&lt;</span><span class="nv">$file_name</span><span class="s2">&gt;-------------------------"</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 파일 [</span><span class="nv">$file_name</span><span class="s2">]의 내용 중에서 처음부터 2행 출력"</span>
+    <span class="nb">head</span> <span class="nt">-2</span> <span class="nv">$file_name</span>
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"-----------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt;&gt; 프로그램을 종료합니다"</span>
+<span class="nb">echo</span> <span class="s2">"==========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="while-문">while 문</h1>
+
+<h2 id="조건연산자-1">조건연산자</h2>
+<blockquote>
+  <p>-eq -neq -gt -ge -lt -le !</p>
+</blockquote>
+
+<blockquote>
+  <p>while_01.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"==========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-16] while문으로 1~10까지 누적합 산출 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------------"</span>
+
+<span class="nb">sum</span> <span class="o">=</span> 0
+cnt <span class="o">=</span> 1
+
+<span class="k">while</span> <span class="o">[</span> <span class="nv">$cnt</span> <span class="nt">-le</span> 10 <span class="o">]</span>
+<span class="k">do
+    </span><span class="nb">sum</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$sum</span> + <span class="nv">$cnt</span><span class="sb">`</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 1부터 </span><span class="nv">$cnt</span><span class="s2">까지 누적합 ... </span><span class="nv">$sum</span><span class="s2">"</span>
+    <span class="nv">cnt</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$cnt</span> + 1<span class="sb">`</span>
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"-----------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 1 + 2 + 3 + ... + 9 + 10 .................[</span><span class="nv">$sum</span><span class="s2">]"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt;&gt; 프로그램을 종료합니다!"</span>
+<span class="nb">echo</span> <span class="s2">"==========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<blockquote>
+  <p>while_02.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"==========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-17] while문으로 비밀번호 일치여부 판정 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 비밀번호를 입력하세요"</span>
+<span class="nb">read </span>psword
+<span class="nb">echo</span> <span class="s2">"-----------------------------------------------------------"</span>
+
+<span class="k">while</span> <span class="o">[</span> <span class="nv">$psword</span> <span class="o">!=</span> <span class="s2">"123456"</span> <span class="o">]</span>
+<span class="k">do
+    </span><span class="nb">echo</span> <span class="s2">"&gt; 입력한 비밀번호 [</span><span class="nv">$psword</span><span class="s2">]는(은) 일치하지 않습니다..."</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 다시 입력하세요. "</span>
+    <span class="nb">read </span>psword
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"------------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 비밀번호 [</span><span class="nv">$psword</span><span class="s2">]이(가) 확인되었습니다."</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt;&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"============================================================"</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="until문">until문</h1>
+
+<h2 id="until문-문법구조">until문 문법구조</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="k">until</span> <span class="o">[</span>조건식]
+<span class="k">do
+    </span>조건식이 거짓을 경우 실행할 문장
+<span class="k">done</span>
+</code></pre></div></div>
+
+<h2 id="while문으로-작성한-while_01sh-파일">while문으로 작성한 while_01.sh 파일</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">while</span> <span class="o">[</span> <span class="nv">$cnt</span> <span class="nt">-le</span> 10 <span class="o">]</span>
+<span class="k">do
+    </span><span class="nb">sum</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$sum</span> + <span class="nv">$cnt</span><span class="sb">`</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 1부터 </span><span class="nv">$cnt</span><span class="s2">까지 누적합 ... </span><span class="nv">$sum</span><span class="s2"> "</span>
+    cnt <span class="o">=</span> <span class="sb">`</span><span class="nb">expr</span> <span class="nv">$cnt</span> + 1<span class="sb">`</span>
+<span class="k">done</span>
+</code></pre></div></div>
+
+<h2 id="until문으로-작성한-while_01sh-파일">until문으로 작성한 while_01.sh 파일</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">until</span> <span class="o">[</span> <span class="nv">$cnt</span> <span class="nt">-gt</span> 10 <span class="o">]</span>
+<span class="k">do
+    </span><span class="nb">sum</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$sum</span> + <span class="nv">$cnt</span><span class="sb">`</span>
+    <span class="nb">echo</span> <span class="s2">"&gt; 1부터 </span><span class="nv">$cnt</span><span class="s2">까지 누적합... </span><span class="nv">$sum</span><span class="s2">"</span>
+    <span class="nv">cnt</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$cnt</span> + 1<span class="sb">`</span>
+<span class="k">done</span>
+</code></pre></div></div>
+
+<h1 id="break-continue-exit-return문">break, continue, exit, return문</h1>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"======================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-18] break, continue, exit문 활용 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"-------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;대/소문자 구별없이 제시된 알파벳을 선택하여 입력하세요."</span>
+<span class="nb">echo</span> <span class="s2">"&gt;선택할 알파벳 [b:break/c:contitnue/e:exit] "</span>
+<span class="nb">echo</span> <span class="s2">"-------------------------------------------------------"</span>
+<span class="k">while</span> <span class="o">[</span> 1 <span class="o">]</span>
+<span class="k">do
+    </span><span class="nb">echo</span> <span class="s2">"&gt; 알파벳을 입력 : "</span>
+    <span class="nb">read </span>choice
+    <span class="k">case</span> <span class="nv">$choice</span> <span class="k">in
+        </span>b : B<span class="p">)</span>
+            <span class="nb">echo</span> <span class="s2">"&gt; 반복문을 빠져나가면서 종료됩니다. "</span> <span class="p">;</span> <span class="nb">break</span><span class="p">;;</span>
+        c : C<span class="p">)</span>
+            <span class="nb">echo</span> <span class="s2">"&gt; continue문은 조건식으로 돌아갑니다. "</span> <span class="p">;</span> <span class="k">continue</span><span class="p">;;</span>
+        e : E<span class="p">)</span>
+            <span class="nb">echo</span> <span class="s2">"&gt; exit문은 프로그램을 완전히 종료합니다. "</span> <span class="p">;</span> <span class="nb">exit </span>0<span class="p">;;</span>
+        <span class="k">*</span><span class="p">)</span>
+            <span class="nb">echo</span> <span class="s2">"&gt; 알파벳은 대/소문자 구별 없이 b, c, e만 허용합니다. "</span>
+        <span class="k">continue</span><span class="p">;;</span>
+    <span class="k">esac</span><span class="p">;</span>
+<span class="k">done
+
+</span><span class="nb">echo</span> <span class="s2">"========================================================"</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="함수">함수</h1>
+
+<h2 id="사용자-정의-함수-정의">사용자 정의 함수 정의</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>함수 이름 <span class="o">()</span>
+<span class="o">{</span>
+    수행하고자 하는 명령
+    <span class="k">return</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="사용자-정의-함수-호출">사용자 정의 함수 호출</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+...
+함수 이름 -&gt; 함수를 호출하려는 위치에서 함수 이름을 코딩하면 호출됨
+...
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<blockquote>
+  <p>userfun_01.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"=============================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-19] 사용자 정의 함수에 대한 정의 및 호출 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"--------------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 함수를 호출하려면 먼저 함수를 정의해야 합니다."</span>
+
+myfun <span class="o">()</span>
+<span class="o">{</span>
+<span class="nb">echo</span> <span class="s2">"------------------------&lt; myfun 함수 &gt;------------------------"</span>
+<span class="nb">echo</span> <span class="s2">" o.사용자 정의 함수 myfun()에 대한 정의 "</span>
+<span class="nb">echo</span> <span class="s2">" o.여기는 myfun 함수의 영역입니다. "</span>
+<span class="nb">echo</span> <span class="s2">" o.myfun 함수가 호출 되었습니다. "</span>
+<span class="nb">echo</span> <span class="s2">"--------------------------------------------------------------"</span>
+<span class="o">}</span>
+
+<span class="nb">echo</span> <span class="s2">"&gt; 사용자 정의 함수를 호출 : myfun 함수 이름 코딩 "</span>
+<span class="nb">echo</span> <span class="s2">""</span>
+myfun
+<span class="nb">echo</span> <span class="s2">""</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 프로그램을 종료합니다"</span>
+<span class="nb">echo</span> <span class="s2">"=============================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h2 id="파라미터와-함께-함수의-호출방식">파라미터와 함께 함수의 호출방식</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>함수 이름 <span class="o">()</span>
+<span class="o">{</span>
+    수행하고자하는 명령
+    <span class="k">return</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="사용자-정의-함수-호출과-파라미터-선언">사용자 정의 함수 호출과 파라미터 선언</h2>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+...
+함수 이름 <span class="nv">$1</span> <span class="nv">$2</span> ... -&gt; 함수를 호출할 때 파라미터도 같이 선언
+...
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<blockquote>
+  <p>userfun_02.sh</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"======================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-20] 파라미터를 사용하여 함수를 호출하는 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"======================================================="</span>
+
+add<span class="o">()</span>
+<span class="o">{</span>
+    <span class="nb">echo</span> <span class="s2">"------------------&lt;add 함수&gt;------------------------"</span>
+    <span class="nb">echo</span> <span class="s2">"o. 두 수에 대한 덧셈 연산식을 수행하는 함수입니다."</span>
+    <span class="nv">total</span><span class="o">=</span><span class="sb">`</span><span class="nb">expr</span> <span class="nv">$1</span> + <span class="nv">$2</span><span class="sb">`</span>
+    <span class="nb">echo</span> <span class="s2">"o.연산결과: </span><span class="nv">$num1</span><span class="s2"> + </span><span class="nv">$num2</span><span class="s2"> = </span><span class="nv">$total</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s2">"o.여기까지가 add함수 영역입니다."</span>
+    <span class="nb">echo</span> <span class="s2">"----------------------------------------------------"</span>
+<span class="o">}</span>
+
+<span class="nb">echo</span> <span class="s2">"&gt; 키보드로 두 수를 차례대로 입력하세요."</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 첫 번째 수 입력"</span>
+    <span class="nb">read </span>num1
+<span class="nb">echo</span> <span class="s2">"&gt; 두 번째 수 입력"</span>
+    <span class="nb">read </span>num2
+    add <span class="nv">$num1</span> <span class="nv">$num2</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"========================================================"</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="문자열을-명령문으로-인식-eval">문자열을 명령문으로 인식: eval</h1>
+<ul>
+  <li>eval은 프로그램에서 문자열로 처리한 부분을 명령문으로 인식하여 명령을 수행한다.</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-21] 문자열을 명령문으로 인식하는 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nv">filename</span><span class="o">=</span><span class="s2">"ls /tmp"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;echo : ls /tmp를 문자열로 인식"</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">eval</span> <span class="nv">$filename</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<h1 id="출력형식-지정-printf">출력형식 지정: printf</h1>
+<ul>
+  <li>출력형식을 지정하여 문자열이나 실수의 소수점 자리 수 지정, 강제 줄 바꿈 명령 등을 수행할 수 있다</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-22] printf를 사용하여 출력형식 지정 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 키보드로 실수를 입력하세요."</span>
+<span class="nb">read </span>float_num
+<span class="nb">echo</span> <span class="s2">"&gt; 키보드로 문자열을 입력하세요."</span>
+<span class="nb">read </span>input_string
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 실수를 5.2f 출력 형식을 지정하여 출력"</span>
+<span class="nb">printf</span> <span class="s2">"%5.2f </span><span class="se">\n</span><span class="s2"> "</span><span class="nv">$float_num</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 문자열 출력 형식을 지정하여 출력"</span>
+<span class="nb">echo</span> <span class="s2">"1.변수에 겹따모표를 안 붙였을 때"</span>
+<span class="nb">printf</span> <span class="s2">"%s </span><span class="se">\n</span><span class="s2"> "</span><span class="nv">$input_string</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">echo</span> <span class="s2">"[예제 11-23] set과 </span><span class="nv">$로</span><span class="s2"> 명령어 형식 지정 프로그램"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 오늘의 날짜 출력: </span><span class="si">$(</span><span class="nb">date</span><span class="si">)</span><span class="s2">"</span>
+<span class="nb">set</span> <span class="si">$(</span><span class="nb">date</span><span class="si">)</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 오늘의 년도 cnffur: </span><span class="nv">$1</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 오늘의 월/일 출력 </span><span class="nv">$2</span><span class="s2"> </span><span class="nv">$3</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 오늘의 요일 출력: </span><span class="nv">$4</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"&gt; 현재 시간 출력: </span><span class="nv">$5</span><span class="s2">"</span>
+<span class="nb">echo</span> <span class="s2">"---------------------------------------------------------"</span>
+<span class="nb">echo</span> <span class="s2">"&gt;&gt; 프로그램을 종료합니다."</span>
+<span class="nb">echo</span> <span class="s2">"========================================================="</span>
+<span class="nb">exit </span>0
+</code></pre></div></div>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

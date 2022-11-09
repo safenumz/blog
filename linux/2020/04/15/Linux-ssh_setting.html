@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Linux] ssh 설정 스크립트 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Linux] ssh 설정 스크립트" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ssh 설정 스크립트 Kubernetes, Kafka 등의 Cluster 학습을 할 때, public key 공유를 하기 번거로워 작성함 가상환경 구성 등의 간단한 실습용으로 실무에서 사용하려면 코드를 더 수정해야 함 각 SERVER, CLIENT에 ~/.ssh/authorized_keys 쓰기 권한이 있어야 함, 400으로 막혀있으면 안됨 CLIENT가 있다면, 사전에 CLIENT에 sshpass가 설치되어 있어야 함" />
+<meta property="og:description" content="ssh 설정 스크립트 Kubernetes, Kafka 등의 Cluster 학습을 할 때, public key 공유를 하기 번거로워 작성함 가상환경 구성 등의 간단한 실습용으로 실무에서 사용하려면 코드를 더 수정해야 함 각 SERVER, CLIENT에 ~/.ssh/authorized_keys 쓰기 권한이 있어야 함, 400으로 막혀있으면 안됨 CLIENT가 있다면, 사전에 CLIENT에 sshpass가 설치되어 있어야 함" />
+<link rel="canonical" href="https://safenumz.github.io/blog/linux/2020/04/15/Linux-ssh_setting.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/linux/2020/04/15/Linux-ssh_setting.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-04-15T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Linux] ssh 설정 스크립트" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-04-15T00:00:00-05:00","datePublished":"2020-04-15T00:00:00-05:00","description":"ssh 설정 스크립트 Kubernetes, Kafka 등의 Cluster 학습을 할 때, public key 공유를 하기 번거로워 작성함 가상환경 구성 등의 간단한 실습용으로 실무에서 사용하려면 코드를 더 수정해야 함 각 SERVER, CLIENT에 ~/.ssh/authorized_keys 쓰기 권한이 있어야 함, 400으로 막혀있으면 안됨 CLIENT가 있다면, 사전에 CLIENT에 sshpass가 설치되어 있어야 함","headline":"[Linux] ssh 설정 스크립트","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/linux/2020/04/15/Linux-ssh_setting.html"},"url":"https://safenumz.github.io/blog/linux/2020/04/15/Linux-ssh_setting.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Linux] ssh 설정 스크립트</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-04-15T00:00:00-05:00" itemprop="datePublished">
+        Apr 15, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Linux">Linux</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="ssh-설정-스크립트">ssh 설정 스크립트</h1>
+<ul>
+  <li>Kubernetes, Kafka 등의 Cluster 학습을 할 때, public key 공유를 하기 번거로워 작성함</li>
+  <li>가상환경 구성 등의 간단한 실습용으로 실무에서 사용하려면 코드를 더 수정해야 함</li>
+  <li>각 SERVER, CLIENT에 ~/.ssh/authorized_keys 쓰기 권한이 있어야 함, 400으로 막혀있으면 안됨</li>
+  <li>CLIENT가 있다면, 사전에 CLIENT에 sshpass가 설치되어 있어야 함</li>
+</ul>
+
+<h2 id="ssh_configsh">ssh_config.sh</h2>
+<ul>
+  <li>CLIENT, SERVER 들의 USER_NAME, IP, Password, PORT, HOSTNAME 정보 설정</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c"># ssh_config.sh</span>
+
+<span class="c"># CLIENT</span>
+<span class="c"># CLIENT 서버가 있다면 사전에 sshpass가 설치되어 있어야 함</span>
+<span class="c"># Available OS: CentOS, Ubuntu, Mac</span>
+<span class="c"># CLIENT=(user  ip  password  port nickname)</span>
+<span class="nv">CLIENT</span><span class="o">=(</span>a 192.168.0.99 &lt;password&gt; 22 lab<span class="o">)</span>
+
+<span class="c"># SERVER</span>
+<span class="c"># Available OS: CentOS, Ubuntu</span>
+<span class="c"># SERVER=(user  ip  password  port nickname)</span>
+<span class="nv">SERVER_1</span><span class="o">=(</span>root 192.168.0.100 &lt;password&gt; 22 lab100<span class="o">)</span>
+<span class="nv">SERVER_2</span><span class="o">=(</span>root 192.168.0.101 &lt;password&gt; 22 lab101<span class="o">)</span>
+<span class="nv">SERVER_3</span><span class="o">=(</span>root 192.168.0.102 &lt;password&gt; 22 lab102<span class="o">)</span>
+<span class="nv">SERVER_4</span><span class="o">=(</span>root 192.168.0.103 &lt;password&gt; 22 lab103<span class="o">)</span>
+
+<span class="nv">SERVER_LIST</span><span class="o">=(</span>
+    SERVER_1[@]
+    SERVER_2[@]
+	SERVER_3[@]
+	SERVER_4[@]
+<span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="setup_sshsh">setup_ssh.sh</h2>
+<ul>
+  <li>각 서버들에 sshpass 설치, ssh-keygen, public key 공유</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/bash</span>
+<span class="c"># ===========================================================================</span>
+<span class="c"># Program: setup_ssh.sh</span>
+<span class="c">#    Path: .</span>
+<span class="c">#   Usage: bash setup_ssh.sh $1</span>
+<span class="c">#      $1: $PWD/ssh_config.sh </span>
+<span class="c"># ============================================================================</span>
+
+<span class="nb">source</span> <span class="nv">$1</span>
+
+<span class="k">function </span>remote_cmd<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="nv">$4</span>
+	<span class="nb">local command</span><span class="o">=</span><span class="nv">$5</span>
+	sshpass <span class="nt">-p</span> <span class="k">${</span><span class="nv">passwd</span><span class="k">}</span> ssh <span class="nt">-p</span> <span class="k">${</span><span class="nv">port</span><span class="k">}</span> <span class="nt">-o</span> <span class="nv">StrictHostKeyChecking</span><span class="o">=</span>no <span class="k">${</span><span class="nv">user</span><span class="k">}</span>@<span class="k">${</span><span class="nv">ip</span><span class="k">}</span> <span class="s2">"export PATH=</span><span class="nv">$PATH</span><span class="s2">:/usr/local/bin:/usr/bin &amp;&amp; </span><span class="k">${</span><span class="nv">command</span><span class="k">}</span><span class="s2">"</span>
+<span class="o">}</span>
+
+<span class="k">function </span>install_sshpass<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="nv">$4</span>
+
+	<span class="nb">echo</span> <span class="s2">"*** install-sshpass </span><span class="k">${</span><span class="nv">ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">port</span><span class="k">}</span><span class="s2">"</span>
+
+	<span class="k">if</span> <span class="o">[[</span> <span class="si">$(</span>remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"cat /etc/*release"</span><span class="si">)</span> <span class="o">=</span>~ <span class="s2">"CentOS"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+		</span>remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"yum install -y sshpass"</span>
+	<span class="k">elif</span> <span class="o">[[</span> <span class="si">$(</span>remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"cat /etc/*release"</span><span class="si">)</span> <span class="o">=</span>~ <span class="s2">"Ubuntu"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+		</span>remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"apt-get install -y sshpass"</span>
+	<span class="k">else
+		</span><span class="nb">echo</span> <span class="s2">"[ERROR] Invalid OS... (Valid OS: CentOS, Ubuntu)"</span>
+		<span class="nb">exit </span>1
+	<span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="k">function </span>ssh_keygen<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="nv">$4</span>
+	<span class="nb">local </span><span class="nv">nickname</span><span class="o">=</span><span class="nv">$5</span>
+	
+	<span class="nb">echo</span> <span class="s2">"*** ssh-keygen </span><span class="k">${</span><span class="nv">nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">port</span><span class="k">}</span><span class="s2">)"</span>
+
+	remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa &amp;&amp;  cat ~/.ssh/id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys"</span> <span class="o">&lt;&lt;&lt;</span> y <span class="o">&gt;</span> /dev/null
+
+<span class="o">}</span>
+
+<span class="k">function </span>share_ssh_key<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">src_user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">src_ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">src_passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">src_port</span><span class="o">=</span><span class="nv">$4</span>
+	<span class="nb">local </span><span class="nv">src_nickname</span><span class="o">=</span><span class="nv">$5</span>
+	<span class="nb">local </span><span class="nv">dst_user</span><span class="o">=</span><span class="nv">$6</span>
+	<span class="nb">local </span><span class="nv">dst_ip</span><span class="o">=</span><span class="nv">$7</span>
+	<span class="nb">local </span><span class="nv">dst_passwd</span><span class="o">=</span><span class="nv">$8</span>
+	<span class="nb">local </span><span class="nv">dst_port</span><span class="o">=</span><span class="nv">$9</span>
+	<span class="nb">local </span><span class="nv">dst_nickname</span><span class="o">=</span><span class="nv">$10</span>
+	<span class="nb">local </span><span class="nv">dst_home</span><span class="o">=</span><span class="si">$(</span>remote_cmd <span class="s2">"</span><span class="nv">$dst_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_port</span><span class="s2">"</span> <span class="s2">"echo </span><span class="se">\$</span><span class="s2">HOME"</span><span class="si">)</span>
+	
+	<span class="nb">echo</span> <span class="s2">"*** share ssh-key </span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">src_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">) -&gt; </span><span class="k">${</span><span class="nv">dst_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">)"</span>
+	<span class="nb">echo</span> <span class="s2">"sshpass -p </span><span class="k">${</span><span class="nv">dst_passwd</span><span class="k">}</span><span class="s2"> scp -P </span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2"> -o StrictHostKeyChecking=no ~/.ssh/id_rsa.pub </span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:/</span><span class="k">${</span><span class="nv">dst_home</span><span class="k">}</span><span class="s2">/.ssh/</span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">.pub"</span>
+
+	remote_cmd <span class="s2">"</span><span class="nv">$src_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="s2">"sshpass -p </span><span class="k">${</span><span class="nv">dst_passwd</span><span class="k">}</span><span class="s2"> scp -P </span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2"> -o StrictHostKeyChecking=no ~/.ssh/id_rsa.pub </span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:/</span><span class="k">${</span><span class="nv">dst_home</span><span class="k">}</span><span class="s2">/.ssh/</span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">.pub"</span>
+
+	remote_cmd <span class="s2">"</span><span class="nv">$dst_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_port</span><span class="s2">"</span> <span class="s2">"cat ~/.ssh/</span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">.pub &gt;&gt; ~/.ssh/authorized_keys"</span>
+<span class="o">}</span>
+
+<span class="k">function </span>set_authority<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="nv">$4</span>
+	<span class="nb">local </span><span class="nv">nickname</span><span class="o">=</span><span class="nv">$5</span>
+
+	<span class="nb">echo</span> <span class="s2">"*** set authority </span><span class="k">${</span><span class="nv">nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">port</span><span class="k">}</span><span class="s2">)"</span>
+
+	remote_cmd <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"chmod 400 ~/.ssh/authorized_keys"</span>
+<span class="o">}</span>
+
+<span class="k">function </span>validate_ssh_conn<span class="o">()</span> <span class="o">{</span>
+	<span class="nb">local </span><span class="nv">src_user</span><span class="o">=</span><span class="nv">$1</span>
+	<span class="nb">local </span><span class="nv">src_ip</span><span class="o">=</span><span class="nv">$2</span>
+	<span class="nb">local </span><span class="nv">src_passwd</span><span class="o">=</span><span class="nv">$3</span>
+	<span class="nb">local </span><span class="nv">src_port</span><span class="o">=</span><span class="nv">$4</span>
+	<span class="nb">local </span><span class="nv">src_nickname</span><span class="o">=</span><span class="nv">$5</span>
+	<span class="nb">local </span><span class="nv">dst_user</span><span class="o">=</span><span class="nv">$6</span>
+	<span class="nb">local </span><span class="nv">dst_ip</span><span class="o">=</span><span class="nv">$7</span>
+	<span class="nb">local </span><span class="nv">dst_port</span><span class="o">=</span><span class="nv">$8</span>
+	<span class="nb">local </span><span class="nv">dst_nickname</span><span class="o">=</span><span class="nv">$9</span>
+	
+	<span class="nb">echo</span> <span class="nt">-e</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">*** validate ssh-connection </span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">src_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">) -&gt; </span><span class="k">${</span><span class="nv">dst_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">)"</span>
+
+	remote_cmd <span class="s2">"</span><span class="nv">$src_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="s2">"ssh </span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2"> -p </span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2"> 'echo 2&gt;&amp;1' &amp;&amp; echo '[SSH CONNECTION SUCCESS] </span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">src_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">) -&gt; </span><span class="k">${</span><span class="nv">dst_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">)' || echo '[SSH CONNECTION FAILURE] </span><span class="k">${</span><span class="nv">src_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">src_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">) -&gt; </span><span class="k">${</span><span class="nv">dst_user</span><span class="k">}</span><span class="s2">@</span><span class="k">${</span><span class="nv">dst_nickname</span><span class="k">}</span><span class="s2">(</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">)'"</span>
+
+<span class="o">}</span>
+
+<span class="k">function </span>main<span class="o">()</span> <span class="o">{</span>
+	<span class="c"># client</span>
+	<span class="k">if</span> <span class="o">[</span> <span class="o">!</span> <span class="nt">-z</span> <span class="nv">$CLIENT</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+		</span>ssh-keygen <span class="nt">-t</span> rsa <span class="nt">-P</span> <span class="s1">''</span> <span class="nt">-f</span> ~/.ssh/id_rsa <span class="o">&lt;&lt;&lt;</span> y <span class="o">&gt;</span> /dev/null
+		<span class="nb">cat</span> ~/.ssh/id_rsa.pub <span class="o">&gt;&gt;</span> ~/.ssh/authorized_keys
+		<span class="nb">chmod </span>400 ~/.ssh/authorized_keys
+	<span class="k">fi</span>
+
+	<span class="c"># server: sshpass 설치 및 ssh-keygen</span>
+	<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0<span class="p">;</span> i&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> i++<span class="o">))</span>
+	<span class="k">do
+		</span><span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:0:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:1:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:2:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:3:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:4:1<span class="k">}</span>
+		<span class="c"># sshpass 설치</span>
+		install_sshpass <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span>
+		<span class="c"># ssh-keygen</span>
+		ssh_keygen <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$nickname</span><span class="s2">"</span>
+	<span class="k">done</span>
+
+	<span class="c"># server: 각 서버 간 public key 공유</span>
+	<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0<span class="p">;</span> i&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> i++<span class="o">))</span>
+	<span class="k">do
+		</span><span class="nb">local </span><span class="nv">src_user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:0:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:1:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_passwd</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:2:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:3:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:4:1<span class="k">}</span>
+		
+		<span class="c"># client</span>
+		<span class="k">if</span> <span class="o">[</span> <span class="o">!</span> <span class="nt">-z</span> <span class="nv">$CLIENT</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+			</span><span class="nb">local </span><span class="nv">client_nickname</span><span class="o">=</span><span class="k">${</span><span class="nv">CLIENT</span><span class="p">[4]</span><span class="k">}</span>
+			sshpass <span class="nt">-p</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> scp <span class="nt">-P</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="nt">-o</span> <span class="nv">StrictHostKeyChecking</span><span class="o">=</span>no ~/.ssh/id_rsa.pub <span class="s2">"</span><span class="k">${</span><span class="nv">src_user</span><span class="k">}</span><span class="s2">"</span>@<span class="s2">"</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">"</span>:/<span class="si">$(</span><span class="nb">echo</span> <span class="se">\$</span>HOME<span class="si">)</span>/.ssh/<span class="k">${</span><span class="nv">client_nickname</span><span class="k">}</span>.pub
+			remote_cmd <span class="s2">"</span><span class="nv">$src_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="s2">"cat ~/.ssh/</span><span class="k">${</span><span class="nv">client_nickname</span><span class="k">}</span><span class="s2">.pub &gt;&gt; ~/.ssh/authorized_keys"</span>
+		<span class="k">fi
+
+		for</span> <span class="o">((</span><span class="nv">j</span><span class="o">=</span>0<span class="p">;</span> j&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> j++<span class="o">))</span>
+		<span class="k">do
+			</span><span class="nb">local </span><span class="nv">dst_user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:0:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:1:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_passwd</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:2:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:3:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:4:1<span class="k">}</span>
+			<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+				</span>share_ssh_key <span class="s2">"</span><span class="nv">$src_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_nickname</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_nickname</span><span class="s2">"</span>
+			<span class="k">fi
+		done
+	done</span>
+
+	<span class="c"># authorized_keys 보안 설정</span>
+	<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0<span class="p">;</span> i&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> i++<span class="o">))</span>
+	<span class="k">do
+		</span><span class="nb">local </span><span class="nv">user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:0:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:1:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">passwd</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:2:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:3:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:4:1<span class="k">}</span>
+
+		set_authority <span class="s2">"</span><span class="nv">$user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$nickname</span><span class="s2">"</span>
+	<span class="k">done</span>
+
+	<span class="c"># 패스워드없이 잘 접속되는지 최종 확인</span>
+	<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>0<span class="p">;</span> i&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> i++<span class="o">))</span>
+	<span class="k">do
+		</span><span class="nb">local </span><span class="nv">src_user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:0:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:1:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_passwd</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:2:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:3:1<span class="k">}</span>
+		<span class="nb">local </span><span class="nv">src_nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[i]</span>:4:1<span class="k">}</span>
+
+		<span class="k">for</span> <span class="o">((</span><span class="nv">j</span><span class="o">=</span>0<span class="p">;</span> j&lt;<span class="k">${#</span><span class="nv">SERVER_LIST</span><span class="p">[@]</span><span class="k">}</span><span class="p">;</span> j++<span class="o">))</span>
+		<span class="k">do
+			</span><span class="nb">local </span><span class="nv">dst_user</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:0:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_ip</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:1:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_port</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:3:1<span class="k">}</span>
+			<span class="nb">local </span><span class="nv">dst_nickname</span><span class="o">=</span><span class="k">${</span><span class="p">!SERVER_LIST[j]</span>:4:1<span class="k">}</span>
+
+			<span class="k">if</span> <span class="o">[[</span> <span class="s2">"</span><span class="k">${</span><span class="nv">src_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">src_port</span><span class="k">}</span><span class="s2">"</span> <span class="o">!=</span> <span class="s2">"</span><span class="k">${</span><span class="nv">dst_ip</span><span class="k">}</span><span class="s2">:</span><span class="k">${</span><span class="nv">dst_port</span><span class="k">}</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+				</span>validate_ssh_conn <span class="s2">"</span><span class="nv">$src_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_passwd</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$src_nickname</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_user</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_ip</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_port</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$dst_nickname</span><span class="s2">"</span>
+			<span class="k">fi
+		done
+	done</span>
+<span class="o">}</span>
+
+
+main
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/linux/2020/04/15/Linux-ssh_setting.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

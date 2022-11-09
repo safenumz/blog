@@ -1,0 +1,24 @@
+<h1 id="environment">Environment</h1>
+<ul>
+  <li>MacOS Mojave 10.14.5</li>
+</ul>
+
+<h1 id="trouble">Trouble</h1>
+<ul>
+  <li>Mac에서 sqldeveloper 접속시 locale not recognized 에러가 발생하는 경우</li>
+</ul>
+
+<h1 id="shooting">Shooting</h1>
+<ul>
+  <li>sqldeveloper 우클릭 &gt; 패키지 내용보기 선택 후에</li>
+  <li>Contents/Resources/sqldeveloper/bin/sqldeveloper.conf 파일을 열어서 다음과 같은 옵션을 추가 한다. 지정된 경로에 sqldeveloper.conf 파일이 없으면 새로 생성하면 된다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>AddVMOption <span class="nt">-Duser</span>.language<span class="o">=</span>ko
+
+AddVMOption <span class="nt">-Duser</span>.country<span class="o">=</span>KR 
+</code></pre></div></div>
+
+<ul>
+  <li>저장 후 sqldeveloper를 실행하면 로케일이 KR로 바뀐다.</li>
+</ul>

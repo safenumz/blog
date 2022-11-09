@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[WEB] JSP 쿠기와 세션 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[WEB] JSP 쿠기와 세션" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="JSP 쿠기와 세션" />
+<meta property="og:description" content="JSP 쿠기와 세션" />
+<link rel="canonical" href="https://safenumz.github.io/blog/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-06-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[WEB] JSP 쿠기와 세션" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-06-17T00:00:00-05:00","datePublished":"2019-06-17T00:00:00-05:00","description":"JSP 쿠기와 세션","headline":"[WEB] JSP 쿠기와 세션","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html"},"url":"https://safenumz.github.io/blog/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[WEB] JSP 쿠기와 세션</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-06-17T00:00:00-05:00" itemprop="datePublished">
+        Jun 17, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#WEB">WEB</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="jsp-쿠기와-세션">JSP 쿠기와 세션</h1>
+
+<h1 id="쿠키란">쿠키란</h1>
+<ul>
+  <li>웹 브라우저가 보관하는 데이터</li>
+  <li>웹 브라우저는 웹 서버에 요청(request)할 때 쿠키도 같이 전송</li>
+  <li>쿠기는 웹브라우저와 웹서버에서 모두 생성가능
+    <ul>
+      <li>웹서버에서 : JSP의 Cookie 클래스</li>
+      <li>웹브라우저에서 JavaScript의 Cookie 객체</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="1-쿠키-cookie--동작">(1) 쿠키 (Cookie) : 동작</h2>
+
+<h3 id="쿠키의-구성">쿠키의 구성</h3>
+<ul>
+  <li>이름(name) : 각각의 쿠키를 구별하는 이름</li>
+  <li>값(value) : 해당 이름에 저장할 데이터</li>
+  <li>유효기간 : 쿠기가 얼마나 지속할지</li>
+  <li>도메인(domain) : 쿠키를 전송할 도메인</li>
+  <li>경로 (path) : 쿠키를 전송할 요청 경로</li>
+</ul>
+
+<h3 id="쿠키의-생성">쿠키의 생성</h3>
+<ul>
+  <li>Cookie cookie = new Cookie(“이름”, “값”);</li>
+</ul>
+
+<h3 id="쿠키의-저장">쿠키의 저장</h3>
+<ul>
+  <li>쿠키는 응답(response)을 통해 전달</li>
+  <li>response.addCookie(쿠키객체);</li>
+</ul>
+
+<h3 id="쿠키값-읽기">쿠키값 읽기</h3>
+<ul>
+  <li>Cookie[] cookies = request.getCookies()</li>
+</ul>
+
+<h2 id="쿠키-제공-메소드">쿠키 제공 메소드</h2>
+<h3 id="쿠키-클래스가-제공하는-메소드">쿠키 클래스가 제공하는 메소드</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">메서드</th>
+      <th style="text-align: center">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">String getName()</td>
+      <td style="text-align: center">쿠키의 이름을 얻음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">String getValue()</td>
+      <td style="text-align: center">쿠키의 값을 얻음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">String getValue(String name)</td>
+      <td style="text-align: center">쿠키의 값을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">void setDomain(String pattern)</td>
+      <td style="text-align: center">이 쿠키가 전송될 서버의 도메인을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">String getDomain()</td>
+      <td style="text-align: center">쿠키의 도메인을 얻음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">void setPath(String path)</td>
+      <td style="text-align: center">쿠키를 전송할 경로(디렉토리)를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">String getPath()</td>
+      <td style="text-align: center">쿠키의 전송 경로를 얻음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">void setMaxAge(Int expire)</td>
+      <td style="text-align: center">쿠키의 유효기간을 초 단위로 지정 (0을 지정하면 쿠키 제거됨)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">int getMaxAge()</td>
+      <td style="text-align: center">쿠키의 유효 시간을 얻음</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="쿠키-보안">쿠키 보안</h2>
+<h3 id="도메인">도메인</h3>
+<ul>
+  <li>쿠키를 생성한 사이트 외에 다른 사이트로 연결할 때는 쿠키를 전송하지 않는다.</li>
+</ul>
+
+<h2 id="setcookiejsp">SetCookie.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>		
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;&lt;title&gt;</span>쿠키<span class="nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;b&gt;</span>Simple Cookie Example<span class="nt">&lt;/b&gt;&lt;hr&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>	
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">Cookie</span> <span class="na">객체</span> <span class="na">생성</span>
+	<span class="na">Cookie</span> <span class="na">c = </span><span class="s">new</span> <span class="na">Cookie</span><span class="err">("</span><span class="na">yourId</span><span class="err">",</span> <span class="err">"</span><span class="na">xxxxx</span><span class="err">");</span>
+	
+	<span class="err">//</span> <span class="err">2.</span> <span class="na">속성</span> <span class="na">부여</span><span class="err">(</span><span class="na">선택</span><span class="err">)</span>
+	<span class="err">//</span> <span class="err">1</span><span class="na">시간</span> <span class="na">유효</span>
+	<span class="na">c.setMaxAge</span><span class="err">(1</span><span class="na">*60*60</span><span class="err">);</span>
+	
+	<span class="err">//</span> <span class="err">3.</span> <span class="na">클라이언트에</span> <span class="na">쿠키</span> <span class="na">전송</span>
+	<span class="na">response.addCookie</span><span class="err">(</span><span class="na">c</span><span class="err">);</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+
+
+
+<span class="nt">&lt;br&gt;&lt;a</span> <span class="na">href=</span><span class="s">"01_GetCookie.jsp"</span><span class="nt">&gt;</span> 쿠키검색 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="getcookiejsp">GetCookie.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+
+
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;&lt;title&gt;</span>쿠키<span class="nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>	
+
+<span class="nt">&lt;h1&gt;</span>Cookie 정보 알아내기<span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;h4&gt;</span>다음은 클라이언트 브라우저의 쿠키에서 얻어온 값 : <span class="nt">&lt;/h4&gt;&lt;br&gt;&lt;br&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>	
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">클라이언트로부터</span> <span class="na">Cookie를</span> <span class="na">얻어옴</span> 
+	<span class="na">Cookie</span><span class="err">[]</span> <span class="na">c = </span><span class="s">request.getCookies();</span>
+	<span class="err">//</span> <span class="err">2.</span> <span class="na">쿠키</span> <span class="na">이름</span> <span class="na">중에</span> <span class="err">"</span><span class="na">yourid</span><span class="err">"</span><span class="na">가</span> <span class="na">있다면</span> <span class="na">그</span> <span class="na">쿠키의</span> <span class="na">값을</span> <span class="na">출력</span>
+	<span class="na">for</span> <span class="err">(</span><span class="na">int</span> <span class="na">i = </span><span class="s">0;</span> <span class="na">c</span> <span class="err">!=</span> <span class="na">null</span> <span class="err">&amp;&amp;</span> <span class="na">i</span> <span class="err">&lt;</span> <span class="na">c.length</span><span class="err">;</span> <span class="na">i</span><span class="err">++)</span> <span class="err">{</span>
+		<span class="na">if</span> <span class="err">((</span><span class="na">c</span><span class="err">[</span><span class="na">i</span><span class="err">].</span><span class="na">getName</span><span class="err">()).</span><span class="na">equals</span><span class="err">("</span><span class="na">yourId</span><span class="err">"))</span> <span class="err">{</span>
+			<span class="na">out.write</span><span class="err">(</span><span class="na">c</span><span class="err">[</span><span class="na">i</span><span class="err">].</span><span class="na">getValue</span><span class="err">()</span> <span class="err">+</span> <span class="err">"</span><span class="na">님</span> <span class="na">접속중</span><span class="err">");</span>
+		<span class="err">}</span>
+	<span class="err">}</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;br&gt;&lt;a</span> <span class="na">href=</span><span class="s">"01_ChangeCookie.jsp"</span><span class="nt">&gt;</span> 쿠키값 변경 <span class="nt">&lt;/a&gt;&lt;br/&gt;</span>
+<span class="nt">&lt;br&gt;&lt;a</span> <span class="na">href=</span><span class="s">"01_RemoveCookie.jsp"</span><span class="nt">&gt;</span> 쿠키제거 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="removiecokiejsp">RemovieCokie.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+		
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;&lt;title&gt;</span>쿠키<span class="nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;b&gt;</span>Simple Cookie Example<span class="nt">&lt;/b&gt;&lt;hr&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>	
+
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">해당하는</span> <span class="na">쿠키가</span> <span class="na">있다면</span> <span class="na">그</span> <span class="na">이름으로</span> <span class="na">새</span> <span class="na">쿠키를</span> <span class="na">만들고</span> <span class="na">유효시간을</span> <span class="err">0</span><span class="na">으로</span> <span class="na">지정하고</span> <span class="na">전송</span>
+	<span class="err">//</span> <span class="na">새</span> <span class="na">쿠키를</span> <span class="na">만들고</span> <span class="na">유효시간을</span> <span class="err">0</span><span class="na">으로</span> <span class="na">지정하고</span> <span class="na">전송</span>
+	<span class="na">Cookie</span> <span class="na">c = </span><span class="s">new</span> <span class="na">Cookie</span><span class="err">("</span><span class="na">yourId</span><span class="err">",</span> <span class="err">"");</span>
+	<span class="na">c.setMaxAge</span><span class="err">(0);</span>
+	<span class="na">response.addCookie</span><span class="err">(</span><span class="na">c</span><span class="err">);</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+
+
+<span class="nt">&lt;br&gt;&lt;a</span> <span class="na">href=</span><span class="s">"01_GetCookie.jsp"</span><span class="nt">&gt;</span> 쿠키검색 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="setcookiejsp-1">SetCookie.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>		
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;&lt;title&gt;</span>쿠키<span class="nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;b&gt;</span>Simple Cookie Example<span class="nt">&lt;/b&gt;&lt;hr&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>	
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">Cookie</span> <span class="na">객체</span> <span class="na">생성</span>
+	<span class="na">Cookie</span> <span class="na">c = </span><span class="s">new</span> <span class="na">Cookie</span><span class="err">("</span><span class="na">yourId</span><span class="err">",</span> <span class="err">"</span><span class="na">cluster</span><span class="err">");</span>
+	
+	<span class="err">//</span> <span class="err">2.</span> <span class="na">속성</span> <span class="na">부여</span><span class="err">(</span><span class="na">선택</span><span class="err">)</span>
+	<span class="err">//</span> <span class="err">1</span><span class="na">시간</span> <span class="na">유효</span>
+	<span class="na">c.setMaxAge</span><span class="err">(1</span><span class="na">*60*60</span><span class="err">);</span>
+	
+	<span class="err">//</span> <span class="err">3.</span> <span class="na">클라이언트에</span> <span class="na">쿠키</span> <span class="na">전송</span>
+	<span class="na">response.addCookie</span><span class="err">(</span><span class="na">c</span><span class="err">);</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+
+
+
+<span class="nt">&lt;br&gt;&lt;a</span> <span class="na">href=</span><span class="s">"01_GetCookie.jsp"</span><span class="nt">&gt;</span> 쿠키검색 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="loginform">LoginForm</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 로그인창 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;h3&gt;</span>로그인 확인하기 <span class="nt">&lt;/h3&gt;</span>
+<span class="nt">&lt;</span><span class="err">%</span><span class="na">--비밀번호가</span> <span class="na">있으면</span> <span class="na">method가</span> <span class="na">무조건</span> <span class="na">post</span> <span class="na">방식으로</span> <span class="na">바꿔야</span> <span class="na">함--</span><span class="err">%</span><span class="nt">&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"02_LoginService.jsp"</span> <span class="na">method=</span><span class="s">"get"</span><span class="nt">&gt;</span>
+사용자: <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'User'</span> <span class="na">type=</span><span class="s">'text'</span><span class="nt">&gt;&lt;br/&gt;</span>
+비밀번호: <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'Pass'</span> <span class="na">type=</span><span class="s">'password'</span><span class="nt">&gt;&lt;br/&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'submit'</span> <span class="na">value=</span><span class="s">'login'</span><span class="nt">&gt;</span> 
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 로그인확인 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;</span><span class="err">%</span>
+
+	
+	<span class="err">//</span> <span class="na">이전화면</span> <span class="na">폼에서</span> <span class="na">넘겨받는</span> <span class="na">값</span>
+	<span class="na">String</span> <span class="na">user = </span><span class="s">request.getParameter("User");</span>
+	<span class="na">String</span> <span class="na">pass = </span><span class="s">request.getParameter("Pass");</span>
+
+	<span class="err">//</span> <span class="na">실제로는</span> <span class="na">DB에서</span> <span class="na">가져와야하는</span> <span class="na">값</span>
+	<span class="na">String</span> <span class="na">saveUser = </span><span class="s">"silvina"</span><span class="err">;</span>
+	<span class="na">String</span> <span class="na">savePass = </span><span class="s">"1234"</span><span class="err">;</span>
+
+	<span class="err">//</span> <span class="na">user</span><span class="err">,</span> <span class="na">password가</span> <span class="na">같을</span> <span class="na">때</span> <span class="na">로그인</span> <span class="na">성공</span><span class="err">,</span> <span class="na">그렇지</span> <span class="na">않으면</span> <span class="na">로그인</span> <span class="na">실패</span>
+	<span class="na">if</span><span class="err">(</span> <span class="err">(</span> <span class="na">user.equals</span><span class="err">(</span><span class="na">saveUser</span><span class="err">)</span> <span class="err">)</span> <span class="err">&amp;&amp;</span> <span class="err">(</span> <span class="na">pass.equals</span><span class="err">(</span><span class="na">savePass</span><span class="err">)</span> <span class="err">)</span> <span class="err">){</span>
+		
+		<span class="err">//</span><span class="na">#############</span>
+		<span class="err">//</span> <span class="err">1.</span> <span class="na">쿠키생성</span>
+		<span class="err">//</span> <span class="err">2.</span> <span class="na">쿠키속성</span> <span class="na">지정</span> <span class="err">(</span> <span class="na">선택</span> <span class="err">)</span>
+		<span class="err">//</span> <span class="err">3.</span> <span class="na">응답으로</span> <span class="na">쿠키전송</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+					
+	<span class="nt">&lt;h2&gt;</span> <span class="nt">&lt;</span><span class="err">%=</span> <span class="na">user</span> <span class="err">%</span><span class="nt">&gt;</span>님, 성공적으로 로그인하셨슴다...<span class="nt">&lt;/h2&gt;</span>
+	<span class="nt">&lt;p&gt;</span> <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"02_MainPage.jsp"</span><span class="nt">&gt;</span> 들어가기 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>
+	<span class="err">}</span> <span class="na">else</span> <span class="err">{</span>
+
+<span class="err">%</span><span class="nt">&gt;</span>
+
+	<span class="nt">&lt;h2&gt;</span> 로그인에 실패했슴다...<span class="nt">&lt;/h2&gt;</span>
+	<span class="nt">&lt;p&gt;</span> <span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"02_LoginForm.jsp"</span><span class="nt">&gt;</span> 되돌아가기 <span class="nt">&lt;/a&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>
+	<span class="err">}</span>			
+<span class="err">%</span><span class="nt">&gt;</span>
+	
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="mainpagejsp">MainPage.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 우리 페이지 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>
+	<span class="na">String</span> <span class="na">user = </span><span class="s">null;</span>
+	<span class="err">//</span><span class="na">##########</span>
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">요청을</span> <span class="na">통해</span> <span class="na">전송된</span> <span class="na">쿠키들을</span> <span class="na">얻어오기</span>
+	<span class="err">//</span> <span class="err">2.</span> <span class="na">내가</span> <span class="na">지정한</span> <span class="na">이름의</span> <span class="na">쿠키를</span> <span class="na">찾기</span>
+	<span class="err">//</span> <span class="err">3.</span> <span class="na">해당하는</span> <span class="na">그</span> <span class="na">쿠키의</span> <span class="na">값을</span> <span class="na">얻어와</span> <span class="na">user</span> <span class="na">변수에</span> <span class="na">저장</span>
+	<span class="na">if</span> <span class="na">(user =</span><span class="s">=</span> <span class="na">null</span><span class="err">)</span> <span class="err">{</span>
+		<span class="na">response.sendRedirect</span><span class="err">("02</span><span class="na">_LoginForm.jsp</span><span class="err">");</span>
+
+		<span class="na">user = </span><span class="s">request.getParameter("user");</span>
+	<span class="err">}</span>
+	
+<span class="err">%</span><span class="nt">&gt;</span>
+
+	<span class="nt">&lt;h2&gt;</span> 이 페이지는 로그인을 하셔야만 볼 수 있는 페이지 입니다 <span class="nt">&lt;/h2&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;</span>
+	<span class="nt">&lt;</span><span class="err">%=</span> <span class="na">user</span> <span class="err">%</span><span class="nt">&gt;</span>님, 로그인 중입니다.
+		
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h1 id="세션">세션</h1>
+
+<h2 id="세션의-유효기간">세션의 유효기간</h2>
+<ul>
+  <li>일정 시간이 지나면 세션은 자동 종료 (WEB-INF / web.xml에서 지정가능)</li>
+</ul>
+
+<h2 id="getcookiejsp-1">GetCookie.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+
+
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;&lt;title&gt;</span>쿠키<span class="nt">&lt;/title&gt;&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>	
+
+<span class="nt">&lt;h1&gt;</span>Cookie 정보 알아내기<span class="nt">&lt;/h1&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>	
+	<span class="err">//</span> <span class="err">1.</span> <span class="na">클라이언트로부터</span> <span class="na">Cookie를</span> <span class="na">얻어옴</span> 
+	<span class="na">Cookie</span> <span class="na">all[]=</span><span class="s">request.getCookies();</span>
+
+	<span class="err">//</span> <span class="err">2.</span> <span class="na">얻어온</span> <span class="na">쿠키의</span> <span class="na">이름과</span> <span class="na">값을</span> <span class="na">출력</span>
+	<span class="na">for</span><span class="err">(</span><span class="na">int</span> <span class="na">i=</span><span class="s">0;</span> <span class="na">all</span> <span class="err">!=</span><span class="na">null</span> <span class="err">&amp;&amp;</span> <span class="na">i</span><span class="err">&lt;</span><span class="na">all.length</span><span class="err">;</span><span class="na">i</span><span class="err">++){</span>
+		<span class="na">out.println</span><span class="err">((</span><span class="na">i</span><span class="err">+1)+"</span><span class="na">--</span><span class="nt">&gt;</span>"+all[i].getName()+ ":" +all[i].getValue()+"<span class="nt">&lt;br&gt;</span>");
+	}
+%&gt;
+
+
+<span class="nt">&lt;/body&gt;&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="loginformjsp">LoginForm.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 로그인창 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;h3&gt;</span>로그인 확인하기 <span class="nt">&lt;/h3&gt;</span> 
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"LoginService.jsp"</span> <span class="na">method=</span><span class="s">"get"</span><span class="nt">&gt;</span>
+사용자: <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'User'</span> <span class="na">type=</span><span class="s">'text'</span><span class="nt">&gt;&lt;br/&gt;</span>
+비밀번호: <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'Pass'</span> <span class="na">type=</span><span class="s">'password'</span><span class="nt">&gt;&lt;br/&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'submit'</span> <span class="na">value=</span><span class="s">'login'</span><span class="nt">&gt;</span> 
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="loginservicejsp">LoginService.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 로그인확인 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;</span><span class="err">%</span>
+
+	<span class="err">//</span> <span class="na">실제로는</span> <span class="na">DB에서</span> <span class="na">가져와야하는</span> <span class="na">값</span>
+	<span class="na">String</span> <span class="na">saveUser = </span><span class="s">"silvina"</span><span class="err">;</span>
+	<span class="na">String</span> <span class="na">savePass = </span><span class="s">"1234"</span><span class="err">;</span>
+	
+	<span class="err">//</span> <span class="na">이전화면</span> <span class="na">폼에서</span> <span class="na">넘겨받는</span> <span class="na">값</span>
+	<span class="na">String</span> <span class="na">user = </span><span class="s">request.getParameter("User");</span>
+	<span class="na">String</span> <span class="na">pass = </span><span class="s">request.getParameter("Pass");</span>
+			
+	<span class="err">//</span> <span class="na">user</span><span class="err">,</span> <span class="na">password가</span> <span class="na">같을</span> <span class="na">때</span> <span class="na">로그인</span> <span class="na">성공</span><span class="err">,</span> <span class="na">그렇지</span> <span class="na">않으면</span> <span class="na">로그인</span> <span class="na">실패</span>
+	<span class="na">if</span><span class="err">(</span> <span class="err">(</span> <span class="na">user.equals</span><span class="err">(</span><span class="na">saveUser</span><span class="err">)</span> <span class="err">)</span> <span class="err">&amp;&amp;</span> <span class="err">(</span> <span class="na">pass.equals</span><span class="err">(</span><span class="na">savePass</span><span class="err">)</span> <span class="err">)</span> <span class="err">){</span>
+		<span class="err">//</span> <span class="na">#2.</span> <span class="na">세션에</span> <span class="err">"</span><span class="na">id</span><span class="err">"</span><span class="na">라는</span> <span class="na">이름에</span> <span class="na">변수</span> <span class="na">user</span> <span class="na">값을</span> <span class="na">저장</span>
+		<span class="na">session.setAttribute</span><span class="err">("</span><span class="na">id</span><span class="err">",</span> <span class="na">user</span><span class="err">);</span>
+		<span class="err">//</span> <span class="na">#1.</span> <span class="na">로그인</span> <span class="na">성공하면</span> <span class="na">바로</span> <span class="na">MainPage.jsp를</span> <span class="na">요청</span>
+		<span class="na">response.sendRedirect</span><span class="err">("</span><span class="na">MainPage.jsp</span><span class="err">");</span>
+
+	<span class="err">}</span> <span class="na">else</span> <span class="err">{</span>
+
+		<span class="err">//</span> <span class="na">#1.</span> <span class="na">로그인에</span> <span class="na">실패하면</span> <span class="na">바로</span> <span class="na">LoginForm.jsp을</span> <span class="na">요청</span>
+		<span class="na">response.sendRedirect</span><span class="err">("</span><span class="na">LoginForm.jsp</span><span class="err">");</span>
+	<span class="err">}</span>			
+<span class="err">%</span><span class="nt">&gt;</span>
+	
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="mainpagejsp-1">MainPage.jsp</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="err">%@</span> <span class="na">page</span> <span class="na">language=</span><span class="s">"java"</span> <span class="na">contentType=</span><span class="s">"text/html; charset=UTF-8"</span>
+    <span class="na">pageEncoding=</span><span class="s">"UTF-8"</span><span class="err">%</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;</span><span class="err">%</span>
+
+	<span class="err">//</span><span class="na">#</span> <span class="err">1."</span><span class="na">id</span><span class="err">"</span><span class="na">로</span> <span class="na">저장된</span> <span class="na">세션값을</span> <span class="na">얻어온다.</span>
+	<span class="err">//</span><span class="na">#</span> <span class="err">2.</span> <span class="na">값이</span> <span class="na">null이라면</span> <span class="na">LoginForm.jsp로</span> <span class="na">페이지</span> <span class="na">이동</span>
+	<span class="err">//</span><span class="na">#</span> <span class="err">3.</span> <span class="na">null이</span> <span class="na">아니라면</span> <span class="na">String</span> <span class="na">형변환하여</span> <span class="na">변수에</span> <span class="na">지정</span>
+	<span class="na">Object</span> <span class="na">obj = </span><span class="s">session.getAttribute("id");</span>
+
+	<span class="na">if</span> <span class="na">(obj =</span><span class="s">=</span> <span class="na">null</span><span class="err">)</span> <span class="err">{</span>
+		<span class="na">response.sendRedirect</span><span class="err">("</span><span class="na">LoginForm.jsp</span><span class="err">");</span>
+		<span class="na">return</span><span class="err">;</span>
+	<span class="err">}</span>
+
+	<span class="na">String</span> <span class="na">user = </span><span class="s">(String)</span> <span class="na">obj</span><span class="err">;</span>
+<span class="err">%</span><span class="nt">&gt;</span>
+    
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;title&gt;</span> 우리 페이지 <span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+	<span class="nt">&lt;h2&gt;</span> 이 페이지는 로그인을 하셔야만 볼 수 있는 페이지 입니다 <span class="nt">&lt;/h2&gt;&lt;br/&gt;&lt;br/&gt;&lt;br/&gt;</span>
+	<span class="nt">&lt;</span><span class="err">%=</span> <span class="na">user</span> <span class="err">%</span><span class="nt">&gt;</span>님, 로그인 중입니다.
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

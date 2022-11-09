@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] Neural Collaborative Filtering | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] Neural Collaborative Filtering" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2017, Neural Collaborative Filtering" />
+<meta property="og:description" content="2017, Neural Collaborative Filtering" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/08/29/paper-neural-collaborative-filtering.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/08/29/paper-neural-collaborative-filtering.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-29T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] Neural Collaborative Filtering" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-29T00:00:00-05:00","datePublished":"2022-08-29T00:00:00-05:00","description":"2017, Neural Collaborative Filtering","headline":"[Recommender System] Neural Collaborative Filtering","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/08/29/paper-neural-collaborative-filtering.html"},"url":"https://safenumz.github.io/blog/paper/2022/08/29/paper-neural-collaborative-filtering.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] Neural Collaborative Filtering</h1><p class="page-description">2017, Neural Collaborative Filtering</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-08-29T00:00:00-05:00" itemprop="datePublished">
+        Aug 29, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-08-29-paper-neural-collaborative-filtering.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-08-29-paper-neural-collaborative-filtering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-08-29-paper-neural-collaborative-filtering.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-08-29-paper-neural-collaborative-filtering.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Neural-Collaborative-Filtering">Neural Collaborative Filtering </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract-&-Introduction">Abstract &amp; Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#Contributions">Contributions </a></li>
+<li class="toc-entry toc-h2"><a href="#Preliminaries">Preliminaries </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Learning-from-Implicit-Data">Learning from Implicit Data </a></li>
+<li class="toc-entry toc-h3"><a href="#Matrix-Factorization">Matrix Factorization </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Neural-Collaborative-Filtering">Neural Collaborative Filtering </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#General-Framework">General Framework </a></li>
+<li class="toc-entry toc-h3"><a href="#Generalized-Matrix-Factorization-(GMF)">Generalized Matrix Factorization (GMF) </a></li>
+<li class="toc-entry toc-h3"><a href="#Multi-Layer-Perceptron-(MLP)">Multi-Layer Perceptron (MLP) </a></li>
+<li class="toc-entry toc-h3"><a href="#Fusion-of-GMF-and-MLP">Fusion of GMF and MLP </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Experiments">Experiments </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusions">Conclusions </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-08-29-paper-neural-collaborative-filtering.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Neural-Collaborative-Filtering">
+<a class="anchor" href="#Neural-Collaborative-Filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Neural Collaborative Filtering<a class="anchor-link" href="#Neural-Collaborative-Filtering"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract-&amp;-Introduction">
+<a class="anchor" href="#Abstract-&amp;-Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract &amp; Introduction<a class="anchor-link" href="#Abstract-&amp;-Introduction"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기존 <strong>Linear Matrix Factorization</strong>의 한계점을 지적</li>
+<li>
+<strong>Neural Net</strong> 기반의 <strong>Collaborative Filtering</strong>으로 non-linear한 부분을 커버</li>
+<li>user와 item 관계를 보다 복잡하게 모델링 할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contributions">
+<a class="anchor" href="#Contributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributions<a class="anchor-link" href="#Contributions"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>User와 Item의 <strong>latent features</strong>를 모델링하기 위한 <strong>Neural Network</strong> 구조를 제안 (<strong>General Framwork NCF</strong>)</li>
+<li>
+<strong>Matrix Factorization</strong>은 <strong>NCF</strong>의 특별한 케이스임을 증명하고, <strong>Multi-layer Perceptron</strong>을 사용</li>
+<li>실제 데이터를 활용하여 다양한 실험을 진행했으며, 이를 통해 <strong>NCF</strong>의 효과를 증명</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Preliminaries">
+<a class="anchor" href="#Preliminaries" aria-hidden="true"><span class="octicon octicon-link"></span></a>Preliminaries<a class="anchor-link" href="#Preliminaries"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Learning-from-Implicit-Data">
+<a class="anchor" href="#Learning-from-Implicit-Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Learning from Implicit Data<a class="anchor-link" href="#Learning-from-Implicit-Data"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-002.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$M$과 $N$은 user와 item 수, rating 데이터가 0과 1의 binary 데이터</li>
+<li>user가 item을 관측했는지에 따라 0 또는 1로 표현 → interaction이 있는지 여부를 표시<ul>
+<li>선호, 비선호를 나타내는 것이 아님(implicit feedback data)</li>
+</ul>
+</li>
+<li>
+<strong>interaction function</strong> $f$를 정의하고, user와 item간 interaction이 있는지 확률을 예측하는 문제</li>
+<li>2가지 <strong>objective function</strong>(<strong>Point-wise loss</strong>와 <strong>Pair-wise loss</strong>) 모두 사용 가능<ul>
+<li>
+<strong>Point-wise</strong>: 실제값과 예측값 차이를 최소화</li>
+<li>
+<strong>Pair-wise</strong>: BPR에서 사용했으며, 1이 0보다 큰 값을 갖도록 마진을 최대화</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Matrix-Factorization">
+<a class="anchor" href="#Matrix-Factorization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Matrix Factorization<a class="anchor-link" href="#Matrix-Factorization"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-003.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>User-Item Interaction Matrix의 한계점을 지적<ul>
+<li>u4 → u1 → u3 → u2</li>
+<li>u4 → u1 → u2 → u3</li>
+</ul>
+</li>
+<li>user와 item의 복잡한 관계를 low dimension에 표현하면서 문제 발생</li>
+<li>Dimension 크기를 키우면 overfitting 발생</li>
+<li>Non-linear한 Neural Network를 사용해서 복잡한 상관관계를 표현</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Neural-Collaborative-Filtering">
+<a class="anchor" href="#Neural-Collaborative-Filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Neural Collaborative Filtering<a class="anchor-link" href="#Neural-Collaborative-Filtering"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="General-Framework">
+<a class="anchor" href="#General-Framework" aria-hidden="true"><span class="octicon octicon-link"></span></a>General Framework<a class="anchor-link" href="#General-Framework"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-004.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Input Layer (Sparse): user와 item을 one-hot vector로 표현</li>
+<li>Embedding Layer: Sparse one-hot vector를 dense vector로 맵핑</li>
+<li>Neural CF Layer: User Latent Vector와 Item Latent Vector를 concat해서 Layer를 통과</li>
+<li>Output Layer: user $u$와 item $i$의 상관관계를 0과 1사이의 점수로 나타냄</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-005.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Label이 binary이기 떄문에, <strong>Bernoulli Distribution</strong>을 사용</li>
+<li>$\Upsilon$는 $y_{u,i} = 1$인 집단, $\Upsilon^{-}$는 $y_{u,i} = 0$인 집단을 나타냄</li>
+<li>Loss Function은 <strong>binary cross entropy</strong>를 사용</li>
+<li>위의 L를 최소화하는 파라미터를 찾음</li>
+<li>학습은 <strong>SGD</strong>를 사용</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Generalized-Matrix-Factorization-(GMF)">
+<a class="anchor" href="#Generalized-Matrix-Factorization-(GMF)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Generalized Matrix Factorization (GMF)<a class="anchor-link" href="#Generalized-Matrix-Factorization-(GMF)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>Matrix Factorization</strong>이 <strong>Neural CF</strong>의 특별 케이스로 된다는 것을 보여 줌</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ 
+\Large{\phi_{1}(p_{u},q_{i}) = p_{u} \bigodot q_{i}}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$p$와 $q$는 user와 item의 latent vector인데, 이를 element-wise 곱하고, weight를 곱해 줌</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+$$ 
+\Large{\widehat{y_{ui}} = a_{out}(h^{T}(p_{u} \bigodot q_{i}))}
+$$
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$a$는 non-linear activation fuction(<strong>sigmoid</strong>)</li>
+<li>$h^{T}$는 내적할 때, 가중치 역할을 하며 latent vector를 학습할 수 있게 만들고 중요도를 조절하도록 함</li>
+<li>$a$가 1이고, $h^{T}$가 uniform vector이면 <strong>Matrix Factorization</strong>이 됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Multi-Layer-Perceptron-(MLP)">
+<a class="anchor" href="#Multi-Layer-Perceptron-(MLP)" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multi-Layer Perceptron (MLP)<a class="anchor-link" href="#Multi-Layer-Perceptron-(MLP)"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-006.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>GMF</strong>보다 더 간단하게 user-item interaction을 학습할 수 있음</li>
+<li>$W_{x}$, $b_{x}$, $a_{x}$는 순서대로 weight matrix, bias vector, x번째 층 activation fuction</li>
+<li>$\theta_{1}$은 user와 item의 latent vector를 concat함</li>
+<li>이후 모든 $\theta_{L}$은 weight matrix와 bias vector로 표현</li>
+<li>최종 식을 <strong>GMF</strong>와 동일한 구조를 가짐</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Fusion-of-GMF-and-MLP">
+<a class="anchor" href="#Fusion-of-GMF-and-MLP" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fusion of GMF and MLP<a class="anchor-link" href="#Fusion-of-GMF-and-MLP"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-007.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-008.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>GMF</strong>와 <strong>MLP</strong>에서 사용하는 latent vector dimension이 다를 수 있음</li>
+<li>최종 score는 <strong>MLP</strong>와 <strong>GMF</strong>의 output을 concat하여 사용</li>
+<li>
+<strong>MF</strong> linearity와 <strong>MLP</strong>의 non-linearity를 결합하여 장점만 선택</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Experiments">
+<a class="anchor" href="#Experiments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiments<a class="anchor-link" href="#Experiments"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>MovieLens와 Pinterest 데이터를 사용하여 실험</li>
+<li>Pinterest의 경우 데이터 셋이 매우 크지만 sparse 함<ul>
+<li>사용자의 20%가 pin이 하나만 존재</li>
+<li>최소 20개 이상의 pin을 가진 user로 필터해서 사용</li>
+</ul>
+</li>
+<li>Baseline<ul>
+<li>ItemPop: Popularity에 따라 아이템 순위를 매김</li>
+<li>ItemKNN: Standard Item-based CF 방법을 implicit feedback에 적용</li>
+<li>BPR: MR 모델을 최적화하는 방법</li>
+<li>eALS: 아이템 추천에서 state-of-the-art MF 방법</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-009.png" alt="">
+<img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-010.png" alt="">
+<img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-011.png" alt="">
+<img src="/blog/images/copied_from_nb/../images/paper/recommendation/ncf/ncf-012.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusions">
+<a class="anchor" href="#Conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions<a class="anchor-link" href="#Conclusions"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>General Framework NCF를 제안; <strong>GMF</strong>, <strong>MLP</strong>, <strong>NeuralMF</strong>
+</li>
+<li>Linear 모델의 한계를 neural network를 사용하여 해결</li>
+<li>
+<strong>GMF</strong>와 <strong>MLP</strong>의 장점을 합하여 <strong>NeuralMF</strong>를 제안했으며, 성능 향상에 기여</li>
+<li>User-item interaction의 다루는 Collaborative Filtering 아이디어에 집중</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/08/29/paper-neural-collaborative-filtering.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

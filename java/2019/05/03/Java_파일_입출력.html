@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 파일 입출력 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 파일 입출력" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="파일 입출력" />
+<meta property="og:description" content="파일 입출력" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-03T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 파일 입출력" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-03T00:00:00-05:00","datePublished":"2019-05-03T00:00:00-05:00","description":"파일 입출력","headline":"[Java] 파일 입출력","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html"},"url":"https://safenumz.github.io/blog/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 파일 입출력</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-03T00:00:00-05:00" itemprop="datePublished">
+        May 3, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="파일-입출력">파일 입출력</h1>
+
+<pre>
+Java IO (Input Output) - 자바 입출력
+
+입출력 - Stream
+	- java.io. 패키지
+
+1. byte 스트림
+	- InputStream - FileInputStream
+	- OuputStream - FileOutputStream
+
+	+ 필터 스트림
+		- DataOutputStream - DataInputStream
+		- ObjectOutputStream - ObjectInputStream (*직렬화 필수)
+
+2. char 스트림
+	- Reader - FileReader
+	- Writer - FileWriter
+
+cf. RandomAccessFile : 입출력스트림
+</pre>
+
+<h1 id="바이트-단위-출력">바이트 단위 출력</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">io.bytestream</span><span class="o">;</span>
+
+<span class="cm">/*
+	===========================================================
+	OuputStream을 구현한 FileOutputStream을 이용한 예제
+	===========================================================
+	
+	@ write( int )
+		` 0-255 사이의 정수를 인자로 받아 해당하는 바이트를 출력스트림에 쓴다
+		` 인자로 정수형을 받지만, 실제로는 부호없는 바이트로 전송
+		  ( 자바에서 정수형은 32bit이지만 그 중 8bit만 사용 )
+	
+	
+	
+*/</span>
+
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OutputTestFirst</span>
+<span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="n">args</span><span class="o">[]</span> <span class="o">)</span> 
+	<span class="o">{</span>
+		<span class="k">try</span>
+		<span class="o">{</span>
+			<span class="c1">// 바이트 단위로만 보내짐</span>
+			<span class="nc">FileOutputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="s">"a.txt"</span><span class="o">);</span>
+
+
+			<span class="k">for</span><span class="o">(</span> <span class="kt">int</span> <span class="n">ch</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">ch</span> <span class="o">&lt;=</span><span class="sc">'Z'</span><span class="o">;</span> <span class="n">ch</span><span class="o">++)</span>
+			<span class="o">{</span>
+				<span class="n">fos</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">ch</span><span class="o">);</span>
+			<span class="o">}</span>
+
+			<span class="cm">/*
+			fos.write(100); // 메모장은 숫자 문자 구분못함, 깨짐
+			fos.write('한'); // 2byte짜리 유니코드, 출력 안됨
+			*/</span>
+
+			<span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+			
+		<span class="o">}</span><span class="k">catch</span><span class="o">(</span> <span class="nc">IOException</span> <span class="n">ex</span> <span class="o">){</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"파일전송실패 :"</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>	
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h1 id="바이트-단위-입력">바이트 단위 입력</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">io.bytestream</span><span class="o">;</span>
+
+<span class="cm">/*
+	======================================================
+	InputStream을 구현한 FileInputStream을 이용한 예
+	======================================================
+	
+	@ int read()
+		` 한 바이트를 읽고 이를 0-255사이의 값을 리턴하지만4byte의 int 형으로 리턴
+		` 리턴되는 값은 0-255 부호없는 바이트이지만 형변환 과정에서 -128 ~127의 부호 있는 바이트가 된다
+		
+		
+		` 데이타를 읽어들이기 전까지 기다리므로 다른 부분을 실행할 수가 없다
+			-&gt; 쓰레드 적용 필요
+			
+		` 더이상 읽을 바이트가 없으면 -1 리턴
+		
+		
+		
+		[ 참고 ]
+			int i =  b &gt;= 0 ? b : 256 + b;
+*/</span>
+
+<span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.IOException</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">InputTestFirst</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="nc">FileInputStream</span> <span class="n">fos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="s">"a.txt"</span><span class="o">);</span>
+
+			<span class="cm">/*
+			while(true) {
+				int data = fos.read();
+				if (data == -1) break;
+				System.out.print((char) data);
+			}
+			 */</span>
+
+			<span class="kt">int</span> <span class="n">data</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">while</span> <span class="o">((</span><span class="n">data</span> <span class="o">=</span> <span class="n">fos</span><span class="o">.</span><span class="na">read</span><span class="o">())</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">((</span><span class="kt">char</span><span class="o">)</span> <span class="n">data</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="n">fos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">IOException</span> <span class="n">ex</span><span class="o">){</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"파일입력실패 :"</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span> <span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>	
+<span class="o">}</span>
+
+<span class="cm">/*
+	======================================
+		결과 출력
+	======================================
+
+	` 숫자만 나오는데, 우선 열개만 읽어서 숫자 자체로 출력하고
+	나머지는 읽어서 (char) 형변환 하면 문자로 출력될 것이다
+*/</span>
+</code></pre></div></div>
+
+<h1 id="datastream">DataStream</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">io.datastream</span><span class="o">;</span>
+
+
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileInputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.DataOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.DataInputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.ObjectOutputStream</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">io.objectstream.Person</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DataStreamTest</span>
+<span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="o">[]</span> <span class="n">args</span> <span class="o">)</span>
+	<span class="o">{</span>
+		<span class="nc">UIForm</span>  <span class="n">ui</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">UIForm</span><span class="o">();</span>
+		<span class="n">ui</span><span class="o">.</span><span class="na">addToLayout</span><span class="o">();</span>
+		<span class="n">ui</span><span class="o">.</span><span class="na">eventProc</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+
+<span class="c1">//-----------------------------------------</span>
+<span class="c1">// 화면을 관리하는 클래스</span>
+<span class="kd">class</span> <span class="nc">UIForm</span> <span class="kd">extends</span> <span class="nc">JFrame</span>
+<span class="o">{</span>
+	<span class="c1">// 데이타를 저장할 변수</span>
+	<span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kt">int</span>		<span class="n">age</span><span class="o">;</span>
+	<span class="kt">double</span> 	<span class="n">height</span><span class="o">;</span>
+	<span class="kt">char</span>	<span class="n">bloodType</span><span class="o">;</span>
+	
+	<span class="c1">// 화면 GUI에 관련한 변수</span>
+	<span class="nc">JTextField</span> <span class="n">tfName</span><span class="o">,</span> <span class="n">tfAge</span><span class="o">,</span> <span class="n">tfHeight</span><span class="o">,</span> <span class="n">tfBloodType</span><span class="o">;</span>
+	<span class="nc">JButton</span>	   <span class="n">bSave</span><span class="o">,</span> <span class="n">bLoad</span><span class="o">;</span>
+	
+	
+	<span class="nc">UIForm</span><span class="o">()</span>
+	<span class="o">{</span>
+		<span class="n">tfName</span> 		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+		<span class="n">tfAge</span> 		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+		<span class="n">tfHeight</span> 	<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+		<span class="n">tfBloodType</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+		
+		<span class="n">bSave</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"저장하기"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"../img/save.gif"</span><span class="o">));</span>
+		<span class="n">bLoad</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"읽어오기"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"../img/load.gif"</span><span class="o">));</span>
+		
+	<span class="o">}</span>
+	
+	<span class="c1">// 화면 구성하는 메소</span>
+	<span class="kt">void</span> <span class="nf">addToLayout</span><span class="o">()</span>
+	<span class="o">{</span>
+		<span class="nc">JPanel</span> <span class="n">pCenter</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span> <span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">5</span> <span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">10</span><span class="o">,</span><span class="mi">10</span><span class="o">)</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"이름"</span><span class="o">)</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfName</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"나이"</span><span class="o">)</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfAge</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"신장"</span><span class="o">)</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfHeight</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"혈액형"</span><span class="o">)</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfBloodType</span> <span class="o">);</span>
+		
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">bSave</span> <span class="o">);</span>
+		<span class="n">pCenter</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">bLoad</span> <span class="o">);</span>
+		
+		<span class="n">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">"Center"</span><span class="o">,</span> <span class="n">pCenter</span><span class="o">);</span>
+		
+		<span class="n">setSize</span><span class="o">(</span> <span class="mi">400</span><span class="o">,</span> <span class="mi">300</span> <span class="o">);</span>
+		<span class="n">setVisible</span><span class="o">(</span> <span class="kc">true</span> <span class="o">);</span>
+		
+		<span class="n">setDefaultCloseOperation</span><span class="o">(</span> <span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span> <span class="o">);</span>
+
+	<span class="o">}</span>
+	
+	
+	<span class="c1">// 이벤트 처리하는 메소드 </span>
+	<span class="kt">void</span> <span class="nf">eventProc</span><span class="o">()</span>
+	<span class="o">{</span>
+		<span class="nc">BtnHandler</span> <span class="n">bHdlr</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BtnHandler</span><span class="o">();</span>
+		<span class="n">bSave</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">bHdlr</span><span class="o">);</span>
+		<span class="n">bLoad</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">bHdlr</span><span class="o">);</span>				
+	<span class="o">}</span>
+
+
+	<span class="kd">class</span> <span class="nc">BtnHandler</span> <span class="kd">implements</span> <span class="nc">ActionListener</span> 
+	<span class="o">{</span>
+		<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span> <span class="nc">ActionEvent</span> <span class="n">ev</span> <span class="o">){</span>
+
+			<span class="nc">Object</span> <span class="n">evtBtn</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">();</span>
+
+			<span class="c1">// "저장하기" 버튼이 눌렸을 </span>
+			<span class="k">if</span><span class="o">(</span> <span class="n">evtBtn</span> <span class="o">==</span> <span class="n">bSave</span> <span class="o">)</span>
+			<span class="o">{</span>
+				<span class="cm">/*
+				1. 텍스트필드에서 입력값 얻어와서 변수에 저장
+				2. 파일출력스트림 생성 ( filter 포함 )
+				3. 스트림에 출력
+				4. 스트림 닫기
+				5. 텍스트필드 초기화 
+				*/</span>
+				<span class="n">name</span>		<span class="o">=</span> <span class="n">tfName</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+				<span class="n">age</span>			<span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">tfAge</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+				<span class="n">height</span>		<span class="o">=</span> <span class="nc">Double</span><span class="o">.</span><span class="na">parseDouble</span><span class="o">(</span><span class="n">tfHeight</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+				<span class="n">bloodType</span> 	<span class="o">=</span> <span class="o">(</span><span class="n">tfBloodType</span><span class="o">.</span><span class="na">getText</span><span class="o">()).</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+				
+				<span class="cm">/** 
+				 * @@@@@@@@@@@@@@@@@@@@@@@@@
+				 * */</span>
+				<span class="k">try</span><span class="o">{</span>
+
+					<span class="nc">Person</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">(</span><span class="n">name</span><span class="o">,</span> <span class="n">age</span><span class="o">,</span> <span class="n">height</span><span class="o">,</span> <span class="n">bloodType</span><span class="o">);</span>
+
+					<span class="nc">ObjectOutputStream</span> <span class="n">oos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span>
+							<span class="k">new</span> <span class="nf">FileOutputStream</span><span class="o">(</span><span class="s">"person.ksm"</span><span class="o">));</span>
+					<span class="n">oos</span><span class="o">.</span><span class="na">writeObject</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
+					<span class="n">oos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+					<span class="cm">/*
+					DataInputStream dos = new DataInputStream(
+							new FileInputStream("data.txt"));
+					name = dos.readUTF();
+					age = dos.readInt();
+					height = dos.readDouble();
+					bloodType = dos.readChar();
+					dos.close();
+					*/</span>
+
+
+				<span class="o">}</span><span class="k">catch</span><span class="o">(</span> <span class="nc">Exception</span> <span class="n">ex</span> <span class="o">){</span> 
+					<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"쓰기 실패"</span><span class="o">);</span>
+					<span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+				<span class="o">}</span>
+				
+				<span class="n">tfName</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+				<span class="n">tfAge</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+				<span class="n">tfHeight</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+				<span class="n">tfBloodType</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">""</span><span class="o">);</span>
+					
+				
+			<span class="o">}</span>
+			<span class="c1">// "읽어오기" 버튼이 눌렸을 때</span>
+			<span class="k">else</span> <span class="nf">if</span> <span class="o">(</span> <span class="n">evtBtn</span> <span class="o">==</span> <span class="n">bLoad</span> <span class="o">)</span>
+			<span class="o">{</span>
+					
+			<span class="cm">/** 
+			 * @@@@@@@@@@@@@@@@@@@@@@@@@
+			 * */</span>
+			<span class="cm">/*
+			1. 파일입력스트림 생성 (filter 포함 )
+			2. 스트림에서 데이타 읽어서 변수에 저장
+			3. 텍스트필드에  출력
+			4. 스트림 닫기 			
+			*/</span>
+				<span class="k">try</span><span class="o">{</span>
+					<span class="c1">// FileOutputStream fos = new FileOutputStream("data.txt");</span>
+					<span class="nc">DataOutputStream</span> <span class="n">dos</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataOutputStream</span><span class="o">(</span>
+							<span class="k">new</span> <span class="nf">FileOutputStream</span><span class="o">(</span><span class="s">"data.txt"</span><span class="o">));</span>
+						<span class="n">dos</span><span class="o">.</span><span class="na">writeUTF</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+						<span class="n">dos</span><span class="o">.</span><span class="na">writeInt</span><span class="o">(</span><span class="n">age</span><span class="o">);</span>
+						<span class="n">dos</span><span class="o">.</span><span class="na">writeDouble</span><span class="o">(</span><span class="n">height</span><span class="o">);</span>
+						<span class="n">dos</span><span class="o">.</span><span class="na">writeChar</span><span class="o">(</span><span class="n">bloodType</span><span class="o">);</span>
+						<span class="n">dos</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+				<span class="o">}</span><span class="k">catch</span><span class="o">(</span> <span class="nc">Exception</span> <span class="n">ex</span> <span class="o">){</span>
+					<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"읽기 실패"</span><span class="o">);</span>
+				<span class="o">}</span>
+
+					<span class="n">tfName</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">name</span> <span class="o">);</span>
+					<span class="n">tfAge</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span> <span class="n">age</span> <span class="o">));</span>
+					<span class="n">tfHeight</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span> <span class="n">height</span> <span class="o">));</span>
+					<span class="n">tfBloodType</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span> <span class="n">bloodType</span> <span class="o">));</span>
+				
+
+				<span class="o">}</span>	
+
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="json-파일-입출력">Json 파일 입출력</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">io.json</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.json.simple.JSONObject</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.json.simple.parser.JSONParser</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionEvent</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.ActionListener</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileReader</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.io.FileWriter</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">MyFrame</span> <span class="kd">extends</span> <span class="nc">JFrame</span>
+<span class="o">{</span>
+	<span class="c1">// 변수선언</span>
+	<span class="nc">JTextField</span> <span class="n">tfName</span><span class="o">,</span> <span class="n">tfTel</span><span class="o">,</span> <span class="n">tfJumin</span><span class="o">,</span> <span class="n">tfGender</span><span class="o">,</span> <span class="n">tfAge</span><span class="o">,</span> <span class="n">tfHome</span><span class="o">;</span>
+	<span class="nc">JButton</span> <span class="n">bSave</span><span class="o">,</span> <span class="n">bOpen</span><span class="o">;</span>
+	
+	<span class="c1">// 객체 생성</span>
+	<span class="kd">public</span> <span class="nf">MyFrame</span><span class="o">(){</span>		
+		<span class="kd">super</span><span class="o">(</span><span class="s">"나의 첫 화면"</span><span class="o">);</span>
+		<span class="n">tfName</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tfTel</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tfJumin</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tfGender</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tfAge</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tfHome</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		
+		<span class="n">bSave</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"저장하기"</span><span class="o">);</span>
+		<span class="n">bOpen</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"읽어오기"</span><span class="o">);</span>
+		
+	<span class="o">}</span>
+	
+	<span class="c1">// 화면구성 및 보여주기</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">addLayout</span><span class="o">(){</span>
+		
+		<span class="nc">JPanel</span> <span class="n">p_center</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span> <span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">2</span> <span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"이름"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfName</span> <span class="o">);</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"전화"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfTel</span> <span class="o">);</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"주민"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfJumin</span> <span class="o">);</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"성별"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfGender</span> <span class="o">);</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"나이"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfAge</span> <span class="o">);</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"출신지"</span><span class="o">));</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tfHome</span> <span class="o">);</span>
+		
+		<span class="nc">JPanel</span> <span class="n">p_south</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">bSave</span><span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">bOpen</span><span class="o">);</span>
+		
+		<span class="n">add</span><span class="o">(</span> <span class="n">p_center</span><span class="o">,</span> <span class="nc">BorderLayout</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+		<span class="n">add</span><span class="o">(</span> <span class="n">p_south</span><span class="o">,</span> <span class="nc">BorderLayout</span><span class="o">.</span><span class="na">SOUTH</span><span class="o">);</span>
+		<span class="n">setSize</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="mi">300</span><span class="o">);</span>
+		<span class="n">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+		<span class="n">setDefaultCloseOperation</span><span class="o">(</span><span class="nc">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+		
+	<span class="o">}</span>
+	
+	<span class="c1">// 이벤트 연결</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">eventProc</span><span class="o">()</span> <span class="o">{</span>
+		<span class="cm">/* 이벤트 핸들러 객체 생성*/</span>
+		<span class="nc">BtnHandler</span> <span class="n">bHandler</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BtnHandler</span><span class="o">();</span>
+		
+		<span class="cm">/* 컴포넌트와 이벤트핸들러 연결 */</span>
+		<span class="n">bSave</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">bHandler</span><span class="o">);</span>
+		<span class="n">bOpen</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span><span class="n">bHandler</span><span class="o">);</span>
+	<span class="o">}</span>
+	
+	<span class="cm">/* 이벤트 핸들러 선언 */</span>
+	<span class="kd">class</span> <span class="nc">BtnHandler</span> <span class="kd">implements</span> <span class="nc">ActionListener</span>
+	<span class="o">{</span>
+		<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span> <span class="nc">ActionEvent</span> <span class="n">ev</span><span class="o">)</span>
+		<span class="o">{</span>
+			<span class="nc">Object</span> <span class="n">btn</span> <span class="o">=</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">();</span>
+			<span class="c1">//JButton btn = (JButton)ev.getSource();</span>
+			<span class="k">if</span><span class="o">(</span> <span class="n">btn</span> <span class="o">==</span> <span class="n">bSave</span> <span class="o">)</span> <span class="o">{</span>
+				<span class="c1">//JOptionPane.showMessageDialog(null, "저장합니다.");</span>
+				<span class="n">saveData</span><span class="o">();</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span> <span class="n">btn</span> <span class="o">==</span>  <span class="n">bOpen</span><span class="o">)</span> <span class="o">{</span>
+				<span class="c1">//JOptionPane.showMessageDialog(null, "입력합니다.");</span>
+				<span class="n">readData</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span> <span class="c1">// end of class BtnHandler</span>
+	
+	<span class="cm">/**
+			http://code.google.com/p/json-simple/
+			왼쪽 메뉴 &gt; Download &gt;  json_simple-1.1.jar를 직접 다운
+			Add External Jar 추가
+	 */</span>
+	<span class="kt">void</span> <span class="nf">saveData</span><span class="o">()</span> <span class="o">{</span>
+
+		<span class="nc">JSONObject</span> <span class="n">obj</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JSONObject</span><span class="o">();</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"name"</span><span class="o">,</span> <span class="n">tfName</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"tel"</span><span class="o">,</span> <span class="n">tfTel</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"id"</span><span class="o">,</span> <span class="n">tfJumin</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"gender"</span><span class="o">,</span> <span class="n">tfGender</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"age"</span><span class="o">,</span> <span class="n">tfAge</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">obj</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"home"</span><span class="o">,</span> <span class="n">tfHome</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">obj</span><span class="o">);</span>
+	
+		<span class="k">try</span> <span class="o">{</span>  <span class="cm">/* 파일명 : test.json */</span>
+			<span class="nc">FileWriter</span> <span class="n">fw</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileWriter</span><span class="o">(</span><span class="s">"test.json"</span><span class="o">);</span>
+			<span class="n">fw</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">obj</span><span class="o">.</span><span class="na">toJSONString</span><span class="o">());</span>
+			<span class="n">fw</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+	
+	<span class="kt">void</span> <span class="nf">readData</span><span class="o">()</span> <span class="o">{</span>		
+
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="nc">FileReader</span> <span class="n">fr</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="s">"test.json"</span><span class="o">);</span>
+			<span class="nc">JSONParser</span> <span class="n">parser</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JSONParser</span><span class="o">();</span>
+			<span class="nc">JSONObject</span> <span class="n">obj</span> <span class="o">=</span> <span class="o">(</span><span class="nc">JSONObject</span><span class="o">)</span> <span class="n">parser</span><span class="o">.</span><span class="na">parse</span><span class="o">(</span><span class="n">fr</span><span class="o">);</span>
+			<span class="n">tfName</span><span class="o">.</span><span class="na">setText</span><span class="o">((</span><span class="nc">String</span><span class="o">)</span> <span class="n">obj</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+		<span class="o">}</span> 
+	<span class="o">}</span>
+	
+<span class="o">}</span> <span class="c1">// end of class MyFrame</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GuiTest</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">MyFrame</span> <span class="n">my</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MyFrame</span><span class="o">();</span>
+		<span class="n">my</span><span class="o">.</span><span class="na">addLayout</span><span class="o">();</span>
+		<span class="n">my</span><span class="o">.</span><span class="na">eventProc</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="복습">복습</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">.</span> <span class="nc">DataInputStream</span> <span class="n">객체를</span> <span class="n">생성하는</span> <span class="n">방법으로</span> <span class="n">맞은</span> <span class="n">것은</span> <span class="o">?</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">);</span>
+
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">));</span>
+
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">FileReader</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">));</span>
+
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">InputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">));</span>
+
+<span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="k">new</span> <span class="nc">DataInputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">));</span>
+
+<span class="cm">/*
+[정답] 5
+*/</span>
+
+<span class="mi">2</span><span class="o">.</span> <span class="n">다음</span> <span class="n">중</span> <span class="n">맞는</span> <span class="n">코드는</span> <span class="o">?</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="nc">OutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileInputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">));</span>
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="nc">OutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DataOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">)));</span>
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="nc">OutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">,</span> <span class="err">“</span><span class="n">rw</span><span class="err">”</span><span class="o">);</span>
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="nc">OutputStream</span> <span class="n">out</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ObjectOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">FileOutputStream</span><span class="o">(</span><span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">))));</span>
+
+<span class="cm">/*
+[정답] 2, 4
+1번 에러
+2번 가능
+3번 "rw" 없음
+4번 가능
+*/</span>
+
+
+
+<span class="mi">3</span><span class="o">.</span> <span class="n">현재</span> <span class="n">작업</span> <span class="nl">경로가c:</span> <span class="err">\</span><span class="n">work</span> <span class="n">인</span> <span class="n">경우</span> <span class="n">다음</span> <span class="n">프로그램을</span> <span class="n">실행한</span> <span class="n">출력</span> <span class="n">결과는</span> <span class="o">?</span>
+
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">a</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+  <span class="nc">File</span> <span class="n">f</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">File</span><span class="o">(</span><span class="err">“</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span><span class="err">”</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">f</span><span class="o">.</span><span class="na">getAbsolutePath</span><span class="o">());</span>
+
+ <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="n">data</span><span class="o">.</span><span class="na">txt</span>
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="n">work</span><span class="err">\</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span>
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="nl">c:</span><span class="err">\</span><span class="n">work</span><span class="err">\</span><span class="n">data</span><span class="o">.</span><span class="na">txt</span>
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="nl">c:</span><span class="err">\</span><span class="n">work</span>
+
+<span class="cm">/*
+[정답] 3
+*/</span>
+
+
+
+
+
+<span class="mi">4</span><span class="o">.</span> <span class="n">자바에서</span> <span class="n">파일이나</span> <span class="n">디렉토리를</span> <span class="n">관리할</span> <span class="n">수</span> <span class="n">있는</span> <span class="n">클래스는</span> <span class="o">?</span>
+
+ <span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="nc">File</span> <span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="nc">Directory</span> <span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="nc">FileWriter</span> <span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="nc">FileChooser</span>
+ 
+ <span class="cm">/*
+ [정답] 1
+ */</span>
+</code></pre></div></div>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

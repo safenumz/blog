@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 제어문 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 제어문" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="제어문 - 조건문 if 문" />
+<meta property="og:description" content="제어문 - 조건문 if 문" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 제어문" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-04-17T00:00:00-05:00","datePublished":"2019-04-17T00:00:00-05:00","description":"제어문 - 조건문 if 문","headline":"[Java] 제어문","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html"},"url":"https://safenumz.github.io/blog/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 제어문</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-17T00:00:00-05:00" itemprop="datePublished">
+        Apr 17, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="제어문---조건문"><a href="">제어문 - 조건문</a></h1>
+<h2 id="if-문">if 문</h2>
+
+<ul>
+  <li>제어문 : 프로그램의 흐름을 제어하는 문장</li>
+  <li>(1) 조건문
+    <ul>
+      <li>if 문</li>
+      <li>switch 문</li>
+    </ul>
+  </li>
+  <li>(2) 반복문
+    <ul>
+      <li>for 문</li>
+      <li>while</li>
+      <li>do~while</li>
+    </ul>
+  </li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="cm">/*
+ *  1 - 정수값 1 ( 연산가능 ) 4byte
+ *  '1' - 문자 1 2byte
+ *  "1" - 문자열 1 다른메모리 저장
+ */</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex03_주민번호_나이</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">String</span> <span class="n">id</span> <span class="o">=</span> <span class="s">"181212-3234567"</span><span class="o">;</span>
+		
+		<span class="nc">String</span> <span class="n">nai1</span> <span class="o">=</span> <span class="n">id</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="mi">2</span><span class="o">);</span> <span class="c1">// nai1="80"</span>
+		
+		<span class="c1">// casting 연산자는 기본형끼리만, (int) nai1 불가</span>
+		<span class="c1">// String -&gt; int ( "80" -&gt; 80 )</span>
+		<span class="kt">int</span> <span class="n">nai2</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">nai1</span><span class="o">);</span>
+		
+		<span class="kt">char</span> <span class="n">n</span> <span class="o">=</span> <span class="n">id</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">7</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">age</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		
+		<span class="nc">Calendar</span> <span class="n">c</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+
+        <span class="kt">int</span> <span class="n">year</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">YEAR</span><span class="o">);</span>
+		<span class="c1">// 주민번호의 7번째 문자를 얻어와서</span>
+		<span class="c1">// 1어가나 2라면 1900을 더하고</span>
+		<span class="c1">// 3이거나 4라면 2000을 더해야 함</span>
+		
+		<span class="c1">// Calendar 클래스를 이용하여 년도값을 구해서 년도 지</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="sc">'1'</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span><span class="sc">'2'</span><span class="o">)</span>  <span class="o">{</span>
+			<span class="n">age</span> <span class="o">=</span> <span class="n">year</span> <span class="o">-</span> <span class="o">(</span> <span class="mi">1900</span> <span class="o">+</span> <span class="n">nai2</span> <span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">n</span> <span class="o">==</span> <span class="sc">'3'</span> <span class="o">||</span> <span class="n">n</span> <span class="o">==</span> <span class="sc">'4'</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">age</span> <span class="o">=</span> <span class="n">year</span> <span class="o">-</span> <span class="o">(</span> <span class="mi">2000</span> <span class="o">+</span> <span class="n">nai2</span> <span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"당신의 나이: "</span> <span class="o">+</span> <span class="n">age</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+
+<span class="c1">// 당신의 나이:2</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">z_useful</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CalendarEx01</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// 이미 Java가 캘린더 값을 가지고 있기 때문에 new Calendar가 아니라 get을 쓴다.</span>
+		<span class="c1">// Java, JavaScript에서는 오브젝트가 아니라 인스턴스라는 용어를 씀, 객체</span>
+		<span class="c1">// 1월이 0번째</span>
+		<span class="nc">Calendar</span> <span class="n">c</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">YEAR</span><span class="o">)</span> <span class="o">+</span> <span class="s">"년"</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MONTH</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">)</span> <span class="o">+</span> <span class="s">"월"</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DATE</span><span class="o">)</span> <span class="o">+</span> <span class="s">"일"</span><span class="o">);</span>
+		
+		<span class="c1">// 시, 분, 초 출력</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">HOUR</span><span class="o">)</span> <span class="o">+</span> <span class="s">"시"</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">MINUTE</span><span class="o">)</span> <span class="o">+</span><span class="s">"분"</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">SECOND</span><span class="o">)</span> <span class="o">+</span> <span class="s">"초"</span><span class="o">);</span>
+		
+		<span class="c1">// 그 외 정보</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"그 해의 "</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_YEAR</span><span class="o">)</span> <span class="o">+</span> <span class="s">"입니다."</span><span class="o">);</span>
+		
+		<span class="c1">// 그 해의 몇 번째 주인지</span>
+		<span class="c1">// 그 달의 몇 번째 주인지</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">WEEK_OF_YEAR</span><span class="o">));</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">WEEK_OF_MONTH</span><span class="o">));</span>
+		<span class="c1">// 요일 (일요일 = 1, 월요일 = 2, .. )</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">));</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 2019년</span>
+<span class="c1">// 4월</span>
+<span class="c1">// 17일</span>
+<span class="c1">// 10시</span>
+<span class="c1">// 42분</span>
+<span class="c1">// 17초</span>
+<span class="c1">// 그 해의 107입니다.</span>
+<span class="c1">// 16</span>
+<span class="c1">// 3</span>
+<span class="c1">// 4</span>
+</code></pre></div></div>
+
+<h2 id="switch-문">switch 문</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="cm">/*
+ * 	switch 문 : 분기문
+ *  switch (___) {
+ *  	case A: 명령어A; break;
+ *  	case B: 명령어B; break;
+ *  	case C: 명령어C; break;
+ *  	default: 그 외 명령어; break;(맨 마지막에 나오면 생략가능)
+ *  }
+ *  --- : 정수형/문자형/String(1.5버전 이후)
+ */</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex04_switch_주민번호</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">String</span> <span class="n">id</span> <span class="o">=</span> <span class="s">"801212-1234567"</span><span class="o">;</span>
+		
+		<span class="kt">char</span> <span class="n">chul</span> <span class="o">=</span> <span class="n">id</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">8</span><span class="o">);</span>
+		<span class="nc">String</span> <span class="n">home</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+		<span class="k">switch</span><span class="o">(</span><span class="n">chul</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">case</span> <span class="sc">'0'</span><span class="o">:</span> <span class="n">home</span> <span class="o">=</span> <span class="s">"서울"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="sc">'1'</span><span class="o">:</span> <span class="n">home</span> <span class="o">=</span> <span class="s">"인천/부산"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="sc">'2'</span><span class="o">:</span> <span class="n">home</span> <span class="o">=</span> <span class="s">"경기"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="sc">'3'</span><span class="o">:</span> <span class="n">home</span> <span class="o">=</span> <span class="s">"제주"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">default</span><span class="o">:</span> <span class="n">home</span> <span class="o">=</span> <span class="s">"외국인"</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"출신지: "</span> <span class="o">+</span> <span class="n">home</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 출신지: 경기</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// [1] ----------------------------------------- </span>
+ <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span><span class="mi">1</span><span class="o">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span>
+  <span class="k">switch</span> <span class="o">(</span> <span class="n">i</span> <span class="o">)</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="mi">2</span> <span class="o">:</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">6</span><span class="o">;</span>
+    <span class="k">case</span> <span class="mi">4</span> <span class="o">:</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="k">default</span> <span class="o">:</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>
+    <span class="k">case</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">4</span><span class="o">;</span>
+  <span class="o">}</span>
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span> <span class="n">j</span> <span class="o">);</span>
+
+
+<span class="c1">// 6</span>
+
+
+<span class="c1">// [2] ----------------------------------------- </span>
+<span class="c1">// 다음 switch 문을 실행하여 출력되는 문장은?</span>
+
+<span class="kt">int</span>  <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+<span class="k">switch</span> <span class="o">(</span>  <span class="n">a</span>  <span class="o">/</span> <span class="mi">3</span> <span class="o">)</span> <span class="o">{</span>
+  <span class="k">case</span> <span class="mi">1</span> <span class="o">:</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"일"</span> <span class="o">);</span>  
+  <span class="k">case</span> <span class="mi">2</span> <span class="o">:</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"이"</span> <span class="o">);</span>  
+  <span class="k">case</span> <span class="mi">3</span> <span class="o">:</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"삼"</span> <span class="o">);</span>  
+  <span class="k">case</span> <span class="mi">4</span> <span class="o">:</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"사"</span> <span class="o">);</span>  
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">b_operator</span><span class="o">;</span>
+
+<span class="cm">/*
+ * 비교연산자 &gt;  &lt;  &gt;=  &lt;=  ==  !=
+ */</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex04_Comparable</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">77</span><span class="o">,</span> <span class="n">e</span> <span class="o">=</span> <span class="mi">88</span><span class="o">,</span> <span class="n">m</span> <span class="o">=</span> <span class="mi">99</span><span class="o">;</span>
+		<span class="kt">double</span> <span class="n">avg</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="o">(</span><span class="n">k</span><span class="o">+</span><span class="n">e</span><span class="o">+</span><span class="n">m</span><span class="o">)/</span><span class="mi">3</span><span class="o">;</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"평균: "</span> <span class="o">+</span> <span class="n">avg</span><span class="o">);</span>
+		
+		<span class="nc">String</span> <span class="n">score</span> <span class="o">=</span> <span class="s">""</span><span class="o">;</span>
+		<span class="k">switch</span><span class="o">((</span><span class="kt">int</span><span class="o">)(</span><span class="n">avg</span><span class="o">/</span><span class="mi">10</span><span class="o">))</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="mi">10</span><span class="o">:</span>
+		<span class="k">case</span> <span class="mi">9</span><span class="o">:</span> <span class="n">score</span><span class="o">=</span><span class="s">"A학점"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="mi">8</span><span class="o">:</span> <span class="n">score</span><span class="o">=</span><span class="s">"B학점"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">case</span> <span class="mi">7</span><span class="o">:</span> <span class="n">score</span><span class="o">=</span><span class="s">"C학점"</span><span class="o">;</span> <span class="k">break</span><span class="o">;</span>
+		<span class="k">default</span><span class="o">:</span> <span class="n">score</span><span class="o">=</span><span class="s">"F학점"</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">score</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 평균: 88.0</span>
+<span class="c1">// B학점</span>
+</code></pre></div></div>
+
+<h2 id="for문">for문</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="cm">/*
+ * for (초기값; 조건문; 증가식)
+ * {
+ * 	반복할 문장들;
+ * }
+ */</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex05_for개념</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="n">sum</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"결과: "</span> <span class="o">+</span> <span class="n">sum</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 결과: 55</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// [연습] 1~100까지의 홀수의 합과 짝수의 합</span>
+
+<span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="cm">/*
+ * for (초기값; 조건문; 증가식)
+ * {
+ * 	반복할 문장들;
+ * }
+ */</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex05_for개념</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<span class="c1">//		int sum = 0;</span>
+<span class="c1">//		for (int i = 1; i &lt;= 10; i++) {</span>
+<span class="c1">//			sum += i;</span>
+<span class="c1">//		}</span>
+<span class="c1">//		System.out.println("결과: " + sum);</span>
+		
+		<span class="kt">int</span> <span class="n">even</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">odd</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		
+<span class="c1">//		for (int i = 1; i &lt;= 100; i++) {</span>
+<span class="c1">//			if (i % 2 == 0) {</span>
+<span class="c1">//				even += i;</span>
+<span class="c1">//			} else {</span>
+<span class="c1">//				odd += i;</span>
+<span class="c1">//			}</span>
+<span class="c1">//		}</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">100</span><span class="o">;</span> <span class="n">i</span><span class="o">+=</span><span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">odd</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span>
+			<span class="n">even</span><span class="o">+=(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">);</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"짝수의 합: "</span> <span class="o">+</span> <span class="n">even</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"홀수의 합: "</span> <span class="o">+</span> <span class="n">odd</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 짝수의 합: 2550</span>
+<span class="c1">// 홀수의 합: 2500</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex05_for개념</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// A~Z 출력</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">c</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+		<span class="o">}</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">c</span><span class="o">+=</span><span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+		<span class="o">}</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">c</span><span class="o">--)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">c</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ACEGIKMOQSUWY</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDCBA</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> #  반복문 #
+문제 1)1~ N까지의 숫자를 다음처럼 출력하라
+
+1 2 3 4 5 
+6 7 8 9 10
+11 12 13 14 15
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex06_for연습</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">15</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="c1">// ' ' 공백에 아스키값, " " 써야 함</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+			<span class="c1">// 5의 배수라면 개행</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">5</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+
+<span class="c1">// 1 2 3 4 5 </span>
+<span class="c1">// 6 7 8 9 10 </span>
+<span class="c1">// 11 12 13 14 15 </span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>문제2)  문자열처리하기
+
+문자 N(a~z, A~Z)를 입력받아 N이 소문자면 a부터 N까지 인쇄하고 
+N이 대문자이면 문자 N부터  Z까지 출력하라 
+그 밖의 문자가 입력되면 Error 를 출력하라
+
+입력  출력
+f       abcdef
+X       XYZ
+6       Error
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex06_for연습</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"하나의 영문자를 입력해주세요."</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="kt">char</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">ch</span> <span class="o">&gt;=</span> <span class="sc">'a'</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'a'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">ch</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ch</span> <span class="o">&gt;=</span> <span class="sc">'A'</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="n">ch</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Error"</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>	
+
+<span class="c1">// 하나의 영문자를 입력해주세요.</span>
+<span class="c1">// f</span>
+<span class="c1">// abcdef</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>문제3 ) 입력받은 문자열의 뒤집어서 출력하세요
+  
+   [예]  입력     출력
+   
+     안녕 친구   구친 녕안
+     CarpeDiem   meiDepraC 
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex06_for연습</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"문장입력-&gt;"</span><span class="o">);</span>
+		<span class="nc">String</span> <span class="n">msg</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">length</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
+		<span class="c1">// for문 구조 잡기</span>
+		<span class="c1">// charAt() 이용해서 화면 출력 </span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">&gt;=</span><span class="mi">0</span> <span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">msg</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">));</span>
+		<span class="o">}</span>	
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 문장입력-&gt;</span>
+<span class="c1">// CarpeDiem</span>
+<span class="c1">// meiDepraC</span>
+</code></pre></div></div>
+
+<h4 id="file--export--archive--zip-파일로-프로젝트가-압축된다-필요할-때-import해서-쓰면-된다">File &gt; Export &gt; Archive : Zip 파일로 프로젝트가 압축된다. 필요할 때 Import해서 쓰면 된다.</h4>
+
+<h2 id="별표-찍기">별표 찍기</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex07_중첩for</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// *****</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"*"</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// *</span>
+<span class="c1">// **</span>
+<span class="c1">// ***</span>
+<span class="c1">// ****</span>
+<span class="c1">// *****</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex07_중첩for</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// *****</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span><span class="mi">5</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">4</span><span class="o">;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">i</span><span class="o">;</span> <span class="n">j</span><span class="o">--)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"*"</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// *****</span>
+<span class="c1">// ****</span>
+<span class="c1">// ***</span>
+<span class="c1">// **</span>
+<span class="c1">// *</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex07_중첩for</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_중첩예제</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'A'</span><span class="o">+</span> <span class="n">j</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// A</span>
+<span class="c1">// AB</span>
+<span class="c1">// ABC</span>
+<span class="c1">// ABCD</span>
+<span class="c1">// ABCDE</span>
+<span class="c1">// ABCDEF</span>
+<span class="c1">// ABCDEFG</span>
+<span class="c1">// ABCDEFGH</span>
+<span class="c1">// ABCDEFGHI</span>
+<span class="c1">// ABCDEFGHIJ</span>
+<span class="c1">// ABCDEFGHIJK</span>
+<span class="c1">// ABCDEFGHIJKL</span>
+<span class="c1">// ABCDEFGHIJKLM</span>
+<span class="c1">// ABCDEFGHIJKLMN</span>
+<span class="c1">// ABCDEFGHIJKLMNO</span>
+<span class="c1">// ABCDEFGHIJKLMNOP</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQR</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRS</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRST</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTU</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUV</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVW</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWX</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXY</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_중첩예제</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'A'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">-</span><span class="n">j</span> <span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXY</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWX</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVW</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUV</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTU</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRST</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQRS</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQR</span>
+<span class="c1">// ABCDEFGHIJKLMNOPQ</span>
+<span class="c1">// ABCDEFGHIJKLMNOP</span>
+<span class="c1">// ABCDEFGHIJKLMNO</span>
+<span class="c1">// ABCDEFGHIJKLMN</span>
+<span class="c1">// ABCDEFGHIJKLM</span>
+<span class="c1">// ABCDEFGHIJKL</span>
+<span class="c1">// ABCDEFGHIJK</span>
+<span class="c1">// ABCDEFGHIJ</span>
+<span class="c1">// ABCDEFGHI</span>
+<span class="c1">// ABCDEFGH</span>
+<span class="c1">// ABCDEFG</span>
+<span class="c1">// ABCDEF</span>
+<span class="c1">// ABCDE</span>
+<span class="c1">// ABCD</span>
+<span class="c1">// ABC</span>
+<span class="c1">// AB</span>
+<span class="c1">// A</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_중첩예제</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="sc">'A'</span><span class="o">+</span><span class="n">j</span> <span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDCBA</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDCB</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDC</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFED</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFE</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGF</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHG</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIH</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJI</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJ</span>
+<span class="c1">// ZYXWVUTSRQPONMLK</span>
+<span class="c1">// ZYXWVUTSRQPONML</span>
+<span class="c1">// ZYXWVUTSRQPONM</span>
+<span class="c1">// ZYXWVUTSRQPON</span>
+<span class="c1">// ZYXWVUTSRQPO</span>
+<span class="c1">// ZYXWVUTSRQP</span>
+<span class="c1">// ZYXWVUTSRQ</span>
+<span class="c1">// ZYXWVUTSR</span>
+<span class="c1">// ZYXWVUTS</span>
+<span class="c1">// ZYXWVUT</span>
+<span class="c1">// ZYXWVU</span>
+<span class="c1">// ZYXWV</span>
+<span class="c1">// ZYXW</span>
+<span class="c1">// ZYX</span>
+<span class="c1">// ZY</span>
+<span class="c1">// Z</span>
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_중첩예제</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="sc">'Z'</span><span class="o">-</span><span class="n">j</span> <span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Z</span>
+<span class="c1">// ZY</span>
+<span class="c1">// ZYX</span>
+<span class="c1">// ZYXW</span>
+<span class="c1">// ZYXWV</span>
+<span class="c1">// ZYXWVU</span>
+<span class="c1">// ZYXWVUT</span>
+<span class="c1">// ZYXWVUTS</span>
+<span class="c1">// ZYXWVUTSR</span>
+<span class="c1">// ZYXWVUTSRQ</span>
+<span class="c1">// ZYXWVUTSRQP</span>
+<span class="c1">// ZYXWVUTSRQPO</span>
+<span class="c1">// ZYXWVUTSRQPON</span>
+<span class="c1">// ZYXWVUTSRQPONM</span>
+<span class="c1">// ZYXWVUTSRQPONML</span>
+<span class="c1">// ZYXWVUTSRQPONMLK</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJ</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJI</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIH</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHG</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGF</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFE</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFED</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDC</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDCB</span>
+<span class="c1">// ZYXWVUTSRQPONMLKJIHGFEDCBA</span>
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_중첩예제</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+        <span class="c1">// 행단위 26회 반복 출력</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">26</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+
+            <span class="c1">// 문자열 출력</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="o">(</span><span class="kt">char</span><span class="o">)</span> <span class="o">(</span><span class="sc">'A'</span> <span class="o">+</span> <span class="n">j</span><span class="o">);</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+            <span class="c1">// 개행</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+			
+            <span class="c1">// 행단위마다 띄여쓰기 출력</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">j</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="sc">' '</span><span class="o">);</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// ABCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//  BCDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//   CDEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//    DEFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//     EFGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//      FGHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//       GHIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//        HIJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//         IJKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//          JKLMNOPQRSTUVWXYZ</span>
+<span class="c1">//           KLMNOPQRSTUVWXYZ</span>
+<span class="c1">//            LMNOPQRSTUVWXYZ</span>
+<span class="c1">//             MNOPQRSTUVWXYZ</span>
+<span class="c1">//              NOPQRSTUVWXYZ</span>
+<span class="c1">//               OPQRSTUVWXYZ</span>
+<span class="c1">//                PQRSTUVWXYZ</span>
+<span class="c1">//                 QRSTUVWXYZ</span>
+<span class="c1">//                  RSTUVWXYZ</span>
+<span class="c1">//                   STUVWXYZ</span>
+<span class="c1">//                    TUVWXYZ</span>
+<span class="c1">//                     UVWXYZ</span>
+<span class="c1">//                      VWXYZ</span>
+<span class="c1">//                       WXYZ</span>
+<span class="c1">//                        XYZ</span>
+<span class="c1">//                         YZ</span>
+<span class="c1">//                          Z</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex06_for연습</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"하나의 영문자를 입력해주세요."</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="kt">char</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">next</span><span class="o">().</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">ch</span> <span class="o">&gt;=</span> <span class="sc">'a'</span> <span class="o">&amp;&amp;</span> <span class="n">ch</span> <span class="o">&lt;=</span> <span class="sc">'z'</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="sc">'a'</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">ch</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ch</span> <span class="o">&gt;=</span> <span class="sc">'A'</span> <span class="o">&amp;&amp;</span> <span class="n">ch</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">i</span> <span class="o">=</span> <span class="n">ch</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="sc">'Z'</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span><span class="o">);</span>
+			<span class="o">}</span>
+		<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Error"</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>	
+
+<span class="c1">// 하나의 영문자를 입력해주세요.</span>
+<span class="c1">// f</span>
+<span class="c1">// abcdef</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_연습</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"행과 열의 수를 입력해주세요"</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">column</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(),</span> <span class="n">row</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">column</span><span class="o">*</span><span class="n">row</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">column</span> <span class="o">==</span> <span class="mi">0</span><span class="o">){</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// 행과 열의 수를 입력해주세요</span>
+<span class="c1">// 4 3</span>
+<span class="c1">// 1 2 3 4 </span>
+<span class="c1">// 5 6 7 8 </span>
+<span class="c1">// 9 10 11 12 </span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">도전문제1</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+			
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"사각형의 높이와 너비를 숫자로 입력해주세요"</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(),</span> <span class="n">n</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">m</span><span class="o">*</span><span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">i</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="o">){</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">도전문제2</span> <span class="o">{</span>
+	
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"숫자를 입력해주세요"</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="n">n</span><span class="o">;</span> <span class="n">j</span> <span class="o">=</span> <span class="n">j</span><span class="o">+</span><span class="mi">4</span><span class="o">){</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+			<span class="o">}</span>
+			
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+	
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">c_control</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">도전문제3</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+	
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"숫자를 입력해주세요"</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">nrow</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">(),</span> <span class="n">ncol</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">nrow</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+				<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">i</span><span class="o">*</span><span class="n">ncol</span><span class="o">;</span> <span class="n">k</span> <span class="o">&gt;</span> <span class="n">i</span><span class="o">*</span><span class="n">ncol</span><span class="o">-</span><span class="n">ncol</span><span class="o">;</span> <span class="n">k</span><span class="o">--)</span> <span class="o">{</span>
+					<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">k</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+				<span class="o">}</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">+</span> <span class="o">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="o">)*</span><span class="n">ncol</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">i</span><span class="o">*</span><span class="n">ncol</span><span class="o">;</span> <span class="n">j</span><span class="o">++){</span>
+					<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">j</span> <span class="o">+</span> <span class="s">" "</span><span class="o">);</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>	
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

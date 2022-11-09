@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 배열 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 배열" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="배열" />
+<meta property="og:description" content="배열" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-19T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 배열" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-04-19T00:00:00-05:00","datePublished":"2019-04-19T00:00:00-05:00","description":"배열","headline":"[Java] 배열","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html"},"url":"https://safenumz.github.io/blog/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 배열</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-19T00:00:00-05:00" itemprop="datePublished">
+        Apr 19, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="배열">배열</h1>
+
+<h2 id="배열-초기화">배열 초기화</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex00_배열초기화</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="kt">int</span> <span class="n">a</span><span class="o">;</span> <span class="c1">// 변수선언(기본형) -&gt; 메모리 확보</span>
+		<span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span> <span class="c1">// 값지정</span>
+		<span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span> <span class="c1">// 초기화</span>
+		
+		<span class="cm">/*
+		int[] arr; // 변수선언(참조형) -&gt; 메모리 확보 X
+		arr = new int[3]; // 객체생성 (메모리 확보)
+		arr[0]=10;
+		arr[1]=20;
+		arr[2]=33;
+		*/</span>
+		
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span><span class="o">;</span>
+		<span class="n">arr</span>  <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[]</span> <span class="o">{</span><span class="mi">3</span><span class="o">,</span> <span class="mi">30</span><span class="o">,</span> <span class="mi">13</span><span class="o">};</span> <span class="c1">// 배열 초기화  </span>
+		<span class="c1">// 생략버전 int[] arr  = {3, 30, 13};</span>
+		
+		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="요일">요일</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">CalendarEx01</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">// 요일 (일요일 = 1, 월요일 = 2, .. )</span>
+		
+		<span class="nc">String</span><span class="o">[]</span> <span class="n">dayofweek</span> <span class="o">=</span> <span class="o">{</span><span class="s">"일요일"</span><span class="o">,</span> <span class="s">"월요일"</span><span class="o">,</span> <span class="s">"화요일"</span><span class="o">,</span> <span class="s">"수요일"</span><span class="o">,</span> <span class="s">"목요일"</span><span class="o">,</span> <span class="s">"금요일"</span><span class="o">,</span> <span class="s">"토요일"</span><span class="o">};</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">dayofweek</span><span class="o">[</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_WEEK</span><span class="o">)-</span><span class="mi">1</span><span class="o">]);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="c1">// 금요일</span>
+</code></pre></div></div>
+
+<h2 id="큰-값-구하기-버블정렬-이해">큰 값 구하기, 버블정렬 이해</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex03_큰값구하기</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// 이 중에서 가장 큰 값을 추출해서 출력</span>
+		
+		<span class="cm">/*
+		&lt; 최대값찾기 &gt;
+		최대값은 배열 중에서 가장 큰 값을 찾아내는 알고리즘이다. 
+		사람은 데이타를 보면 척보고 어느것이 가장 크고, 어느것이 가장 작은지 알아낼 수 있다.
+		그러나 컴퓨터는 본다, 비교한다 라는 기능을 자동으로 할 수 없으므로 두뇌가 행동하는 것과 같은 기능을 부여해야 한다. 
+		최대값을 찾는 방법은 이렇다.
+
+		우선 임의의 변수를 정의하고 예를 들어 max 라 하자.
+
+		1. 이 변수에 배열의 첫번째 값을 입력한다. 
+		2. 이 값이 가장 크다고 가정하고 다음번 방에 있는 데이타와 비교를 한다. 
+		3. 이 변수에 저장된 값보다 큰 값이 들어오면 더 큰 값으로 바꿔치기를 한다. 
+		4. 이 과정을 배열이 끝날때 까지 반복하면 된다. 
+		*/</span>
+		
+		<span class="c1">// 버블 정렬: 두 수를 비교해서 크면 뒤로, 끝까지가면 처음부터 다시 시작</span>
+		
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">arr</span> <span class="o">=</span> <span class="o">{</span><span class="mi">22</span><span class="o">,</span> <span class="mi">50</span><span class="o">,</span> <span class="mi">13</span><span class="o">,</span> <span class="mi">7</span><span class="o">,</span> <span class="mi">25</span><span class="o">,</span> <span class="mi">35</span><span class="o">};</span>
+		<span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">arr</span><span class="o">.</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">max</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">])</span> <span class="o">{</span>
+				<span class="n">max</span> <span class="o">=</span> <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">];</span>
+			<span class="o">}</span> 
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">max</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="cm">/*
+7/13/22/25/35/50/
+*/</span>
+</code></pre></div></div>
+
+<h2 id="로또-번호-생성">로또 번호 생성</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">d_array</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex05_로또</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		
+		<span class="c1">// 0.12345 * 10 = 1.23455 -&gt; 소수점 제거 -&gt; 1</span>
+		<span class="c1">// 0.99999 * 10 = 9.99999</span>
+		<span class="kt">int</span><span class="o">[][]</span> <span class="n">lotto</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">5</span><span class="o">][</span><span class="mi">6</span><span class="o">];</span>
+		
+		<span class="c1">// 로또번호 생성 (5줄 6개)</span>
+		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">lotto</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()*</span><span class="mi">45</span><span class="o">)+</span><span class="mi">1</span><span class="o">;</span>
+				<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">j</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+					<span class="k">if</span> <span class="o">(</span><span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">==</span> <span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">k</span><span class="o">])</span> <span class="o">{</span>
+						<span class="n">j</span><span class="o">--;</span>
+					<span class="o">}</span> 
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		
+		<span class="c1">// 정렬</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">lotto</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">].</span><span class="na">length</span><span class="o">-</span><span class="mi">1</span><span class="o">;</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">--)</span> <span class="o">{</span>
+				<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">i</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>	
+					<span class="k">if</span><span class="o">(</span><span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">])</span> <span class="o">{</span>
+						<span class="kt">int</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+						<span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">];</span>
+						<span class="n">lotto</span><span class="o">[</span><span class="n">k</span><span class="o">][</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="o">]</span> <span class="o">=</span> <span class="n">temp</span><span class="o">;</span>
+					<span class="o">}</span> 
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+
+		
+		<span class="c1">// 출력</span>
+		
+		<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">lotto</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">sum</span> <span class="o">+=</span> <span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">lotto</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]+</span> <span class="s">"\t"</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="c1">// 숫자의 합 106~170 사이라면 별표 출력</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">sum</span> <span class="o">&gt;</span> <span class="mi">106</span> <span class="o">&amp;&amp;</span> <span class="n">sum</span> <span class="o">&lt;</span> <span class="mi">170</span> <span class="o">)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="s">"*"</span><span class="o">);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>	
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="동적-배열">동적 배열</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex06_동적배열</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="kt">char</span><span class="o">[][]</span> <span class="n">star</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="o">[</span><span class="mi">4</span><span class="o">][</span><span class="mi">4</span><span class="o">];</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">star</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">star</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="sc">'*'</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		
+		<span class="c1">// 출력</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">star</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">star</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">star</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]);</span>
+			<span class="o">}</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="숫자야구">숫자야구</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">d_array</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex07_baseball</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="c1">// 1. 랜덤으로 숫자 3개 생성</span>
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">baseball</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">baseball</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="n">baseball</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()*</span><span class="mi">9</span><span class="o">)</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+			
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">i</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">baseball</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="n">baseball</span><span class="o">[</span><span class="n">j</span><span class="o">])</span> <span class="o">{</span>
+					<span class="n">j</span><span class="o">--;</span>
+				<span class="o">}</span> 
+			<span class="o">}</span>
+		<span class="o">}</span>
+
+		<span class="c1">// 2. 사용자가 입력한 답을 answer에 각각 담기</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Insert Coin!!!"</span><span class="o">);</span>
+		<span class="nc">Scanner</span> <span class="n">input_coin</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="kt">int</span> <span class="n">coin</span> <span class="o">=</span> <span class="n">input_coin</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		
+		<span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+			
+			<span class="kt">int</span><span class="o">[]</span> <span class="n">answer</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">3</span><span class="o">];</span>
+			<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+			
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"숫자야구는 서로 다른 3개의 숫자를 입력 받습니다."</span><span class="o">);</span>
+			
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">answer</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%d번째 숫자를 입력해 주세요!\n"</span><span class="o">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="o">);</span>
+				<span class="n">answer</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+			<span class="o">}</span>
+			
+			<span class="kt">int</span> <span class="n">strike</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">ball</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">baseball</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">answer</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+					<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">j</span> <span class="o">&amp;</span> <span class="n">baseball</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="n">answer</span><span class="o">[</span><span class="n">j</span><span class="o">])</span> <span class="o">{</span>
+						<span class="n">strike</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+					<span class="o">}</span>
+					<span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">j</span> <span class="o">&amp;</span> <span class="n">baseball</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="n">answer</span><span class="o">[</span><span class="n">j</span><span class="o">])</span> <span class="o">{</span>
+						<span class="n">ball</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+					<span class="o">}</span>
+				<span class="o">}</span>	
+			<span class="o">}</span>
+			
+			<span class="k">if</span> <span class="o">(</span><span class="n">strike</span> <span class="o">==</span> <span class="mi">3</span><span class="o">)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"3 Strike 아웃! 이닝 종료되었습니다."</span><span class="o">);</span>
+				<span class="k">break</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%d Strike %d Ball 입니다 \n"</span><span class="o">,</span>
+						<span class="n">strike</span><span class="o">,</span> <span class="n">ball</span><span class="o">);</span>
+				<span class="o">}</span>
+			
+			<span class="n">coin</span> <span class="o">-=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">coin</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+				<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"시도 횟수가 초과되었습니다. 게임을 종료합니다."</span><span class="o">);</span>
+				<span class="k">break</span><span class="o">;</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="방번호">방번호</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">EX_방번호</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"다솜이의 방 번호를 입력해주세요."</span><span class="o">);</span>
+		
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+		<span class="kt">int</span> <span class="n">numlen</span><span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="nc">Math</span><span class="o">.</span><span class="na">log10</span><span class="o">(</span><span class="n">num</span><span class="o">)+</span><span class="mi">1</span><span class="o">);</span>
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">num_list</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">numlen</span><span class="o">];</span>
+		<span class="kt">int</span> <span class="n">mok</span> <span class="o">=</span> <span class="n">num</span><span class="o">;</span>
+		 
+
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">numlen</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="kt">int</span> <span class="n">na</span> <span class="o">=</span> <span class="n">mok</span> <span class="o">%</span> <span class="mi">10</span><span class="o">;</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">na</span> <span class="o">==</span> <span class="mi">9</span> <span class="o">|</span> <span class="n">na</span> <span class="o">==</span> <span class="mi">6</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">num_list</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="mi">6</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">num_list</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">na</span><span class="o">;</span>
+			<span class="o">}</span>
+			<span class="n">mok</span> <span class="o">/=</span> <span class="mi">10</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">zn_list</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">9</span><span class="o">];</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">num_list</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">num_list</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">==</span> <span class="mi">9</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">zn_list</span><span class="o">[</span><span class="mi">6</span><span class="o">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+				<span class="n">zn_list</span><span class="o">[</span><span class="n">num_list</span><span class="o">[</span><span class="n">k</span><span class="o">]]</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+			<span class="o">}</span>	
+		<span class="o">}</span>
+		
+		<span class="n">zn_list</span><span class="o">[</span><span class="mi">6</span><span class="o">]</span> <span class="o">=</span> <span class="n">zn_list</span><span class="o">[</span><span class="mi">6</span><span class="o">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">zn_list</span><span class="o">[</span><span class="mi">6</span><span class="o">]</span> <span class="o">%</span> <span class="mi">2</span><span class="o">;</span>
+		
+		<span class="kt">int</span> <span class="n">zn_max</span> <span class="o">=</span> <span class="n">zn_list</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">zn_list</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%d %d \n"</span><span class="o">,</span> <span class="n">i</span><span class="o">,</span> <span class="n">zn_list</span><span class="o">[</span><span class="n">i</span><span class="o">]);</span>
+		<span class="o">}</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">zn_list</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">zn_max</span> <span class="o">&lt;</span> <span class="n">zn_list</span><span class="o">[</span><span class="n">i</span><span class="o">])</span> <span class="o">{</span>
+				<span class="n">zn_max</span> <span class="o">=</span> <span class="n">zn_list</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"필요한 세트 개수의 최소값은 %d개 입니다"</span><span class="o">,</span> <span class="n">zn_max</span><span class="o">);</span>	
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="평균-구하기">평균 구하기</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.StringTokenizer</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_평균구하기</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"클래스의 수를 입력해 주세요."</span><span class="o">);</span>
+		
+		<span class="nc">Scanner</span> <span class="n">classnum</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="n">classnum</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+	
+		<span class="nc">Scanner</span> <span class="n">inputscore</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		<span class="kt">int</span><span class="o">[][]</span> <span class="n">score</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">num</span><span class="o">][];</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">num</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%d번 클래스의 학생수와 점수를 입력해주세요\n "</span>
+					<span class="o">+</span> <span class="s">"(예) 5 50 60 70 80 90 \n"</span><span class="o">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
+			
+			<span class="nc">String</span> <span class="n">stline</span> <span class="o">=</span> <span class="n">inputscore</span><span class="o">.</span><span class="na">nextLine</span><span class="o">();</span>
+			<span class="nc">StringTokenizer</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringTokenizer</span><span class="o">(</span><span class="n">stline</span><span class="o">);</span>
+			<span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">())];</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">=</span> <span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">st</span><span class="o">.</span><span class="na">nextToken</span><span class="o">());</span>
+			<span class="o">}</span>
+			
+		<span class="o">}</span>
+		
+		<span class="kt">double</span><span class="o">[]</span> <span class="n">avg_list</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">double</span><span class="o">[</span><span class="n">score</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="kt">int</span> <span class="n">temp_sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">temp_sum</span> <span class="o">+=</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+			<span class="o">}</span>
+			<span class="kt">double</span> <span class="n">temp_avg</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span><span class="n">temp_sum</span> <span class="o">/</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span>
+			<span class="n">avg_list</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span>  <span class="n">temp_avg</span><span class="o">;</span>
+		<span class="o">}</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="kt">int</span> <span class="n">temp_count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="k">if</span> <span class="o">(</span><span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">avg_list</span><span class="o">[</span><span class="n">i</span><span class="o">])</span> <span class="o">{</span>
+					<span class="n">temp_count</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+			<span class="kt">double</span> <span class="n">temp_rate</span> <span class="o">=</span> <span class="o">(</span><span class="kt">double</span><span class="o">)</span> <span class="n">temp_count</span> <span class="o">/</span> <span class="n">score</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">printf</span><span class="o">(</span><span class="s">"%.3f %%\n"</span><span class="o">,</span> <span class="n">temp_rate</span><span class="o">*</span><span class="mi">100</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h2 id="ox문제">OX문제</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Scanner</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Ex_OX문제</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"O와 X로 구성된 문자열을 입력해주세요."</span><span class="o">);</span>
+		
+		<span class="nc">Scanner</span> <span class="n">input</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Scanner</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">in</span><span class="o">);</span>
+		
+		<span class="kt">char</span><span class="o">[]</span> <span class="n">ch</span> <span class="o">=</span> <span class="n">input</span><span class="o">.</span><span class="na">nextLine</span><span class="o">().</span><span class="na">toCharArray</span><span class="o">();</span>
+		
+		<span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+		
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">ch</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="k">if</span> <span class="o">(</span><span class="n">ch</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">'O'</span><span class="o">)</span> <span class="o">{</span>
+				<span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+				<span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>
+					<span class="n">sum</span> <span class="o">+=</span> <span class="n">k</span><span class="o">;</span>
+					<span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+					<span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">;</span>
+					<span class="k">if</span> <span class="o">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">ch</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+					<span class="k">if</span> <span class="o">(</span><span class="n">ch</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">'X'</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+				<span class="o">}</span>
+			<span class="o">}</span>
+		<span class="o">}</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"점수: "</span> <span class="o">+</span> <span class="n">sum</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h2 id="정리">정리</h2>
+<h3 id="배열--여러개의-값들-하나의-변수명으로-사용">배열 : 여러개의 값들 하나의 변수명으로 사용</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	반복문 (1) 배열 변수 선언
+int[] kor; (2) 메모리 확보 (new 이용)
+kor = new int[10]; (3) 값 지정
+kor[i] = 값;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. 다음 중 배열을 선언시 잘못된 것은?
+
+(1)int [] arr = { 1, 2, 3 };
+
+(2)int [] arr [] ;
+
+(3)int [] [] arr ;
+
+(4)int arr[3] = { 1, 2, 3 };
+
+4
+ 
+
+
+
+2. 아래의 배열 선언에서arr.length 값은?
+
+int  arr [] [] = {  { 1, 2, 3, 4, 5}, { 6, 7, 8 }, { 9 } , { 7, 7, 7, 7 }  };
+
+ 4
+
+
+
+3. 아래의 배열 선언에서arr[2].length 값은?
+
+int  arr [] [] = {  { 1, 2, 3, 4, 5}, { 6, 7, 8 }, { 9 } , { 7, 7, 7, 7 }  };
+
+ 1
+
+
+
+4. 합이 가장 큰 행을 구하는 프로그램을 작성하세요.
+int a[][]= new int[][]{
+	{3, -5, 12 },
+	 {-2, 11, 2, -7},
+	  {21, -21, -35, -93, -11},
+	   {9, 14, 39, -98}};
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">maxhab</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="kt">int</span> <span class="n">a</span><span class="o">[][]=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[][]{</span>
+			<span class="o">{</span><span class="mi">3</span><span class="o">,</span> <span class="o">-</span><span class="mi">5</span><span class="o">,</span> <span class="mi">12</span> <span class="o">},</span>
+			<span class="o">{-</span><span class="mi">2</span><span class="o">,</span> <span class="mi">11</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="o">-</span><span class="mi">7</span><span class="o">},</span>
+			<span class="o">{</span><span class="mi">21</span><span class="o">,</span> <span class="o">-</span><span class="mi">21</span><span class="o">,</span> <span class="o">-</span><span class="mi">35</span><span class="o">,</span> <span class="o">-</span><span class="mi">93</span><span class="o">,</span> <span class="o">-</span><span class="mi">11</span><span class="o">},</span>
+			<span class="o">{</span><span class="mi">9</span><span class="o">,</span> <span class="mi">14</span><span class="o">,</span> <span class="mi">39</span><span class="o">,</span> <span class="o">-</span><span class="mi">98</span><span class="o">}};</span>
+
+		<span class="kt">int</span><span class="o">[]</span> <span class="n">rowsum</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
+
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="kt">int</span> <span class="n">tempsum</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+			<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+				<span class="n">tempsum</span> <span class="o">+=</span> <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">][</span><span class="n">j</span><span class="o">];</span>
+			<span class="o">}</span>
+			<span class="n">rowsum</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">tempsum</span><span class="o">;</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

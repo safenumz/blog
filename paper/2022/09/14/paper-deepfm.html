@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2017, Factorization Machine의 장점과 Deep Learning의 장점을 모두 합친 모델" />
+<meta property="og:description" content="2017, Factorization Machine의 장점과 Deep Learning의 장점을 모두 합친 모델" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/09/14/paper-deepfm.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/09/14/paper-deepfm.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-14T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-14T00:00:00-05:00","datePublished":"2022-09-14T00:00:00-05:00","description":"2017, Factorization Machine의 장점과 Deep Learning의 장점을 모두 합친 모델","headline":"[Recommender System] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/09/14/paper-deepfm.html"},"url":"https://safenumz.github.io/blog/paper/2022/09/14/paper-deepfm.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] DeepFM: A Factorization-Machine based Neural Network for CTR Prediction</h1><p class="page-description">2017, Factorization Machine의 장점과 Deep Learning의 장점을 모두 합친 모델</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-09-14T00:00:00-05:00" itemprop="datePublished">
+        Sep 14, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-09-14-paper-deepfm.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-09-14-paper-deepfm.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-09-14-paper-deepfm.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-09-14-paper-deepfm.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#DeepFM:-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction">DeepFM: A Factorization-Machine based Neural Network for CTR Prediction </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a></li>
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#선행-연구">선행 연구 </a></li>
+<li class="toc-entry toc-h3"><a href="#Contiributions">Contiributions </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Our-Approach">Our Approach </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#DeepFM">DeepFM </a></li>
+<li class="toc-entry toc-h3"><a href="#FM-Component">FM Component </a></li>
+<li class="toc-entry toc-h3"><a href="#Deep-Component">Deep Component </a></li>
+<li class="toc-entry toc-h3"><a href="#Relationship-with-the-other-Neural-Networks">Relationship with the other Neural Networks </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Experiments">Experiments </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Efficiency-Comparison">Efficiency Comparison </a></li>
+<li class="toc-entry toc-h3"><a href="#Effective-Comparison">Effective Comparison </a></li>
+<li class="toc-entry toc-h3"><a href="#Hyper-parameter-Study">Hyper-parameter Study </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-09-14-paper-deepfm.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="DeepFM:-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction">
+<a class="anchor" href="#DeepFM:-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction" aria-hidden="true"><span class="octicon octicon-link"></span></a>DeepFM: A Factorization-Machine based Neural Network for CTR Prediction<a class="anchor-link" href="#DeepFM:-A-Factorization-Machine-based-Neural-Network-for-CTR-Prediction"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-002.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Click Through Rate(CTR)을 예측하는 모델</li>
+<li>Low와 High-order interactions 모두 학습할 수 있음</li>
+<li>Factorization Machine의 장점과 Deep Learning의 장점을 모두 합친 모델이 DeepFM</li>
+<li>추가 feature engineering 없이 raw feature를 그대로 사용</li>
+<li>벤치마크 데이터와 commercial 데이터에서 모두 실험을 완료</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>CTR: user가 추천된 항목을 click할 확률을 예측하는 문제<ul>
+<li>CTR(estimated probability)에 의해 user가 선호할 item 랭킹을 부여</li>
+</ul>
+</li>
+<li>Learn Implicit Feature Interaction<ul>
+<li>App category와 Timestamp 관계: 음식 배달 어플은 식사시간 근처에 다운로드가 많음</li>
+<li>User gender와 Age 관계: 남자 청소년들은 슈팅과 RPG 게임을 선호</li>
+<li>숨겨진 관계: 맥주와 기저귀를 구매하는 사람들이 많음<blockquote>
+<p>low와 high-order feature interaction을 모두 고려<br>
+Explicit과 Implicit features를 모두 모델링할 수 있음</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="선행-연구">
+<a class="anchor" href="#%EC%84%A0%ED%96%89-%EC%97%B0%EA%B5%AC" aria-hidden="true"><span class="octicon octicon-link"></span></a>선행 연구<a class="anchor-link" href="#%EC%84%A0%ED%96%89-%EC%97%B0%EA%B5%AC"> </a>
+</h3>
+<ol>
+<li>Generalized Linear Model(ex. FTRL)[McMahan et al., 2013]<ul>
+<li>당시 성능은 좋은 모델이었으나, High-order feature interaction을 반영하기 어려움</li>
+</ul>
+</li>
+<li>Factorization Machine[Rendle, 2010]<ul>
+<li>Latent vector간의 내적을 통해 pairwise feature interaction 모델링</li>
+<li>Low와 high-order 모두 모델링이 가능하지만, high-order의 경우 complexity가 증가</li>
+</ul>
+</li>
+<li>CNN and RNN for CTR Prediction[Liu et al., 2015; Zhang et al., 2014]<ul>
+<li>CNN-based는 주변 feature에 집중하지만, RNN-based는 sequential해서 더 적합</li>
+</ul>
+</li>
+<li>Factorization-machine supported Neural Network(FNN), Product-based Neural Network<ul>
+<li>[Qu et al., 2016; Cheng et al., 2016]</li>
+<li>Neural Network 기반으로 high-order 가능하지만 lower-order는 부족</li>
+<li>Pre-trained FM 성능에 의존할 수 있음</li>
+</ul>
+</li>
+<li>Wide &amp; Deep [Cheng et al., 2016]<ul>
+<li>Low와 high-order 모두 가능하지만, wide component에 feature engineering이 필요</li>
+</ul>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Contiributions">
+<a class="anchor" href="#Contiributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contiributions<a class="anchor-link" href="#Contiributions"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-003.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>DeepFM이라는 모델 구조를 제안<ul>
+<li>Low-order는 FM, High-order DNN</li>
+<li>End-to-end 학습 가능</li>
+</ul>
+</li>
+<li>DeepFM은 다른 비슷한 모델보다 더 효율적으로 학습 가능<ul>
+<li>Input과 embedding vector를 share 함</li>
+</ul>
+</li>
+<li>DeepFM은 benchmark와 commercial 데이터의 CTR prediction에서 의미있는 성능 향상을 이룸</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Our-Approach">
+<a class="anchor" href="#Our-Approach" aria-hidden="true"><span class="octicon octicon-link"></span></a>Our Approach<a class="anchor-link" href="#Our-Approach"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="DeepFM">
+<a class="anchor" href="#DeepFM" aria-hidden="true"><span class="octicon octicon-link"></span></a>DeepFM<a class="anchor-link" href="#DeepFM"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-004.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Sparse features의 노란색 부분은 embedding vector($x_{field_{i}}w_{i} = V_{i}$)에 해당</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ x = [x_{field_1}, x_{field_2}, ...,x_{field_m}], \, \hat{y} \in (0, 1)$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ \hat{y} = CTR\_model(x) $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-005.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="FM-Component">
+<a class="anchor" href="#FM-Component" aria-hidden="true"><span class="octicon octicon-link"></span></a>FM Component<a class="anchor-link" href="#FM-Component"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-006.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>embedding vector의 내적을 order-2의 가중치로 사용한다는 것이 포인트</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$y_{FM} = \, &lt;w, x&gt; + \displaystyle\sum_{j_{1}=1}^d\sum_{j_{2}=j_{1}+1}^{d}&lt;V_{i},V_{j}&gt;x_{x_{j1}}\cdot x_{j2}, \; w \in R^d \, and \, V_{i} \in R^k $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Deep-Component">
+<a class="anchor" href="#Deep-Component" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deep Component<a class="anchor-link" href="#Deep-Component"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-007.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>모든 embedding vector을 모두 합친 것이 input이 됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ a^{(0)} = [e_{1}, e_{2}, ..., e_{m}]$<br>
+$ a^{(l+1)} = \sigma(W^{(l)}a^{(l)} + b^{(l)})$<br>
+$ y_{DNN} = \sigma(W^{|H|+1}\cdot a^H + b^{|H|+1}) $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Relationship-with-the-other-Neural-Networks">
+<a class="anchor" href="#Relationship-with-the-other-Neural-Networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Relationship with the other Neural Networks<a class="anchor-link" href="#Relationship-with-the-other-Neural-Networks"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-008.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-009.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Experiments">
+<a class="anchor" href="#Experiments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiments<a class="anchor-link" href="#Experiments"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ol>
+<li>Criteo Dataset<ul>
+<li>45 million user's click records</li>
+<li>13 continous features, 26 categorical ones</li>
+<li>90% for training and 10% for testing</li>
+</ul>
+</li>
+<li>Company* Dataset<ul>
+<li>7 consecutive days of user's click records from Company* App Store(game center)</li>
+<li>Next 1 day for testing</li>
+<li>Approximately 1 billion records</li>
+<li>App features(identification, category)</li>
+<li>User features(user's downloaded apps)</li>
+<li>Context features(operation time)</li>
+</ul>
+</li>
+<li>Evaluation Metrics<ul>
+<li>AUC(Area Under ROC) and Logloss(Cross Entopy)</li>
+</ul>
+</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Efficiency-Comparison">
+<a class="anchor" href="#Efficiency-Comparison" aria-hidden="true"><span class="octicon octicon-link"></span></a>Efficiency Comparison<a class="anchor-link" href="#Efficiency-Comparison"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-010.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Linear model 대비 각 모델이 학습에 걸린 시간을 나타냄</li>
+<li>FNN은 pre-training에 시간을 많이 쏟음</li>
+<li>IPNN과 OPNN은 hidden layer에서 inner product를 하면서 시간이 매우 오래 걸림</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Effective-Comparison">
+<a class="anchor" href="#Effective-Comparison" aria-hidden="true"><span class="octicon octicon-link"></span></a>Effective Comparison<a class="anchor-link" href="#Effective-Comparison"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-011.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Hyper-parameter-Study">
+<a class="anchor" href="#Hyper-parameter-Study" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hyper-parameter Study<a class="anchor-link" href="#Hyper-parameter-Study"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-012.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-013.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-014.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-015.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dfm/dfm-016.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>DeepFM<ul>
+<li>deep component와 FM component를 합쳐서 학습</li>
+<li>Pre-training이 필요하지 않음</li>
+<li>High와 Low-order feature interactions 둘 다 모델링</li>
+<li>Input과 embedding vector를 share 함</li>
+</ul>
+</li>
+<li>From experiments<ul>
+<li>CTR task에서 더 좋은 성능을 얻을 수 있음</li>
+<li>다른 SOTA 모델보다 AUC와 LogLoss에서 성능이 뛰어남</li>
+<li>DeepFM이 가장 efficient한 모델</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/09/14/paper-deepfm.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

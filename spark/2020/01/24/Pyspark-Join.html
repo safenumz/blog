@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[PySpark] Join | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[PySpark] Join" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Join" />
+<meta property="og:description" content="Join" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2020/01/24/Pyspark-Join.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2020/01/24/Pyspark-Join.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-24T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[PySpark] Join" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-01-24T00:00:00-06:00","datePublished":"2020-01-24T00:00:00-06:00","description":"Join","headline":"[PySpark] Join","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2020/01/24/Pyspark-Join.html"},"url":"https://safenumz.github.io/blog/spark/2020/01/24/Pyspark-Join.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[PySpark] Join</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-01-24T00:00:00-06:00" itemprop="datePublished">
+        Jan 24, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="join">Join</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">artists</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">"parquet"</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">"s3://spotify-folder/artists/dt=2020-01-30/artists.parquet"</span><span class="p">)</span>
+<span class="n">artists</span><span class="p">.</span><span class="n">toDF</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"name"</span><span class="p">,</span> <span class="s">"followers"</span><span class="p">,</span> <span class="s">"popularity"</span><span class="p">,</span> <span class="s">"url"</span><span class="p">,</span> <span class="s">"image_url"</span><span class="p">)</span>
+<span class="n">artists</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<pre>
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+|followers|                  id|           image_url|                name|popularity|                 url|
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|        Lana Del Rey|        89|https://open.spot...|
+|   294843|01C9OoXDvCKkGcf73...|https://i.scdn.co...|    Serge Gainsbourg|        63|https://open.spot...|
+|  1053365|02rd0anEWfMtF7iMk...|https://i.scdn.co...|       Reba McEntire|        66|https://open.spot...|
+|   367631|02uYdhMhCgdB49hZl...|https://i.scdn.co...|Eagles Of Death M...|        61|https://open.spot...|
+|  1498582|03r4iKL2g2442PT9n...|https://i.scdn.co...|        Beastie Boys|        73|https://open.spot...|
+|   131513|03YhcM6fxypfwckPC...|https://i.scdn.co...|      Wes Montgomery|        57|https://open.spot...|
+| 21913582|04gDigrS5kc9YWfZH...|https://i.scdn.co...|            Maroon 5|        93|https://open.spot...|
+|    75688|04tBaW21jyUfeP5iq...|https://i.scdn.co...|        Scott Walker|        52|https://open.spot...|
+|   581793|0543y7yrvny4Kymoa...|https://i.scdn.co...|      Peter Frampton|        62|https://open.spot...|
+|    85779|05E3NBxNMdnrPtxF9...|https://i.scdn.co...|        Lester Young|        53|https://open.spot...|
+| 26220658|06HL4z0CvFAxyc27G...|https://i.scdn.co...|        Taylor Swift|        94|https://open.spot...|
+|   356508|06nevPmNVfWUXyZkc...|https://i.scdn.co...|      Gregory Porter|        68|https://open.spot...|
+|   366125|06nsZ3qSOYZ2hPVIM...|https://i.scdn.co...|           J.J. Cale|        66|https://open.spot...|
+|  2834825|085pc2PYOi8bGKj0P...|https://i.scdn.co...|           will.i.am|        78|https://open.spot...|
+|   158043|08avsqaGIlK2x3i2C...|https://i.scdn.co...|      Keith Richards|        49|https://open.spot...|
+|   265703|09C0xjtosNAIXP36w...|https://i.scdn.co...|         Fats Domino|        61|https://open.spot...|
+|  4928415|0BvkDsjIUla7X0k6C...|https://i.scdn.co...|          Luke Bryan|        80|https://open.spot...|
+|    24213|0bvRYuXRvd14RYEE7...|https://i.scdn.co...|Linton Kwesi Johnson|        44|https://open.spot...|
+|  5118810|0C0XlULifJtAgn6ZN...|https://i.scdn.co...|         The Killers|        82|https://open.spot...|
+|  2356170|0cc6vw3VN8YlIcvr1...|https://i.scdn.co...|         Mötley Crüe|        77|https://open.spot...|
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+only showing top 20 rows
+</pre>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="nn">pymysql</span>
+
+<span class="n">host</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">endpoint</span><span class="o">&gt;</span>
+<span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span>
+<span class="n">username</span> <span class="o">=</span> <span class="o">&lt;</span><span class="nb">id</span><span class="o">&gt;</span>
+<span class="n">database</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">database</span><span class="o">&gt;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">password</span><span class="o">&gt;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">conn</span> <span class="o">=</span> <span class="n">pymysql</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">passwd</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">db</span><span class="o">=</span><span class="n">database</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">use_unicode</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">charset</span><span class="o">=</span><span class="s">'utf8'</span><span class="p">)</span>
+    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">logging</span><span class="p">.</span><span class="n">error</span><span class="p">(</span><span class="s">"could not connect to rds"</span><span class="p">)</span>
+    <span class="n">sys</span><span class="p">.</span><span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    
+<span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"SELECT * FROM artists"</span><span class="p">)</span>
+<span class="n">colnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">.</span><span class="n">description</span><span class="p">]</span>
+<span class="n">artists</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">colnames</span><span class="p">,</span> <span class="n">row</span><span class="p">))</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">.</span><span class="n">fetchall</span><span class="p">()]</span>
+<span class="n">artists</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">artists</span><span class="p">)</span>
+<span class="n">artists</span><span class="p">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="n">artists</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">artists</span><span class="p">)</span>
+<span class="n">artists</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<pre>
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+|followers|                  id|           image_url|                name|popularity|                 url|
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|        Lana Del Rey|        89|https://open.spot...|
+|   294843|01C9OoXDvCKkGcf73...|https://i.scdn.co...|    Serge Gainsbourg|        63|https://open.spot...|
+|  1053365|02rd0anEWfMtF7iMk...|https://i.scdn.co...|       Reba McEntire|        66|https://open.spot...|
+|   367631|02uYdhMhCgdB49hZl...|https://i.scdn.co...|Eagles Of Death M...|        61|https://open.spot...|
+|  1498582|03r4iKL2g2442PT9n...|https://i.scdn.co...|        Beastie Boys|        73|https://open.spot...|
+|   131513|03YhcM6fxypfwckPC...|https://i.scdn.co...|      Wes Montgomery|        57|https://open.spot...|
+| 21913582|04gDigrS5kc9YWfZH...|https://i.scdn.co...|            Maroon 5|        93|https://open.spot...|
+|    75688|04tBaW21jyUfeP5iq...|https://i.scdn.co...|        Scott Walker|        52|https://open.spot...|
+|   581793|0543y7yrvny4Kymoa...|https://i.scdn.co...|      Peter Frampton|        62|https://open.spot...|
+|    85779|05E3NBxNMdnrPtxF9...|https://i.scdn.co...|        Lester Young|        53|https://open.spot...|
+| 26220658|06HL4z0CvFAxyc27G...|https://i.scdn.co...|        Taylor Swift|        94|https://open.spot...|
+|   356508|06nevPmNVfWUXyZkc...|https://i.scdn.co...|      Gregory Porter|        68|https://open.spot...|
+|   366125|06nsZ3qSOYZ2hPVIM...|https://i.scdn.co...|           J.J. Cale|        66|https://open.spot...|
+|  2834825|085pc2PYOi8bGKj0P...|https://i.scdn.co...|           will.i.am|        78|https://open.spot...|
+|   158043|08avsqaGIlK2x3i2C...|https://i.scdn.co...|      Keith Richards|        49|https://open.spot...|
+|   265703|09C0xjtosNAIXP36w...|https://i.scdn.co...|         Fats Domino|        61|https://open.spot...|
+|  4928415|0BvkDsjIUla7X0k6C...|https://i.scdn.co...|          Luke Bryan|        80|https://open.spot...|
+|    24213|0bvRYuXRvd14RYEE7...|https://i.scdn.co...|Linton Kwesi Johnson|        44|https://open.spot...|
+|  5118810|0C0XlULifJtAgn6ZN...|https://i.scdn.co...|         The Killers|        82|https://open.spot...|
+|  2356170|0cc6vw3VN8YlIcvr1...|https://i.scdn.co...|         Mötley Crüe|        77|https://open.spot...|
++---------+--------------------+--------------------+--------------------+----------+--------------------+
+only showing top 20 rows
+</pre>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">top_tracks</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">"parquet"</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">"s3://spotify-folder/top-tracks/dt=2020-01-29/top-tracks.parquet"</span><span class="p">)</span>
+<span class="n">top_tracks</span> <span class="o">=</span> <span class="n">top_tracks</span><span class="p">.</span><span class="n">toDF</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"artist_id"</span><span class="p">,</span> <span class="s">"name"</span><span class="p">,</span> <span class="s">"popularity"</span><span class="p">,</span> <span class="s">"external_url"</span><span class="p">)</span>
+<span class="n">top_tracks</span> <span class="o">=</span> <span class="n">top_tracks</span><span class="p">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"track_id"</span><span class="p">).</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s">"name"</span><span class="p">,</span> <span class="s">"track_name"</span><span class="p">)</span>
+<span class="n">top_tracks</span> <span class="o">=</span> <span class="n">top_tracks</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">top_tracks</span><span class="p">[</span><span class="s">"track_id"</span><span class="p">].</span><span class="n">alias</span><span class="p">(</span><span class="s">"track_id"</span><span class="p">),</span> <span class="n">top_tracks</span><span class="p">[</span><span class="s">"track_name"</span><span class="p">][</span><span class="mi">0</span><span class="p">].</span><span class="n">alias</span><span class="p">(</span><span class="s">"track_name"</span><span class="p">),</span> <span class="n">top_tracks</span><span class="p">[</span><span class="s">"artist_id"</span><span class="p">],</span> <span class="n">top_tracks</span><span class="p">[</span><span class="s">"popularity"</span><span class="p">][</span><span class="mi">0</span><span class="p">].</span><span class="n">alias</span><span class="p">(</span><span class="s">"track_popularity"</span><span class="p">))</span>
+
+<span class="n">joined</span> <span class="o">=</span> <span class="n">artists</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">top_tracks</span><span class="p">,</span> <span class="n">top_tracks</span><span class="p">[</span><span class="s">"track_id"</span><span class="p">]</span> <span class="o">==</span> <span class="n">artists</span><span class="p">[</span><span class="s">"id"</span><span class="p">])</span>
+<span class="n">joined</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="n">sqlContext</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">"parquet"</span><span class="p">).</span><span class="n">load</span><span class="p">(</span><span class="s">"s3://spotify-folder/audio-features/dt=2020-01-29/top-tracks.parquet"</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="p">.</span><span class="n">toDF</span><span class="p">(</span><span class="s">"acousticness"</span><span class="p">,</span> <span class="s">"analysis_url"</span><span class="p">,</span> <span class="s">"danceability"</span><span class="p">,</span> <span class="s">"duration_ms"</span><span class="p">,</span> <span class="s">"energy"</span><span class="p">,</span> <span class="s">"id"</span><span class="p">,</span> <span class="s">"instrumentalness"</span><span class="p">,</span> <span class="s">"key"</span><span class="p">,</span> <span class="s">"liveness"</span><span class="p">,</span> <span class="s">"loudness"</span><span class="p">,</span> <span class="s">"mode"</span><span class="p">,</span> <span class="s">"speechiness"</span><span class="p">,</span> <span class="s">"tempo"</span><span class="p">,</span> <span class="s">"time_signature"</span><span class="p">,</span> <span class="s">"track_href"</span><span class="p">,</span> <span class="s">"type"</span><span class="p">,</span> <span class="s">"uri"</span><span class="p">,</span> <span class="s">"valence"</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">features</span><span class="p">.</span><span class="n">withColumnRenamed</span><span class="p">(</span><span class="s">"id"</span><span class="p">,</span> <span class="s">"track_id"</span><span class="p">)</span>
+
+<span class="n">master</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">joined</span><span class="p">[</span><span class="s">"track_id"</span><span class="p">]</span> <span class="o">==</span> <span class="n">features</span><span class="p">[</span><span class="s">"track_id"</span><span class="p">],</span> <span class="s">"leftouter"</span><span class="p">)</span>
+<span class="n">master</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<pre>
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|followers|                  id|           image_url|        name|popularity|                 url|            track_id|          track_name|           artist_id|    track_popularity|
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+
+only showing top 20 rows
+
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+------------+------------+------------+-----------+------+--------+----------------+----+--------+--------+----+-----------+-----+--------------+----------+----+----+-------+
+|followers|                  id|           image_url|        name|popularity|                 url|            track_id|          track_name|           artist_id|    track_popularity|acousticness|analysis_url|danceability|duration_ms|energy|track_id|instrumentalness| key|liveness|loudness|mode|speechiness|tempo|time_signature|track_href|type| uri|valence|
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+------------+------------+------------+-----------+------+--------+----------------+----+--------+--------+----+-----------+-----+--------------+----------+----+----+-------+
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|3hwQhakFwm9soLEBn...|[https://open.spo...|        Venice Bitch|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6PUIzlqotEmPuBfjb...|[https://open.spo...|Summertime Sadnes...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|0fB77VOZ2FkQeKLv1...|[https://open.spo...|hope is a dangero...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|6OG05bPAwUuV3OMvy...|[https://open.spo...|Mariners Apartmen...|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
+|  9824434|00FQb4jTyendYWaN8...|https://i.scdn.co...|Lana Del Rey|        89|https://open.spot...|00FQb4jTyendYWaN8...|2mdEsXPu8ZmkHRRtA...|[https://open.spo...|       Cinnamon Girl|        null|        null|        null|       null|  null|    null|            null|null|    null|    null|null|       null| null|          null|      null|null|null|   null|
++---------+--------------------+--------------------+------------+----------+--------------------+--------------------+--------------------+--------------------+--------------------+------------+------------+------------+-----------+------+--------+----------------+----+--------+--------+----+-----------+-----+--------------+----------+----+----+-------+
+only showing top 20 rows
+</pre>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2020/01/24/Pyspark-Join.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

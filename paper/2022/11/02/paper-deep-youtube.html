@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] Deep Neural Networks for YouTube Recommendations | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] Deep Neural Networks for YouTube Recommendations" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2016, Google, 딥러닝 기반 YouTube 추천 시스템" />
+<meta property="og:description" content="2016, Google, 딥러닝 기반 YouTube 추천 시스템" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/11/02/paper-deep-youtube.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/11/02/paper-deep-youtube.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-02T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] Deep Neural Networks for YouTube Recommendations" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-02T00:00:00-05:00","datePublished":"2022-11-02T00:00:00-05:00","description":"2016, Google, 딥러닝 기반 YouTube 추천 시스템","headline":"[Recommender System] Deep Neural Networks for YouTube Recommendations","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/11/02/paper-deep-youtube.html"},"url":"https://safenumz.github.io/blog/paper/2022/11/02/paper-deep-youtube.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] Deep Neural Networks for YouTube Recommendations</h1><p class="page-description">2016, Google, 딥러닝 기반 YouTube 추천 시스템</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-02T00:00:00-05:00" itemprop="datePublished">
+        Nov 2, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-11-02-paper-deep-youtube.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-11-02-paper-deep-youtube.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-11-02-paper-deep-youtube.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-11-02-paper-deep-youtube.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Deep-Neural-Networks-for-YouTube-Recommendations">Deep Neural Networks for YouTube Recommendations </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a></li>
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#System-Overview">System Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Candidate-Generation">Candidate Generation </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Recommendation-as-Classification">Recommendation as Classification </a></li>
+<li class="toc-entry toc-h3"><a href="#Model-Architecture">Model Architecture </a></li>
+<li class="toc-entry toc-h3"><a href="#Heterogeneous-Signals">Heterogeneous Signals </a></li>
+<li class="toc-entry toc-h3"><a href="#Label-and-Context-Selection">Label and Context Selection </a></li>
+<li class="toc-entry toc-h3"><a href="#Experiments">Experiments </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Ranking">Ranking </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusions">Conclusions </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-02-paper-deep-youtube.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Deep-Neural-Networks-for-YouTube-Recommendations">
+<a class="anchor" href="#Deep-Neural-Networks-for-YouTube-Recommendations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deep Neural Networks for YouTube Recommendations<a class="anchor-link" href="#Deep-Neural-Networks-for-YouTube-Recommendations"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-002.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>YouTube는 가장 크고 정교한 상업 추천시스템</li>
+<li>딥러닝을 적용하고 성능이 dramatic하게 향상됨</li>
+<li>Two-stage information retrieval dichotomy를 소개<ul>
+<li>Deep candidate generation model</li>
+<li>Deep ranking model</li>
+</ul>
+</li>
+<li>거대한 추천 시스템을 구축할 때의 인사이트도 함께 제시</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>YouTube 추천은 수많은 사용자에게 개인화된 컨텐츠 추천을 해야될 책임이 있음</li>
+<li>추천시스템 구현시 고민 사항<ul>
+<li>Scale<ul>
+<li>YouTube의 수많은 사용자와 코퍼스를 다루기 위해서 효율적인 서빙과 특화된 추천알고리즘이 필요</li>
+</ul>
+</li>
+<li>Freshness<ul>
+<li>YouTube에는 매분매초 수많은 영상이 업로드 되고, 추천시스템은 새롭게 올라오는 컨텐츠와 사용자의 행동에 적절하게 대응해야 함</li>
+<li>잘 만들어진 영상과 새로운 컨텐츠 사이에서 적절하게 적용 및 반영할 수 있어야 함</li>
+</ul>
+</li>
+<li>Noise<ul>
+<li>Sparsity와 수많은 외부요인으로 사용자 행동을 예측하기 어려움</li>
+<li>Implicit feedback을 적절히 사용하고, poorly structured metadata도 활용할 수 있어야 함</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="System-Overview">
+<a class="anchor" href="#System-Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>System Overview<a class="anchor-link" href="#System-Overview"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-003.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Candidate Generation과 Ranking 부분으로 나눌 수 있음</li>
+<li>Candidate Generation<ul>
+<li>Input: 사용자의 YouTube 히스토리</li>
+<li>Output: 사용자와 관련 있을만한 영상 집합</li>
+<li>협업필터링을 사용하고, 시청기록, 검색키워드, demographics 정보를 활용</li>
+</ul>
+</li>
+<li>Ranking Model<ul>
+<li>영상과 사용자 features로 각 영상에 대해 점수를 매김</li>
+</ul>
+</li>
+<li>학습할 때, offline metirc(precision, recall, ranking loss 등) 활용</li>
+<li>(라이브) A/B 테스트를 통해 최종 알고리즘을 선택</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Candidate-Generation">
+<a class="anchor" href="#Candidate-Generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Candidate Generation<a class="anchor-link" href="#Candidate-Generation"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Non-linear generation of factorization technique</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Recommendation-as-Classification">
+<a class="anchor" href="#Recommendation-as-Classification" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recommendation as Classification<a class="anchor-link" href="#Recommendation-as-Classification"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$ \large P(w_t = i \, | \, U, C ) = \displaystyle {e^{v_{i}u} \over \sum_{j \in V}e^{v_{j}u}} $</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$u \in \mathbb{R}^N$: high-dimensional user-embedding</li>
+<li>$v_j \in \mathbb{R}^N$: 개별 video의 embedding</li>
+<li>$C$: context</li>
+<li>사용자와 context의 vector u를 학습하여 영상을 시청할 확률을 학습하는 Softmax Classifier</li>
+<li>Sparse한 Explicit feedback과 많은 implicit feedback을 활용</li>
+<li>Negative Sampling을 통해 효율적인 학습을 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-004.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Model-Architecture">
+<a class="anchor" href="#Model-Architecture" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model Architecture<a class="anchor-link" href="#Model-Architecture"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>다음의 embedding을 모두 concat</li>
+<li>사용자의 시청기록 (embedded video watches)</li>
+<li>사용자의 검색기록 (embedded search token)</li>
+<li>geographic embedding</li>
+<li>추가 meta 정보 (age, gender 등)</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Heterogeneous-Signals">
+<a class="anchor" href="#Heterogeneous-Signals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Heterogeneous Signals<a class="anchor-link" href="#Heterogeneous-Signals"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Continuous와 categorical features를 deep neural network에 사용할 수 있음</li>
+<li>보통 새로운 영상은 사용자가 선호하는 경향을 보임</li>
+<li>Age feature는 영상 콘텐츠의 시간 정보</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Label-and-Context-Selection">
+<a class="anchor" href="#Label-and-Context-Selection" aria-hidden="true"><span class="octicon octicon-link"></span></a>Label and Context Selection<a class="anchor-link" href="#Label-and-Context-Selection"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-005.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>추천시스템은 surrogate problem(실제 상황과 evaluation metric 차이)를 항상 고려해야 함</li>
+<li>유튜브 이외 데이터도 학습데이터에 포함해야 함</li>
+<li>사용자의 가중치를 동일하게 하기 위해 사용자의 학습데이터 수를 고정</li>
+<li>무작위로 아이템을 선정하여 예측하는 것보다 특정 시점 기준으로 예측하는 것이 더 효과적</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Experiments">
+<a class="anchor" href="#Experiments" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiments<a class="anchor-link" href="#Experiments"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-006.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Features 수와 depth에 따라 달라지는 성능을 비교</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Ranking">
+<a class="anchor" href="#Ranking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ranking<a class="anchor-link" href="#Ranking"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Ranking에서는 영상과 사용자 사이의 관계를 표현하는 features를 많이 사용해야 함</li>
+<li>Candidate generation과 비슷한 모델 구조를 사용</li>
+<li>Categorial과 continuous features를 사용</li>
+<li>사용자의 이전 행동을 고려하여 이이템과의 interaction을 모델링 해야 함</li>
+<li>각 features에 대한 feature engineering이 필요<ul>
+<li>Embedding Categorical features</li>
+<li>Normailizing Continous features</li>
+</ul>
+</li>
+<li>사용자가 선택한 아이템과 그렇지 않은 아이템의 expected watch time을 예측하는 것이 목표</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/dub/dub-007.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusions">
+<a class="anchor" href="#Conclusions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusions<a class="anchor-link" href="#Conclusions"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>YouTube 영상 추천시스템은 candidate generation과 ranking 부분으로 나눠져 있음</li>
+<li>Deep collaborative filtering 모델은 더 많은 특징과 interaction을 반영할 수 있음</li>
+<li>Age feature를 추가하여 time-dependent한 부분을 반영하고 watch time이 증가함을 확인</li>
+<li>Embedding categorical features와 normalized continuous features을 활용</li>
+<li>여러 층의 신경망은 수많은 features 사이의 non-linear interactions를 효과적으로 모델링 할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/11/02/paper-deep-youtube.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

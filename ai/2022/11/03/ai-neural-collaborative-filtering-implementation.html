@@ -1,0 +1,1842 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] Neural Collaborative Filtering Paper Implementation | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] Neural Collaborative Filtering Paper Implementation" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2017, Neural Collaborative Filtering Paper Implementation" />
+<meta property="og:description" content="2017, Neural Collaborative Filtering Paper Implementation" />
+<link rel="canonical" href="https://safenumz.github.io/blog/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-03T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] Neural Collaborative Filtering Paper Implementation" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-03T00:00:00-05:00","datePublished":"2022-11-03T00:00:00-05:00","description":"2017, Neural Collaborative Filtering Paper Implementation","headline":"[Recommender System] Neural Collaborative Filtering Paper Implementation","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html"},"url":"https://safenumz.github.io/blog/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] Neural Collaborative Filtering Paper Implementation</h1><p class="page-description">2017, Neural Collaborative Filtering Paper Implementation</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-11-03T00:00:00-05:00" itemprop="datePublished">
+        Nov 3, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#AI">AI</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-11-03-ai-neural-collaborative-filtering-implementation.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-11-03-ai-neural-collaborative-filtering-implementation.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-11-03-ai-neural-collaborative-filtering-implementation.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-11-03-ai-neural-collaborative-filtering-implementation.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Neural-Collaborative-Filtering-Paper-Implementation">Neural Collaborative Filtering Paper Implementation </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Configuration">Configuration </a></li>
+<li class="toc-entry toc-h2"><a href="#Load-Dataset">Load Dataset </a></li>
+<li class="toc-entry toc-h2"><a href="#Dataset-Loader">Dataset Loader </a></li>
+<li class="toc-entry toc-h2"><a href="#Model-Structure">Model Structure </a></li>
+<li class="toc-entry toc-h2"><a href="#Train-model">Train model </a></li>
+<li class="toc-entry toc-h2"><a href="#Test">Test </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-11-03-ai-neural-collaborative-filtering-implementation.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Neural-Collaborative-Filtering-Paper-Implementation">
+<a class="anchor" href="#Neural-Collaborative-Filtering-Paper-Implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Neural Collaborative Filtering Paper Implementation<a class="anchor-link" href="#Neural-Collaborative-Filtering-Paper-Implementation"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Configuration">
+<a class="anchor" href="#Configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration<a class="anchor-link" href="#Configuration"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">optim</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.autograd</span> <span class="kn">import</span> <span class="n">Variable</span>
+
+<span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">"ignore"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Load-Dataset">
+<a class="anchor" href="#Load-Dataset" aria-hidden="true"><span class="octicon octicon-link"></span></a>Load Dataset<a class="anchor-link" href="#Load-Dataset"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>KMRD 데이터셋 활용</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">data_filename</span><span class="p">):</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">data_filename</span><span class="p">))</span>
+    <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="s1">'../datasets/kmrd/kmr_dataset/datafile/kmrd-small'</span>
+<span class="n">data_filename</span> <span class="o">=</span> <span class="s1">'rates.csv'</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">,</span> <span class="n">val_df</span> <span class="o">=</span> <span class="n">read_data</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">data_filename</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(112568, 4)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>user</th>
+      <th>movie</th>
+      <th>rate</th>
+      <th>time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>49270</th>
+      <td>5022</td>
+      <td>10048</td>
+      <td>10</td>
+      <td>1263194040</td>
+    </tr>
+    <tr>
+      <th>21206</th>
+      <td>1391</td>
+      <td>10018</td>
+      <td>9</td>
+      <td>1311682500</td>
+    </tr>
+    <tr>
+      <th>103762</th>
+      <td>23267</td>
+      <td>10071</td>
+      <td>10</td>
+      <td>1274965260</td>
+    </tr>
+    <tr>
+      <th>60013</th>
+      <td>6952</td>
+      <td>10200</td>
+      <td>9</td>
+      <td>1245919800</td>
+    </tr>
+    <tr>
+      <th>98439</th>
+      <td>20620</td>
+      <td>10111</td>
+      <td>9</td>
+      <td>1369739760</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">val_df</span><span class="o">.</span><span class="n">shape</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>(28142, 4)</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">sharex</span><span class="o">=</span><span class="s1">'col'</span><span class="p">,</span> <span class="n">sharey</span><span class="o">=</span><span class="s1">'row'</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="n">train_df</span><span class="p">[</span><span class="s1">'rate'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">val_df</span><span class="p">[</span><span class="s1">'rate'</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">train_df</span><span class="p">[</span><span class="s1">'rate'</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>count    112568.000000
+mean          8.954703
+std           2.104698
+min           1.000000
+25%           9.000000
+50%          10.000000
+75%          10.000000
+max          10.000000
+Name: rate, dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">movies_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'movies.txt'</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'</span><span class="se">\t</span><span class="s1">'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">movies_df</span> <span class="o">=</span> <span class="n">movies_df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">'movie'</span><span class="p">)</span>
+<span class="n">movies_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>title_eng</th>
+      <th>year</th>
+      <th>grade</th>
+    </tr>
+    <tr>
+      <th>movie</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10001</th>
+      <td>시네마 천국</td>
+      <td>Cinema Paradiso , 1988</td>
+      <td>2013.0</td>
+      <td>전체 관람가</td>
+    </tr>
+    <tr>
+      <th>10002</th>
+      <td>빽 투 더 퓨쳐</td>
+      <td>Back To The Future , 1985</td>
+      <td>2015.0</td>
+      <td>12세 관람가</td>
+    </tr>
+    <tr>
+      <th>10003</th>
+      <td>빽 투 더 퓨쳐 2</td>
+      <td>Back To The Future Part 2 , 1989</td>
+      <td>2015.0</td>
+      <td>12세 관람가</td>
+    </tr>
+    <tr>
+      <th>10004</th>
+      <td>빽 투 더 퓨쳐 3</td>
+      <td>Back To The Future Part III , 1990</td>
+      <td>1990.0</td>
+      <td>전체 관람가</td>
+    </tr>
+    <tr>
+      <th>10005</th>
+      <td>스타워즈 에피소드 4 - 새로운 희망</td>
+      <td>Star Wars , 1977</td>
+      <td>1997.0</td>
+      <td>PG</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">castings_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'castings.csv'</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">castings_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie</th>
+      <th>people</th>
+      <th>order</th>
+      <th>leading</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10001</td>
+      <td>4374</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10001</td>
+      <td>178</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10001</td>
+      <td>3241</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10001</td>
+      <td>47952</td>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10001</td>
+      <td>47953</td>
+      <td>5</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">countries_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'countries.csv'</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">countries_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie</th>
+      <th>country</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10001</td>
+      <td>이탈리아</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10001</td>
+      <td>프랑스</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10002</td>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10003</td>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10004</td>
+      <td>미국</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">genres_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="s1">'genres.csv'</span><span class="p">),</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+<span class="n">genres_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>movie</th>
+      <th>genre</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>10001</td>
+      <td>드라마</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>10001</td>
+      <td>멜로/로맨스</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>10002</td>
+      <td>SF</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>10002</td>
+      <td>코미디</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>10003</td>
+      <td>SF</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">combined_genres_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">genres_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'movie'</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">'/'</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'genre'</span><span class="p">])),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'genres'</span><span class="p">])</span>
+<span class="n">combined_genres_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>genres</th>
+    </tr>
+    <tr>
+      <th>movie</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10001</th>
+      <td>드라마/멜로/로맨스</td>
+    </tr>
+    <tr>
+      <th>10002</th>
+      <td>SF/코미디</td>
+    </tr>
+    <tr>
+      <th>10003</th>
+      <td>SF/코미디</td>
+    </tr>
+    <tr>
+      <th>10004</th>
+      <td>서부/SF/판타지/코미디</td>
+    </tr>
+    <tr>
+      <th>10005</th>
+      <td>판타지/모험/SF/액션</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">combined_castings_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">castings_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'movie'</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'people'</span><span class="p">])),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'people'</span><span class="p">])</span>
+<span class="n">combined_castings_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>people</th>
+    </tr>
+    <tr>
+      <th>movie</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10001</th>
+      <td>[4374, 178, 3241, 47952, 47953, 19538, 18991, ...</td>
+    </tr>
+    <tr>
+      <th>10002</th>
+      <td>[1076, 4603, 917, 8637, 5104, 9986, 7470, 9987]</td>
+    </tr>
+    <tr>
+      <th>10003</th>
+      <td>[1076, 4603, 917, 5104, 391, 5106, 5105, 5107,...</td>
+    </tr>
+    <tr>
+      <th>10004</th>
+      <td>[1076, 4603, 1031, 5104, 10001, 5984, 10002, 1...</td>
+    </tr>
+    <tr>
+      <th>10005</th>
+      <td>[1007, 535, 215, 1236, 35]</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">combined_countries_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">countries_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'movie'</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">','</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s1">'country'</span><span class="p">])),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'countries'</span><span class="p">])</span>
+<span class="n">combined_countries_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>countries</th>
+    </tr>
+    <tr>
+      <th>movie</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10001</th>
+      <td>이탈리아,프랑스</td>
+    </tr>
+    <tr>
+      <th>10002</th>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10003</th>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10004</th>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10005</th>
+      <td>미국</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">movies_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">movies_df</span><span class="p">,</span> <span class="n">combined_genres_df</span><span class="p">,</span> <span class="n">combined_castings_df</span><span class="p">,</span> <span class="n">combined_countries_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">movies_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>title</th>
+      <th>title_eng</th>
+      <th>year</th>
+      <th>grade</th>
+      <th>genres</th>
+      <th>people</th>
+      <th>countries</th>
+    </tr>
+    <tr>
+      <th>movie</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10001</th>
+      <td>시네마 천국</td>
+      <td>Cinema Paradiso , 1988</td>
+      <td>2013.0</td>
+      <td>전체 관람가</td>
+      <td>드라마/멜로/로맨스</td>
+      <td>[4374, 178, 3241, 47952, 47953, 19538, 18991, ...</td>
+      <td>이탈리아,프랑스</td>
+    </tr>
+    <tr>
+      <th>10002</th>
+      <td>빽 투 더 퓨쳐</td>
+      <td>Back To The Future , 1985</td>
+      <td>2015.0</td>
+      <td>12세 관람가</td>
+      <td>SF/코미디</td>
+      <td>[1076, 4603, 917, 8637, 5104, 9986, 7470, 9987]</td>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10003</th>
+      <td>빽 투 더 퓨쳐 2</td>
+      <td>Back To The Future Part 2 , 1989</td>
+      <td>2015.0</td>
+      <td>12세 관람가</td>
+      <td>SF/코미디</td>
+      <td>[1076, 4603, 917, 5104, 391, 5106, 5105, 5107,...</td>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10004</th>
+      <td>빽 투 더 퓨쳐 3</td>
+      <td>Back To The Future Part III , 1990</td>
+      <td>1990.0</td>
+      <td>전체 관람가</td>
+      <td>서부/SF/판타지/코미디</td>
+      <td>[1076, 4603, 1031, 5104, 10001, 5984, 10002, 1...</td>
+      <td>미국</td>
+    </tr>
+    <tr>
+      <th>10005</th>
+      <td>스타워즈 에피소드 4 - 새로운 희망</td>
+      <td>Star Wars , 1977</td>
+      <td>1997.0</td>
+      <td>PG</td>
+      <td>판타지/모험/SF/액션</td>
+      <td>[1007, 535, 215, 1236, 35]</td>
+      <td>미국</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dataset-Loader">
+<a class="anchor" href="#Dataset-Loader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataset Loader<a class="anchor-link" href="#Dataset-Loader"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+
+<span class="k">class</span> <span class="nc">DatasetLoader</span><span class="p">:</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">,</span> <span class="n">val_temp_df</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span><span class="p">),</span>
+                                                      <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min_rating</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">rate</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_rating</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">rate</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_users</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_users</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_users</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_to_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">original</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">original</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_users</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unique_movies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_movies</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_movies</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movie_to_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">original</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">original</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_movies</span><span class="p">)}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">val_df</span> <span class="o">=</span> <span class="n">val_temp_df</span><span class="p">[</span><span class="n">val_temp_df</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_users</span><span class="p">)</span> \
+                                  <span class="o">&amp;</span> <span class="n">val_temp_df</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_movies</span><span class="p">)]</span>
+        
+    <span class="k">def</span> <span class="nf">generate_trainset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">X_train</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'user'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_to_index</span><span class="p">),</span>
+                                <span class="s1">'movie'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie_to_index</span><span class="p">)})</span>
+        <span class="n">y_train</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">train_df</span><span class="p">[</span><span class="s1">'rate'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span>
+
+    <span class="k">def</span> <span class="nf">generate_valset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">X_val</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'user'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_df</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">user_to_index</span><span class="p">),</span>
+                              <span class="s1">'movie'</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_df</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">movie_to_index</span><span class="p">)})</span>
+        <span class="n">y_val</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">val_df</span><span class="p">[</span><span class="s1">'rate'</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">X_val</span><span class="p">,</span> <span class="n">y_val</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Model-Structure">
+<a class="anchor" href="#Model-Structure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Model Structure<a class="anchor-link" href="#Model-Structure"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span><span class="p">,</span> <span class="n">optim</span>
+
+<span class="k">class</span> <span class="nc">FeedForwardEmbedNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">dropouts</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">embedding_dropout</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">user_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">movie_emb</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">n_movies</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">drop</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">embedding_dropout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="o">*</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">generate_layers</span><span class="p">(</span><span class="n">n_factors</span><span class="o">*</span><span class="mi">2</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">dropouts</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+                                           
+    <span class="k">def</span> <span class="nf">generate_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_factors</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">dropouts</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">dropouts</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">hidden</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">idx</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">n_factors</span><span class="p">,</span> <span class="n">hidden</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden</span><span class="p">[</span><span class="n">idx</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">hidden</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="k">yield</span> <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span>
+            <span class="k">yield</span> <span class="n">nn</span><span class="o">.</span><span class="n">Dropout</span><span class="p">(</span><span class="n">dropouts</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+                                         
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">,</span> <span class="n">movies</span><span class="p">,</span> <span class="n">min_rating</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">max_rating</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="n">concat_features</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">user_emb</span><span class="p">(</span><span class="n">users</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">movie_emb</span><span class="p">(</span><span class="n">movies</span><span class="p">)],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_layers</span><span class="p">(</span><span class="n">concat_features</span><span class="p">))</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="n">out</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_rating</span> <span class="o">-</span> <span class="n">min_rating</span><span class="p">))</span> <span class="o">+</span> <span class="n">min_rating</span>
+        <span class="k">return</span> <span class="n">out</span>
+    
+    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">users</span><span class="p">,</span> <span class="n">movies</span><span class="p">):</span>
+        <span class="n">output_scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">users</span><span class="p">,</span> <span class="n">movies</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_scores</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">class</span> <span class="nc">BatchIterator</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">shuffle</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">X</span> <span class="o">=</span> <span class="n">X</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">shuffle</span> <span class="o">=</span> <span class="n">shuffle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="n">batch_size</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_batches</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">bs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">bs</span><span class="p">:(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bs</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">k</span> <span class="o">*</span> <span class="n">bs</span><span class="p">:(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">bs</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">batches</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="ow">in</span> <span class="n">BatchIterator</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bs</span><span class="p">,</span> <span class="n">shuffle</span><span class="p">):</span>
+        <span class="n">x_batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">x_batch</span><span class="p">)</span>
+        <span class="n">y_batch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">y_batch</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Train-model">
+<a class="anchor" href="#Train-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Train model<a class="anchor-link" href="#Train-model"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">model_train</span><span class="p">(</span><span class="n">ds</span><span class="p">,</span> <span class="n">config</span><span class="p">):</span>
+    <span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'cuda:0'</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">'cpu'</span><span class="p">)</span>
+
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">generate_trainset</span><span class="p">()</span>
+    <span class="n">X_valid</span><span class="p">,</span> <span class="n">y_valid</span> <span class="o">=</span> <span class="n">ds</span><span class="o">.</span><span class="n">generate_valset</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'TrainSet Info: </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">num_users</span><span class="si">}</span><span class="s1"> users, </span><span class="si">{</span><span class="n">ds</span><span class="o">.</span><span class="n">num_movies</span><span class="si">}</span><span class="s1"> movies'</span><span class="p">)</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">FeedForwardEmbedNN</span><span class="p">(</span>
+        <span class="n">n_users</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">num_users</span><span class="p">,</span> <span class="n">n_movies</span><span class="o">=</span><span class="n">ds</span><span class="o">.</span><span class="n">num_movies</span><span class="p">,</span>
+        <span class="n">n_factors</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'num_factors'</span><span class="p">],</span> <span class="n">hidden</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'hidden_layers'</span><span class="p">],</span>
+        <span class="n">embedding_dropout</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'embedding_dropout'</span><span class="p">],</span> <span class="n">dropouts</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'dropouts'</span><span class="p">]</span>
+    <span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="n">batch_size</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'batch_size'</span><span class="p">]</span>
+    <span class="n">num_epochs</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'num_epochs'</span><span class="p">]</span>
+    <span class="n">max_patience</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'total_patience'</span><span class="p">]</span>
+    <span class="n">num_patience</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">best_loss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+
+    <span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">(</span><span class="n">reduction</span><span class="o">=</span><span class="s1">'sum'</span><span class="p">)</span>
+    <span class="n">criterion</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'learning_rate'</span><span class="p">],</span>
+                           <span class="n">weight_decay</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'weight_decay'</span><span class="p">])</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">)):</span>
+        <span class="n">training_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">batches</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bs</span><span class="o">=</span><span class="n">batch_size</span><span class="p">):</span>
+            <span class="n">x_batch</span><span class="p">,</span> <span class="n">y_batch</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="c1"># with torch.no_grad() 와 동일한 syntax 입니다</span>
+            <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">set_grad_enabled</span><span class="p">(</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_batch</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">x_batch</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">ds</span><span class="o">.</span><span class="n">min_rating</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">max_rating</span><span class="p">)</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">y_batch</span><span class="p">)</span>
+                <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+                <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">training_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="n">result</span><span class="p">[</span><span class="s1">'train'</span><span class="p">]</span> <span class="o">=</span> <span class="n">training_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+
+        <span class="c1"># Apply Early Stopping criteria and save best model params</span>
+        <span class="n">val_outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">X_valid</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span>
+                            <span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">X_valid</span><span class="o">.</span><span class="n">movie</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">ds</span><span class="o">.</span><span class="n">min_rating</span><span class="p">,</span> <span class="n">ds</span><span class="o">.</span><span class="n">max_rating</span><span class="p">)</span>
+        <span class="n">val_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">val_outputs</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">FloatTensor</span><span class="p">(</span><span class="n">y_valid</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span>
+        <span class="n">result</span><span class="p">[</span><span class="s1">'val'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">((</span><span class="n">val_loss</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">X_valid</span><span class="p">))</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">val_loss</span> <span class="o">&lt;</span> <span class="n">best_loss</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">'Save new model on epoch: </span><span class="si">%d</span><span class="s1">'</span> <span class="o">%</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">best_loss</span> <span class="o">=</span> <span class="n">val_loss</span>
+            <span class="n">result</span><span class="p">[</span><span class="s1">'best_loss'</span><span class="p">]</span> <span class="o">=</span> <span class="n">val_loss</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">config</span><span class="p">[</span><span class="s1">'save_path'</span><span class="p">])</span>
+            <span class="n">num_patience</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">num_patience</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'[epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">] train: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s2">"train"</span><span class="p">]</span><span class="si">}</span><span class="s1"> - val: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="s2">"val"</span><span class="p">]</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">num_patience</span> <span class="o">&gt;=</span> <span class="n">max_patience</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Early Stopped after epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">break</span>
+
+    <span class="k">return</span> <span class="n">result</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data_dir</span> <span class="o">=</span> <span class="s1">'../datasets/kmrd/kmr_dataset/datafile/kmrd-small'</span>
+<span class="n">data_filename</span> <span class="o">=</span> <span class="s1">'rates.csv'</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">data_filename</span><span class="p">)</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">DatasetLoader</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"num_factors"</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span>
+    <span class="s2">"hidden_layers"</span><span class="p">:</span> <span class="p">[</span><span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">16</span><span class="p">],</span>
+    <span class="s2">"embedding_dropout"</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span>
+    <span class="s2">"dropouts"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">],</span>
+    <span class="s2">"learning_rate"</span><span class="p">:</span> <span class="mf">1e-3</span><span class="p">,</span>
+    <span class="s2">"weight_decay"</span><span class="p">:</span> <span class="mf">1e-5</span><span class="p">,</span>
+    <span class="s2">"batch_size"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="s2">"num_epochs"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="s2">"total_patience"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span>
+    <span class="s2">"save_path"</span><span class="p">:</span> <span class="s2">"params.data"</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">model_train</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>TrainSet Info: 44554 users, 594 movies
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre> 33%|███▎      | 1/3 [00:22&lt;00:44, 22.32s/it]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Save new model on epoch: 1
+[epoch: 1] train: 4.282606438265097 - val: 4.0021843910217285
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre> 67%|██████▋   | 2/3 [00:43&lt;00:21, 21.93s/it]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Save new model on epoch: 2
+[epoch: 2] train: 3.695007214637341 - val: 3.7426116466522217
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>100%|██████████| 3/3 [01:06&lt;00:00, 22.07s/it]</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Save new model on epoch: 3
+[epoch: 3] train: 3.2749883148887515 - val: 3.700655937194824
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{'train': 3.2749883148887515,
+ 'val': 3.700655937194824,
+ 'best_loss': tensor(75152.9219, device='cuda:0', grad_fn=&lt;MseLossBackward0&gt;)}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Test">
+<a class="anchor" href="#Test" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test<a class="anchor-link" href="#Test"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">model_valid</span><span class="p">(</span><span class="n">user_id_list</span><span class="p">,</span> <span class="n">movie_id_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">):</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">DatasetLoader</span><span class="p">(</span><span class="n">data_path</span><span class="p">)</span>
+    <span class="n">processed_test_input_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">'user_id'</span><span class="p">:</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">user_to_index</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">user_id_list</span><span class="p">],</span>
+        <span class="s1">'movie_id'</span><span class="p">:</span> <span class="p">[</span><span class="n">dataset</span><span class="o">.</span><span class="n">movie_to_index</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">movie_id_list</span><span class="p">]</span>
+    <span class="p">})</span>
+
+    <span class="c1"># 학습한 모델 load하기 </span>
+    <span class="n">my_model</span> <span class="o">=</span> <span class="n">FeedForwardEmbedNN</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">num_users</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">num_movies</span><span class="p">,</span>
+                       <span class="n">config</span><span class="p">[</span><span class="s1">'hidden_layers'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'dropouts'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'num_factors'</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s1">'embedding_dropout'</span><span class="p">])</span>
+    <span class="n">my_model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'params.data'</span><span class="p">))</span>
+    <span class="n">prediction_outputs</span> <span class="o">=</span> <span class="n">my_model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">users</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">processed_test_input_df</span><span class="o">.</span><span class="n">user_id</span><span class="o">.</span><span class="n">values</span><span class="p">),</span>
+                     <span class="n">movies</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">LongTensor</span><span class="p">(</span><span class="n">processed_test_input_df</span><span class="o">.</span><span class="n">movie_id</span><span class="o">.</span><span class="n">values</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">prediction_outputs</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">movie_id_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10253</span><span class="p">,</span> <span class="mi">10102</span><span class="p">,</span> <span class="mi">10007</span><span class="p">]</span>
+<span class="n">user_id</span> <span class="o">=</span> <span class="mi">11242</span>
+<span class="n">user_id_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">user_id</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">movie_id_list</span><span class="p">)</span>
+<span class="n">pred_results</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">model_valid</span><span class="p">(</span><span class="n">user_id_list</span><span class="p">,</span> <span class="n">movie_id_list</span><span class="p">,</span> <span class="n">data_path</span><span class="p">)]</span>
+
+<span class="n">result_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">'userId'</span><span class="p">:</span> <span class="n">user_id_list</span><span class="p">,</span>
+    <span class="s1">'movieId'</span><span class="p">:</span> <span class="n">movie_id_list</span><span class="p">,</span>
+    <span class="c1"># 'movieName': [movieName_dict[x] for x in movie_id_list],</span>
+    <span class="c1"># 'genres': [genres_dict[x] for x in movie_id_list],</span>
+    <span class="s1">'pred_ratings'</span><span class="p">:</span> <span class="n">pred_results</span>
+<span class="p">})</span>
+
+<span class="n">result_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'pred_ratings'</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>userId</th>
+      <th>movieId</th>
+      <th>pred_ratings</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>1</th>
+      <td>11242</td>
+      <td>10102</td>
+      <td>4.948718</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>11242</td>
+      <td>10007</td>
+      <td>4.815145</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>11242</td>
+      <td>10253</td>
+      <td>4.800036</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MySQL] 00) 오리엔테이션 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MySQL] 00) 오리엔테이션" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="데이터베이스와 MySQL" />
+<meta property="og:description" content="데이터베이스와 MySQL" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-03-20T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MySQL] 00) 오리엔테이션" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-03-20T00:00:00-05:00","datePublished":"2018-03-20T00:00:00-05:00","description":"데이터베이스와 MySQL","headline":"[MySQL] 00) 오리엔테이션","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html"},"url":"https://safenumz.github.io/blog/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MySQL] 00) 오리엔테이션</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-03-20T00:00:00-05:00" itemprop="datePublished">
+        Mar 20, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="데이터베이스와-mysql">데이터베이스와 MySQL</h1>
+
+<h2 id="데이터베이스란">데이터베이스란?</h2>
+<ul>
+  <li>데이터를 구조화하여 데이터를 쉽게 관리할 수 있게 해주는 데이터의 저장소</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">favorite</span><span class="p">;</span>
+
+<span class="k">SELECT</span> <span class="err">아티스트</span><span class="p">,</span> <span class="err">길이</span> <span class="k">FROM</span> <span class="n">favorite</span> <span class="k">LIMIT</span> <span class="mi">2</span><span class="p">;</span>
+
+<span class="c1">-- 길이 순서에 따라 정렬</span>
+<span class="k">SELECT</span> <span class="err">아티스트</span><span class="p">,</span> <span class="err">길이</span> <span class="k">FROM</span> <span class="n">favorite</span> <span class="k">ORDER</span> <span class="k">BY</span> <span class="err">길이</span><span class="p">;</span>
+
+<span class="c1">-- 데이터 추가</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">favorite</span> <span class="k">VALUES</span><span class="p">(</span><span class="s1">'꿈'</span><span class="p">,</span> <span class="s1">'조용필'</span><span class="p">,</span> <span class="s1">'4:47'</span><span class="p">,</span> <span class="s1">'The Dreams'</span><span class="p">);</span>
+
+<span class="c1">-- 전체 확인</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">favorite</span>
+</code></pre></div></div>
+
+<h2 id="데이터베이스의-종류">데이터베이스의 종류</h2>
+<ul>
+  <li>관계형 데이터베이스
+    <ul>
+      <li>MySQL, oracle, mssql</li>
+    </ul>
+  </li>
+  <li>nosql
+    <ul>
+      <li>mongodb</li>
+      <li>http://nosql-database.org</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="설치">설치</h2>
+<h3 id="윈도우">윈도우</h3>
+<ul>
+  <li><a href="http://www.apmsetup.com/">http://www.apmsetup.com/</a></li>
+  <li>apm setup에 접속이 안된다면 bitnami를 설치하면 됨</li>
+  <li><a href="https://bitnami.com/stack/wamp">https://bitnami.com/stack/wamp</a></li>
+  <li>여기서는 bitnami로 진행함</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+&lt;!--
+$ vi /etc/profile
+
+관리자 권한으로 cmd 실행 후 /etc/profile을 열고 마지막 줄에
+
+export PATH="$PATH:C://Bitnami/wampstack-7.1.26-2/mysql/bin"
+
+코드를 넣어주고 source /etc/profile 를 입력하면
+
+$ source /etc/profile
+
+어느 디렉토리에서나 mysql을 이용할 수 있다고 하는데 현재 이건 잘 안되고 있음
+--&gt;
+
+
+
+
+// C://Bitnami/wampstack-7.1.26-2/mysql/bin 경로로 이동
+
+$ cd C://Bitnami/wampstack-7.1.26-2/mysql/bin
+
+
+// C://Bitnami/wampstack-7.1.26-2/mysql/bin 경로에서 mysql을 실행하면 되는데 cmd, powershell, git bash 창 마다 먹히는 명령어가 전부 다른 문제가 있음
+
+
+// cmd의 경우
+$ mysql -uroot -p
+
+// powershell의 경우
+$ ./mysql -uroot -p
+
+// git bash의 경우
+$ winpty ./mysql -uroot -p
+
+mysql&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>MySQL이나 MariaDB 는 초기 설치 시, 루트 계정의 비밀번호 세팅을 해줘야한다.
+3가지 방법이 있다.
+
+1. root 계정 접속 후, mysql database 의 user table 에서 비밀번호 업데이트
+$ use mysql
+$ update user set password=password('비밀번호') where user='root';
+$ FLUSH PRIVILEGES;
+
+2. root 계정 접속 후, 비밀번호 변경
+$ set password for 'root'@'localhost' = password('비밀번호');
+$FLUSH PRIVILEGES;
+
+3. mysqladmin 유틸리티를 통한 쉘에서 비밀번호 변경
+$ mysqladmin -u 계정 -p password '비밀번호'
+-&gt;  set 이나, update 문에서 password() 함수를 통하여 비밀번호 암호화를 해주는 것이 좋다
+
+4. 특정 데이터베이스에 대한 권한을 설정해준다. (로컬 데이터베이스를 기준으로함)
+$ grant all privileges on local_database.* to '계정'@'localhost' identified by '비밀번호';
+$ FLUSH PRIVILEGES;
+
+++추가
+MySQL 5.7 이상 버전에서는 아래와 같이 해줘야함.
+
+$ update mysql.user SET authentication_string=PASSWORD('비밀번호') WHERE user='root';
+
+$ FLUSH PRIVILEGES;
+</code></pre></div></div>
+
+<h3 id="리눅스우분투">리눅스(우분투)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Apache 설치
+$ sudo apt-get install apache2
+
+mysql 인증 모듈 설치
+$ sudo apt-get install libapache2-mod-auth-mysql
+
+mysql 설치
+$ sudo apt install mysql-server mysql-client
+
+php 설치
+$ sudo apt-get install php5-commom php5 libapache2-mod-php5
+
+php-mysql 연동 모듈설치
+$ sudo apt-get install php5-mysql
+
+아파치 재시작
+$ sudo /etc/init.d/apache2 restart
+
+mysql 관리자 비밀번호 설정
+$ sudo mysqladmin -u root 비밀번호 새로운비밀번호
+
+$ mysql
+
+$ mysql -uroot -p
+
+Enter password: root 계정의 패스워드 입력
+
+mysql&gt; show database;
+
+mysql&gt;
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. apache가 잘 설치되었는지 확인
+// 파이어폭스 주소창에 localhost 치면 It works!  
+
+2. php가 잘 설치되었는지 확인
+$ cd /var/www
+
+/var/www$ ls -ls
+
+/var/www$ cat index.html
+// It works! 출력
+
+/var/www$ sudo vi phpinfo.php
+
+// phpinfo 수정
+
+&lt;?
+phpinfo();
+?&gt;
+
+
+// shift + enter 누른 후 wq 눌러서 저장
+
+/var/www$ cat phpinfo.php
+
+// 파이어폭스에서 localhost/phpinfo.php 입력하고 php 관련 정보 페이지 나오면 잘 설치됨
+</code></pre></div></div>
+
+<h3 id="맥mac">맥(Mac)</h3>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// mysql 홈페이지에서 mysql 설치 후
+
+$ cd /usr/loca/mysql/bin
+
+$ sudo ./mssql
+
+mysql&gt; use mysql;
+
+mysql&gt; update user set password=password('관리자비밀번호지정') where user='root';
+
+mysql&gt; flush privileges;
+
+$ sudo ./mysql -uroot -p
+</code></pre></div></div>
+
+<h2 id="mysql-클라이언트">MySQL 클라이언트</h2>
+<ul>
+  <li>mysql-monitor : mysq -u아이디 -p비밀번호</li>
+  <li>mysql query brower : GUI</li>
+  <li>phpMyAdmin : 서버에 직접 설치하는 웹프로그램</li>
+  <li>navicat : 유료</li>
+</ul>
+
+<h2 id="phpmyadmin">phpMyAdmin</h2>
+<ul>
+  <li>웹기반으로 mysql을 제어할 수 있는 mysql-client</li>
+</ul>
+
+<p>ubuntu에서 설치</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo apt-get install phpmyadmin
+
+// apache2 선택해 설치
+// username은 root
+</code></pre></div></div>
+
+<h2 id="navicat">navicat</h2>
+<ul>
+  <li>gui 환경에서 백업, 데이터동기화, 모델링 도구 등 다양한 기능</li>
+  <li>유료</li>
+</ul>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

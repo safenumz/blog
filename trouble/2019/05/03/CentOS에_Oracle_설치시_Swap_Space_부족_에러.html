@@ -1,0 +1,32 @@
+<h1 id="environment">Environment</h1>
+<ul>
+  <li>CentOS 7</li>
+  <li>Oracle 11g EE</li>
+</ul>
+
+<h1 id="trouble">Trouble</h1>
+<ul>
+  <li>CentOS에 Oracle 설치시 Swap Space 부족 에러가 발생하는 경우</li>
+</ul>
+
+<pre>
+This system does not meet the minimum requirements for swap space.  Based on
+the amount of physical memory available on the system, Oracle Database 11g
+Express Edition requires 2048 MB of swap space. This system has 199 MB
+of swap space.  Configure more swap space on the system and retry the
+installation.
+</pre>
+
+<h1 id="shooting">Shooting</h1>
+<ul>
+  <li>Swap Space를 늘려 준다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /swap
+
+<span class="nv">$ </span><span class="nb">dd </span><span class="k">if</span><span class="o">=</span>/dev/zero <span class="nv">of</span><span class="o">=</span>/swap/swapfile <span class="nv">bs</span><span class="o">=</span>1024 <span class="nv">count</span><span class="o">=</span>2097152
+
+<span class="nv">$ </span><span class="nb">cd</span> /swap
+
+<span class="nv">$ </span>mkswap swapfile
+</code></pre></div></div>

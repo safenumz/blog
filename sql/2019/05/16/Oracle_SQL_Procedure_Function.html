@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Oracle] Procedure / Function | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Oracle] Procedure / Function" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Procedure / Function 익명블록 (anonymous block)은 실행할 때마다 컴파일을 수행하고 작업을 처리 프로시져와 함수는 데이터베이스객체로 저장되어 필요할 때마다 호출 프로시져와 함수의 차이는반환값의 여부" />
+<meta property="og:description" content="Procedure / Function 익명블록 (anonymous block)은 실행할 때마다 컴파일을 수행하고 작업을 처리 프로시져와 함수는 데이터베이스객체로 저장되어 필요할 때마다 호출 프로시져와 함수의 차이는반환값의 여부" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2019/05/16/Oracle_SQL_Procedure_Function.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2019/05/16/Oracle_SQL_Procedure_Function.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-16T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Oracle] Procedure / Function" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-16T00:00:00-05:00","datePublished":"2019-05-16T00:00:00-05:00","description":"Procedure / Function 익명블록 (anonymous block)은 실행할 때마다 컴파일을 수행하고 작업을 처리 프로시져와 함수는 데이터베이스객체로 저장되어 필요할 때마다 호출 프로시져와 함수의 차이는반환값의 여부","headline":"[Oracle] Procedure / Function","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2019/05/16/Oracle_SQL_Procedure_Function.html"},"url":"https://safenumz.github.io/blog/sql/2019/05/16/Oracle_SQL_Procedure_Function.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Oracle] Procedure / Function</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-16T00:00:00-05:00" itemprop="datePublished">
+        May 16, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="procedure--function">Procedure / Function</h1>
+<ul>
+  <li>익명블록 (anonymous block)은 실행할 때마다 컴파일을 수행하고 작업을 처리</li>
+  <li>프로시져와 함수는 데이터베이스객체로 저장되어 필요할 때마다 호출</li>
+  <li>프로시져와 함수의 차이는반환값의 여부</li>
+</ul>
+
+<h2 id="procedure">Procedure</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="err">프로지셔명</span> <span class="p">(</span><span class="err">파리미터</span> <span class="p">[</span> <span class="k">IN</span><span class="o">|</span><span class="k">OUT</span><span class="o">|</span><span class="k">INOUT</span> <span class="p">]</span>  <span class="err">데이터타입</span><span class="p">)</span>
+<span class="k">IS</span>
+    <span class="err">변수선언</span><span class="p">;</span>
+<span class="k">BEGIN</span>
+    <span class="err">처리내용</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="fuction">Fuction</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="err">함수명</span> <span class="p">(</span> <span class="err">파리미터</span> <span class="err">데이터타입</span> <span class="p">)</span>
+
+<span class="k">RETURN</span> <span class="err">데이터타입</span> <span class="k">IS</span>
+    <span class="err">변수선언</span><span class="p">;</span>
+<span class="k">BEGIN</span>
+    <span class="err">처리내용</span><span class="p">;</span>
+    <span class="k">RETURN</span> <span class="err">리턴값</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>실행 : EXEC / EXECUTE</li>
+  <li>VARCHAR2 타입으로파라미터 선언시 구체적인 문자수를 기술하면 오류 발생</li>
+</ul>
+
+<h5 id="1-사번과-급여를-넘겨받아-수정하는-프로시져">1. 사번과 급여를 넘겨받아 수정하는 프로시져</h5>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="n">emp_sal_update</span> <span class="p">(</span>
+<span class="n">p_empno</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">empno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+<span class="n">p_sal</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">)</span>
+
+<span class="k">IS</span>
+
+<span class="k">BEGIN</span>
+    <span class="k">UPDATE</span> <span class="n">emp</span> <span class="k">SET</span> <span class="n">sal</span> <span class="o">=</span> <span class="n">p_sal</span> <span class="k">WHERE</span> <span class="n">empno</span> <span class="o">=</span> <span class="n">p_empno</span><span class="p">;</span>
+    <span class="n">IF</span> <span class="k">SQL</span><span class="o">%</span><span class="n">NOTFOUND</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span> <span class="n">p_empno</span> <span class="o">||</span> <span class="s1">'는 없는 사원번호입니다.'</span><span class="p">);</span>
+    <span class="k">ELSE</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span> <span class="n">p_empno</span> <span class="o">||</span> <span class="s1">'의 급여를 수정하였습니다.'</span><span class="p">);</span>
+    <span class="k">END</span> <span class="n">IF</span><span class="p">;</span>
+    <span class="k">COMMIT</span><span class="p">;</span>
+<span class="k">END</span><span class="p">;</span>
+<span class="o">/</span>
+</code></pre></div></div>
+
+<h5 id="2-사원명-업무-매니저-급여를-넘겨받아-등록하는-프로시져를-생성">2. 사원명, 업무, 매니저, 급여를 넘겨받아 등록하는 프로시져를 생성</h5>
+<ul>
+  <li>단, 부서번호는 매니저의 부서 번호와 동일하고 사원번호는 시퀀스를 이용</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="n">emp_input</span> <span class="p">(</span>
+        <span class="n">v_name</span>    <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_job</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">job</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_mgr</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">mgr</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_sal</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">)</span>
+
+<span class="k">IS</span>
+    <span class="c1">-- 변수선언</span>
+    <span class="n">v_deptno</span>  <span class="n">emp</span><span class="p">.</span><span class="n">deptno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+
+<span class="k">BEGIN</span>
+    <span class="k">SELECT</span> <span class="n">deptno</span> <span class="k">INTO</span> <span class="n">v_deptno</span>  <span class="k">FROM</span> <span class="n">emp</span> <span class="k">WHERE</span> <span class="n">empno</span><span class="o">=</span><span class="n">v_mgr</span><span class="p">;</span>
+    <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">emp</span><span class="p">(</span><span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">mgr</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">deptno</span> <span class="p">)</span>
+        <span class="k">VALUES</span><span class="p">(</span> <span class="n">emp_empno_seq</span><span class="p">.</span><span class="n">nextval</span><span class="p">,</span> <span class="k">upper</span><span class="p">(</span><span class="n">v_name</span><span class="p">),</span> <span class="k">upper</span><span class="p">(</span><span class="n">v_job</span><span class="p">),</span> <span class="n">v_mgr</span><span class="p">,</span> <span class="n">v_sal</span><span class="p">,</span> <span class="n">v_deptno</span> <span class="p">);</span>
+
+<span class="c1">--EXCEPTION</span>
+   <span class="c1">--WHEN NO_DATA_FOUND THEN dbms_output.put_line('입력한 매니저 번호가 없습니다');</span>
+   <span class="c1">--WHEN OTHERS THEN dbms_output.put_line('에러발생');</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>set serveroutput on<br />
+execute emp_input(‘KIM’, ‘SALESMAN’, 7788, 3000 );</p>
+
+<h5 id="3넘겨-받은-사원명의-정보-중-부서명과-급여를-검색하는-프로시져">3.넘겨 받은 사원명의 정보 중 부서명과 급여를 검색하는 프로시져</h5>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">PROCEDURE</span> <span class="n">dname_sal_display</span> <span class="p">(</span>
+        <span class="n">v_ename</span>   <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_dname</span>   <span class="k">OUT</span> <span class="n">dept</span><span class="p">.</span><span class="n">dname</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_sal</span>     <span class="k">OUT</span> <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span>  <span class="p">)</span>
+
+<span class="k">IS</span>
+
+<span class="k">BEGIN</span>
+    <span class="k">SELECT</span> <span class="n">e</span><span class="p">.</span><span class="n">sal</span> <span class="p">,</span> <span class="n">d</span><span class="p">.</span><span class="n">dname</span> <span class="k">INTO</span> <span class="n">v_sal</span><span class="p">,</span> <span class="n">v_dname</span> 
+<span class="k">FROM</span> <span class="n">emp</span> <span class="n">e</span><span class="p">,</span> <span class="n">dept</span> <span class="n">d</span> <span class="k">WHERE</span> <span class="n">e</span><span class="p">.</span><span class="n">deptno</span><span class="o">=</span><span class="n">d</span><span class="p">.</span><span class="n">deptno</span> <span class="k">AND</span> <span class="n">ename</span><span class="o">=</span><span class="k">upper</span><span class="p">(</span><span class="n">v_ename</span><span class="p">);</span>     
+
+<span class="n">EXCEPTION</span>
+    <span class="k">WHEN</span> <span class="n">NO_DATA_FOUND</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'해당 데이터가 없습니다'</span><span class="p">);</span>
+    <span class="k">WHEN</span> <span class="n">TOO_MANY_ROWS</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'검색 데이터가 2건 이상입니다.'</span><span class="p">);</span>
+    <span class="k">WHEN</span> <span class="n">OTHERS</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'에러발생'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>VAR g_dname VARCHAR2(15)<br />
+VAR g_sal NUMBER<br />
+set serveroutput on<br />
+EXECUTE dname_sal_display(‘SCOTT’, :g_dname, :g_sal );<br />
+PRINT g_dname<br />
+PRINT g_sal</p>
+
+<h5 id="4-사원명을-입력받아-부서번호-부서명-급여를-출력하는-function을-작성하되-부서번호를-리턴한다">4. 사원명을 입력받아 부서번호, 부서명, 급여를 출력하는 FUNCTION을 작성하되 부서번호를 리턴한다.</h5>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="k">FUNCTION</span> <span class="n">emp_dis_func</span> <span class="p">(</span> <span class="n">v_ename</span>   <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">)</span>
+<span class="k">RETURN</span> <span class="n">emp</span><span class="p">.</span><span class="n">deptno</span><span class="o">%</span><span class="k">TYPE</span>
+
+<span class="k">IS</span>
+    <span class="n">v_deptno</span>  <span class="n">emp</span><span class="p">.</span><span class="n">deptno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+    <span class="n">v_dname</span>   <span class="n">dept</span><span class="p">.</span><span class="n">dname</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+    <span class="n">v_sal</span>     <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+
+<span class="k">BEGIN</span>
+    <span class="k">SELECT</span> <span class="n">deptno</span><span class="p">,</span> <span class="n">sal</span> <span class="k">INTO</span> <span class="n">v_deptno</span><span class="p">,</span> <span class="n">v_sal</span>  <span class="k">FROM</span> <span class="n">emp</span> <span class="k">WHERE</span> <span class="n">ename</span><span class="o">=</span><span class="k">upper</span><span class="p">(</span><span class="n">v_ename</span><span class="p">);</span>
+    <span class="k">SELECT</span> <span class="n">dname</span> <span class="k">INTO</span> <span class="n">v_dname</span> <span class="k">FROM</span> <span class="n">dept</span> <span class="k">WHERE</span> <span class="n">deptno</span><span class="o">=</span><span class="n">v_deptno</span><span class="p">;</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'사 원 명 : '</span> <span class="o">||</span> <span class="n">v_ename</span> <span class="p">);</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'부서번호 : '</span> <span class="o">||</span> <span class="n">v_deptno</span> <span class="p">);</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'부 서 명 : '</span> <span class="o">||</span> <span class="n">v_dname</span> <span class="p">);</span>
+    <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'급   여  : '</span> <span class="o">||</span> <span class="n">v_sal</span> <span class="p">);</span>
+    <span class="k">RETURN</span> <span class="n">v_deptno</span><span class="p">;</span>
+
+<span class="n">EXCEPTION</span>
+    <span class="k">WHEN</span> <span class="n">NO_DATA_FOUND</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'해당 데이터가 없습니다'</span><span class="p">);</span>
+    <span class="k">WHEN</span> <span class="n">TOO_MANY_ROWS</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'검색 데이터가 2건 이상입니다.'</span><span class="p">);</span>
+    <span class="k">WHEN</span> <span class="n">OTHERS</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'에러발생'</span><span class="p">);</span>
+<span class="k">END</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>VAR g_deptno NUMBER<br />
+set serveroutput on<br />
+EXECUTE :g_deptno := emp_dis_func(‘WARD’);<br />
+PRINT g_deptno</p>
+
+<h5 id="-도전---사번과-이동할-부서를-넘겨받아-수정하는-프로시져">[ 도전 ]  사번과 이동할 부서를 넘겨받아 수정하는 프로시져</h5>
+<ul>
+  <li>단, 연봉은 기본 연봉의 30%증가 하되, 이동할 부서의 최고연봉보다높으면 최고연봉으로 지정하고 최소연봉보다 낮으면최소연봉으로 지정한다.</li>
+</ul>
+
+<h1 id="package">Package</h1>
+
+<h2 id="패키지-선언">패키지 선언</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="n">PACKAGE</span> <span class="n">emp_package</span> <span class="k">AS</span>
+<span class="c1">-- 사번과 급여를 넘겨받아 수정하는 프로시져</span>
+  <span class="k">PROCEDURE</span> <span class="n">emp_sal_update</span> <span class="p">(</span> <span class="n">p_empno</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">empno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span> <span class="n">p_sal</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">);</span>
+  <span class="c1">-- 사원명, 업무, 매니저, 급여를 넘겨받아 등록하는 프로시져를 생성</span>
+  <span class="k">PROCEDURE</span> <span class="n">emp_input</span> <span class="p">(</span>
+        <span class="n">v_name</span>    <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_job</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">job</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_mgr</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">mgr</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+        <span class="n">v_sal</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">);</span>
+<span class="k">END</span> <span class="n">emp_package</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="패키지-구현">패키지 구현</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">OR</span> <span class="k">REPLACE</span> <span class="n">PACKAGE</span> <span class="n">BODY</span> <span class="n">emp_package</span> <span class="k">AS</span>
+           <span class="c1">-- 사번과 급여를 넘겨받아 수정하는 프로시져</span>
+    <span class="k">PROCEDURE</span> <span class="n">emp_sal_update</span> <span class="p">(</span> <span class="n">p_empno</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">empno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span> <span class="n">p_sal</span> <span class="k">IN</span> <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">)</span>
+        <span class="k">IS</span>
+        <span class="k">BEGIN</span>
+            <span class="k">UPDATE</span> <span class="n">emp</span> <span class="k">SET</span> <span class="n">sal</span> <span class="o">=</span> <span class="n">p_sal</span> <span class="k">WHERE</span> <span class="n">empno</span> <span class="o">=</span> <span class="n">p_empno</span><span class="p">;</span>
+            <span class="n">IF</span> <span class="k">SQL</span><span class="o">%</span><span class="n">NOTFOUND</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span> <span class="n">p_empno</span> <span class="o">||</span> <span class="s1">'는 없는 사원번호입니다.'</span><span class="p">);</span>
+            <span class="k">ELSE</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span> <span class="n">p_empno</span> <span class="o">||</span> <span class="s1">'의 급여를 수정하였습니다.'</span><span class="p">);</span>
+            <span class="k">END</span> <span class="n">IF</span><span class="p">;</span>
+        <span class="k">END</span> <span class="n">emp_sal_update</span><span class="p">;</span>
+
+  <span class="c1">--사원명, 업무, 매니저, 급여를 넘겨받아 등록하는 프로시져를 생성</span>
+      <span class="k">PROCEDURE</span> <span class="n">emp_input</span> <span class="p">(</span>
+            <span class="n">v_name</span>    <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">ename</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+            <span class="n">v_job</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">job</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+            <span class="n">v_mgr</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">mgr</span><span class="o">%</span><span class="k">TYPE</span><span class="p">,</span>
+            <span class="n">v_sal</span>     <span class="k">IN</span>  <span class="n">emp</span><span class="p">.</span><span class="n">sal</span><span class="o">%</span><span class="k">TYPE</span> <span class="p">)</span>
+        <span class="k">IS</span>
+            <span class="c1">-- 변수선언</span>
+            <span class="n">v_deptno</span>  <span class="n">emp</span><span class="p">.</span><span class="n">deptno</span><span class="o">%</span><span class="k">TYPE</span><span class="p">;</span>
+
+        <span class="k">BEGIN</span>
+            <span class="k">SELECT</span> <span class="n">deptno</span> <span class="k">INTO</span> <span class="n">v_deptno</span>  <span class="k">FROM</span> <span class="n">emp</span> <span class="k">WHERE</span> <span class="n">empno</span><span class="o">=</span><span class="n">v_mgr</span><span class="p">;</span>
+            <span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">emp</span><span class="p">(</span><span class="n">empno</span><span class="p">,</span> <span class="n">ename</span><span class="p">,</span> <span class="n">job</span><span class="p">,</span> <span class="n">mgr</span><span class="p">,</span> <span class="n">sal</span><span class="p">,</span> <span class="n">deptno</span> <span class="p">)</span>
+                <span class="k">VALUES</span><span class="p">(</span> <span class="n">emp_empno_seq</span><span class="p">.</span><span class="n">nextval</span><span class="p">,</span> <span class="k">upper</span><span class="p">(</span><span class="n">v_name</span><span class="p">),</span> <span class="k">upper</span><span class="p">(</span><span class="n">v_job</span><span class="p">),</span> <span class="n">v_mgr</span><span class="p">,</span> <span class="n">v_sal</span><span class="p">,</span> <span class="n">v_deptno</span> <span class="p">);</span>
+        <span class="n">EXCEPTION</span>
+            <span class="k">WHEN</span> <span class="n">NO_DATA_FOUND</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'입력한 매니저 번호가 없습니다'</span><span class="p">);</span>
+            <span class="k">WHEN</span> <span class="n">OTHERS</span> <span class="k">THEN</span> <span class="n">dbms_output</span><span class="p">.</span><span class="n">put_line</span><span class="p">(</span><span class="s1">'에러발생'</span><span class="p">);</span>
+        <span class="k">END</span> <span class="n">emp_input</span><span class="p">;</span>
+<span class="k">END</span> <span class="n">emp_package</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="3-패키지-실행">3. 패키지 실행</h2>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exec</span> <span class="n">emp_package</span><span class="p">.</span><span class="n">emp_sal_update</span> <span class="p">(</span> <span class="mi">8021</span><span class="p">,</span> <span class="mi">2000</span> <span class="p">);</span>
+<span class="k">exec</span> <span class="n">emp_package</span><span class="p">.</span><span class="n">emp_input</span><span class="p">(</span><span class="s1">'홍'</span><span class="p">,</span><span class="s1">'SALESMAN'</span><span class="p">,</span><span class="mi">8021</span><span class="p">,</span> <span class="mi">3000</span><span class="p">);</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2019/05/16/Oracle_SQL_Procedure_Function.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

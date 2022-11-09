@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] Oracle JDBC 연동 절차 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] Oracle JDBC 연동 절차" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="JDBC 연동 절차 해당 드라이버 메모리 로딩 연결객체 얻어오기 sql 문장 만들기 sql 전송 객체 얻어오기 Statement : 완벽한 sql PreparedStatement : 미완성 sql CllableStatement : pl-sql의 procedure/function 호출시" />
+<meta property="og:description" content="JDBC 연동 절차 해당 드라이버 메모리 로딩 연결객체 얻어오기 sql 문장 만들기 sql 전송 객체 얻어오기 Statement : 완벽한 sql PreparedStatement : 미완성 sql CllableStatement : pl-sql의 procedure/function 호출시" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-20T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] Oracle JDBC 연동 절차" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-20T00:00:00-05:00","datePublished":"2019-05-20T00:00:00-05:00","description":"JDBC 연동 절차 해당 드라이버 메모리 로딩 연결객체 얻어오기 sql 문장 만들기 sql 전송 객체 얻어오기 Statement : 완벽한 sql PreparedStatement : 미완성 sql CllableStatement : pl-sql의 procedure/function 호출시","headline":"[Java] Oracle JDBC 연동 절차","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html"},"url":"https://safenumz.github.io/blog/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] Oracle JDBC 연동 절차</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-20T00:00:00-05:00" itemprop="datePublished">
+        May 20, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      11 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="jdbc-연동-절차">JDBC 연동 절차</h1>
+<ol>
+  <li>해당 드라이버 메모리 로딩</li>
+  <li>연결객체 얻어오기</li>
+  <li>sql 문장 만들기</li>
+  <li>sql 전송 객체 얻어오기
+    <ul>
+      <li>Statement : 완벽한 sql</li>
+      <li>PreparedStatement : 미완성 sql</li>
+      <li>CllableStatement : pl-sql의 procedure/function 호출시</li>
+    </ul>
+  </li>
+  <li>sql 전송
+    <ul>
+      <li>INSERT/DELETE/UPDATE : int excuteUpdate()</li>
+      <li>SELECT : ResultSet executeQuery()</li>
+    </ul>
+  </li>
+  <li>결과처리</li>
+  <li>닫기</li>
+</ol>
+
+<p>외부에서 넘어오는 sql문은 auto commit 된다. 기본적으로 rollback, commit이 안된다. autocommit을 수동으로 풀어주면 가능</p>
+
+<h1 id="insert">INSERT</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">InsertTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">driver</span> <span class="o">=</span> <span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"jdbc:oracle:thin:@safesoo7.iptime.org:1521:XE"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">user</span> <span class="o">=</span> <span class="s">"scott"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">pass</span> <span class="o">=</span> <span class="s">"tiger"</span><span class="o">;</span>
+        <span class="nc">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 1. 드라이버를 메모리 로딩</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">driver</span><span class="o">);</span>
+            <span class="c1">// 2. 연결객체 얻어오기</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"연결성공"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"연결실패:"</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 3. SQL 문장 만들기</span>
+        <span class="c1">// 4. SQL 전송객체 만들기</span>
+        <span class="c1">// 5. 전송하기</span>
+        <span class="c1">// 6. 닫기</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="c1">// 화면에서 입력값 얻어오기</span>
+            <span class="kt">int</span> <span class="n">empno</span> <span class="o">=</span> <span class="mi">5679</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">ename</span> <span class="o">=</span> <span class="s">"갓DB"</span><span class="o">;</span>
+            <span class="kt">int</span> <span class="n">sal</span> <span class="o">=</span> <span class="mi">9000</span><span class="o">;</span>
+            <span class="kt">int</span> <span class="n">deptno</span> <span class="o">=</span> <span class="mi">30</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">job</span> <span class="o">=</span> <span class="s">"IT부서"</span><span class="o">;</span>
+
+            <span class="cm">/*
+            String sql = "INSERT INTO emp(empno, ename, sal, deptno, job) "
+                    + " VALUES("+empno+", '"+ ename +"', "+sal+", "+deptno+","
+            + "'"+job+"')";
+             */</span>
+
+            <span class="c1">// placeholder</span>
+            <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"INSERT INTO emp(empno, ename, sal, deptno, job) "</span>
+                    <span class="o">+</span> <span class="s">" VALUES(?, ?, ?, ?, ?)"</span><span class="o">;</span>
+
+            <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">empno</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">ename</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">ename</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">sal</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">deptno</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">job</span><span class="o">);</span>
+
+            <span class="c1">// sql 전송하면 안됨</span>
+            <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="c1">// Statement st = con.createStatement();</span>
+
+            <span class="c1">// st.executeUpdate(sql);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"전송실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="update">Update</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UpdateTest</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">driver</span> <span class="o">=</span> <span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"jdbc:oracle:thin:@safesoo7.iptime.org:1521:XE"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">user</span> <span class="o">=</span> <span class="s">"scott"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">pass</span> <span class="o">=</span> <span class="s">"tiger"</span><span class="o">;</span>
+        <span class="nc">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 1. 드라이버를 메모리 로딩</span>
+            <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">driver</span><span class="o">);</span>
+            <span class="c1">// 2. 연결객체 얻어오기</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"연결성공"</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"연결실패:"</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+
+        <span class="c1">// 3. SQL 문장 만들기</span>
+        <span class="c1">// 4. SQL 전송객체 만들기</span>
+        <span class="c1">// 5. 전송하기</span>
+        <span class="c1">// 6. 닫기</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="c1">// 화면에서 입력값 얻어오기</span>
+            <span class="kt">int</span> <span class="n">empno</span> <span class="o">=</span> <span class="mi">5679</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">ename</span> <span class="o">=</span> <span class="s">"홍숙자"</span><span class="o">;</span>
+            <span class="kt">int</span> <span class="n">sal</span> <span class="o">=</span> <span class="mi">12000</span><span class="o">;</span>
+            <span class="kt">int</span> <span class="n">deptno</span> <span class="o">=</span> <span class="mi">20</span><span class="o">;</span>
+            <span class="nc">String</span> <span class="n">job</span> <span class="o">=</span> <span class="s">"개발"</span><span class="o">;</span>
+
+            <span class="c1">// placeholder</span>
+            <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"UPDATE emp SET ename=?, sal=?, deptno=?, job=? "</span>
+                    <span class="o">+</span> <span class="s">" WHERE empno=?"</span><span class="o">;</span>
+
+            <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+
+
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">ename</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">sal</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">deptno</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">job</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">empno</span><span class="o">);</span>
+
+            <span class="c1">// sql 전송하면 안됨</span>
+            <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="c1">// Statement st = con.createStatement();</span>
+
+            <span class="c1">// st.executeUpdate(sql);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">SQLException</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"전송실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="select">SELECT</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">package</span> <span class="n">emp</span><span class="p">.</span><span class="n">oracle2</span><span class="p">;</span>
+
+<span class="n">import</span> <span class="n">java</span><span class="p">.</span><span class="k">sql</span><span class="p">.</span><span class="o">*</span><span class="p">;</span>
+
+<span class="k">public</span> <span class="k">class</span> <span class="n">SelectTest</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="n">void</span> <span class="n">main</span><span class="p">(</span><span class="n">String</span><span class="p">[]</span> <span class="n">args</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">String</span> <span class="n">driver</span> <span class="o">=</span> <span class="nv">"oracle.jdbc.driver.OracleDriver"</span><span class="p">;</span>
+        <span class="n">String</span> <span class="n">url</span> <span class="o">=</span> <span class="nv">"jdbc:oracle:thin:@&lt;IP주소&gt;:1521:XE"</span><span class="p">;</span>
+        <span class="n">String</span> <span class="k">user</span> <span class="o">=</span> <span class="nv">"scott"</span><span class="p">;</span>
+        <span class="n">String</span> <span class="n">pass</span> <span class="o">=</span> <span class="nv">"tiger"</span><span class="p">;</span>
+        <span class="k">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="k">null</span><span class="p">;</span>
+
+        <span class="n">try</span> <span class="p">{</span>
+            <span class="o">//</span> <span class="mi">1</span><span class="p">.</span> <span class="err">드라이버를</span> <span class="err">메모리</span> <span class="err">로딩</span>
+            <span class="k">Class</span><span class="p">.</span><span class="n">forName</span><span class="p">(</span><span class="n">driver</span><span class="p">);</span>
+            <span class="o">//</span> <span class="mi">2</span><span class="p">.</span> <span class="err">연결객체</span> <span class="err">얻어오기</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="n">DriverManager</span><span class="p">.</span><span class="n">getConnection</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="k">user</span><span class="p">,</span> <span class="n">pass</span><span class="p">);</span>
+            <span class="k">System</span><span class="p">.</span><span class="k">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="nv">"연결성공"</span><span class="p">);</span>
+        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="n">Exception</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">System</span><span class="p">.</span><span class="k">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="nv">"연결실패:"</span> <span class="o">+</span> <span class="n">ex</span><span class="p">.</span><span class="n">getMessage</span><span class="p">());</span>
+        <span class="p">}</span>
+
+        <span class="n">try</span> <span class="p">{</span>
+            <span class="o">//</span> <span class="err">사원</span> <span class="err">테이블의</span> <span class="err">총</span> <span class="err">사원수와</span> <span class="err">월급의</span> <span class="err">평균을</span> <span class="err">출력하세요</span><span class="p">.</span>
+
+            <span class="nb">int</span> <span class="n">empno</span> <span class="o">=</span> <span class="mi">7788</span><span class="p">;</span>
+            <span class="n">String</span> <span class="k">sql</span> <span class="o">=</span> <span class="nv">"SELECT * FROM emp WHERE empno=?"</span><span class="p">;</span>
+            <span class="k">System</span><span class="p">.</span><span class="k">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="k">sql</span><span class="p">);</span>
+            <span class="n">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="p">.</span><span class="n">prepareStatement</span><span class="p">(</span><span class="k">sql</span><span class="p">);</span>
+            <span class="n">st</span><span class="p">.</span><span class="n">setInt</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">empno</span><span class="p">);</span>
+
+            <span class="cm">/*
+            ResultSet rs = st.executeQuery(); //&lt;- sql 지정하면 안됨
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while(rs.next()) {
+                System.out.println(rs.getInt("EMPNO") + "/"
+                + rs.getString("ENAME") + "/"
+                        + rs.getInt("SAL"));
+            }
+            */</span>
+
+            <span class="o">//</span> <span class="err">하나라도</span> <span class="k">next</span><span class="err">를</span> <span class="err">써야</span> <span class="err">함</span><span class="p">,</span> <span class="n">while</span> <span class="err">문보다는</span> <span class="n">if</span><span class="err">문이</span> <span class="err">좋음</span>
+            <span class="n">if</span> <span class="p">(</span><span class="n">rs</span><span class="p">.</span><span class="k">next</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">System</span><span class="p">.</span><span class="k">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="n">rs</span><span class="p">.</span><span class="n">getInt</span><span class="p">(</span><span class="nv">"EMPNO"</span><span class="p">)</span> <span class="o">+</span> <span class="nv">"/"</span>
+                        <span class="o">+</span> <span class="n">rs</span><span class="p">.</span><span class="n">getString</span><span class="p">(</span><span class="nv">"ENAME"</span><span class="p">)</span>
+                        <span class="o">+</span> <span class="nv">"/"</span> <span class="o">+</span> <span class="n">rs</span><span class="p">.</span><span class="n">getInt</span><span class="p">(</span><span class="nv">"SAL"</span><span class="p">));</span>
+            <span class="p">}</span>
+
+            <span class="n">st</span><span class="p">.</span><span class="k">close</span><span class="p">();</span>
+            <span class="n">con</span><span class="p">.</span><span class="k">close</span><span class="p">();</span>
+        <span class="p">}</span> <span class="n">catch</span> <span class="p">(</span><span class="k">SQLException</span> <span class="n">ex</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">System</span><span class="p">.</span><span class="k">out</span><span class="p">.</span><span class="n">println</span><span class="p">(</span><span class="nv">"전송실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="p">.</span><span class="n">getMessage</span><span class="p">());</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<h1 id="infovojava">InfoVO.java</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">jdbc.gui</span><span class="o">;</span>
+
+<span class="c1">// VO(value of) = DTO = Record(X)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">InfoVO</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">id</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">tel</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">home</span><span class="o">;</span>
+
+    <span class="c1">// constructor</span>
+    <span class="kd">public</span> <span class="nf">InfoVO</span><span class="o">()</span> <span class="o">{}</span>
+
+    <span class="kd">public</span> <span class="nf">InfoVO</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">String</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">tel</span><span class="o">,</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">,</span> <span class="nc">String</span> <span class="n">home</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">tel</span> <span class="o">=</span> <span class="n">tel</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">home</span> <span class="o">=</span> <span class="n">home</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="c1">// getter, setter</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setId</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getTel</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">tel</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setTel</span><span class="o">(</span><span class="nc">String</span> <span class="n">tel</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">tel</span> <span class="o">=</span> <span class="n">tel</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getGender</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGender</span><span class="o">(</span><span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">getHome</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">home</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHome</span><span class="o">(</span><span class="nc">String</span> <span class="n">home</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">home</span> <span class="o">=</span> <span class="n">home</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s">"\t"</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span> <span class="s">"\t"</span> <span class="o">+</span> <span class="n">tel</span> <span class="o">+</span> <span class="s">"\t"</span> <span class="o">+</span> <span class="n">gender</span> <span class="o">+</span> <span class="s">"\t"</span> <span class="o">+</span>
+                <span class="n">age</span> <span class="o">+</span> <span class="s">"\t"</span> <span class="o">+</span> <span class="n">home</span> <span class="o">+</span> <span class="s">"\n"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="infoviewjava">InfoView.java</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">jdbc.gui</span><span class="o">;</span>
+
+<span class="cm">/*
+ * Java GUI를 구성하는 application을 만든 후
+ * DataBase에 입력 / 수정 / 삭제 / 검색을 하는 프로그램을 작성하는 예제
+ *
+ * 또한 이 프로그램은 Java Swing으로 GUI를 구성하였음
+ *
+ *		테이블명 : temp
+ *		name	varchar(10)
+ *		id		char(14)
+ *		tel		varchar(13)
+ *		sex		varchar(10)
+ *		age		number
+ *		home	varchar(10)
+ *
+ */</span>
+
+<span class="kn">import</span> <span class="nn">java.awt.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.awt.event.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.swing.border.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">class</span> <span class="nc">InfoView</span> <span class="kd">implements</span> <span class="nc">ActionListener</span><span class="o">{</span>
+
+	<span class="c1">//-----------------------------------------</span>
+	<span class="c1">// 화면에 관련한 변수 선언</span>
+	<span class="c1">//-----------------------------------------</span>
+	<span class="nc">JFrame</span> <span class="n">frame</span><span class="o">;</span>
+	<span class="nc">JTextField</span> <span class="n">tf_name</span><span class="o">,</span> <span class="n">tf_id</span><span class="o">,</span> <span class="n">tf_tel</span><span class="o">,</span> <span class="n">tf_age</span><span class="o">,</span> <span class="n">tf_gender</span><span class="o">,</span> <span class="n">tf_home</span> <span class="o">;</span>
+	<span class="nc">JButton</span> <span class="n">b_add</span><span class="o">,</span> <span class="n">b_show</span><span class="o">,</span> <span class="n">b_modify</span><span class="o">,</span> <span class="n">b_delete</span><span class="o">,</span> <span class="n">b_cancel</span><span class="o">,</span> <span class="n">b_exit</span><span class="o">;</span>
+	<span class="nc">JTextArea</span> <span class="n">ta</span><span class="o">;</span>
+
+	<span class="c1">//########################################</span>
+	<span class="c1">// 1. business logic를 실행하는 클래스 변수 선언</span>
+	<span class="nc">InfoModelImpl</span> <span class="n">db</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+
+
+	<span class="c1">//-----------------------------------------</span>
+	<span class="c1">// 생성자 함수</span>
+	<span class="c1">//	: 위의 멤버 변수에 선언된 클래스 객체 생성</span>
+	<span class="c1">//-----------------------------------------</span>
+	<span class="kd">public</span> <span class="nf">InfoView</span><span class="o">()</span> <span class="o">{</span>
+
+		<span class="n">frame</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JFrame</span><span class="o">(</span><span class="s">"DBTest"</span><span class="o">);</span>
+
+		<span class="n">tf_name</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tf_id</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tf_tel</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tf_age</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tf_gender</span>	<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+		<span class="n">tf_home</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextField</span><span class="o">(</span><span class="mi">15</span><span class="o">);</span>
+
+		<span class="cm">/*
+		* 버튼 생성 ( 이미지 버튼 )
+		* 1. Text과 ImageIcon를 갖는 버튼 생성
+		* 2. Text를 그림 아래 위치
+		* 3. Text를 가운데 정렬
+		* 4. 버튼의 보더 지정 : 버튼의 모양이 위로 올라와 보이게
+		* 5. 버튼의 튤팁을 지정
+		*/</span>				
+		<span class="n">b_add</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Add"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/add.gif"</span><span class="o">));</span>
+		<span class="n">b_add</span><span class="o">.</span><span class="na">setVerticalTextPosition</span><span class="o">(</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">BOTTOM</span><span class="o">);</span>
+		<span class="n">b_add</span><span class="o">.</span><span class="na">setHorizontalTextPosition</span><span class="o">(</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>		
+		<span class="n">b_add</span><span class="o">.</span><span class="na">setBorder</span><span class="o">(</span><span class="k">new</span> <span class="nc">BevelBorder</span><span class="o">(</span><span class="nc">BevelBorder</span><span class="o">.</span><span class="na">RAISED</span><span class="o">));</span>
+		<span class="n">b_add</span><span class="o">.</span><span class="na">setToolTipText</span><span class="o">(</span><span class="s">"추가"</span><span class="o">);</span>
+
+		<span class="n">b_show</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Show"</span><span class="o">);</span>
+		<span class="n">b_modify</span>	<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Modify"</span><span class="o">);</span>
+		<span class="n">b_delete</span>	<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Delete"</span><span class="o">);</span>
+		<span class="n">b_cancel</span>	<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Cancel"</span><span class="o">);</span>
+		<span class="n">b_exit</span>		<span class="o">=</span> <span class="k">new</span> <span class="nc">JButton</span><span class="o">(</span><span class="s">"Exit"</span><span class="o">);</span>
+		<span class="n">ta</span>			<span class="o">=</span> <span class="k">new</span> <span class="nc">JTextArea</span><span class="o">(</span><span class="mi">20</span><span class="o">,</span> <span class="mi">50</span><span class="o">);</span>
+
+		<span class="c1">//#########################################</span>
+		<span class="c1">// 2. business logic 역할을 하는 클래스 객체 생성</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="n">db</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoModelImpl</span><span class="o">();</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"디비연결성공"</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"현재 네트워크 오류가 발생하여 프로그램이 정상적이지~~"</span><span class="o">);</span>
+			<span class="n">ex</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+
+	<span class="c1">//--------------------------------------------------</span>
+	<span class="c1">//--------------------------------------------------</span>
+	<span class="kt">void</span> <span class="nf">setup</span><span class="o">(){</span>
+
+		<span class="nc">JPanel</span> <span class="n">p_center</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+		<span class="nc">JPanel</span> <span class="n">p_west</span>	 <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+		<span class="nc">JPanel</span> <span class="n">p_south</span> 	 <span class="o">=</span> <span class="k">new</span> <span class="nc">JPanel</span><span class="o">();</span>
+
+		<span class="c1">// 화면출력만 하는 라벨 생성 및 붙이기</span>
+		<span class="nc">JLabel</span> <span class="n">ll_name</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"Name"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/1.gif"</span><span class="o">),</span><span class="nc">JLabel</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>		
+		<span class="nc">JLabel</span> <span class="n">ll_id</span>   <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"ID"</span><span class="o">,</span>   <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/2.gif"</span><span class="o">),</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+		<span class="nc">JLabel</span> <span class="n">ll_tel</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"Tel"</span><span class="o">,</span>  <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/3.gif"</span><span class="o">),</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+		<span class="nc">JLabel</span> <span class="n">ll_sex</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"Sex"</span><span class="o">,</span>  <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/4.gif"</span><span class="o">),</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+		<span class="nc">JLabel</span> <span class="n">ll_age</span>  <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"Age"</span><span class="o">,</span>  <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/5.gif"</span><span class="o">),</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+		<span class="nc">JLabel</span> <span class="n">ll_home</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">JLabel</span><span class="o">(</span><span class="s">"Home"</span><span class="o">,</span> <span class="k">new</span> <span class="nc">ImageIcon</span><span class="o">(</span><span class="s">"img/cute/6.gif"</span><span class="o">),</span><span class="nc">SwingConstants</span><span class="o">.</span><span class="na">CENTER</span><span class="o">);</span>
+
+		<span class="c1">// west영역 붙이기</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span> <span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span><span class="mi">2</span><span class="o">));</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_name</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_name</span> <span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_id</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_id</span> <span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_tel</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_tel</span> <span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_sex</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_gender</span> <span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_age</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_age</span> <span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">ll_home</span><span class="o">);</span>
+		<span class="n">p_west</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">tf_home</span> <span class="o">);</span>
+
+
+		<span class="c1">// center 영역</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span><span class="k">new</span> <span class="nc">BorderLayout</span><span class="o">());</span>
+		<span class="n">p_center</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">"Center"</span><span class="o">,</span> <span class="n">ta</span> <span class="o">);</span>
+
+		<span class="c1">// south 영역</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">setLayout</span><span class="o">(</span> <span class="k">new</span> <span class="nc">GridLayout</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">6</span><span class="o">));</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_add</span> <span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_show</span> <span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_modify</span> <span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_delete</span> <span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_cancel</span> <span class="o">);</span>
+		<span class="n">p_south</span><span class="o">.</span><span class="na">add</span><span class="o">(</span> <span class="n">b_exit</span> <span class="o">);</span>
+
+		<span class="c1">// 전체 영역 붙이기 및 화면 출력</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">setLayout</span><span class="o">(</span> <span class="k">new</span> <span class="nc">BorderLayout</span><span class="o">()</span> <span class="o">);</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">"West"</span><span class="o">,</span> <span class="n">p_west</span> <span class="o">);</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">"Center"</span><span class="o">,</span> <span class="n">p_center</span> <span class="o">);</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">getContentPane</span><span class="o">().</span><span class="na">add</span><span class="o">(</span><span class="s">"South"</span><span class="o">,</span> <span class="n">p_south</span> <span class="o">);</span>
+
+		<span class="n">frame</span><span class="o">.</span><span class="na">pack</span><span class="o">();</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">setTitle</span><span class="o">(</span><span class="s">"DBTest"</span><span class="o">);</span>
+		<span class="n">frame</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+	<span class="c1">//--------------------------------------------------</span>
+	<span class="c1">// 각 버튼을 이벤트에 등록</span>
+	<span class="c1">//--------------------------------------------------</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">eventProc</span><span class="o">(){</span>
+
+		<span class="n">b_add</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">b_show</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">b_modify</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">b_delete</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">b_cancel</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">b_exit</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+
+		<span class="n">tf_id</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+		<span class="n">tf_tel</span><span class="o">.</span><span class="na">addActionListener</span><span class="o">(</span> <span class="k">this</span> <span class="o">);</span>
+	<span class="o">}</span>
+
+
+	<span class="c1">//-------------------------------------------------</span>
+	<span class="c1">// ActionListener에 등록한 컴포넌트에서 이벤트 발생시</span>
+	<span class="c1">// JVM에 의해 호출되는 메소드</span>
+	<span class="c1">//-------------------------------------------------</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionPerformed</span><span class="o">(</span> <span class="nc">ActionEvent</span> <span class="n">ev</span> <span class="o">){</span>
+
+		<span class="k">if</span><span class="o">(</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">b_add</span> <span class="o">){</span>
+		<span class="c1">//######################################################</span>
+		<span class="c1">// Add 버튼이 눌렸을 때		</span>
+		<span class="c1">// 1. 각 텍스트필드에서 값을 얻어옴</span>
+		<span class="c1">// 3. Database 파일의 insert() 함수의 인자로 값을 넘겨줌</span>
+			<span class="nc">JOptionPane</span><span class="o">.</span><span class="na">showMessageDialog</span><span class="o">(</span> <span class="n">frame</span><span class="o">,</span>  <span class="s">"추가버튼 눌림"</span><span class="o">);</span>
+			<span class="n">insertData</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">b_show</span> <span class="o">){</span>
+		<span class="c1">//######################################################</span>
+		<span class="c1">// 전체 보기 버튼이 눌렸을 때</span>
+		<span class="c1">// 1. Database 파일의 selectAll() 호출하여 Vector로 리턴받음</span>
+		<span class="c1">// 2. 리턴받은 Vector에서 Record 객체를 하나씩 얻어온후</span>
+		<span class="c1">// 3. 그 Record 객체 안의 toString() 메소드 호출하여 TextArea에 출력</span>
+			<span class="c1">// JOptionPane.showMessageDialog( frame,  "전체보기버튼 눌림");</span>
+			<span class="n">selectAllData</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">b_modify</span> <span class="o">){</span>
+			<span class="c1">//######################################################</span>
+			<span class="c1">// Modify 버튼이 눌렸을 때		</span>
+			<span class="c1">// 1. 각 텍스트필드에서 값을 얻어옴</span>
+			<span class="c1">// 3. Database 파일의 modify() 함수의 인자로 값을 넘겨줌</span>
+			<span class="c1">// JOptionPane.showMessageDialog( frame,  "수정버튼 눌림");</span>
+			<span class="n">modify</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span><span class="o">(</span> <span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">b_delete</span> <span class="o">){</span>
+		<span class="c1">//######################################################</span>
+		<span class="c1">// 삭제버튼 눌렸을 때</span>
+		<span class="c1">//	1. 주민번호 텍스트 필드의 입력값 얻어옴</span>
+		<span class="c1">//  2. Database의 delete() 함수의 인자로 넘겨줌</span>
+			<span class="c1">// JOptionPane.showMessageDialog( frame ,  "삭제버튼 눌림");</span>
+			<span class="n">delete</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">tf_tel</span><span class="o">)</span> <span class="o">{</span>
+			<span class="c1">// JOptionPane.showMessageDialog(frame, "전화번호 엔터");</span>
+			<span class="n">selectByTel</span><span class="o">();</span>
+
+		<span class="o">}</span> <span class="k">else</span> <span class="k">if</span> <span class="o">(</span><span class="n">ev</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="o">==</span> <span class="n">tf_id</span><span class="o">)</span> <span class="o">{</span>
+			<span class="c1">// JOptionPane.showMessageDialog(frame, "주민번호 엔터");</span>
+			<span class="n">selectById</span><span class="o">();</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+	<span class="kt">void</span> <span class="nf">modify</span><span class="o">()</span> <span class="o">{</span>
+
+	<span class="o">}</span>
+
+	<span class="kt">void</span> <span class="nf">delete</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">String</span> <span class="n">id</span> <span class="o">=</span> <span class="n">tf_id</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="n">db</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">){</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"삭제실패"</span><span class="o">);</span>
+		<span class="o">}</span>
+		<span class="n">clearTextField</span><span class="o">();</span>
+	<span class="o">}</span>
+
+	<span class="kt">void</span> <span class="nf">selectByTel</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">String</span> <span class="n">tel</span> <span class="o">=</span> <span class="n">tf_tel</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">selectByTel</span><span class="o">(</span><span class="n">tel</span><span class="o">);</span>
+
+			<span class="n">tf_name</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+			<span class="n">tf_id</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+			<span class="n">tf_tel</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getTel</span><span class="o">());</span>
+			<span class="n">tf_gender</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getGender</span><span class="o">());</span>
+			<span class="n">tf_age</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getAge</span><span class="o">()));</span>
+			<span class="n">tf_home</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getHome</span><span class="o">());</span>
+
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"검색실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+		<span class="o">}</span>
+
+	<span class="o">}</span>
+
+	<span class="kt">void</span> <span class="nf">selectById</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">String</span> <span class="n">id</span> <span class="o">=</span> <span class="n">tf_id</span><span class="o">.</span><span class="na">getText</span><span class="o">();</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">selectById</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+			<span class="n">tf_name</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+			<span class="n">tf_id</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getId</span><span class="o">());</span>
+			<span class="n">tf_tel</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getTel</span><span class="o">());</span>
+			<span class="n">tf_gender</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getGender</span><span class="o">());</span>
+			<span class="n">tf_age</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="nc">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getAge</span><span class="o">()));</span>
+			<span class="n">tf_home</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">getHome</span><span class="o">());</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"검색실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+	<span class="c1">// 1. Database 파일의 selectAll() 호출하여 Vector로 리턴받음</span>
+	<span class="c1">// 2. 리턴받은 ArrayList에서 InfoVO 객체를 하나씩 얻어온후</span>
+	<span class="c1">// 3. 그 Record 객체 안의 toString() 메소드 호출하여 TextArea에 출력</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">selectAllData</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">InfoVO</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="na">selectAllData</span><span class="o">();</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"===========검색결과 \n\n"</span><span class="o">);</span>
+			<span class="k">for</span> <span class="o">(</span><span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">:</span> <span class="n">list</span><span class="o">)</span> <span class="o">{</span>
+				<span class="n">ta</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="n">vo</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+			<span class="o">}</span>
+
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">ex</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"데이타 검색 실패: "</span> <span class="o">+</span> <span class="n">ex</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+	<span class="c1">// 1. 각 텍스트필드에서 값을 얻어옴</span>
+	<span class="c1">// 3. Database 파일의 insert() 함수의 인자로 값을 넘겨줌</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">insertData</span><span class="o">()</span> <span class="o">{</span>
+		<span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoVO</span><span class="o">();</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">tf_name</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">tf_id</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setTel</span><span class="o">(</span><span class="n">tf_tel</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">tf_gender</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">tf_age</span><span class="o">.</span><span class="na">getText</span><span class="o">()));</span>
+		<span class="n">vo</span><span class="o">.</span><span class="na">setHome</span><span class="o">(</span><span class="n">tf_home</span><span class="o">.</span><span class="na">getText</span><span class="o">());</span>
+
+		<span class="k">try</span> <span class="o">{</span>
+			<span class="n">db</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">vo</span><span class="o">);</span>
+		<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">ta</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="s">"입력실패:"</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
+		<span class="o">}</span>
+		<span class="n">clearTextField</span><span class="o">();</span>
+	<span class="o">}</span>
+
+	<span class="kt">void</span> <span class="nf">clearTextField</span><span class="o">()</span> <span class="o">{</span>
+		<span class="n">tf_name</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">tf_id</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">tf_tel</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">tf_gender</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">tf_age</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+		<span class="n">tf_home</span><span class="o">.</span><span class="na">setText</span><span class="o">(</span><span class="kc">null</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span> <span class="n">args</span><span class="o">[])</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Starting DBTest..."</span><span class="o">);</span>
+		<span class="nc">InfoView</span> <span class="n">mainFrame</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoView</span><span class="o">();</span>
+		<span class="n">mainFrame</span><span class="o">.</span><span class="na">setup</span><span class="o">();</span>
+		<span class="n">mainFrame</span><span class="o">.</span><span class="na">eventProc</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h1 id="infomodelimpljava">Infomodelimpl.java</h1>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">jdbc.gui</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.sql.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.*</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">InfoModelImpl</span> <span class="o">{</span>
+
+    <span class="nc">String</span> <span class="n">driver</span> <span class="o">=</span> <span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"jdbc:oracle:thin:@safesoo7.iptime.org:1521:XE"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">user</span> <span class="o">=</span> <span class="s">"oracle"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">pass</span> <span class="o">=</span> <span class="s">"oracle"</span><span class="o">;</span>
+    <span class="nc">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">InfoModelImpl</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">String</span> <span class="n">driver</span> <span class="o">=</span> <span class="s">"oracle.jdbc.driver.OracleDriver"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">url</span> <span class="o">=</span> <span class="s">"jdbc:oracle:thin:@safesoo7.iptime.org:1521:XE"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">user</span> <span class="o">=</span> <span class="s">"oracle"</span><span class="o">;</span>
+        <span class="nc">String</span> <span class="n">pass</span> <span class="o">=</span> <span class="s">"oracle"</span><span class="o">;</span>
+
+        <span class="c1">// 1. 드라이버를 메모리 로딩</span>
+        <span class="nc">Class</span><span class="o">.</span><span class="na">forName</span><span class="o">(</span><span class="n">driver</span><span class="o">);</span>
+        <span class="c1">// 2. 연결객체 얻어오기</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">(</span><span class="nc">InfoVO</span> <span class="n">vo</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+        <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+
+
+        <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"INSERT INTO temp(name, id, tel, gender, age, home) "</span> <span class="o">+</span>
+                <span class="s">" VALUES(?, ?, ?, ?, ?, ?)"</span><span class="o">;</span>
+
+        <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">name</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">id</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">tel</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">gender</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setInt</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">age</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">6</span><span class="o">,</span> <span class="n">vo</span><span class="o">.</span><span class="na">home</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+        <span class="cm">/*
+        2. 연결객체 얻어오기
+        3. sql 문장 만들기
+        String sql = "INSERT INTO 테이블명(컬럼명들) VALUES(?,?,?,?,?,?,?)";
+
+        4. sql 전송 객체 얻어오기 - PreparedStatement : 미완성 sql
+
+        5. sql 전송 : int executeUpdate()
+        6. 결과처리
+        7. 닫기
+         */</span>
+
+
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">InfoVO</span><span class="o">&gt;</span> <span class="nf">selectAllData</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">SQLException</span> <span class="o">{</span>
+        <span class="nc">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="c1">// 2. 연결객체 얻어오기</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+
+            <span class="c1">// 3. sql 문장 만들기</span>
+            <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"SELECT * FROM temp"</span><span class="o">;</span>
+
+            <span class="c1">// 4. sql 전송 객체 얻어오기 - PreparedStatement : 미완성 sql</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+
+            <span class="c1">// 5. sql 전송 :</span>
+            <span class="n">rs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="c1">// 6. 결과처리</span>
+            <span class="c1">// 제너릭스 -&gt; 향상된 for문 가능</span>
+            <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">InfoVO</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;</span><span class="nc">InfoVO</span><span class="o">&gt;();</span>
+
+            <span class="k">while</span> <span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span> <span class="o">{</span>
+                <span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoVO</span><span class="o">();</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"id"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setTel</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"tel"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"gender"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">"age"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setHome</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"home"</span><span class="o">));</span>
+                <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">vo</span><span class="o">);</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="c1">// 7. 닫기</span>
+            <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">InfoVO</span> <span class="nf">selectByTel</span><span class="o">(</span><span class="nc">String</span> <span class="n">tel</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+
+        <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoVO</span><span class="o">();</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"SELECT * FROM temp WHERE tel=?"</span><span class="o">;</span>
+
+            <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">tel</span><span class="o">);</span>
+
+            <span class="c1">// 5. sql 전송 :</span>
+            <span class="n">rs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="k">while</span> <span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"id"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setTel</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"tel"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"gender"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">"age"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setHome</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"home"</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">vo</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">vo</span><span class="o">;</span>
+
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nc">InfoVO</span> <span class="nf">selectById</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+        <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">ResultSet</span> <span class="n">rs</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="nc">InfoVO</span> <span class="n">vo</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">InfoVO</span><span class="o">();</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+
+        <span class="k">try</span> <span class="o">{</span>
+
+            <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"SELECT * FROM temp WHERE id=?"</span><span class="o">;</span>
+
+            <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+
+            <span class="c1">// 5. sql 전송 :</span>
+            <span class="n">rs</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeQuery</span><span class="o">();</span>
+
+            <span class="k">while</span> <span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">next</span><span class="o">())</span> <span class="o">{</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"name"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"id"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setTel</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"tel"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setGender</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"gender"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getInt</span><span class="o">(</span><span class="s">"age"</span><span class="o">));</span>
+                <span class="n">vo</span><span class="o">.</span><span class="na">setHome</span><span class="o">(</span><span class="n">rs</span><span class="o">.</span><span class="na">getString</span><span class="o">(</span><span class="s">"home"</span><span class="o">));</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">vo</span><span class="o">);</span>
+            <span class="k">return</span> <span class="n">vo</span><span class="o">;</span>
+
+        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+            <span class="n">rs</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+            <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="nc">String</span> <span class="n">id</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">SQLException</span> <span class="o">{</span>
+
+        <span class="n">con</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span><span class="o">(</span><span class="n">url</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">pass</span><span class="o">);</span>
+
+        <span class="nc">String</span> <span class="n">sql</span> <span class="o">=</span> <span class="s">"DELETE FROM temp WHERE id = ?"</span><span class="o">;</span>
+        <span class="nc">PreparedStatement</span> <span class="n">st</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="na">prepareStatement</span><span class="o">(</span><span class="n">sql</span><span class="o">);</span>
+        <span class="n">st</span><span class="o">.</span><span class="na">setString</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="n">id</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="na">executeUpdate</span><span class="o">();</span>
+
+        <span class="n">st</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+        <span class="n">con</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
+
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

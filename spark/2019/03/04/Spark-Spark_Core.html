@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] Spark Core | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] Spark Core" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Spark Core Spark Application Structure Spark Context 생성 -&gt; RDD 생성 -&gt; RDD Transformation -&gt; Action" />
+<meta property="og:description" content="Spark Core Spark Application Structure Spark Context 생성 -&gt; RDD 생성 -&gt; RDD Transformation -&gt; Action" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2019/03/04/Spark-Spark_Core.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2019/03/04/Spark-Spark_Core.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-04T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] Spark Core" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-04T00:00:00-06:00","datePublished":"2019-03-04T00:00:00-06:00","description":"Spark Core Spark Application Structure Spark Context 생성 -&gt; RDD 생성 -&gt; RDD Transformation -&gt; Action","headline":"[Spark] Spark Core","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2019/03/04/Spark-Spark_Core.html"},"url":"https://safenumz.github.io/blog/spark/2019/03/04/Spark-Spark_Core.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] Spark Core</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-04T00:00:00-06:00" itemprop="datePublished">
+        Mar 4, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      15 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="spark-core">Spark Core</h1>
+<h2 id="spark-application-structure">Spark Application Structure</h2>
+<ul>
+  <li>Spark Context 생성 -&gt; RDD 생성 -&gt; RDD Transformation -&gt; Action</li>
+</ul>
+
+<h2 id="spark-context">Spark Context</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="n">appName</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="n">masterURL</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>appName: Application 이름</li>
+  <li>masterURL : Spark Master URL</li>
+</ul>
+
+<h3 id="spark-mater-url">Spark Mater URL</h3>
+<ul>
+  <li>local : 하나의 Worker thread로 로컬 실행(parallelism 아님)</li>
+  <li>local[n] : N개의 worker thread로 로컬 실행(core 개수로 설정)</li>
+  <li>local[*] : 가능한 최대의 worker thread로 로컬 실행(최대 core 수)</li>
+  <li>spark://HOST:PORT : Spark standalone cluster URL</li>
+  <li>mesos://HOST:PORT : Mesos cluster url</li>
+  <li>mesos://zk://HOST:PORT : Zookeeper를 사용하는 mesos cluster URL</li>
+  <li>yarn-client : Yarn cluster(client mode)</li>
+  <li>yarn-cluster : Yarn cluster(cluster mode)</li>
+</ul>
+
+<h2 id="rdd-생성">RDD 생성</h2>
+<h3 id="parallelized-collection--collection을-이용하여-병렬화-된-rdd-생성">Parallelized Collection : Collection을 이용하여 병렬화 된 RDD 생성</h3>
+<ul>
+  <li>paralleize function의 두번째 인자는 파티션 개수, 지정하지 않으면 클러스터의 CPU에 기반하여 자동할당</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">data</span> <span class="k">=</span> <span class="nc">Array</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span>
+
+<span class="c1">// parallelize 메소드를 사용하여 RDD로 만듬</span>
+<span class="k">val</span> <span class="nv">disData</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
+
+<span class="c1">// RDD가 되었기 때문에 first나 count 같은 RDD 명령어를 사용할 수 있음</span>
+<span class="nv">distData</span><span class="o">.</span><span class="py">first</span>
+
+<span class="c1">// res4: Int = 1</span>
+
+<span class="nv">distData</span><span class="o">.</span><span class="py">count</span>
+
+<span class="c1">// res5: Long = 5</span>
+
+<span class="k">val</span> <span class="nv">data</span> <span class="mi">1</span> <span class="n">to</span> <span class="mi">100000</span>
+
+<span class="c1">// 5개의 파티션으로 나뉜 RDD 생성</span>
+<span class="k">val</span> <span class="nv">distData</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="n">data</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="exteranl-datasets--외부-저장소로부터-rdd-생성">Exteranl Datasets : 외부 저장소로부터 RDD 생성</h3>
+<ul>
+  <li>local file system, HDFS, Casandara, Hbase, Amazon S3, ElasticSearh 등</li>
+  <li>textFile Function의 두번쨰 인자는 파티션 개수(기본값: 각 block 당 1개, 64MB)</li>
+  <li>두번째 인자는 block보다 작게 지정할 수 없음</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">file</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">testFile</span><span class="o">(</span><span class="s">"/tmp/data.txt"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">file</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"/directory"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">file</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"/directory/*.txt"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">file</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"/directory/*.gz"</span><span class="o">,</span> <span class="mi">5</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">file</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"/tmp"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">file</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">wholeTextFile</span><span class="o">(</span><span class="s">"/tmp"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// spark home 디렉토리에 있는 모든 RDD를 읽어옴</span>
+<span class="k">val</span> <span class="nv">textFile</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">".."</span><span class="o">)</span>
+
+<span class="c1">// RDD의 처음 확인, 에러 나옴, 각기 다른 형태의 파일이기 때문에</span>
+<span class="nv">textFile</span><span class="o">.</span><span class="py">first</span>
+
+<span class="c1">// java.lang.RuntimeException: Error while running command to get file permissions</span>
+
+<span class="c1">// wholeTextFiles는 파일이름을 키로, 그 파일의 내용을 밸류로 갖는 RDD를 생성하기 때문 그 디렉토리 안에 여러 다른 파일들이 섞여 있어도 RDD 오퍼레이션이 문제 없이 수행 된다</span>
+<span class="k">val</span> <span class="nv">wtextFile</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">wholeTextFiles</span><span class="o">(</span><span class="s">".."</span><span class="o">)</span>
+
+<span class="nv">wtextFile</span><span class="o">.</span><span class="py">first</span>
+</code></pre></div></div>
+
+<h1 id="transformation-operation">Transformation Operation</h1>
+<ul>
+  <li>RDD를 변형시켜서 새로운 Opertaion을 만들어 냄</li>
+  <li>Action Operation는 RDD의 실제 동작이 일어나게 함</li>
+</ul>
+
+<h2 id="map">map</h2>
+<ul>
+  <li>함수를 통하여 소스의 각 요소를 전달하여 만든 새로운 RDD 생성</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">map</span> <span class="o">[</span><span class="kt">U:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="o">=&gt;</span> <span class="n">U</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">U</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="k">_</span><span class="o">*</span><span class="mi">2</span><span class="o">).</span><span class="py">collect</span> <span class="c1">// Array[Int] = Array(2, 4, 6, 8, 10)|</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(=&gt;(</span><span class="nv">x</span><span class="o">.</span><span class="py">toString</span><span class="o">,</span> <span class="o">(</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">).</span><span class="py">toDouble</span><span class="o">)).</span><span class="py">collect</span><span class="o">|</span>
+<span class="c1">// Array[(String, Double)] = Array((1, 1.0), (2.8, 0), (3, 27.0), (4, 64.0), (5, 125.0)|</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// map 예제</span>
+
+<span class="c1">// 숫자 1부터 5까지의 RDD 생성</span>
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">5</span><span class="o">)</span>
+
+<span class="c1">// action operator의 하나 rdd에 있는 내용을 리스트로 변환해서 반환하라는 의미</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="k">_</span><span class="o">*</span><span class="mi">3</span><span class="o">).</span><span class="py">collect</span> <span class="c1">// rdd.map(x =&gt; x*3).collect</span>
+
+<span class="c1">// res9: Array[Int] = Array(3, 6, 9, 12, 15)</span>
+
+<span class="k">val</span> <span class="nv">newrdd</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="k">_</span><span class="o">*</span><span class="mi">3</span><span class="o">)</span>
+
+<span class="nv">newrdd</span><span class="o">.</span><span class="py">collect</span>
+
+<span class="c1">// res10: Array[Int] = Array(3, 6, 9, 12, 15)</span>
+</code></pre></div></div>
+
+<h2 id="filter">filter</h2>
+<ul>
+  <li>함수가 참을 반환하는 소스의 각 요소를 선택하여 만든 RDD 생성</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">filter</span> <span class="o">(</span><span class="n">f</span> <span class="k">:</span> <span class="kt">T</span> <span class="o">=&gt;</span> <span class="nc">Boolean</span><span class="o">)</span> <span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="k">_</span><span class="o">%</span><span class="mi">2</span><span class="o">!=</span><span class="mi">0</span><span class="o">).</span><span class="py">collect</span> <span class="c1">// Array[Int] = Array(1, 3, 5)</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// filter 예제</span>
+
+<span class="c1">// 짝수인 것만 찾음</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="k">_</span><span class="o">%</span><span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// res11: Array[Int] = Array(2, 4)</span>
+</code></pre></div></div>
+
+<h2 id="flatmap">flatMap</h2>
+<ul>
+  <li>map과 비슷하지만 함수의 결과가 하나 이상이 나올 수 있음</li>
+  <li>Function은 단일 item이 아닌 Sequence를 반환해야 함</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fatMap</span> <span class="o">[</span><span class="kt">U:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">T</span> <span class="o">=&gt;</span> <span class="nc">TraversableOnce</span><span class="o">[</span><span class="kt">U</span><span class="o">])</span> <span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">U</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// Array[Int] = Array(1, 1, 2, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 5)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">)</span> <span class="n">vs</span><span class="o">.</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">)</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">x</span><span class="o">))</span> <span class="n">vs</span><span class="o">.</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// flatMap 예제</span>
+
+<span class="c1">// base rdd 생성</span>
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">5</span><span class="o">)</span>
+
+<span class="c1">// 기존의 rdd를 map 명령어로 바꿔서</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// res12: Array[scala.collection.immutable.Range.Inclusive] = Array(Range(1), Range(1, 2), Range(1, 2, 3), Range(1, 2, 3, 4), Range(1, 2, 3, 4, 5))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// res13: Array[Int] = Array(1, 1, 2, 1, 2, 3, 1, 2, 3, 4, 1, 2, 3, 4, 5)</span>
+
+
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span><span class="n">x</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// res15: Array[Int] = Array(1, 2, 3, 4, 5)</span>
+
+
+<span class="c1">// 시퀀스 요소가 아니라 단일 요소를 리턴하고 있기 때문에 flatMap을 사용할 수 없다.</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span><span class="n">x</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// &lt;console&gt;:26: error: type mismatch;</span>
+<span class="c1">//  found   : Int</span>
+<span class="c1">//  required: TraversableOnce[?]</span>
+<span class="c1">//        rdd.flatMap(x=&gt;x).collect</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span><span class="nc">List</span><span class="o">(</span><span class="n">x</span><span class="o">)).</span><span class="py">collect</span>
+
+<span class="c1">// res18: Array[List[Int]] = Array(List(1), List(2), List(3), List(4), List(5))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span><span class="nc">List</span><span class="o">(</span><span class="n">x</span><span class="o">)).</span><span class="py">collect</span>
+
+<span class="c1">// res19: Array[Int] = Array(1, 2, 3, 4, 5)</span>
+</code></pre></div></div>
+
+<h2 id="mappartitions">mapPartitions</h2>
+<ul>
+  <li>각 파티션(블록)별로 각자 수행되는 map fuction, 각 파티션의 모든 content는 입력함수(f: Iterator[T])를 통해 값들의 sequence로 변환될 수 있어야 하며 그 함수는 Iterator[U]를 반환해야 한다</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">mapPartitions</span> <span class="o">[</span><span class="kt">U:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span> <span class="k">=&gt;</span> <span class="nc">Iterator</span><span class="o">[</span><span class="kt">U</span><span class="o">],</span> <span class="n">preservesPartitioning</span> <span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span> <span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">U</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">myfunc</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">iter</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[(</span><span class="kt">T</span>, <span class="kt">T</span><span class="o">)]</span> <span class="k">=</span> <span class="o">{</span> <span class="k">val</span> <span class="nv">tc</span> <span class="k">=</span> <span class="nv">TaskContext</span><span class="o">.</span><span class="py">get</span><span class="o">()</span> <span class="c1">// mapPartitionWithContext</span>
+  <span class="nf">println</span><span class="o">(</span><span class="s">"PartitionID : %s, Attempt ID : %s"</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="nv">tc</span><span class="o">.</span><span class="py">partitionId</span><span class="o">(),</span> <span class="nv">tc</span><span class="o">.</span><span class="py">attempId</span><span class="o">()))</span>
+  <span class="k">var</span> <span class="n">res</span> <span class="k">=</span> <span class="nc">List</span><span class="o">[(</span><span class="kt">T</span>, <span class="kt">T</span><span class="o">)]();</span> <span class="k">var</span> <span class="n">pre</span> <span class="k">=</span> <span class="nv">iter</span><span class="o">.</span><span class="py">next</span>
+  <span class="nf">while</span> <span class="o">(</span><span class="nv">iter</span><span class="o">.</span><span class="py">hasNext</span><span class="o">)</span> <span class="o">{</span> <span class="k">val</span> <span class="nv">cur</span> <span class="k">=</span> <span class="nv">iter</span><span class="o">.</span><span class="py">next</span><span class="o">;</span> <span class="n">res</span><span class="o">.::=(</span><span class="n">pre</span><span class="o">,</span> <span class="n">cur</span><span class="o">);</span> <span class="n">pre</span> <span class="k">=</span> <span class="n">cur</span><span class="o">;</span> <span class="o">}</span>
+  <span class="nv">res</span><span class="o">.</span><span class="py">iterator</span>
+<span class="o">}</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">mapPartition</span><span class="o">(</span><span class="n">myfunc_</span><span class="o">).</span><span class="py">collect</span>
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelized</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">9</span><span class="o">,</span> <span class="mi">3</span><span class="o">);</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">mapPartitions</span><span class="o">(</span><span class="n">myfunc</span><span class="o">).</span><span class="py">collect</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// mapPartitions 예제</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkContext.</span>
+
+<span class="k">object</span> <span class="nc">RddOperationSuit</span> <span class="k">extends</span> <span class="nc">App</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">).</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"RddOperation"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+
+  <span class="k">def</span> <span class="nf">myfunc</span><span class="o">[</span><span class="kt">T</span><span class="o">](</span><span class="n">iter</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[(</span><span class="kt">T</span>, <span class="kt">T</span><span class="o">)]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">tc</span> <span class="k">=</span> <span class="nv">TaskContext</span><span class="o">.</span><span class="py">get</span><span class="o">()</span>
+    <span class="nf">print</span><span class="o">(</span><span class="s">"Partition ID: %s, Attempt ID: %s"</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="nv">tc</span><span class="o">.</span><span class="py">partitionId</span><span class="o">(),</span> <span class="nv">tc</span><span class="o">.</span><span class="py">attemptId</span><span class="o">()))</span>
+    <span class="k">var</span> <span class="n">res</span> <span class="k">=</span> <span class="nc">List</span><span class="o">[(</span><span class="kt">T</span>, <span class="kt">T</span><span class="o">)]()</span>
+    <span class="k">var</span> <span class="n">pre</span> <span class="k">=</span> <span class="nv">iter</span><span class="o">.</span><span class="py">next</span>
+    <span class="nf">while</span> <span class="o">(</span><span class="nv">iter</span><span class="o">.</span><span class="py">hasNext</span><span class="o">){</span>
+      <span class="k">val</span> <span class="nv">cur</span> <span class="k">=</span> <span class="nv">iter</span><span class="o">.</span><span class="py">next</span>
+      <span class="n">res</span> <span class="o">.::</span> <span class="k">=</span> <span class="o">(</span><span class="n">pre</span><span class="o">,</span> <span class="n">cur</span><span class="o">)</span>
+      <span class="n">pre</span> <span class="k">=</span> <span class="n">cur</span>
+    <span class="o">}</span>
+    <span class="nv">res</span><span class="o">.</span><span class="py">iterator</span>
+  <span class="o">}</span>
+  <span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">7</span><span class="o">,</span> <span class="mi">8</span><span class="o">,</span> <span class="mi">9</span><span class="o">),</span> <span class="mi">3</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">mapPartitionRdd</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">mapPartitions</span><span class="o">(</span><span class="n">myfunc_</span><span class="o">).</span><span class="py">collect</span>
+
+  <span class="nv">mapPartitionRdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+
+  <span class="k">def</span> <span class="nf">myfunc2</span><span class="o">(</span><span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">iter</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"Partition ID: %s"</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="n">index</span><span class="o">))</span>
+    <span class="nv">iter</span><span class="o">.</span><span class="py">toList</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">index</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">x</span><span class="o">).</span><span class="py">iterator</span>
+
+  <span class="o">}</span>
+
+  <span class="k">val</span> <span class="nv">mapPartitionsWithindexRdd</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">mapPartitionsWithIndex</span><span class="o">(</span><span class="n">myfunc2</span><span class="o">).</span><span class="py">collect</span>
+  <span class="nv">mapPartitionsWithIndexRdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h2 id="mappartitionswithidex">mapPartitionsWithIdex</h2>
+<ul>
+  <li>f 함수의 첫번째 인자 : 파티션 번호</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">mapPartitionsWithIndex</span><span class="o">[</span><span class="kt">U:</span> <span class="kt">ClassTag</span><span class="o">](</span><span class="n">f</span><span class="k">:</span> <span class="o">(</span><span class="kt">Int</span><span class="o">,</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">T</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="nc">Iterator</span><span class="o">[</span><span class="kt">U</span><span class="o">],</span> <span class="n">preservesPartitioning</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">U</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">myfunc</span><span class="o">(</span><span class="n">index</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="nc">Iter</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+  <span class="nv">iter</span><span class="o">.</span><span class="py">toList</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span> <span class="n">index</span> <span class="o">+</span> <span class="s">","</span> <span class="o">+</span> <span class="n">x</span><span class="o">).</span><span class="py">iterator</span>
+<span class="o">}</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">mapPartitionsWithIndex</span><span class="o">(</span><span class="n">myfunc</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="c1">// Array(0,1, 0,2, 1,3, 1,4, 1,5, 2,6, 2,7, 3,8, 3,9, 3,10)</span>
+</code></pre></div></div>
+
+<h2 id="sample">sample</h2>
+<ul>
+  <li>Fraction과 seed를 이용하여 RDD의 item들을 무작위로 선택하여 새로운 RDD 생성, withReplacement가 true이면 값이 여러번 나올 수 있음</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">sample</span><span class="o">(</span><span class="n">withReplacement</span><span class="k">:</span> <span class="kt">Boolean</span><span class="o">,</span> <span class="n">fraction</span><span class="k">:</span> <span class="kt">Double</span><span class="o">,</span> <span class="n">seed</span><span class="k">:</span> <span class="kt">Int</span><span class="o">)</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">T</span><span class="o">]</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">sample</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">,</span> <span class="mi">1</span><span class="o">).</span><span class="py">collect</span> <span class="c1">// Array(2, 4, 5, 6, 7, 8)</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">sample</span><span class="o">(</span><span class="kc">true</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span> <span class="mi">1</span><span class="o">).</span><span class="py">collect</span> <span class="c1">// Array(1, 6, 6, 7, 7, 9, 10)</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// sample 예제</span>
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="mi">1</span> <span class="n">to</span> <span class="mi">20</span><span class="o">)</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">collect</span>
+<span class="c1">// res95: Array[Int] = Array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)</span>
+
+<span class="c1">// 전체 수의 50% 정도를 샘플링</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">sample</span><span class="o">(</span><span class="kc">false</span><span class="o">,</span> <span class="mf">0.5</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>
+<span class="c1">// res97: Array[Int] = Array(1, 6, 8, 10, 12, 15, 16, 17, 19, 20)</span>
+</code></pre></div></div>
+
+<h2 id="union">union</h2>
+<ul>
+  <li>def union(other:[RDD[T]]): RDD[T]</li>
+  <li>합집합</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">a</span><span class="o">.</span><span class="py">union</span><span class="o">(</span><span class="n">b</span><span class="o">).</span><span class="py">collect</span><span class="o">;</span> <span class="o">(</span><span class="n">a</span> <span class="o">++</span> <span class="n">b</span><span class="o">).</span><span class="py">collect</span>
+</code></pre></div></div>
+
+<h2 id="intersection">intersection</h2>
+<ul>
+  <li>def intersection(other: RDD[T], numPartitions: Int): RDD[T]</li>
+  <li>교집합</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// HashPartitioner를 이용하여 3의 파티션에 저장</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">interaction</span><span class="o">(</span><span class="n">other</span><span class="o">,</span> <span class="mi">3</span><span class="o">)</span>
+
+<span class="c1">// myPart를 이용하여 파티션에 저장</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">interaction</span><span class="o">(</span><span class="n">other</span><span class="o">,</span> <span class="n">myPart</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="distinct">distinct</h2>
+<ul>
+  <li>def distinct(): RDD[T]</li>
+  <li>중복제거</li>
+</ul>
+
+<h2 id="groupby">groupBy</h2>
+<ul>
+  <li>def groupBy<a href="f: T =&gt; K">K: ClassTag</a>: RDD[(K, Iterable[T])]</li>
+  <li>함수에 따른 그룹화</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">match</span> <span class="o">{</span><span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="s">"even"</span><span class="o">;</span> <span class="n">case_</span> <span class="k">=&gt;</span> <span class="s">"odd"</span><span class="o">}).</span><span class="py">collect</span>
+<span class="c1">// Array[(String, Iterable[Int])] = Arry((even, CompactBuffer(2, 4, 6, 8, 10)), (odd, CompactBuffer(1, 3, 5, 7 ,9)))</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// groupBy 예제</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="mi">0</span> <span class="k">=&gt;</span> <span class="s">"even"</span>
+    <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="s">"odd"</span>
+<span class="o">}).</span><span class="py">collect</span>
+<span class="c1">// res105: Array[(String, Iterable[Int])] = Array((even,CompactBuffer(2, 4)), (odd,CompactBuffer(1, 3, 5)))</span>
+</code></pre></div></div>
+
+<h2 id="groupbykey">groupByKey</h2>
+<ul>
+  <li>def groupByKey(): RDD[(K, Iterable[V])]</li>
+  <li>def groupByKey(numPartitions: Int): RDD[(K, Iterable[V])]</li>
+  <li>def groupByKey(partitioner: Partitioner): RDD[(K, Iterable[V])]</li>
+  <li>그룹화를 위한 함수를 제공하지 않고 partitioner에 의한 자동 분류</li>
+  <li>주의: 각 키마다의 집계(합 또는 평균 같은)를 수행하기 위해 군집화를 수행하려 한다면, reduceByKey나 comebineByKey를 사용하는 것이 성능이 좋을 것이다</li>
+  <li>주의: 기본적으로, 출력의 병렬화 수준은 부모 RDD의 파티션 숫자에 의존한다</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">myPartitioner</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">keyBy</span><span class="o">(</span><span class="k">_</span><span class="o">%</span><span class="mi">2</span><span class="o">)</span>
+<span class="nv">myPartitioner</span><span class="o">.</span><span class="py">groupByKey</span><span class="o">.</span><span class="py">collect</span>
+<span class="c1">// Array[(Int, Iterable[Int])] = Array((0, CompactBuffer(2,4,6,8,10)),(1,CompactBuffer(1,3,5,7,9)))</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// groupByKey 예제</span>
+<span class="k">val</span> <span class="nv">part</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">keyBy</span><span class="o">(</span><span class="k">_</span><span class="o">%</span><span class="mi">2</span><span class="o">)</span>
+<span class="nv">part</span><span class="o">.</span><span class="py">collect</span>
+ <span class="c1">// res108: Array[(Int, Int)] = Array((1,1), (0,2), (1,3), (0,4), (1,5))</span>
+
+<span class="nv">part</span><span class="o">.</span><span class="py">groupByKey</span><span class="o">.</span><span class="py">collect</span>
+<span class="c1">// res110: Array[(Int, Iterable[Int])] = Array((0,CompactBuffer(2, 4)), (1,CompactBuffer(1, 3, 5)))</span>
+</code></pre></div></div>
+
+<h2 id="reduce-action-operation">reduce (Action Operation)</h2>
+<ul>
+  <li>def reduce(f: (T, T) =&gt; T): T</li>
+  <li>Reduce 함수, 항상 동일한 결과를 얻으려면 함수 f는 반드시 commutative 해야 함</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 순서가 섞이기 때문에 -는 실행할 때마다 결과가 달라질 수 있다</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">reduce</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">);</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">reduce</span><span class="o">(</span><span class="k">_</span><span class="o">-</span><span class="k">_</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="reducebykey">reduceByKey</h2>
+<ul>
+  <li>def reduceByKey(func: (V, V) =&gt; V): RDD[(K, V)]</li>
+  <li>def reduceByKey(func: (V, V) =&gt; V, numPartitions: Int): RDD[(K, V)]</li>
+  <li>def reduceByKey(partitioner: Partitioner, func: (V, V) =&gt; V): RDD[(K, V)]</li>
+  <li>def reduceByKeyLocally(func: (V, V) =&gt; V): Map[K, V]</li>
+  <li>RDD[(K, V)]에 대한 reduce 함수</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">mappedRdd</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">,</span> <span class="n">x</span><span class="o">))</span>
+<span class="nv">mappedRdd</span><span class="o">.</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// Array[(Int, Int)] = Array((0, 30), (1, 25))</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// reduceByKey</span>
+<span class="k">val</span> <span class="nv">pair</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">,</span> <span class="n">x</span><span class="o">)</span>
+<span class="nv">pair</span><span class="o">.</span><span class="py">collect</span>
+<span class="c1">// res113: Array[(Int, Int)] = Array((1,1), (0,2), (1,3), (0,4), (1,5))</span>
+
+<span class="nv">pair</span><span class="o">.</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// res116: Array[(Int, Int)] = Array((0,6), (1,9))</span>
+</code></pre></div></div>
+
+<h2 id="aggregate-action-operation">aggregate (Action Operation)</h2>
+<ul>
+  <li>def aggregate<a href="zeroValue: U">U: ClassTag</a>(seqOp: (U, T) =&gt; U, combOp: (U, U) =&gt; U): U</li>
+  <li>RDD 각 파티션의 데이터를 seqOp함수로 reduce하여 combOp 함수로 combine. 이 떄, zeroValue는 각 파티션에서 reduce의 처음에서 적용되고 combine 시 다시 한번 적용</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">z</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">aggregate</span><span class="o">(</span><span class="mi">0</span><span class="o">)(</span><span class="nv">math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">),</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+<span class="c1">// 9</span>
+
+<span class="k">val</span> <span class="nv">z</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"a"</span><span class="o">,</span> <span class="s">"b"</span><span class="o">,</span> <span class="s">"c"</span><span class="o">,</span> <span class="s">"d"</span><span class="o">,</span> <span class="s">"e"</span><span class="o">,</span> <span class="s">"f"</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">aggregate</span><span class="o">(</span><span class="s">""</span><span class="o">)(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">,</span> <span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+<span class="c1">// xxdefxabc</span>
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// aggregate 예제</span>
+<span class="c1">// 파티션이 2개기 때문에 1번째 파티션에는 1,2,3이 2번째 파티션에는 4,5,6이 들어가 있다</span>
+<span class="k">val</span> <span class="nv">z</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">6</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">collect</span>
+<span class="c1">// res119: Array[Int] = Array(1, 2, 3, 4, 5, 6)</span>
+
+<span class="c1">// 파티션1의 max값은 3, 파티션2의 max값은 6이다</span>
+<span class="c1">// 0 + 3 + 6</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">aggregate</span><span class="o">(</span><span class="mi">0</span><span class="o">)(</span><span class="nv">math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+<span class="c1">// res123: Int = 9</span>
+
+
+<span class="c1">// 1 + 3 + 6</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">aggreate</span><span class="o">(</span><span class="mi">1</span><span class="o">)(</span><span class="nv">math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+<span class="c1">// res127: Int = 10</span>
+
+<span class="c1">// 10이 가장 크다</span>
+<span class="c1">// 10 + 10 + 10 = 30</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">aggreate</span><span class="o">(</span><span class="mi">10</span><span class="o">)(</span><span class="nv">math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+<span class="c1">// res125: Int = 30</span>
+
+</code></pre></div></div>
+
+<h2 id="agrregatebykey">agrregateByKey</h2>
+<ul>
+  <li>def aggregateByKey<a href="zeroValue: U">U: ClassTag</a>(seqOp: (U, V) =&gt; U, combOp: (U, U) =&gt; U): RDD[(K, U)]</li>
+  <li>def aggregateByKey<a href="zeroValue: U, numPartitions: Int">U: ClassTag</a>(seqOp: (U, V) =&gt; U, combOp: (U, U) =&gt; U): RDD[(K, U)]</li>
+  <li>def aggregateByKey<a href="zeroValue: U, partitioner: Partitioner">U: ClassTag</a>(seqOp: (U, V) =&gt; U, combOp: (U, U) =&gt; U): RDD[(K, U)]</li>
+  <li>RDD[(K, V)]에 대한 aggregate 함수</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">mappedRdd</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">%</span><span class="mi">2</span><span class="o">,</span> <span class="n">x</span><span class="o">))</span>
+<span class="nv">mappedRdd</span><span class="o">.</span><span class="py">aggregateByKey</span><span class="o">(</span><span class="mi">0</span><span class="o">)(</span><span class="nv">math</span><span class="o">.</span><span class="py">max</span><span class="o">(</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">),</span> <span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// Array((0, 18), (1, 17))</span>
+</code></pre></div></div>
+
+<h2 id="sortby">sortBy</h2>
+<ul>
+  <li>def sortBy<a href="f: (T) =&gt; K, ascending: Boolean = true, numPartitons: Int = this.partitions.size">K</a>(implicit ord: Ordering[K], ctag: ClassTag[K]): RDD[T]</li>
+  <li>정렬</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">z</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">Array</span><span class="o">((</span><span class="s">"H"</span><span class="o">,</span> <span class="mi">10</span><span class="o">),</span> <span class="o">(</span><span class="s">"A"</span><span class="o">,</span> <span class="mi">26</span><span class="o">),</span> <span class="o">(</span><span class="s">"Z"</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="o">(</span><span class="s">"L"</span><span class="o">,</span> <span class="mi">5</span><span class="o">)))</span>
+<span class="nv">z</span><span class="o">.</span><span class="py">sortBy</span><span class="o">(</span><span class="n">c</span> <span class="k">=&gt;</span> <span class="nv">c</span><span class="o">.</span><span class="py">_1</span><span class="o">,</span> <span class="kc">true</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// Array((A, 26), (H, 10), (L, 5), (Z, 1))</span>
+
+<span class="nv">z</span><span class="o">.</span><span class="py">sortBy</span><span class="o">(</span><span class="n">c</span> <span class="k">=&gt;</span> <span class="nv">c</span><span class="o">.</span><span class="py">_2</span><span class="o">,</span> <span class="kc">true</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// Array((Z, 1), (L, 5), (H, 10), (A, 26))</span>
+</code></pre></div></div>
+
+<h2 id="sortbykey">sortByKey</h2>
+<ul>
+  <li>def sortByKey(ascending: Boolean = true, numPartions: Int = self.partitions.size): RDD[P]</li>
+  <li>RDD[(K, V)]에 대한 sortBy 함수</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"dog"</span><span class="o">,</span> <span class="s">"cat"</span><span class="o">,</span> <span class="s">"owl"</span><span class="o">,</span> <span class="s">"gnu"</span><span class="o">,</span> <span class="s">"ant"</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">b</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="mi">1</span> <span class="n">t0</span> <span class="nv">a</span><span class="o">.</span><span class="py">count</span><span class="o">.</span><span class="py">toInt</span><span class="o">,</span> <span class="mi">2</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">c</span> <span class="k">=</span> <span class="nv">a</span><span class="o">.</span><span class="py">zip</span><span class="o">(</span><span class="n">b</span><span class="o">)</span>
+<span class="nv">c</span><span class="o">.</span><span class="py">sortByKey</span><span class="o">(</span><span class="kc">true</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">//Array((ant, 5), (cat, 2), (dog, 1), (gnu, 4), (owl, 3))</span>
+
+<span class="nv">c</span><span class="o">.</span><span class="py">sortByKey</span><span class="o">(</span><span class="kc">false</span><span class="o">).</span><span class="py">collect</span>
+<span class="c1">// Array((owl, 3), (gnu, 4), (dog, 1), (cat, 2), (ant, 5))</span>
+</code></pre></div></div>
+
+<h2 id="join-leftouterjoin-rightouterjoin-fullouterjoin">join, leftOuterJoin, rightOuterJoin, fullOuterJoin</h2>
+<ul>
+  <li>def join<a href="other: RDD[(K, W)]">W</a>: RDD[(K, (V, W))]</li>
+  <li>def join<a href="other: RDD[(K, W)], numPartitions: Int">W</a>: RDD[(K, (V, W))]</li>
+  <li>def join<a href="other: RDD[(K, W)], partitioner: Partitioner">W</a>: RDD[(K, (V, W))]</li>
+  <li>RDD[(K, V)]에 대한 inner Join 함수</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">a</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"dog"</span><span class="o">,</span> <span class="s">"salmon"</span><span class="o">,</span> <span class="s">"salmon"</span><span class="o">,</span> <span class="s">"rat"</span><span class="o">,</span> <span class="s">"elephant"</span><span class="o">),</span> <span class="mi">3</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">b</span> <span class="k">=</span> <span class="nv">a</span><span class="o">.</span><span class="py">keBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">length</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">c</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"dog"</span><span class="o">,</span> <span class="s">"cat"</span><span class="o">,</span> <span class="s">"gnu"</span><span class="o">,</span> <span class="s">"salmon"</span><span class="o">,</span> <span class="s">"rabbit"</span><span class="o">,</span> <span class="s">"turkey"</span><span class="o">,</span> <span class="s">"wolf"</span><span class="o">,</span> <span class="s">"bear"</span><span class="o">,</span> <span class="s">"bee"</span><span class="o">),</span> <span class="mi">3</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">d</span> <span class="k">=</span> <span class="nv">c</span><span class="o">.</span><span class="py">KeyBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">lenght</span><span class="o">)</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">join</span><span class="o">(</span><span class="n">d</span><span class="o">).</span><span class="py">collect</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">leftOuterJoin</span><span class="o">(</span><span class="n">d</span><span class="o">)</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">rightOuterJoin</span><span class="o">(</span><span class="n">d</span><span class="o">)</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">fullOuterJoin</span><span class="o">(</span><span class="n">d</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="cogroup-groupwith">cogroup (groupWith)</h2>
+<ul>
+  <li>def cogroup<a href="other: RDD[(K, W)]">W</a>: RDD[(K, (Iterable[V], Iterable[W]))]</li>
+  <li>def cogroup<a href="other1: RDD[(K, W1)], other2: RDD[(K, W2)]">W1, W2</a>: RDD[(K, (Iterable[V]))]</li>
+  <li>3 key-value RDD 생성</li>
+</ul>
+
+<p><br /></p>
+<h1 id="action-operation"><a href="">Action Operation</a></h1>
+<h2 id="collecttoarray">collect(toArray)</h2>
+<ul>
+  <li>def collect(): Array[T]</li>
+  <li>def collect<a href="f: PartialFunction[T, U]">U: Classtag</a>: RDD[U]</li>
+  <li>드라이버 프로그램에서 RDD의 모든 데이터를 List로 반환</li>
+</ul>
+
+<h2 id="count">count</h2>
+<ul>
+  <li>def count(): Long</li>
+  <li>RDD 데이터 개수 반환</li>
+</ul>
+
+<h2 id="first">first</h2>
+<ul>
+  <li>def first(): T</li>
+  <li>RDD의 첫 번째 데이터 반환 (= take(1))</li>
+</ul>
+
+<h2 id="take">take</h2>
+<ul>
+  <li>def take(num: Int): Array[T]</li>
+  <li>RDD의 n번째 데이터 반환</li>
+</ul>
+
+<h2 id="takeordered">takeOrdered</h2>
+<ul>
+  <li>def takeOrdered(num: Int)(implicit ord: Ordering[T]): Array[T]</li>
+  <li>RDD의 데이터를 정렬하여 처음 n개의 데이터 반환</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">b</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="s">"dog"</span><span class="o">,</span> <span class="s">"cat"</span><span class="o">,</span> <span class="s">"ape"</span><span class="o">,</span> <span class="s">"salmon"</span><span class="o">,</span> <span class="s">"gnu"</span><span class="o">),</span> <span class="mi">2</span><span class="o">)</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">takeOrdered</span><span class="o">(</span><span class="mi">2</span><span class="o">)</span>
+
+<span class="c1">// Array(ape, cat)</span>
+</code></pre></div></div>
+
+<h2 id="takesample">takeSample</h2>
+<ul>
+  <li>def takeSample(withReplacement: Boolean, num: Int, seed: Int): Array[T]</li>
+  <li>Sample과 유사하지만 takeSample은 정확히 num개의 데이터를 무작위 순위로 Array로 반환</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">takeSample</span><span class="o">(</span><span class="kc">true</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">1</span><span class="o">)</span>
+<span class="c1">// Array(9, 4, 7)</span>
+</code></pre></div></div>
+
+<h2 id="saveastextfile">saveAsTextFile</h2>
+<ul>
+  <li>def saveAsTextFile(path: String)</li>
+  <li>def saveAsTextFile(path: String, codec: Class[_ &lt;: CompressionCodec])</li>
+  <li>RDD를 로컬 파일 시스템, HDFS 또는 다른 하둡 지우너 파일 시스템에 저장, 파티션 개수 만금 파일 생성</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">saveAsTextFIle</span><span class="o">(</span><span class="s">"c:/temp/rdd"</span><span class="o">)</span>
+<span class="k">import</span> <span class="nn">org.apache.hadoop.io.compress.GzipCodec</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">saveAsTextFile</span><span class="o">(</span><span class="s">"mydata_b"</span><span class="o">,</span> <span class="n">classOf</span><span class="o">[</span><span class="kt">GzipCodec</span><span class="o">])</span> <span class="c1">// 입측</span>
+</code></pre></div></div>
+
+<h2 id="saveasobjectfile">saveAsObjectFile</h2>
+<ul>
+  <li>def saveAsObjectFile(path: String)</li>
+  <li>RDD를 직렬화하여 바이너리 형태로 저장</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">saveAsObjectFile</span><span class="o">(</span><span class="s">"objFile"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">loadRdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">objectFile</span><span class="o">(</span><span class="s">"objFile"</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="saveassequencefile">saveAsSequenceFile</h2>
+<ul>
+  <li>def saveAsSequenceFile(path: String, codec: Option[Class[_ &lt;: CompressionCodec]] = None)</li>
+  <li>RDD를 Hadoop sequence 파일로 저장</li>
+</ul>
+
+<h2 id="countbykey">countByKey</h2>
+<ul>
+  <li>def countByKey(): Map[K, Long]</li>
+  <li>RDD[(Km V)]에 대한 count 함수</li>
+</ul>
+
+<h2 id="countbyvalue">countByValue</h2>
+<ul>
+  <li>def countByValue(): Map[T, Long]</li>
+  <li>Value 값과 그 값이 나타나는 회수에 대한 Map 반환, 단일 reducer에서 aggregation이 일어남</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">b</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">5</span><span class="o">,</span><span class="mi">6</span><span class="o">,</span><span class="mi">7</span><span class="o">,</span><span class="mi">8</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">4</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">))</span>
+<span class="nv">b</span><span class="o">.</span><span class="py">countByValue</span>
+<span class="c1">// Map(5 -&gt; 1, 8-&gt; 1, 3 -&gt; 1, 6 -&gt; 1, 1 -&gt; 6, 2 -&gt; 3, 4 -&gt; 2, 7 -&gt; 1)</span>
+</code></pre></div></div>
+
+<h2 id="foreach">foreach</h2>
+<ul>
+  <li>def foreach(f: T =&gt; Unit)</li>
+  <li>RDD의 각 데이터에 대하여 f 함수 실행</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">x</span><span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="nf">println</span><span class="o">(</span><span class="k">_</span><span class="o">))</span>
+<span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="foreachpartition">foreachPartition</h2>
+<ul>
+  <li>def foreachPartition(f: Iterator[T] =&gt; Unit)</li>
+  <li>RDD의 각 파티션에서 f 수행</li>
+</ul>
+
+<p><br /></p>
+<h1 id="spark-application"><a href="">Spark Application</a></h1>
+<h2 id="spark-application-작성준비">Spark Application 작성준비</h2>
+<ol>
+  <li>idea 실행</li>
+  <li>Create New Project &gt; maven</li>
+  <li>Scala library 확인</li>
+  <li>pom.xml 작성 - Spark Dependency 추가</li>
+  <li>Add Framework Support &gt; Scala 추가</li>
+  <li>New &gt; Scala class &gt; 이름 입력 &gt; Object 선택</li>
+  <li>Coding</li>
+</ol>
+
+<ul>
+  <li>
+    <p>IntelliJ에서 Maven으로 새 프로젝트를 생성한다.</p>
+  </li>
+  <li>
+    <p>Maven Projects nedd to be imported라는 팝업이 뜨고 Import Changes와 Enable auto import를 선택할 수 있게 나오는 데, 여기서는 Enable Auto-Import를 선택한다. Maven의 pom.xml이 변경될 때 마다 자동으로 관련 라이브러리들이 다운로드되게 된다.</p>
+  </li>
+  <li>
+    <p>scr/pom.xml을 열고 필요한 dependecy를 추가한다. 여기서는 spark 라이브러리 dependency를 추가한다. 아래 코드를 pom.xml에 끼워 넣으면 된다. 자동으로 관련 라이브러리들이 다운로드 된다.</p>
+  </li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spark-core_2.11<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 위 코드와 동일하지만 이렇게 쓸 수도 있다 --&gt;</span>
+<span class="nt">&lt;properties&gt;</span>
+    <span class="nt">&lt;scala.version&gt;</span>2.11.12<span class="nt">&lt;/scala.version&gt;</span>
+    <span class="nt">&lt;scala.compat.version&gt;</span>2.11.12<span class="nt">&lt;/scala.compat.version&gt;</span>
+    <span class="nt">&lt;scala.binary.version&gt;</span>2.11<span class="nt">&lt;/scala.binary.version&gt;</span>
+<span class="nt">&lt;/properties&gt;</span>
+
+<span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spark-core_${scala.binary.version}<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.4.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>
+    <p>scala를 사용할 것이기 때문에 일단 main 디렉토리 밑에 scala 디렉토리를 생성한다. scala 디렉토리를 마우스 우클릭 후, Mark directory As에서 Sources Root를 선택한다.</p>
+  </li>
+  <li>
+    <p>scala 디렉토리 안에 org.kodb.spark라는 package를 생성한다.</p>
+  </li>
+  <li>
+    <p>기본적으로 Maven에서는 scala 프레임워크를 사용할 수 없다. Scala를 실행하기 위해 root 디렉토리(여기서는 sample 폴더)를 우클릭하고 Add Framework Support를 클릭 후 Scala를 체크 해준다.</p>
+  </li>
+  <li>
+    <p>이제 위에서 생성한 org.kodb.spark package를 마우스 우클릭 후 New에 보면 Scala class를 생성할 수 있게 된다. Scala Class를 선택 후 Name에는 First, Kind에는 Class에서 Object로 바꿔 준다.</p>
+  </li>
+  <li>
+    <p>App 이라는 어플리케이션을 extends하면 Main 매소드를 따로 작성하지 않고도 패키지를 실행할 수 있다.</p>
+  </li>
+  <li>
+    <p>intellJ에서는 alt + enter를 누르면 자동으로 import 문이 뜬다.</p>
+  </li>
+  <li>
+    <p>spark conf를 생성하고 그 spark conf를 spark context 생성자에 전달</p>
+  </li>
+  <li>SparkContext와 SparkConf를 import 한다.</li>
+  <li>추가적으로 SparkContext 밑에 있는 모든 것을 import 한다.</li>
+  <li>
+    <p>spark에서는 암묵적으로 변환되는 것들이 많기 때문에 현재 사용되지 않는 것 같아 보여도 SparkContext에 있는 모든 것을 import한다. 그렇지 않으면 프로그램이 복잡해 질 때 문제가 발생할 여지가 있다.</p>
+  </li>
+  <li>현재는 분산환경이 아닌 로컬에서 실행하고 있다.</li>
+  <li>로컬모드의 코어를 모두 사용할 수 있도록 local[*]을 setMaster 해준다.</li>
+  <li>argument로 받아서 수행하면 local 모드 cluster 모드 전부 실행이 가능한 프로그램을 작성할 수 있다.</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+</code></pre></div></div>
+
+<ul>
+  <li>만약 이러한 에러가 뜬다면 이것은 Add Framework Support에서 scala를 추가할 때 버전을 맞추지 못해 발생하는 에러이다. 만약 스칼라 버전을 2.11.12으로 쓰고 있다면 2.11.12 버전을 다운받아 맞춰줘야 한다.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Exception in thread "main" java.lang.NoSuchMethodError:
+</code></pre></div></div>
+
+<h2 id="mapreduce-vs-spark-application">MapReduce vs. Spark Application</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// word count</span>
+<span class="k">package</span> <span class="nn">com.raonbit.edu</span>
+
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkContext</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkContext._</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+
+<span class="k">object</span> <span class="nc">WordCount</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"WordCount"</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+
+    <span class="k">val</span> <span class="nv">=</span> <span class="n">file</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="nf">args</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
+    <span class="k">val</span> <span class="nv">word</span> <span class="k">=</span> <span class="nv">file</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">splict</span><span class="o">(</span><span class="s">""</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">cache</span><span class="o">()</span>
+    <span class="nv">word</span><span class="o">.</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">).</span><span class="py">saveAsTextFile</span><span class="o">(</span><span class="nf">args</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<h2 id="rdd-persistencecaching">RDD Persistence(Caching)</h2>
+<h3 id="rddpersist--rddcache-를-통해-rdd를-저장-인자로-저장-수준을-전달하지-않으면-메모리에만-저장">rdd.persist() (== rdd.cache()) 를 통해 RDD를 저장, 인자로 저장 수준을 전달하지 않으면 메모리에만 저장</h3>
+<h4 id="cache--cachestroagelevelmemory_only">cache() == cache(StroageLevel.MEMORY_ONLY)</h4>
+<ul>
+  <li>MEMORY_ONLY : 기본값, RDD를 직렬화 하지 않은 객체로 메모리에 저장, RDD가 메모리 보다 크면 어떤 파티션은 저장되지 않고 필요할 때마다 재 산출 된다.</li>
+  <li>MEMORY_AND_DISK : RDD를 직렬화 하지 않은 객체로 메모리에 저장, RDD가 메모리 보다 크면 나머지 파티션들은 디스크에 저장하고 필요할 때 마다 읽어온다.</li>
+  <li>MEMORY_AND_SER : RDD를 직렬화 한 객체로 메모리에 저장, 공간이 적게 필요하지만 읽는데 CPU 소모가 많다</li>
+  <li>MEMORY_AND_DISK_SER : RDD를 직렬화 한 객체로 메모리에 저장, RDD가 메로리 보다 크면 나머지 파티션들은 디스크에 저아하고 필요할 때마다 읽어온다.</li>
+  <li>DISK_ONLY : RDD를 디스크에만 저장</li>
+  <li>MEMORY_ONLY_2, MEMORY_AND_DIS_2, .. : 위와 동일, 차이점은 각 피티션을 두 개의 클러스터 노드에 복제</li>
+</ul>
+
+<h3 id="명시적으로-저장하지-않아도-reducebykey와-같은-shuffle-연산-중에-중간-데이터-자동-저장">명시적으로 저장하지 않아도 reduceByKey와 같은 shuffle 연산 중에 중간 데이터 자동 저장</h3>
+
+<h3 id="중간-데이터rdd를-재상용할-계획이라면-명시적으로-persistcache-호출-권장">중간 데이터(RDD)를 재상용할 계획이라면 명시적으로 persist(cache) 호출 권장</h3>
+
+<h3 id="저장-수준-선택-가이드">저장 수준 선택 가이드</h3>
+<ul>
+  <li>RDD의 크기가 Memory 용량 보다 작으면 MEMORY_ONLY 사용, 가장 빠르고 효율적</li>
+  <li>그렇지 않으면, MEMORY_ONLY_SER 사용. 이때 Kryo serialization을 사용하면 빠른 접근 가능</li>
+  <li>RDD를 생성하는데 아주 많은 자원을 사용하지 않거나 많은 양의 데이터를 필터링 하지 않는다면 디스크에 저장하지 말 것. 디스크에서 읽어 오는 것보다 재 산출이 보다 효율적</li>
+  <li>빠른 장애 복구를 원한다면 클러스터에 복제하는 저장 수준 사용</li>
+</ul>
+
+<h3 id="오래된-데이터-파티션은-lrulatest-recently-used에-의해-제거">오래된 데이터 파티션은 LRU(latest-recently-used)에 의해 제거</h3>
+
+<h3 id="명시적으로-제거하려면-unpersist-호출">명시적으로 제거하려면 unpersist() 호출</h3>
+
+<h2 id="broadcas-variables-accumulator">Broadcas Variables, Accumulator</h2>
+<h3 id="broadcast-variable">Broadcast Variable</h3>
+<ul>
+  <li>읽기 전용 변수의 복사본을 클러스터 상의 각 take에 복사하여 보내는 대신 각 노드에 cache에 보관하는 것</li>
+  <li>큰 입력 데이터의 복사본을 각 노드에 효율적으로 보내는 데 사용</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">broadcastVar</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">broadcast</span><span class="o">(</span><span class="nc">Array</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">))</span>
+<span class="nv">broadcastVar</span><span class="o">.</span><span class="py">value</span><span class="o">()</span>
+
+<span class="c1">// return [1, 2, 3]</span>
+</code></pre></div></div>
+
+<h3 id="accumulator">Accumulator</h3>
+<ul>
+  <li>associative 연산을 통하여 누적만 가능한 변수, counter나 sum을 병렬로 효율적으로 구현하는 데 상요</li>
+  <li>숫자 형과 standard mutable collection에 대해 accumulator를 기본 제공하고, 확장 가능</li>
+  <li>driver 프로그램만이 accumulator 값을 읽을 수 있음</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">accum</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">accumulator</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="nv">sc</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)).</span><span class="py">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">accum</span><span class="o">.</span><span class="py">add</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+<span class="nv">accum</span><span class="o">.</span><span class="py">value</span><span class="o">()</span>
+</code></pre></div></div>
+
+<h2 id="spark-application-operator-graph">Spark Application Operator Graph</h2>
+
+<hr />
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"../README.md"</span><span class="o">)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">first</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">line</span> <span class="k">=&gt;</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span> <span class="n">line</span> <span class="k">=&gt;</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span> <span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span> <span class="n">line</span> <span class="k">=&gt;</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span> <span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">reduceByKey</span><span class="o">((</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">).</span><span class="py">sortBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">_2</span><span class="o">,</span> <span class="kc">false</span><span class="o">).</span><span class="py">take</span><span class="o">(</span><span class="mi">10</span><span class="o">)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">).</span><span class="py">sortBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">_2</span><span class="o">,</span> <span class="kc">false</span><span class="o">)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">count</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">countByKey</span>
+
+
+<span class="k">val</span> <span class="nv">rdd2</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">take</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+
+<span class="nv">rdd2</span><span class="o">.</span><span class="py">take</span><span class="o">(</span><span class="mi">5</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">rdd3</span> <span class="k">=</span> <span class="nv">rdd2</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">w</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">w</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+
+
+<span class="c1">// 로컬파일: sc.textFile("file:///...")</span>
+<span class="c1">// HDFS: sc.textFile("hdfs://...")</span>
+<span class="c1">// Amazon S3: sc.textFile("s3://...")</span>
+
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">makeRDD</span><span class="o">(</span><span class="mi">0</span> <span class="n">to</span> <span class="mi">100000000</span><span class="o">)</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">count</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="k">_</span> <span class="o">&gt;</span> <span class="mi">10000000</span><span class="o">).</span><span class="py">count</span>
+
+
+<span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">makeRDD</span><span class="o">(</span><span class="nc">List</span><span class="o">((</span><span class="mi">1</span><span class="o">,</span> <span class="s">"A"</span><span class="o">),</span> <span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"B"</span><span class="o">),</span> <span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">"C"</span><span class="o">),</span> <span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="s">"D"</span><span class="o">),</span> <span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="s">"E"</span><span class="o">)))</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">collect</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">_1</span><span class="o">).</span><span class="py">collect</span>
+
+<span class="nv">rdd</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">_1</span><span class="o">).</span><span class="py">collect</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2019/03/04/Spark-Spark_Core.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

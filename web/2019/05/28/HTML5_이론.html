@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[WEB] HTML5 이론 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[WEB] HTML5 이론" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="웹 구조 1. URI" />
+<meta property="og:description" content="웹 구조 1. URI" />
+<link rel="canonical" href="https://safenumz.github.io/blog/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-28T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[WEB] HTML5 이론" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-28T00:00:00-05:00","datePublished":"2019-05-28T00:00:00-05:00","description":"웹 구조 1. URI","headline":"[WEB] HTML5 이론","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html"},"url":"https://safenumz.github.io/blog/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[WEB] HTML5 이론</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-28T00:00:00-05:00" itemprop="datePublished">
+        May 28, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#WEB">WEB</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="웹-구조">웹 구조</h1>
+<h2 id="1-uri">1. URI</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>클라이언트 (web browser) &lt;---&gt; 웹 서버
+</code></pre></div></div>
+
+<ul>
+  <li>URL(Uniform Resource Locator): 실제의 네트워크 경로를 가리키며, 네트워크 상의 리소스 접근시에 사용, ex) http://www.xmlgo.net/document/editor/editor.html</li>
+  <li>URN(Uniform Resource Name): 위치에 독립적인 이름을 제공하기 위해서 존재, ex) urn:xmlgo:registry1</li>
+  <li>URL &gt;(포함) URL + URN</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># URI 예제
+</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">site</span><span class="p">.</span><span class="n">com</span><span class="p">:</span><span class="n">port</span><span class="o">/</span><span class="n">forder</span><span class="o">/</span><span class="nb">file</span><span class="p">.</span><span class="n">html</span>
+
+<span class="n">http</span> <span class="p">:</span> <span class="n">통신프로토콜</span>
+<span class="n">www</span><span class="p">.</span><span class="n">site</span><span class="p">.</span><span class="n">com</span> <span class="p">:</span> <span class="n">HostName</span><span class="p">(</span><span class="n">IP주소</span><span class="p">)</span>
+<span class="n">folder</span> <span class="p">:</span> <span class="n">폴더명</span>
+<span class="nb">file</span><span class="p">.</span><span class="n">html</span> <span class="p">:</span> <span class="n">파일명</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># URI 예제 - 쿼리스트링(query string)
+</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">www</span><span class="p">.</span><span class="n">site</span><span class="p">.</span><span class="n">com</span><span class="p">:</span><span class="n">port</span><span class="o">/</span><span class="n">forder</span><span class="o">/</span><span class="nb">file</span><span class="p">.</span><span class="n">html</span><span class="err">?</span><span class="n">kind</span><span class="o">=</span><span class="n">book</span><span class="o">&amp;</span><span class="n">cate</span><span class="o">=</span><span class="n">it</span>
+
+<span class="n">kind</span> <span class="p">:</span> <span class="n">name</span>
+<span class="n">book</span> <span class="p">:</span> <span class="n">value</span>
+<span class="n">kind</span><span class="o">=</span><span class="n">book</span> <span class="p">:</span> <span class="n">parameter</span>
+<span class="n">cate</span> <span class="p">:</span> <span class="n">name</span>
+<span class="n">it</span> <span class="p">:</span> <span class="n">value</span>
+<span class="n">cate</span><span class="o">=</span><span class="n">it</span> <span class="p">:</span> <span class="n">parameter</span>
+<span class="n">kind</span><span class="o">=</span><span class="n">book</span><span class="o">&amp;</span><span class="n">cate</span><span class="o">=</span><span class="n">it</span> <span class="p">:</span> <span class="n">query</span> <span class="n">string</span>
+</code></pre></div></div>
+
+<h2 id="2-http">2. http</h2>
+<ul>
+  <li>Hyper-Text Transfer Protocol (TCP/IP 기반)</li>
+</ul>
+
+<h3 id="http-request요청-예제">HTTP Request(요청) 예제</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">GET</span> <span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">test</span><span class="p">.</span><span class="n">html</span> <span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span>
+<span class="n">Accept</span><span class="p">:</span> <span class="o">*/*</span>
+<span class="n">Accept</span><span class="o">-</span><span class="n">Language</span><span class="p">:</span><span class="n">ko</span>
+</code></pre></div></div>
+
+<h3 id="http-response응답-예제">HTTP Response(응답) 예제</h3>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">HTTP</span><span class="o">/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="n">OK</span>
+<span class="n">Server</span><span class="p">:</span> <span class="n">Microsoft</span><span class="o">-</span><span class="n">llS</span><span class="o">/</span><span class="mf">5.1</span>
+<span class="n">X</span><span class="o">-</span><span class="n">Powered</span><span class="o">-</span><span class="n">By</span><span class="p">:</span> <span class="n">ASP</span><span class="p">.</span><span class="n">NET</span>
+</code></pre></div></div>
+
+<h3 id="응답-상태-코드">응답 상태 코드</h3>
+<ul>
+  <li>200: OK</li>
+  <li>403: Forbidden</li>
+  <li>404: Not Found</li>
+  <li>500: Server Error</li>
+  <li>503: Service Unavailable</li>
+</ul>
+
+<h1 id="웹-표준">웹 표준</h1>
+<ul>
+  <li>ISO 국제적 표준화 단체에서 표준으로 권장</li>
+</ul>
+
+<h2 id="웹표준의-장점">웹표준의 장점</h2>
+<ul>
+  <li>수정과 관리의 용이</li>
+  <li>웹 접근성의 향상</li>
+  <li>검색엔진 최적화</li>
+  <li>호환성 제공</li>
+</ul>
+
+<h2 id="관련규약">관련규약</h2>
+<ul>
+  <li>HTML: 구조언어</li>
+  <li>JavaScript: 동작언어</li>
+  <li>CSS: 표현언어</li>
+</ul>
+
+<h2 id="테스트툴">테스트툴</h2>
+<ul>
+  <li>http://validator.w3.org (영어)</li>
+  <li>http://validator.kldp.org (한글)</li>
+  <li>직접입력을 누르고 텍스트창에 소스코드를 복사한 후 검사 버튼을 눌ㄹ러 바로 확인가능</li>
+</ul>
+
+<h2 id="웹접근성">웹접근성</h2>
+<ul>
+  <li>어떤 사용자(장애인, 고령자를 포함), 어떠한 기술 환경에서도 전문적인 능력없이 웹 사이트를 비 장애인과 동일하게 접근, 이용할 수 있도록 보장해야 한다.</li>
+</ul>
+
+<h3 id="웹접근성의-올바른-예">웹접근성의 올바른 예</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"/images/Guide/img01_map.gif"</span> <span class="na">alt=</span><span class="s">"한국정보화진흥원 약도: 지하철 9호선 등촌역 1번출구로 나와서 이백미터 직진. 백석초등학교 옆(등촌중학교 건너편) 한국정보화진흥원"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h1 id="html5">HTML5</h1>
+<h2 id="기본구조">기본구조</h2>
+<ul>
+  <li>HTML: Hyper Text Markup Language</li>
+  <li>DOCTYPE: html의 버전을 브라우저에 지시, 정확한 화면 출력을 위해 반드시 기재(없으면 웹표준과 IE의 폭 범위가 달라서 화면 크기가 변경됨)</li>
+</ul>
+
+<h2 id="markup-용어">markup 용어</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>요소(element): <span class="nt">&lt;p&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">/&gt;&lt;/p&gt;</span>
+속성(attribute): <span class="nt">&lt;p</span> <span class="na">id=</span><span class="s">"아이디"</span> <span class="na">class=</span><span class="s">"클래스"</span> <span class="na">title=</span><span class="s">"제목"</span><span class="nt">&gt;</span>문장<span class="nt">&lt;/p&gt;</span>
+값(value): <span class="nt">&lt;p</span> <span class="na">id=</span><span class="s">"아이디"</span> <span class="na">class=</span><span class="s">"클래스"</span> <span class="na">title=</span><span class="s">"제목"</span><span class="nt">&gt;</span>문장<span class="nt">&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-규칙">HTML5 규칙</h2>
+<h3 id="종료-태그-생략-불가능">종료 태그 생략 불가능</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html4: <span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">""</span> <span class="na">alt=</span><span class="s">""</span><span class="nt">&gt;</span>
+html5: <span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">""</span> <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<h3 id="요소명과-속성명에-소문자-사용">요소명과 속성명에 소문자 사용</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html4: <span class="nt">&lt;P&gt;&lt;IMG</span> <span class="na">SRC=</span><span class="s">""</span> <span class="na">ALT=</span><span class="s">""</span><span class="nt">&gt;</span>
+html5: <span class="nt">&lt;p&gt;&lt;img</span> <span class="na">src=</span><span class="s">""</span> <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;&lt;/p&gt;</span>
+</code></pre></div></div>
+
+<h3 id="빈-요소에도-종료-태그-기술">빈 요소에도 종료 태그 기술</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html4: <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">""</span> <span class="na">alt=</span><span class="s">""</span><span class="nt">&gt;</span>
+html5: <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">""</span> <span class="na">alt=</span><span class="s">""</span><span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h3 id="속성에-속성값-생략-불가">속성에 속성값 생략 불가</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html4: <span class="nt">&lt;option</span> <span class="na">selected</span><span class="nt">&gt;</span>&gt;<span class="nt">&lt;/option&gt;</span>
+html5: <span class="nt">&lt;option</span> <span class="na">selected=</span><span class="s">"selected"</span><span class="nt">&gt;&lt;/option&gt;</span>
+</code></pre></div></div>
+
+<h3 id="속성값에-인용부호-사용">속성값에 인용부호 사용</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>html4: <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">xxx.gif</span> <span class="na">alt=</span><span class="s">사진</span><span class="nt">&gt;</span>
+html5: <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"xxx.gif"</span> <span class="na">alt=</span><span class="s">"사진"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-새로운-태그">HTML5 새로운 태그</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">section</td>
+      <td style="text-align: center">세션의 제목을 나타내는 h1~h6과 함께 사용</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">article</td>
+      <td style="text-align: center">뉴스 기사나 블로그 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">aside</td>
+      <td style="text-align: center">문서의 주요 부분을 표시하고 남은 사이드바 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">hgroup</td>
+      <td style="text-align: center">제목과 부제목을 하나로 묶음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">header</td>
+      <td style="text-align: center">헤더 부분으로 사이트 소개나 내비게이션 등을 표시하고 머리글 역할</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">footer</td>
+      <td style="text-align: center">푸터 부분으로, 사이트 제작자나 저작권 정보 등을 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">nav</td>
+      <td style="text-align: center">사이트 안의 내비게이션 요소</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">figure, figcaption</td>
+      <td style="text-align: center">그림이나 비디오 같은 멀티미디어 캡션을 붙일 때 사용</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">audio, video</td>
+      <td style="text-align: center">오디오, 비디오</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">embed</td>
+      <td style="text-align: center">플러그인 콘텐츠를 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">mark</td>
+      <td style="text-align: center">텍스트에 강조효과</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">progress</td>
+      <td style="text-align: center">시간이 걸리는 작어봑정을 막대로 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">meter</td>
+      <td style="text-align: center">측정값 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">time</td>
+      <td style="text-align: center">날씨나 시간 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ruby, rt, rp</td>
+      <td style="text-align: center">루비문자 표현</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">canvas</td>
+      <td style="text-align: center">그림을 그릴 수 있는 캔버스</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">command</td>
+      <td style="text-align: center">사용자 실행 명령어 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">details</td>
+      <td style="text-align: center">추가적인 정보 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">datalist</td>
+      <td style="text-align: center">사용자가 텍스트 필드에 내용을 입력할 때 선택할 수 있는 값들을 목록으로 보여줌</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">keygen</td>
+      <td style="text-align: center">폼 양식을 서버로 전송할 때 한 쌍의 키를 만들어 private key는 로컬에 저장하고 public key는 서버에 저장함</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">output</td>
+      <td style="text-align: center">수학적인 계산의 결과값을 표시</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="html5-새로운-속성">HTML5 새로운 속성</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">속성</th>
+      <th style="text-align: center">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">charset</td>
+      <td style="text-align: center">meta</td>
+      <td style="text-align: center">문자 인코딩</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">script</td>
+      <td style="text-align: center">async</td>
+      <td style="text-align: center">스크립트를 실행할 수 있게 되면 비동기적으로 실행</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">html</td>
+      <td style="text-align: center">menifest</td>
+      <td style="text-align: center">오프라인 웹 캐시를 사용할 경우 menifest 파일의 경로를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">a</td>
+      <td style="text-align: center">media</td>
+      <td style="text-align: center">링크할 미디어를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">area</td>
+      <td style="text-align: center">media</td>
+      <td style="text-align: center">링크할 미디어를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">hreflang</td>
+      <td style="text-align: center">링크하는 대상의 언어를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">ref</td>
+      <td style="text-align: center">area가 포함된 문서와 area가 링크하는 대상 간의 관계를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">base</td>
+      <td style="text-align: center">target</td>
+      <td style="text-align: center">href 송성에서 지정한 링크의 target을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">li</td>
+      <td style="text-align: center">value</td>
+      <td style="text-align: center">첫 번째 항목의 값을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">ol</td>
+      <td style="text-align: center">reversed</td>
+      <td style="text-align: center">목록이 역순으로 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">start</td>
+      <td style="text-align: center">첫 번째 항목의 시작값을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">input, select, textarea, button</td>
+      <td style="text-align: center">autofocus</td>
+      <td style="text-align: center">포커스를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">input, textarea</td>
+      <td style="text-align: center">required</td>
+      <td style="text-align: center">필수입력필드 설정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">input, textarea</td>
+      <td style="text-align: center">placeholder</td>
+      <td style="text-align: center">입력필드에 힌트 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">input</td>
+      <td style="text-align: center">autocomplete</td>
+      <td style="text-align: center">자동완성기능을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">min, max</td>
+      <td style="text-align: center">숫자나 범위의 최소값과 최대값 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">multiple</td>
+      <td style="text-align: center">값을 여러 개 허용</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">pattern</td>
+      <td style="text-align: center">조건을 사용하는 일반식 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">step</td>
+      <td style="text-align: center">숫자나 범위를 지정할 때 값을 조절하는 단계를 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">form</td>
+      <td style="text-align: center">novalidate</td>
+      <td style="text-align: center">서버로 양식을 전송하는 동안 유효했는지 보증할 수 없음을 나타냄</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">menu</td>
+      <td style="text-align: center">type</td>
+      <td style="text-align: center">메뉴의 종류 toolbar, context 선택</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">type</td>
+      <td style="text-align: center">메뉴명을 지정</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">style</td>
+      <td style="text-align: center">scoped</td>
+      <td style="text-align: center">해당 요소의 부모 요소와 자식 요소가 스타일의 적용 대상이 됨. 이 속성이 없으면 스타일의 적용대상이 문서 전체가 됨</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">iframe</td>
+      <td style="text-align: center">seamless</td>
+      <td style="text-align: center">문서 내용의 일부인 것처럼 끼워 넣는 표시 만남</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">-</td>
+      <td style="text-align: center">sandbox</td>
+      <td style="text-align: center">iframe 안에 플러그인이나 폼, 스크립트 등의 기능을 허용함</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="html5-구조화">HTML5 구조화</h2>
+
+<p><img src="https://6gw5wa.bn.files.1drv.com/y4mgRUhyfGAs-hzNMDRdYz9W53XzCmxO_AjJCWAgnLWhX1Z_vRIGZZK50yKTO4chKivDT8t66I7C-2p-33hSHzz4DMBs7wlMS5fBsPVlkhd9OrbuhdZGhEkVMxn6MAT7_tlUkxGW7xLV32ZmDzfz1WFssiHt1VtvICaa9ZzRkPN_RVhXRteo-OtFyPyFVogsmSHsZr3rwghKkAeFbs9x502yQ?width=434&amp;height=320&amp;cropmode=none" /></p>
+
+<h2 id="html5-태그">HTML5 태그</h2>
+<h3 id="블록-태그와-인라인-태그">블록 태그와 인라인 태그</h3>
+<h4 id="태그--블록태그와-인라인-태그로-구분">태그 : 블록태그와 인라인 태그로 구분</h4>
+
+<ul>
+  <li>블록 태그 사례: &lt;p&gt;, &lt;h1&gt;, &lt;div&gt;, &lt;ul&gt;</li>
+  <li>인라인 태그 사례: &lt;strong&gt;, &lt;a&gt;, &lt;img&gt;, &lt;span&gt;</li>
+</ul>
+
+<h4 id="블록-태그">블록 태그</h4>
+<ul>
+  <li>항상 새 라인에서 시작하여 출력</li>
+  <li>양 옆에 다른 콘텐트를 배치하지 않고 한 라인 독점 사용</li>
+  <li>가장 많이 사용되는 블록 태그: &lt;div&gt;</li>
+</ul>
+
+<h4 id="인라인-태그">인라인 태그</h4>
+<ul>
+  <li>블록 속에 삽입되어 블록의 일부로 출력</li>
+  <li>가장 많이 사용된 인라인 태그: &lt;span&gt;</li>
+</ul>
+
+<h3 id="문단sections">문단(sections)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">기능</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">&lt;article&gt;</td>
+      <td style="text-align: center">문서의 독립적인 부분을 구성하는 섹션</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;section&gt;</td>
+      <td style="text-align: center">일반적인 문서 섹션</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;nav&gt;</td>
+      <td style="text-align: center">네비게이션 링크로 구성된 섹션</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;h1&gt;~&lt;h6&gt;</td>
+      <td style="text-align: center">중요도에 따른 소개말 섹션</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;header&gt;</td>
+      <td style="text-align: center">머릿말: 소개 &lt;h1&gt;~&lt;h6&gt;, 네비게이션&lt;nav&gt; 등을 묶음</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;footer&gt;</td>
+      <td style="text-align: center">꼬리말: 작성자, 연관, 링크, 저작권 등의 정보 &lt;address&gt;와 &lt;nav&gt; 등을 포함</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;address&gt;</td>
+      <td style="text-align: center">작성자, 링크, 저작권 등의 정보 블럭요소</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="그룹grouping">그룹(grouping)</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">기능</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">&lt;p&gt;</td>
+      <td style="text-align: center">문단(paragraph)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;hr&gt;</td>
+      <td style="text-align: center">수평선(horizontal rule)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;pre&gt;</td>
+      <td style="text-align: center">공백문자와 줄바꿈 문자를 보존(preformatted text)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;ol&gt; / &lt;li&gt;</td>
+      <td style="text-align: center">순서가 있는 목록(ordered list)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;ul&gt; / &lt;li&gt;</td>
+      <td style="text-align: center">순서가 없는 목록(unordered list)</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;dl&gt; / &lt;dt&gt; &lt;dd&gt;</td>
+      <td style="text-align: center">정의 목록</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;figure&gt; / &lt;figcaption&gt;</td>
+      <td style="text-align: center">사진, 다이아그램, 코드 등을 문서에 포함</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;div&gt;</td>
+      <td style="text-align: center">그룹핑 블럭 요소</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="글자text">글자(text)</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">기능</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">&lt;mark&gt;</td>
+      <td style="text-align: center">문서 내에 하이라이트 표시</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;sup&gt;</td>
+      <td style="text-align: center">윗 첨자</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;sub&gt;</td>
+      <td style="text-align: center">아랫 첨자</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;em&gt; &lt;strong&gt;</td>
+      <td style="text-align: center">강조</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;span&gt;</td>
+      <td style="text-align: center">글자를 그룹핑</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;ins&gt; / &lt;del&gt;</td>
+      <td style="text-align: center">추가된 문장 / 삭제된 문장</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Inline level element: 새로운 행으로 표시되지 않기 때문에 width, height 속성 없이 문자 취급됨</li>
+</ul>
+
+<h2 id="embedded">embedded</h2>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 이미지 --&gt;</span>
+<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"이미지경로"</span> <span class="na">alt=</span><span class="s">"대체문자열"</span> <span class="na">height=</span><span class="s">"높이(pixel or %)"</span> <span class="na">width=</span><span class="s">"폭(pixel or %)"</span> <span class="na">usemap=</span><span class="s">"이미지맵이름"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- 오디오 --&gt;</span>
+<span class="nt">&lt;audio</span> <span class="na">src=</span><span class="s">"오디오경로"</span> <span class="na">autoplay=</span><span class="s">"autoplay 자동재생여부"</span> <span class="na">loop=</span><span class="s">"loop 반복재생여부"</span> <span class="na">controls=</span><span class="s">"controls 재생버튼표시"</span> <span class="na">preload=</span><span class="s">{auto</span> <span class="err">|</span> <span class="na">metadata</span> <span class="err">|</span> <span class="na">none</span><span class="err">}</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- 비디오 --&gt;</span>
+<span class="nt">&lt;video</span> <span class="na">src=</span><span class="s">"비디오경로"</span> <span class="na">autoplay=</span><span class="s">"autoplay 자동재생여부"</span> <span class="na">loop=</span><span class="s">"loop 반복재생여부"</span> <span class="na">controls=</span><span class="s">"controls 재생버튼표시"</span> <span class="na">poster=</span><span class="s">"재생되기 전에 이미지 경로"</span> <span class="na">audio=</span><span class="s">"muted"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- 비디오 예시 --&gt;</span>
+<span class="nt">&lt;video</span> <span class="na">width=</span><span class="s">"320"</span> <span class="na">height=</span><span class="s">"240"</span> <span class="na">controls</span><span class="nt">&gt;</span>
+
+	<span class="c">&lt;!-- 다양한 브라우저의 지원을 받으려면 source 태그 --&gt;</span>
+	<span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"movie.mp4"</span> <span class="na">type=</span><span class="s">"video/mp4"</span><span class="nt">&gt;</span>
+
+	<span class="c">&lt;!-- 코덱 --&gt;</span>
+	<span class="nt">&lt;source</span> <span class="na">src=</span><span class="s">"movie.ogg"</span> <span class="na">type=</span><span class="s">"video/ogg;codes"</span><span class="nt">&gt;</span>
+
+	<span class="c">&lt;!-- 자막파일 --&gt;</span>
+	<span class="nt">&lt;track</span> <span class="na">src=</span><span class="s">"subtitle_en.vtt"</span> <span class="na">srclang=</span><span class="s">"en"</span> <span class="na">label=</span><span class="s">"English"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;track</span> <span class="na">src=</span><span class="s">"subtitle_ko.vtt"</span> <span class="na">srclang=</span><span class="s">"ko"</span> <span class="na">label=</span><span class="s">"Korea"</span><span class="nt">&gt;</span>
+
+	Your browser does not support the video tag
+
+<span class="nt">&lt;/video&gt;</span>
+
+<span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">"페이지 경로"</span> <span class="na">noresize=</span><span class="s">"noresize"</span> <span class="na">scrolling=</span><span class="s">{yes</span> <span class="err">|</span> <span class="na">no</span> <span class="err">|</span> <span class="na">auto</span><span class="err">}</span> <span class="na">frameborder=</span><span class="s">{0|1|}</span> <span class="na">marginheight=</span><span class="s">"pixels"</span> <span class="na">marginwidth=</span><span class="s">"pixels"</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h2 id="table">table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">태그</th>
+      <th style="text-align: center">의미</th>
+      <th style="text-align: center">속성</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">&lt;table&gt;</td>
+      <td style="text-align: center">테이블</td>
+      <td style="text-align: center">border=”숫자”</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;tr&gt;</td>
+      <td style="text-align: center">행</td>
+      <td style="text-align: center">align={right | left | center | justify | char} <br /> valign={top | middle | bottom | baseline}</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;td&gt;</td>
+      <td style="text-align: center">열</td>
+      <td style="text-align: center">colspan=”숫자”<br />rowspan=”숫자”</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;th&gt;</td>
+      <td style="text-align: center">테이블의 머리셀 정의</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;thead&gt;, &lt;tbody&gt;, &lt;tfoot&gt;</td>
+      <td style="text-align: center">그룹화</td>
+      <td style="text-align: center">-</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">&lt;caption&gt;</td>
+      <td style="text-align: center">테이블 제목</td>
+      <td style="text-align: center">-</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="form">Form</h2>
+<h3 id="form-사용자-입력-데이터를-서버에-전송">&lt;form&gt; 사용자 입력 데이터를 서버에 전송</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>action = "http request URL"
+method = {get | post}
+target = {_blank | _self | _parent | _top | frame_name}
+enctype = {text/palin | multipart/form-data}
+name = "form_name"
+</code></pre></div></div>
+
+<h3 id="label-user-interface의-제목-역할">&lt;label&gt; User Interface의 제목 역할</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;lable&gt;</span> ID: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"pwd"</span><span class="nt">&gt;</span>PWD:<span class="nt">&lt;/label&gt;</span>
+<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"password"</span> <span class="na">name=</span><span class="s">"pwd"</span> <span class="na">id=</span><span class="s">"pwe"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h3 id="input-사용자-입력">&lt;input&gt; 사용자 입력</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>name = "http request parameter name"
+value = "http request parameter name"
+type = {text | button | checkbox | radio | file | password | image | submit | hidden | email | url | number | range | date | time | datetime | color | ...}
+</code></pre></div></div>
+
+<h3 id="select-드랍다운-리스트">&lt;select&gt; 드랍다운 리스트</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;select&gt;</span>
+	<span class="nt">&lt;optgroup</span> <span class="na">label=</span><span class="s">"IT"</span> <span class="na">size=</span><span class="s">"2"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"programmer"</span><span class="nt">&gt;</span>개발자<span class="nt">&lt;/option&gt;</span>
+		<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"pm"</span> <span class="na">select=</span><span class="s">"selected"</span><span class="nt">&gt;</span>팀장<span class="nt">&lt;/option&gt;</span>
+	<span class="nt">&lt;/optgroup&gt;</span>
+	<span class="nt">&lt;optgroup</span> <span class="na">label=</span><span class="s">"HR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"superviser"</span><span class="nt">&gt;</span>관리자<span class="nt">&lt;/option&gt;</span>
+		<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"employee"</span><span class="nt">&gt;</span>직원<span class="nt">&lt;/option&gt;</span>
+	<span class="nt">&lt;/optgroup&gt;</span>
+<span class="nt">&lt;/select&gt;</span>
+</code></pre></div></div>
+
+<h3 id="textarea-여러줄-입력창">&lt;textarea&gt; 여러줄 입력창</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;textarea</span> <span class="na">row=</span><span class="s">"10"</span> <span class="na">cols=</span><span class="s">"30"</span><span class="nt">&gt;</span>
+	여기에 여러문장 작성
+<span class="nt">&lt;/textarea&gt;</span>	
+</code></pre></div></div>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

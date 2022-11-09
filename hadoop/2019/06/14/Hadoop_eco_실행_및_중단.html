@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Hadoop] Hadoop Eco System 실행 및 중단 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Hadoop] Hadoop Eco System 실행 및 중단" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Hadoop eco Cluster System 실행 및 중단 서버는 총 5대로 구성되어 있음 1번 서버: 분석서버1 2번 서버: 수집서버 3번 서버: 분석서버2 4번 서버: namenode, datanode1 5번 서버: secondnode, datanode2" />
+<meta property="og:description" content="Hadoop eco Cluster System 실행 및 중단 서버는 총 5대로 구성되어 있음 1번 서버: 분석서버1 2번 서버: 수집서버 3번 서버: 분석서버2 4번 서버: namenode, datanode1 5번 서버: secondnode, datanode2" />
+<link rel="canonical" href="https://safenumz.github.io/blog/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-06-14T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Hadoop] Hadoop Eco System 실행 및 중단" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-06-14T00:00:00-05:00","datePublished":"2019-06-14T00:00:00-05:00","description":"Hadoop eco Cluster System 실행 및 중단 서버는 총 5대로 구성되어 있음 1번 서버: 분석서버1 2번 서버: 수집서버 3번 서버: 분석서버2 4번 서버: namenode, datanode1 5번 서버: secondnode, datanode2","headline":"[Hadoop] Hadoop Eco System 실행 및 중단","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html"},"url":"https://safenumz.github.io/blog/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Hadoop] Hadoop Eco System 실행 및 중단</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-06-14T00:00:00-05:00" itemprop="datePublished">
+        Jun 14, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Hadoop">Hadoop</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="hadoop-eco-cluster-system-실행-및-중단">Hadoop eco Cluster System 실행 및 중단</h1>
+<ul>
+  <li>서버는 총 5대로 구성되어 있음</li>
+  <li>1번 서버: 분석서버1</li>
+  <li>2번 서버: 수집서버</li>
+  <li>3번 서버: 분석서버2</li>
+  <li>4번 서버: namenode, datanode1</li>
+  <li>5번 서버: secondnode, datanode2</li>
+</ul>
+
+<h2 id="실행-명령-흐름-정리">실행 명령 흐름 정리</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># [4번 서버] start hadoop</span>
+<span class="nv">$ </span>hadoop/sbin/start-dfs.sh
+
+<span class="c"># [5번 서버] start yarn</span>
+<span class="nv">$ </span>hadoop/sbin/start-yarn.sh
+
+<span class="c"># [3번 서버] start MR history server</span>
+<span class="nv">$ </span>hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
+
+<span class="c"># [3번 서버] start metastore server</span>
+<span class="nv">$ </span>hive <span class="nt">--service</span> metastore <span class="nt">-p</span> 8011 &amp; ​
+
+<span class="c"># [4번 서버] start presto server</span>
+<span class="nv">$ </span>presto/bin/launcher start
+
+<span class="c"># [5번 서버] start presto server</span>
+<span class="nv">$ </span>presto/bin/launcher start
+
+<span class="c"># [3번 서버] start presto</span>
+<span class="nv">$ </span>./presto <span class="nt">--server</span> hd4.cluster.kr:8012 <span class="nt">--catalog</span> hive <span class="nt">--schema</span> default ​
+
+<span class="c"># [2번 서버] move kafka floder</span>
+<span class="nv">$ </span><span class="nb">cd </span>kafka
+
+<span class="c"># [2번 서버] start zookeeper</span>
+<span class="nv">$ </span>bin/zookeeper-server-start.sh config/zookeeper.properties &amp;
+
+<span class="c"># [2번 서버] start kakfa broker</span>
+<span class="nv">$ </span>bin/kafka-server-start.sh config/server.properties &amp;
+
+<span class="c"># [2번 서버] create kafka topics</span>
+<span class="nv">$ </span>bin/kafka-topics.sh <span class="nt">--create</span> <span class="nt">--zookeeper</span> hd2.cluster.kr:2181 <span class="nt">--replication-factor</span> 1 <span class="nt">--partitions</span> 1 <span class="nt">--topic</span> twitter &amp;
+<span class="nv">$ </span>bin/kafka-topics.sh <span class="nt">--list</span> <span class="nt">--zookeeper</span> hd2.cluster.kr:2181 &amp;
+</code></pre></div></div>
+
+<h2 id="서비스-시작-순서--hdfs---yarn---mr-history-server">서비스 시작 순서 : HDFS -&gt; YARN -&gt; MR-History Server</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># namenode: 하둡 실행</span>
+<span class="nv">$ </span>hadoop/sbin/start-dfs.sh
+
+<span class="c"># secondnode: YARN 서비스 실행</span>
+<span class="nv">$ </span>hadoop/sbin/start-yarn.sh
+
+<span class="c"># namenode: MR-History Server 실행</span>
+<span class="nv">$ </span>hadoop/sbin/mr-jobhistory-daemon.sh start historyserver
+
+
+<span class="nv">$ </span>zookeeper/bin/zkServer.sh    start
+
+<span class="c"># client : 하둡 제대로 실행되었는지 테스트</span>
+<span class="nv">$ </span>hadoop  fs  <span class="nt">-lsr</span> /
+<span class="nv">$ </span>hdfs dfs <span class="nt">-chmod</span> 777 /tmp
+<span class="nv">$ </span>hdfs dfs <span class="nt">-mkdir</span> /user
+<span class="nv">$ </span>hdfs dfs <span class="nt">-mkdir</span> /user/hadoop
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'test'</span> <span class="o">&gt;</span> test.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-put</span> test.txt /user/hadoop/hadooptest.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> <span class="nt">-R</span> /user
+<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span>
+
+<span class="c">## client 테스트용 파일 만들어 HDFS에 올리기</span>
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'aaa,100'</span> <span class="o">&gt;</span> pig.txt
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'bbb,200'</span> <span class="o">&gt;&gt;</span> pig.txt
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'ccc,300'</span> <span class="o">&gt;&gt;</span> pig.txt
+<span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'aaa,400'</span> <span class="o">&gt;&gt;</span> pig.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-put</span>  pig.txt  /user/hadoop/pig.txt
+<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span>  <span class="nb">.</span>
+<span class="nv">$ </span>hdfs dfs <span class="nt">-cat</span>   pig.txt
+
+<span class="c"># client : pig shell</span>
+<span class="nv">$ </span>pig
+
+<span class="c"># client : pig test</span>
+grunt&gt; <span class="nb">ls
+</span>grunt&gt; <span class="nb">cat  </span>pig.txt
+grunt&gt; k2 <span class="o">=</span> load <span class="s1">'pig.txt'</span> using PigStorage<span class="o">(</span><span class="s1">','</span><span class="o">)</span>
+                  as <span class="o">(</span> str:chararray, price:int <span class="o">)</span><span class="p">;</span>
+grunt&gt; k4 <span class="o">=</span> GROUP k2 BY <span class="nv">$0</span><span class="p">;</span>
+grunt&gt; k8 <span class="o">=</span> foreach k4 generate group, SUM<span class="o">(</span>k2.price<span class="o">)</span><span class="p">;</span>
+grunt&gt; dump  k8<span class="p">;</span>
+grunt&gt; store  k8  into <span class="s1">'mr_pig'</span><span class="p">;</span>
+grunt&gt; <span class="nb">cat  </span>mr_pig
+grunt&gt; illustrate  k8<span class="p">;</span>
+grunt&gt; quit
+
+
+<span class="c"># client : pyspark local mode</span>
+<span class="nv">$ </span>spark/bin/pyspark <span class="nt">--master</span> <span class="nb">local</span><span class="o">[</span>2]
+
+<span class="c"># client : spark local mode</span>
+<span class="nv">$ </span>spark/bin/spark-shell
+
+<span class="c"># client : spark cluster mode</span>
+<span class="nv">$ </span>spark/bin/spark-shell <span class="nt">--master</span> yarn
+
+<span class="c"># client : spark cluster mode test</span>
+scala&gt; var scalastr <span class="o">=</span> sc.textFile<span class="o">(</span><span class="s2">"hdfs:///user/hadoop/pig.txt"</span><span class="o">)</span>
+scala&gt; scalastr.count<span class="o">()</span>
+
+<span class="c"># client : hive MetaStore 서비스 시작하기</span>
+<span class="nv">$ </span>hive <span class="nt">--service</span> metastore <span class="nt">-p</span> 8011 &amp;
+
+<span class="c"># client : hive shell</span>
+<span class="nv">$ </span>hive
+
+<span class="c"># client : hive test</span>
+hive&gt; show tables<span class="p">;</span>
+hive&gt; create table hive
+         <span class="o">(</span> str string, price int <span class="o">)</span>
+         ROW FORMAT DELIMITED FIELDS TERMINATED BY <span class="s1">','</span><span class="p">;</span>
+hive&gt; show tables<span class="p">;</span>
+hive&gt; load data <span class="nb">local </span>inpath <span class="s1">'hive.txt'</span> into table hive<span class="p">;</span>
+hive&gt; <span class="k">select</span> <span class="k">*</span> from hive<span class="p">;</span>
+hive&gt; <span class="k">select </span>str,sum<span class="o">(</span>price<span class="o">)</span> from hive group by str<span class="p">;</span>
+hive&gt; quit<span class="p">;</span>
+
+
+<span class="c"># namenode : presto 코디네이터 demon 실행</span>
+<span class="nv">$ </span>presto/bin/launcher start
+
+<span class="c"># secondnode : presto worker demon 실행</span>
+<span class="nv">$ </span>presto/bin/launcher start
+
+<span class="c"># client : presto</span>
+<span class="nv">$ </span>./presto <span class="nt">--server</span> namenode.hadoop.kr:8012 <span class="nt">--catalog</span> hive <span class="nt">--schema</span> default
+
+<span class="c"># client : presto test</span>
+presto:default&gt; show tables<span class="p">;</span>
+presto:default&gt; <span class="k">select</span> <span class="k">*</span> from hive<span class="p">;</span>
+presto:default&gt; <span class="k">select </span>str,sum<span class="o">(</span>price<span class="o">)</span> from hive group by str<span class="p">;</span>
+presto:default&gt; quit<span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="서비스-중단하기-순서--yarn---mr-history-server---hdfs">서비스 중단하기 순서 : YARN -&gt; MR-History Server -&gt; HDFS</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># secondnode : YARN 서비스 중단</span>
+<span class="nv">$ </span>hadoop/sbin/stop-yarn.sh
+
+<span class="c"># namenode : MR-History Server 중단</span>
+<span class="nv">$ </span>hadoop/sbin/mr-jobhistory-daemon.sh stop historyserver
+
+<span class="c"># namenode : HDFS 서비스 중단하기</span>
+<span class="nv">$ </span>hadoop/sbin/stop-dfs.sh
+
+zookeeper/bin/zkServer.sh    stop
+</code></pre></div></div>
+
+<h1 id="실행-디폴트-폴더-설정">실행 디폴트 폴더 설정</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>hadoop fs <span class="nt">-lsr</span> /user
+
+<span class="nv">$ </span>hadoop fs <span class="nt">-cp</span> /user/hive/warehouse/movies/movies.csv <span class="nb">.</span>
+</code></pre></div></div>
+
+<h1 id="wordcount-예제-실행">wordcount 예제 실행</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>bin/yarn jar share/hadoop/mapreduce/hadoop-mapreduce-examples-2.6.4.jar wordcount user/hadoop/conf output
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

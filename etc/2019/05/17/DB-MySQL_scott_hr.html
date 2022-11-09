@@ -1,0 +1,2882 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[DB] MySQL scott, hr | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[DB] MySQL scott, hr" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="MySQL scott.sql" />
+<meta property="og:description" content="MySQL scott.sql" />
+<link rel="canonical" href="https://safenumz.github.io/blog/etc/2019/05/17/DB-MySQL_scott_hr.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/etc/2019/05/17/DB-MySQL_scott_hr.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-17T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[DB] MySQL scott, hr" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-17T00:00:00-05:00","datePublished":"2019-05-17T00:00:00-05:00","description":"MySQL scott.sql","headline":"[DB] MySQL scott, hr","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/etc/2019/05/17/DB-MySQL_scott_hr.html"},"url":"https://safenumz.github.io/blog/etc/2019/05/17/DB-MySQL_scott_hr.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[DB] MySQL scott, hr</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-17T00:00:00-05:00" itemprop="datePublished">
+        May 17, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      21 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#etc">etc</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="mysql-scottsql">MySQL scott.sql</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">database</span> <span class="n">SCOTT</span><span class="p">;</span>
+
+<span class="n">USE</span> <span class="n">SCOTT</span><span class="p">;</span>
+
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">`BONUS`</span> <span class="p">(</span>
+  <span class="nv">`ENAME`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`JOB`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`SAL`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`COMM`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">`DEPT`</span> <span class="p">(</span>
+  <span class="nv">`DEPTNO`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`DNAME`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`LOC`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`DEPTNO`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`DEPT`</span> <span class="p">(</span><span class="nv">`DEPTNO`</span><span class="p">,</span> <span class="nv">`DNAME`</span><span class="p">,</span> <span class="nv">`LOC`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">'ACCOUNTING'</span><span class="p">,</span> <span class="s1">'NEW YORK'</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="s1">'RESEARCH'</span><span class="p">,</span> <span class="s1">'DALLAS'</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="s1">'SALES'</span><span class="p">,</span> <span class="s1">'CHICAGO'</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="s1">'OPERATIONS'</span><span class="p">,</span> <span class="s1">'BOSTON'</span><span class="p">);</span>
+
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">`EMP`</span> <span class="p">(</span>
+  <span class="nv">`EMPNO`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`ENAME`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`JOB`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`MGR`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`HIREDATE`</span> <span class="nb">datetime</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`SAL`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`COMM`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`DEPTNO`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`EMPNO`</span><span class="p">),</span>
+  <span class="k">KEY</span> <span class="nv">`PK_EMP`</span> <span class="p">(</span><span class="nv">`DEPTNO`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`EMP`</span> <span class="p">(</span><span class="nv">`EMPNO`</span><span class="p">,</span> <span class="nv">`ENAME`</span><span class="p">,</span> <span class="nv">`JOB`</span><span class="p">,</span> <span class="nv">`MGR`</span><span class="p">,</span> <span class="nv">`HIREDATE`</span><span class="p">,</span> <span class="nv">`SAL`</span><span class="p">,</span> <span class="nv">`COMM`</span><span class="p">,</span> <span class="nv">`DEPTNO`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">7369</span><span class="p">,</span> <span class="s1">'SMITH'</span><span class="p">,</span> <span class="s1">'CLERK'</span><span class="p">,</span> <span class="mi">7902</span><span class="p">,</span> <span class="s1">'1980-12-17 00:00:00'</span><span class="p">,</span> <span class="mi">800</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7499</span><span class="p">,</span> <span class="s1">'ALLEN'</span><span class="p">,</span> <span class="s1">'SALESMAN'</span><span class="p">,</span> <span class="mi">7698</span><span class="p">,</span> <span class="s1">'1981-02-20 00:00:00'</span><span class="p">,</span> <span class="mi">1600</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7521</span><span class="p">,</span> <span class="s1">'WARD'</span><span class="p">,</span> <span class="s1">'SALESMAN'</span><span class="p">,</span> <span class="mi">7698</span><span class="p">,</span> <span class="s1">'1981-02-22 00:00:00'</span><span class="p">,</span> <span class="mi">1250</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7566</span><span class="p">,</span> <span class="s1">'JONES'</span><span class="p">,</span> <span class="s1">'MANAGER'</span><span class="p">,</span> <span class="mi">7839</span><span class="p">,</span> <span class="s1">'1981-04-02 00:00:00'</span><span class="p">,</span> <span class="mi">2975</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7654</span><span class="p">,</span> <span class="s1">'MARTIN'</span><span class="p">,</span> <span class="s1">'SALESMAN'</span><span class="p">,</span> <span class="mi">7698</span><span class="p">,</span> <span class="s1">'1981-09-28 00:00:00'</span><span class="p">,</span> <span class="mi">1250</span><span class="p">,</span> <span class="mi">1400</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7698</span><span class="p">,</span> <span class="s1">'BLAKE'</span><span class="p">,</span> <span class="s1">'MANAGER'</span><span class="p">,</span> <span class="mi">7839</span><span class="p">,</span> <span class="s1">'1981-05-01 00:00:00'</span><span class="p">,</span> <span class="mi">2850</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7782</span><span class="p">,</span> <span class="s1">'CLARK'</span><span class="p">,</span> <span class="s1">'MANAGER'</span><span class="p">,</span> <span class="mi">7839</span><span class="p">,</span> <span class="s1">'1981-06-09 00:00:00'</span><span class="p">,</span> <span class="mi">2450</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7788</span><span class="p">,</span> <span class="s1">'SCOTT'</span><span class="p">,</span> <span class="s1">'ANALYST'</span><span class="p">,</span> <span class="mi">7566</span><span class="p">,</span> <span class="s1">'1987-04-19 00:00:00'</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7839</span><span class="p">,</span> <span class="s1">'KING'</span><span class="p">,</span> <span class="s1">'PRESIDENT'</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="s1">'1981-11-17 00:00:00'</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7844</span><span class="p">,</span> <span class="s1">'TURNER'</span><span class="p">,</span> <span class="s1">'SALESMAN'</span><span class="p">,</span> <span class="mi">7698</span><span class="p">,</span> <span class="s1">'1981-09-08 00:00:00'</span><span class="p">,</span> <span class="mi">1500</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7876</span><span class="p">,</span> <span class="s1">'ADAMS'</span><span class="p">,</span> <span class="s1">'CLERK'</span><span class="p">,</span> <span class="mi">7788</span><span class="p">,</span> <span class="s1">'1987-05-23 00:00:00'</span><span class="p">,</span> <span class="mi">1100</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7900</span><span class="p">,</span> <span class="s1">'JAMES'</span><span class="p">,</span> <span class="s1">'CLERK'</span><span class="p">,</span> <span class="mi">7698</span><span class="p">,</span> <span class="s1">'1981-12-03 00:00:00'</span><span class="p">,</span> <span class="mi">950</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7902</span><span class="p">,</span> <span class="s1">'FORD'</span><span class="p">,</span> <span class="s1">'ANALYST'</span><span class="p">,</span> <span class="mi">7566</span><span class="p">,</span> <span class="s1">'1981-12-03 00:00:00'</span><span class="p">,</span> <span class="mi">3000</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">7934</span><span class="p">,</span> <span class="s1">'MILLER'</span><span class="p">,</span> <span class="s1">'CLERK'</span><span class="p">,</span> <span class="mi">7782</span><span class="p">,</span> <span class="s1">'1982-01-23 00:00:00'</span><span class="p">,</span> <span class="mi">1300</span><span class="p">,</span> <span class="k">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">NOT</span> <span class="k">EXISTS</span> <span class="nv">`SALGRADE`</span> <span class="p">(</span>
+  <span class="nv">`GRADE`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`LOSAL`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`HISAL`</span> <span class="nb">double</span> <span class="k">DEFAULT</span> <span class="k">NULL</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">InnoDB</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`SALGRADE`</span> <span class="p">(</span><span class="nv">`GRADE`</span><span class="p">,</span> <span class="nv">`LOSAL`</span><span class="p">,</span> <span class="nv">`HISAL`</span><span class="p">)</span> <span class="k">VALUES</span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">700</span><span class="p">,</span> <span class="mi">1200</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1201</span><span class="p">,</span> <span class="mi">1400</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1401</span><span class="p">,</span> <span class="mi">2000</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2001</span><span class="p">,</span> <span class="mi">3000</span><span class="p">),</span>
+<span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3001</span><span class="p">,</span> <span class="mi">9999</span><span class="p">);</span>
+
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="nv">`EMP`</span>
+  <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="nv">`PK_EMP`</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="nv">`DEPTNO`</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="nv">`DEPT`</span> <span class="p">(</span><span class="nv">`DEPTNO`</span><span class="p">)</span> <span class="k">ON</span> <span class="k">DELETE</span> <span class="k">SET</span> <span class="k">NULL</span> <span class="k">ON</span> <span class="k">UPDATE</span> <span class="k">CASCADE</span><span class="p">;</span>
+
+</code></pre></div></div>
+
+<h1 id="mysql-hrsql">MySQL hr.sql</h1>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+* You can copy, modify, distribute and perform the work, even for commercial purposes,
+* all without asking permission.
+*
+* @Author: Andrei N. CIOBANU
+*/</span>
+
+<span class="k">DROP</span> <span class="k">SCHEMA</span>
+
+<span class="n">IF</span> <span class="k">EXISTS</span> <span class="n">hr</span><span class="p">;</span>
+	<span class="k">CREATE</span> <span class="k">SCHEMA</span> <span class="n">hr</span> <span class="k">COLLATE</span> <span class="o">=</span> <span class="n">utf8_general_ci</span><span class="p">;</span>
+
+<span class="n">USE</span> <span class="n">hr</span><span class="p">;</span>
+
+<span class="cm">/* ***************************************************************
+***************************CREATING TABLES************************
+**************************************************************** */</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">regions</span> <span class="p">(</span>
+	<span class="n">region_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">region_name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">region_id</span><span class="p">)</span>
+	<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">countries</span> <span class="p">(</span>
+	<span class="n">country_id</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">country_name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span>
+	<span class="n">region_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">country_id</span><span class="p">)</span>
+<span class="p">);</span>
+
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">locations</span> <span class="p">(</span>
+	<span class="n">location_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+	<span class="n">street_address</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">40</span><span class="p">),</span>
+	<span class="n">postal_code</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">12</span><span class="p">),</span>
+	<span class="n">city</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">state_province</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span>
+	<span class="n">country_id</span> <span class="nb">CHAR</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">location_id</span><span class="p">)</span>
+	<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">departments</span> <span class="p">(</span>
+	<span class="n">department_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">department_name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">manager_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="n">location_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">department_id</span><span class="p">)</span>
+	<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">jobs</span> <span class="p">(</span>
+	<span class="n">job_id</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">job_title</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">35</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">min_salary</span> <span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="n">max_salary</span> <span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+	<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">employees</span> <span class="p">(</span>
+	<span class="n">employee_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">first_name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+	<span class="n">last_name</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">email</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">phone_number</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+	<span class="n">hire_date</span> <span class="nb">DATE</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">job_id</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">salary</span> <span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">commission_pct</span> <span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+	<span class="n">manager_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="n">department_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span><span class="p">,</span>
+	<span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">employee_id</span><span class="p">)</span>
+	<span class="p">);</span>
+
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">job_history</span> <span class="p">(</span>
+	<span class="n">employee_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">start_date</span> <span class="nb">DATE</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">end_date</span> <span class="nb">DATE</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">job_id</span> <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+	<span class="n">department_id</span> <span class="nb">INT</span> <span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="nb">UNSIGNED</span> <span class="k">NOT</span> <span class="k">NULL</span>
+	<span class="p">);</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">job_history</span> <span class="k">ADD</span> <span class="k">UNIQUE</span> <span class="k">INDEX</span> <span class="p">(</span>
+	<span class="n">employee_id</span><span class="p">,</span>
+	<span class="n">start_date</span>
+	<span class="p">);</span>
+
+
+<span class="k">CREATE</span> <span class="k">VIEW</span> <span class="n">emp_details_view</span>
+<span class="k">AS</span>
+<span class="k">SELECT</span> <span class="n">e</span><span class="p">.</span><span class="n">employee_id</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">job_id</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">manager_id</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">department_id</span><span class="p">,</span>
+	<span class="n">d</span><span class="p">.</span><span class="n">location_id</span><span class="p">,</span>
+	<span class="n">l</span><span class="p">.</span><span class="n">country_id</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">first_name</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">last_name</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">salary</span><span class="p">,</span>
+	<span class="n">e</span><span class="p">.</span><span class="n">commission_pct</span><span class="p">,</span>
+	<span class="n">d</span><span class="p">.</span><span class="n">department_name</span><span class="p">,</span>
+	<span class="n">j</span><span class="p">.</span><span class="n">job_title</span><span class="p">,</span>
+	<span class="n">l</span><span class="p">.</span><span class="n">city</span><span class="p">,</span>
+	<span class="n">l</span><span class="p">.</span><span class="n">state_province</span><span class="p">,</span>
+	<span class="k">c</span><span class="p">.</span><span class="n">country_name</span><span class="p">,</span>
+	<span class="n">r</span><span class="p">.</span><span class="n">region_name</span>
+<span class="k">FROM</span> <span class="n">employees</span> <span class="n">e</span><span class="p">,</span>
+	<span class="n">departments</span> <span class="n">d</span><span class="p">,</span>
+	<span class="n">jobs</span> <span class="n">j</span><span class="p">,</span>
+	<span class="n">locations</span> <span class="n">l</span><span class="p">,</span>
+	<span class="n">countries</span> <span class="k">c</span><span class="p">,</span>
+	<span class="n">regions</span> <span class="n">r</span>
+<span class="k">WHERE</span> <span class="n">e</span><span class="p">.</span><span class="n">department_id</span> <span class="o">=</span> <span class="n">d</span><span class="p">.</span><span class="n">department_id</span>
+	<span class="k">AND</span> <span class="n">d</span><span class="p">.</span><span class="n">location_id</span> <span class="o">=</span> <span class="n">l</span><span class="p">.</span><span class="n">location_id</span>
+	<span class="k">AND</span> <span class="n">l</span><span class="p">.</span><span class="n">country_id</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">country_id</span>
+	<span class="k">AND</span> <span class="k">c</span><span class="p">.</span><span class="n">region_id</span> <span class="o">=</span> <span class="n">r</span><span class="p">.</span><span class="n">region_id</span>
+	<span class="k">AND</span> <span class="n">j</span><span class="p">.</span><span class="n">job_id</span> <span class="o">=</span> <span class="n">e</span><span class="p">.</span><span class="n">job_id</span><span class="p">;</span>
+
+<span class="cm">/* ***************************************************************
+***************************INSERTING DATA*************************
+**************************************************************** */</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">regions</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1</span><span class="p">,</span>
+	<span class="s1">'Europe'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">regions</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2</span><span class="p">,</span>
+	<span class="s1">'Americas'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">regions</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">3</span><span class="p">,</span>
+	<span class="s1">'Asia'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">regions</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">4</span><span class="p">,</span>
+	<span class="s1">'Middle East and Africa'</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'IT'</span><span class="p">,</span>
+	<span class="s1">'Italy'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'JP'</span><span class="p">,</span>
+	<span class="s1">'Japan'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'US'</span><span class="p">,</span>
+	<span class="s1">'United States of America'</span><span class="p">,</span>
+	<span class="mi">2</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'CA'</span><span class="p">,</span>
+	<span class="s1">'Canada'</span><span class="p">,</span>
+	<span class="mi">2</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'CN'</span><span class="p">,</span>
+	<span class="s1">'China'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'IN'</span><span class="p">,</span>
+	<span class="s1">'India'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AU'</span><span class="p">,</span>
+	<span class="s1">'Australia'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'ZW'</span><span class="p">,</span>
+	<span class="s1">'Zimbabwe'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'SG'</span><span class="p">,</span>
+	<span class="s1">'Singapore'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'UK'</span><span class="p">,</span>
+	<span class="s1">'United Kingdom'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'FR'</span><span class="p">,</span>
+	<span class="s1">'France'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'DE'</span><span class="p">,</span>
+	<span class="s1">'Germany'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'ZM'</span><span class="p">,</span>
+	<span class="s1">'Zambia'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'EG'</span><span class="p">,</span>
+	<span class="s1">'Egypt'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'BR'</span><span class="p">,</span>
+	<span class="s1">'Brazil'</span><span class="p">,</span>
+	<span class="mi">2</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'CH'</span><span class="p">,</span>
+	<span class="s1">'Switzerland'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'NL'</span><span class="p">,</span>
+	<span class="s1">'Netherlands'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'MX'</span><span class="p">,</span>
+	<span class="s1">'Mexico'</span><span class="p">,</span>
+	<span class="mi">2</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'KW'</span><span class="p">,</span>
+	<span class="s1">'Kuwait'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'IL'</span><span class="p">,</span>
+	<span class="s1">'Israel'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'DK'</span><span class="p">,</span>
+	<span class="s1">'Denmark'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'HK'</span><span class="p">,</span>
+	<span class="s1">'HongKong'</span><span class="p">,</span>
+	<span class="mi">3</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'NG'</span><span class="p">,</span>
+	<span class="s1">'Nigeria'</span><span class="p">,</span>
+	<span class="mi">4</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AR'</span><span class="p">,</span>
+	<span class="s1">'Argentina'</span><span class="p">,</span>
+	<span class="mi">2</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">countries</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'BE'</span><span class="p">,</span>
+	<span class="s1">'Belgium'</span><span class="p">,</span>
+	<span class="mi">1</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1000</span><span class="p">,</span>
+	<span class="s1">'1297 Via Cola di Rie'</span><span class="p">,</span>
+	<span class="s1">'00989'</span><span class="p">,</span>
+	<span class="s1">'Roma'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'IT'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1100</span><span class="p">,</span>
+	<span class="s1">'93091 Calle della Testa'</span><span class="p">,</span>
+	<span class="s1">'10934'</span><span class="p">,</span>
+	<span class="s1">'Venice'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'IT'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1200</span><span class="p">,</span>
+	<span class="s1">'2017 Shinjuku-ku'</span><span class="p">,</span>
+	<span class="s1">'1689'</span><span class="p">,</span>
+	<span class="s1">'Tokyo'</span><span class="p">,</span>
+	<span class="s1">'Tokyo Prefecture'</span><span class="p">,</span>
+	<span class="s1">'JP'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1300</span><span class="p">,</span>
+	<span class="s1">'9450 Kamiya-cho'</span><span class="p">,</span>
+	<span class="s1">'6823'</span><span class="p">,</span>
+	<span class="s1">'Hiroshima'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'JP'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1400</span><span class="p">,</span>
+	<span class="s1">'2014 Jabberwocky Rd'</span><span class="p">,</span>
+	<span class="s1">'26192'</span><span class="p">,</span>
+	<span class="s1">'Southlake'</span><span class="p">,</span>
+	<span class="s1">'Texas'</span><span class="p">,</span>
+	<span class="s1">'US'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1500</span><span class="p">,</span>
+	<span class="s1">'2011 Interiors Blvd'</span><span class="p">,</span>
+	<span class="s1">'99236'</span><span class="p">,</span>
+	<span class="s1">'South San Francisco'</span><span class="p">,</span>
+	<span class="s1">'California'</span><span class="p">,</span>
+	<span class="s1">'US'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1600</span><span class="p">,</span>
+	<span class="s1">'2007 Zagora St'</span><span class="p">,</span>
+	<span class="s1">'50090'</span><span class="p">,</span>
+	<span class="s1">'South Brunswick'</span><span class="p">,</span>
+	<span class="s1">'New Jersey'</span><span class="p">,</span>
+	<span class="s1">'US'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1700</span><span class="p">,</span>
+	<span class="s1">'2004 Charade Rd'</span><span class="p">,</span>
+	<span class="s1">'98199'</span><span class="p">,</span>
+	<span class="s1">'Seattle'</span><span class="p">,</span>
+	<span class="s1">'Washington'</span><span class="p">,</span>
+	<span class="s1">'US'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1800</span><span class="p">,</span>
+	<span class="s1">'147 Spadina Ave'</span><span class="p">,</span>
+	<span class="s1">'M5V 2L7'</span><span class="p">,</span>
+	<span class="s1">'Toronto'</span><span class="p">,</span>
+	<span class="s1">'Ontario'</span><span class="p">,</span>
+	<span class="s1">'CA'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">1900</span><span class="p">,</span>
+	<span class="s1">'6092 Boxwood St'</span><span class="p">,</span>
+	<span class="s1">'YSW 9T2'</span><span class="p">,</span>
+	<span class="s1">'Whitehorse'</span><span class="p">,</span>
+	<span class="s1">'Yukon'</span><span class="p">,</span>
+	<span class="s1">'CA'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2000</span><span class="p">,</span>
+	<span class="s1">'40-5-12 Laogianggen'</span><span class="p">,</span>
+	<span class="s1">'190518'</span><span class="p">,</span>
+	<span class="s1">'Beijing'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'CN'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2100</span><span class="p">,</span>
+	<span class="s1">'1298 Vileparle (E)'</span><span class="p">,</span>
+	<span class="s1">'490231'</span><span class="p">,</span>
+	<span class="s1">'Bombay'</span><span class="p">,</span>
+	<span class="s1">'Maharashtra'</span><span class="p">,</span>
+	<span class="s1">'IN'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2200</span><span class="p">,</span>
+	<span class="s1">'12-98 Victoria Street'</span><span class="p">,</span>
+	<span class="s1">'2901'</span><span class="p">,</span>
+	<span class="s1">'Sydney'</span><span class="p">,</span>
+	<span class="s1">'New South Wales'</span><span class="p">,</span>
+	<span class="s1">'AU'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2300</span><span class="p">,</span>
+	<span class="s1">'198 Clementi North'</span><span class="p">,</span>
+	<span class="s1">'540198'</span><span class="p">,</span>
+	<span class="s1">'Singapore'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'SG'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2400</span><span class="p">,</span>
+	<span class="s1">'8204 Arthur St'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'London'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="s1">'UK'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="s1">'Magdalen Centre, The Oxford Science Park'</span><span class="p">,</span>
+	<span class="s1">'OX9 9ZB'</span><span class="p">,</span>
+	<span class="s1">'Oxford'</span><span class="p">,</span>
+	<span class="s1">'Oxford'</span><span class="p">,</span>
+	<span class="s1">'UK'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2600</span><span class="p">,</span>
+	<span class="s1">'9702 Chester Road'</span><span class="p">,</span>
+	<span class="s1">'09629850293'</span><span class="p">,</span>
+	<span class="s1">'Stretford'</span><span class="p">,</span>
+	<span class="s1">'Manchester'</span><span class="p">,</span>
+	<span class="s1">'UK'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2700</span><span class="p">,</span>
+	<span class="s1">'Schwanthalerstr. 7031'</span><span class="p">,</span>
+	<span class="s1">'80925'</span><span class="p">,</span>
+	<span class="s1">'Munich'</span><span class="p">,</span>
+	<span class="s1">'Bavaria'</span><span class="p">,</span>
+	<span class="s1">'DE'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2800</span><span class="p">,</span>
+	<span class="s1">'Rua Frei Caneca 1360 '</span><span class="p">,</span>
+	<span class="s1">'01307-002'</span><span class="p">,</span>
+	<span class="s1">'Sao Paulo'</span><span class="p">,</span>
+	<span class="s1">'Sao Paulo'</span><span class="p">,</span>
+	<span class="s1">'BR'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">2900</span><span class="p">,</span>
+	<span class="s1">'20 Rue des Corps-Saints'</span><span class="p">,</span>
+	<span class="s1">'1730'</span><span class="p">,</span>
+	<span class="s1">'Geneva'</span><span class="p">,</span>
+	<span class="s1">'Geneve'</span><span class="p">,</span>
+	<span class="s1">'CH'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">3000</span><span class="p">,</span>
+	<span class="s1">'Murtenstrasse 921'</span><span class="p">,</span>
+	<span class="s1">'3095'</span><span class="p">,</span>
+	<span class="s1">'Bern'</span><span class="p">,</span>
+	<span class="s1">'BE'</span><span class="p">,</span>
+	<span class="s1">'CH'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">3100</span><span class="p">,</span>
+	<span class="s1">'Pieter Breughelstraat 837'</span><span class="p">,</span>
+	<span class="s1">'3029SK'</span><span class="p">,</span>
+	<span class="s1">'Utrecht'</span><span class="p">,</span>
+	<span class="s1">'Utrecht'</span><span class="p">,</span>
+	<span class="s1">'NL'</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">locations</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">3200</span><span class="p">,</span>
+	<span class="s1">'Mariano Escobedo 9991'</span><span class="p">,</span>
+	<span class="s1">'11932'</span><span class="p">,</span>
+	<span class="s1">'Mexico City'</span><span class="p">,</span>
+	<span class="s1">'Distrito Federal,'</span><span class="p">,</span>
+	<span class="s1">'MX'</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">SET</span> <span class="n">FOREIGN_KEY_CHECKS</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">10</span><span class="p">,</span>
+	<span class="s1">'Administration'</span><span class="p">,</span>
+	<span class="mi">200</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">20</span><span class="p">,</span>
+	<span class="s1">'Marketing'</span><span class="p">,</span>
+	<span class="mi">201</span><span class="p">,</span>
+	<span class="mi">1800</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">30</span><span class="p">,</span>
+	<span class="s1">'Purchasing'</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">40</span><span class="p">,</span>
+	<span class="s1">'Human Resources'</span><span class="p">,</span>
+	<span class="mi">203</span><span class="p">,</span>
+	<span class="mi">2400</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">50</span><span class="p">,</span>
+	<span class="s1">'Shipping'</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">1500</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">60</span><span class="p">,</span>
+	<span class="s1">'IT'</span><span class="p">,</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="mi">1400</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">70</span><span class="p">,</span>
+	<span class="s1">'Public Relations'</span><span class="p">,</span>
+	<span class="mi">204</span><span class="p">,</span>
+	<span class="mi">2700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">80</span><span class="p">,</span>
+	<span class="s1">'Sales'</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">2500</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">90</span><span class="p">,</span>
+	<span class="s1">'Executive'</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="s1">'Finance'</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">110</span><span class="p">,</span>
+	<span class="s1">'Accounting'</span><span class="p">,</span>
+	<span class="mi">205</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="s1">'Treasury'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">130</span><span class="p">,</span>
+	<span class="s1">'Corporate Tax'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">140</span><span class="p">,</span>
+	<span class="s1">'Control And Credit'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">150</span><span class="p">,</span>
+	<span class="s1">'Shareholder Services'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">160</span><span class="p">,</span>
+	<span class="s1">'Benefits'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">170</span><span class="p">,</span>
+	<span class="s1">'Manufacturing'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">180</span><span class="p">,</span>
+	<span class="s1">'Construction'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">190</span><span class="p">,</span>
+	<span class="s1">'Contracting'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">200</span><span class="p">,</span>
+	<span class="s1">'Operations'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">210</span><span class="p">,</span>
+	<span class="s1">'IT Support'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">220</span><span class="p">,</span>
+	<span class="s1">'NOC'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">230</span><span class="p">,</span>
+	<span class="s1">'IT Helpdesk'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">240</span><span class="p">,</span>
+	<span class="s1">'Government Sales'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">250</span><span class="p">,</span>
+	<span class="s1">'Retail Sales'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">260</span><span class="p">,</span>
+	<span class="s1">'Recruiting'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">departments</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">270</span><span class="p">,</span>
+	<span class="s1">'Payroll'</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">1700</span>
+	<span class="p">);</span>
+
+<span class="k">SET</span> <span class="n">FOREIGN_KEY_CHECKS</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AD_PRES'</span><span class="p">,</span>
+	<span class="s1">'President'</span><span class="p">,</span>
+	<span class="mi">20000</span><span class="p">,</span>
+	<span class="mi">40000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AD_VP'</span><span class="p">,</span>
+	<span class="s1">'Administration Vice President'</span><span class="p">,</span>
+	<span class="mi">15000</span><span class="p">,</span>
+	<span class="mi">30000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AD_ASST'</span><span class="p">,</span>
+	<span class="s1">'Administration Assistant'</span><span class="p">,</span>
+	<span class="mi">3000</span><span class="p">,</span>
+	<span class="mi">6000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'FI_MGR'</span><span class="p">,</span>
+	<span class="s1">'Finance Manager'</span><span class="p">,</span>
+	<span class="mi">8200</span><span class="p">,</span>
+	<span class="mi">16000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="s1">'Accountant'</span><span class="p">,</span>
+	<span class="mi">4200</span><span class="p">,</span>
+	<span class="mi">9000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AC_MGR'</span><span class="p">,</span>
+	<span class="s1">'Accounting Manager'</span><span class="p">,</span>
+	<span class="mi">8200</span><span class="p">,</span>
+	<span class="mi">16000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'AC_ACCOUNT'</span><span class="p">,</span>
+	<span class="s1">'Public Accountant'</span><span class="p">,</span>
+	<span class="mi">4200</span><span class="p">,</span>
+	<span class="mi">9000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="s1">'Sales Manager'</span><span class="p">,</span>
+	<span class="mi">10000</span><span class="p">,</span>
+	<span class="mi">20000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="s1">'Sales Representative'</span><span class="p">,</span>
+	<span class="mi">6000</span><span class="p">,</span>
+	<span class="mi">12000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'PU_MAN'</span><span class="p">,</span>
+	<span class="s1">'Purchasing Manager'</span><span class="p">,</span>
+	<span class="mi">8000</span><span class="p">,</span>
+	<span class="mi">15000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="s1">'Purchasing Clerk'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="mi">5500</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="s1">'Stock Manager'</span><span class="p">,</span>
+	<span class="mi">5500</span><span class="p">,</span>
+	<span class="mi">8500</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="s1">'Stock Clerk'</span><span class="p">,</span>
+	<span class="mi">2000</span><span class="p">,</span>
+	<span class="mi">5000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="s1">'Shipping Clerk'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="mi">5500</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="s1">'Programmer'</span><span class="p">,</span>
+	<span class="mi">4000</span><span class="p">,</span>
+	<span class="mi">10000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'MK_MAN'</span><span class="p">,</span>
+	<span class="s1">'Marketing Manager'</span><span class="p">,</span>
+	<span class="mi">9000</span><span class="p">,</span>
+	<span class="mi">15000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'MK_REP'</span><span class="p">,</span>
+	<span class="s1">'Marketing Representative'</span><span class="p">,</span>
+	<span class="mi">4000</span><span class="p">,</span>
+	<span class="mi">9000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'HR_REP'</span><span class="p">,</span>
+	<span class="s1">'Human Resources Representative'</span><span class="p">,</span>
+	<span class="mi">4000</span><span class="p">,</span>
+	<span class="mi">9000</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">jobs</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="s1">'PR_REP'</span><span class="p">,</span>
+	<span class="s1">'Public Relations Representative'</span><span class="p">,</span>
+	<span class="mi">4500</span><span class="p">,</span>
+	<span class="mi">10500</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="s1">'Steven'</span><span class="p">,</span>
+	<span class="s1">'King'</span><span class="p">,</span>
+	<span class="s1">'SKING'</span><span class="p">,</span>
+	<span class="s1">'515.123.4567'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-JUN-1987'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AD_PRES'</span><span class="p">,</span>
+	<span class="mi">24000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">90</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="s1">'Neena'</span><span class="p">,</span>
+	<span class="s1">'Kochhar'</span><span class="p">,</span>
+	<span class="s1">'NKOCHHAR'</span><span class="p">,</span>
+	<span class="s1">'515.123.4568'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-SEP-1989'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AD_VP'</span><span class="p">,</span>
+	<span class="mi">17000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">90</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">102</span><span class="p">,</span>
+	<span class="s1">'Lex'</span><span class="p">,</span>
+	<span class="s1">'De Haan'</span><span class="p">,</span>
+	<span class="s1">'LDEHAAN'</span><span class="p">,</span>
+	<span class="s1">'515.123.4569'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'13-JAN-1993'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AD_VP'</span><span class="p">,</span>
+	<span class="mi">17000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">90</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="s1">'Alexander'</span><span class="p">,</span>
+	<span class="s1">'Hunold'</span><span class="p">,</span>
+	<span class="s1">'AHUNOLD'</span><span class="p">,</span>
+	<span class="s1">'590.423.4567'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'03-JAN-1990'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">9000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">102</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">104</span><span class="p">,</span>
+	<span class="s1">'Bruce'</span><span class="p">,</span>
+	<span class="s1">'Ernst'</span><span class="p">,</span>
+	<span class="s1">'BERNST'</span><span class="p">,</span>
+	<span class="s1">'590.423.4568'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-MAY-1991'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">6000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">105</span><span class="p">,</span>
+	<span class="s1">'David'</span><span class="p">,</span>
+	<span class="s1">'Austin'</span><span class="p">,</span>
+	<span class="s1">'DAUSTIN'</span><span class="p">,</span>
+	<span class="s1">'590.423.4569'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'25-JUN-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">4800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">106</span><span class="p">,</span>
+	<span class="s1">'Valli'</span><span class="p">,</span>
+	<span class="s1">'Pataballa'</span><span class="p">,</span>
+	<span class="s1">'VPATABAL'</span><span class="p">,</span>
+	<span class="s1">'590.423.4560'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'05-FEB-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">4800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">107</span><span class="p">,</span>
+	<span class="s1">'Diana'</span><span class="p">,</span>
+	<span class="s1">'Lorentz'</span><span class="p">,</span>
+	<span class="s1">'DLORENTZ'</span><span class="p">,</span>
+	<span class="s1">'590.423.5567'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-FEB-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">4200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">103</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="s1">'Nancy'</span><span class="p">,</span>
+	<span class="s1">'Greenberg'</span><span class="p">,</span>
+	<span class="s1">'NGREENBE'</span><span class="p">,</span>
+	<span class="s1">'515.124.4569'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-AUG-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_MGR'</span><span class="p">,</span>
+	<span class="mi">12000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">109</span><span class="p">,</span>
+	<span class="s1">'Daniel'</span><span class="p">,</span>
+	<span class="s1">'Faviet'</span><span class="p">,</span>
+	<span class="s1">'DFAVIET'</span><span class="p">,</span>
+	<span class="s1">'515.124.4169'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'16-AUG-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">9000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">110</span><span class="p">,</span>
+	<span class="s1">'John'</span><span class="p">,</span>
+	<span class="s1">'Chen'</span><span class="p">,</span>
+	<span class="s1">'JCHEN'</span><span class="p">,</span>
+	<span class="s1">'515.124.4269'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'28-SEP-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">8200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">111</span><span class="p">,</span>
+	<span class="s1">'Ismael'</span><span class="p">,</span>
+	<span class="s1">'Sciarra'</span><span class="p">,</span>
+	<span class="s1">'ISCIARRA'</span><span class="p">,</span>
+	<span class="s1">'515.124.4369'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'30-SEP-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">7700</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">112</span><span class="p">,</span>
+	<span class="s1">'Jose Manuel'</span><span class="p">,</span>
+	<span class="s1">'Urman'</span><span class="p">,</span>
+	<span class="s1">'JMURMAN'</span><span class="p">,</span>
+	<span class="s1">'515.124.4469'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-MAR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">7800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">113</span><span class="p">,</span>
+	<span class="s1">'Luis'</span><span class="p">,</span>
+	<span class="s1">'Popp'</span><span class="p">,</span>
+	<span class="s1">'LPOPP'</span><span class="p">,</span>
+	<span class="s1">'515.124.4567'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-DEC-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'FI_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">6900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">108</span><span class="p">,</span>
+	<span class="mi">100</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="s1">'Den'</span><span class="p">,</span>
+	<span class="s1">'Raphaely'</span><span class="p">,</span>
+	<span class="s1">'DRAPHEAL'</span><span class="p">,</span>
+	<span class="s1">'515.127.4561'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-DEC-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_MAN'</span><span class="p">,</span>
+	<span class="mi">11000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">115</span><span class="p">,</span>
+	<span class="s1">'Alexander'</span><span class="p">,</span>
+	<span class="s1">'Khoo'</span><span class="p">,</span>
+	<span class="s1">'AKHOO'</span><span class="p">,</span>
+	<span class="s1">'515.127.4562'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'18-MAY-1995'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="mi">3100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">116</span><span class="p">,</span>
+	<span class="s1">'Shelli'</span><span class="p">,</span>
+	<span class="s1">'Baida'</span><span class="p">,</span>
+	<span class="s1">'SBAIDA'</span><span class="p">,</span>
+	<span class="s1">'515.127.4563'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-DEC-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="mi">2900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">117</span><span class="p">,</span>
+	<span class="s1">'Sigal'</span><span class="p">,</span>
+	<span class="s1">'Tobias'</span><span class="p">,</span>
+	<span class="s1">'STOBIAS'</span><span class="p">,</span>
+	<span class="s1">'515.127.4564'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-JUL-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="mi">2800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">118</span><span class="p">,</span>
+	<span class="s1">'Guy'</span><span class="p">,</span>
+	<span class="s1">'Himuro'</span><span class="p">,</span>
+	<span class="s1">'GHIMURO'</span><span class="p">,</span>
+	<span class="s1">'515.127.4565'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'15-NOV-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="mi">2600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">119</span><span class="p">,</span>
+	<span class="s1">'Karen'</span><span class="p">,</span>
+	<span class="s1">'Colmenares'</span><span class="p">,</span>
+	<span class="s1">'KCOLMENA'</span><span class="p">,</span>
+	<span class="s1">'515.127.4566'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-AUG-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PU_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="mi">30</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="s1">'Matthew'</span><span class="p">,</span>
+	<span class="s1">'Weiss'</span><span class="p">,</span>
+	<span class="s1">'MWEISS'</span><span class="p">,</span>
+	<span class="s1">'650.123.1234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'18-JUL-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="mi">8000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="s1">'Adam'</span><span class="p">,</span>
+	<span class="s1">'Fripp'</span><span class="p">,</span>
+	<span class="s1">'AFRIPP'</span><span class="p">,</span>
+	<span class="s1">'650.123.2234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-APR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="mi">8200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="s1">'Payam'</span><span class="p">,</span>
+	<span class="s1">'Kaufling'</span><span class="p">,</span>
+	<span class="s1">'PKAUFLIN'</span><span class="p">,</span>
+	<span class="s1">'650.123.3234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-MAY-1995'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="mi">7900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="s1">'Shanta'</span><span class="p">,</span>
+	<span class="s1">'Vollman'</span><span class="p">,</span>
+	<span class="s1">'SVOLLMAN'</span><span class="p">,</span>
+	<span class="s1">'650.123.4234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-OCT-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="mi">6500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="s1">'Kevin'</span><span class="p">,</span>
+	<span class="s1">'Mourgos'</span><span class="p">,</span>
+	<span class="s1">'KMOURGOS'</span><span class="p">,</span>
+	<span class="s1">'650.123.5234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'16-NOV-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_MAN'</span><span class="p">,</span>
+	<span class="mi">5800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">125</span><span class="p">,</span>
+	<span class="s1">'Julia'</span><span class="p">,</span>
+	<span class="s1">'Nayer'</span><span class="p">,</span>
+	<span class="s1">'JNAYER'</span><span class="p">,</span>
+	<span class="s1">'650.124.1214'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'16-JUL-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">126</span><span class="p">,</span>
+	<span class="s1">'Irene'</span><span class="p">,</span>
+	<span class="s1">'Mikkilineni'</span><span class="p">,</span>
+	<span class="s1">'IMIKKILI'</span><span class="p">,</span>
+	<span class="s1">'650.124.1224'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'28-SEP-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2700</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">127</span><span class="p">,</span>
+	<span class="s1">'James'</span><span class="p">,</span>
+	<span class="s1">'Landry'</span><span class="p">,</span>
+	<span class="s1">'JLANDRY'</span><span class="p">,</span>
+	<span class="s1">'650.124.1334'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'14-JAN-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2400</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">128</span><span class="p">,</span>
+	<span class="s1">'Steven'</span><span class="p">,</span>
+	<span class="s1">'Markle'</span><span class="p">,</span>
+	<span class="s1">'SMARKLE'</span><span class="p">,</span>
+	<span class="s1">'650.124.1434'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'08-MAR-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">129</span><span class="p">,</span>
+	<span class="s1">'Laura'</span><span class="p">,</span>
+	<span class="s1">'Bissot'</span><span class="p">,</span>
+	<span class="s1">'LBISSOT'</span><span class="p">,</span>
+	<span class="s1">'650.124.5234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'20-AUG-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3300</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">130</span><span class="p">,</span>
+	<span class="s1">'Mozhe'</span><span class="p">,</span>
+	<span class="s1">'Atkinson'</span><span class="p">,</span>
+	<span class="s1">'MATKINSO'</span><span class="p">,</span>
+	<span class="s1">'650.124.6234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'30-OCT-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">131</span><span class="p">,</span>
+	<span class="s1">'James'</span><span class="p">,</span>
+	<span class="s1">'Marlow'</span><span class="p">,</span>
+	<span class="s1">'JAMRLOW'</span><span class="p">,</span>
+	<span class="s1">'650.124.7234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'16-FEB-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">132</span><span class="p">,</span>
+	<span class="s1">'TJ'</span><span class="p">,</span>
+	<span class="s1">'Olson'</span><span class="p">,</span>
+	<span class="s1">'TJOLSON'</span><span class="p">,</span>
+	<span class="s1">'650.124.8234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-APR-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">133</span><span class="p">,</span>
+	<span class="s1">'Jason'</span><span class="p">,</span>
+	<span class="s1">'Mallin'</span><span class="p">,</span>
+	<span class="s1">'JMALLIN'</span><span class="p">,</span>
+	<span class="s1">'650.127.1934'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'14-JUN-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3300</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">134</span><span class="p">,</span>
+	<span class="s1">'Michael'</span><span class="p">,</span>
+	<span class="s1">'Rogers'</span><span class="p">,</span>
+	<span class="s1">'MROGERS'</span><span class="p">,</span>
+	<span class="s1">'650.127.1834'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'26-AUG-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">135</span><span class="p">,</span>
+	<span class="s1">'Ki'</span><span class="p">,</span>
+	<span class="s1">'Gee'</span><span class="p">,</span>
+	<span class="s1">'KGEE'</span><span class="p">,</span>
+	<span class="s1">'650.127.1734'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'12-DEC-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2400</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">136</span><span class="p">,</span>
+	<span class="s1">'Hazel'</span><span class="p">,</span>
+	<span class="s1">'Philtanker'</span><span class="p">,</span>
+	<span class="s1">'HPHILTAN'</span><span class="p">,</span>
+	<span class="s1">'650.127.1634'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'06-FEB-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">137</span><span class="p">,</span>
+	<span class="s1">'Renske'</span><span class="p">,</span>
+	<span class="s1">'Ladwig'</span><span class="p">,</span>
+	<span class="s1">'RLADWIG'</span><span class="p">,</span>
+	<span class="s1">'650.121.1234'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'14-JUL-1995'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">138</span><span class="p">,</span>
+	<span class="s1">'Stephen'</span><span class="p">,</span>
+	<span class="s1">'Stiles'</span><span class="p">,</span>
+	<span class="s1">'SSTILES'</span><span class="p">,</span>
+	<span class="s1">'650.121.2034'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'26-OCT-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">139</span><span class="p">,</span>
+	<span class="s1">'John'</span><span class="p">,</span>
+	<span class="s1">'Seo'</span><span class="p">,</span>
+	<span class="s1">'JSEO'</span><span class="p">,</span>
+	<span class="s1">'650.121.2019'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'12-FEB-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2700</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">140</span><span class="p">,</span>
+	<span class="s1">'Joshua'</span><span class="p">,</span>
+	<span class="s1">'Patel'</span><span class="p">,</span>
+	<span class="s1">'JPATEL'</span><span class="p">,</span>
+	<span class="s1">'650.121.1834'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'06-APR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">141</span><span class="p">,</span>
+	<span class="s1">'Trenna'</span><span class="p">,</span>
+	<span class="s1">'Rajs'</span><span class="p">,</span>
+	<span class="s1">'TRAJS'</span><span class="p">,</span>
+	<span class="s1">'650.121.8009'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-OCT-1995'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">142</span><span class="p">,</span>
+	<span class="s1">'Curtis'</span><span class="p">,</span>
+	<span class="s1">'Davies'</span><span class="p">,</span>
+	<span class="s1">'CDAVIES'</span><span class="p">,</span>
+	<span class="s1">'650.121.2994'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'29-JAN-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">3100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">143</span><span class="p">,</span>
+	<span class="s1">'Randall'</span><span class="p">,</span>
+	<span class="s1">'Matos'</span><span class="p">,</span>
+	<span class="s1">'RMATOS'</span><span class="p">,</span>
+	<span class="s1">'650.121.2874'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'15-MAR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">144</span><span class="p">,</span>
+	<span class="s1">'Peter'</span><span class="p">,</span>
+	<span class="s1">'Vargas'</span><span class="p">,</span>
+	<span class="s1">'PVARGAS'</span><span class="p">,</span>
+	<span class="s1">'650.121.2004'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'09-JUL-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="s1">'John'</span><span class="p">,</span>
+	<span class="s1">'Russell'</span><span class="p">,</span>
+	<span class="s1">'JRUSSEL'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.429268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-OCT-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">14000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">4</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="s1">'Karen'</span><span class="p">,</span>
+	<span class="s1">'Partners'</span><span class="p">,</span>
+	<span class="s1">'KPARTNER'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.467268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'05-JAN-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">13500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="s1">'Alberto'</span><span class="p">,</span>
+	<span class="s1">'Errazuriz'</span><span class="p">,</span>
+	<span class="s1">'AERRAZUR'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.429278'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">12000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="s1">'Gerald'</span><span class="p">,</span>
+	<span class="s1">'Cambrault'</span><span class="p">,</span>
+	<span class="s1">'GCAMBRAU'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.619268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'15-OCT-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">11000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="s1">'Eleni'</span><span class="p">,</span>
+	<span class="s1">'Zlotkey'</span><span class="p">,</span>
+	<span class="s1">'EZLOTKEY'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.429018'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'29-JAN-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">10500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">2</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">150</span><span class="p">,</span>
+	<span class="s1">'Peter'</span><span class="p">,</span>
+	<span class="s1">'Tucker'</span><span class="p">,</span>
+	<span class="s1">'PTUCKER'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.129268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'30-JAN-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">10000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">151</span><span class="p">,</span>
+	<span class="s1">'David'</span><span class="p">,</span>
+	<span class="s1">'Bernstein'</span><span class="p">,</span>
+	<span class="s1">'DBERNSTE'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.345268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">152</span><span class="p">,</span>
+	<span class="s1">'Peter'</span><span class="p">,</span>
+	<span class="s1">'Hall'</span><span class="p">,</span>
+	<span class="s1">'PHALL'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.478968'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'20-AUG-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">153</span><span class="p">,</span>
+	<span class="s1">'Christopher'</span><span class="p">,</span>
+	<span class="s1">'Olsen'</span><span class="p">,</span>
+	<span class="s1">'COLSEN'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.498718'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'30-MAR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">8000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">2</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">154</span><span class="p">,</span>
+	<span class="s1">'Nanette'</span><span class="p">,</span>
+	<span class="s1">'Cambrault'</span><span class="p">,</span>
+	<span class="s1">'NCAMBRAU'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.987668'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'09-DEC-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">2</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">155</span><span class="p">,</span>
+	<span class="s1">'Oliver'</span><span class="p">,</span>
+	<span class="s1">'Tuvault'</span><span class="p">,</span>
+	<span class="s1">'OTUVAULT'</span><span class="p">,</span>
+	<span class="s1">'011.44.1344.486508'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-NOV-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">15</span><span class="p">,</span>
+	<span class="mi">145</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">156</span><span class="p">,</span>
+	<span class="s1">'Janette'</span><span class="p">,</span>
+	<span class="s1">'King'</span><span class="p">,</span>
+	<span class="s1">'JKING'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.429268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'30-JAN-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">10000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">35</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">157</span><span class="p">,</span>
+	<span class="s1">'Patrick'</span><span class="p">,</span>
+	<span class="s1">'Sully'</span><span class="p">,</span>
+	<span class="s1">'PSULLY'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.929268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'04-MAR-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">35</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">158</span><span class="p">,</span>
+	<span class="s1">'Allan'</span><span class="p">,</span>
+	<span class="s1">'McEwen'</span><span class="p">,</span>
+	<span class="s1">'AMCEWEN'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.829268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-AUG-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">35</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">159</span><span class="p">,</span>
+	<span class="s1">'Lindsey'</span><span class="p">,</span>
+	<span class="s1">'Smith'</span><span class="p">,</span>
+	<span class="s1">'LSMITH'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.729268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'10-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">8000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">160</span><span class="p">,</span>
+	<span class="s1">'Louise'</span><span class="p">,</span>
+	<span class="s1">'Doran'</span><span class="p">,</span>
+	<span class="s1">'LDORAN'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.629268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'15-DEC-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">3</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">161</span><span class="p">,</span>
+	<span class="s1">'Sarath'</span><span class="p">,</span>
+	<span class="s1">'Sewall'</span><span class="p">,</span>
+	<span class="s1">'SSEWALL'</span><span class="p">,</span>
+	<span class="s1">'011.44.1345.529268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'03-NOV-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">146</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">162</span><span class="p">,</span>
+	<span class="s1">'Clara'</span><span class="p">,</span>
+	<span class="s1">'Vishney'</span><span class="p">,</span>
+	<span class="s1">'CVISHNEY'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.129268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'11-NOV-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">10500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">163</span><span class="p">,</span>
+	<span class="s1">'Danielle'</span><span class="p">,</span>
+	<span class="s1">'Greene'</span><span class="p">,</span>
+	<span class="s1">'DGREENE'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.229268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'19-MAR-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">15</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">164</span><span class="p">,</span>
+	<span class="s1">'Mattea'</span><span class="p">,</span>
+	<span class="s1">'Marvins'</span><span class="p">,</span>
+	<span class="s1">'MMARVINS'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.329268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-JAN-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7200</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">10</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">165</span><span class="p">,</span>
+	<span class="s1">'David'</span><span class="p">,</span>
+	<span class="s1">'Lee'</span><span class="p">,</span>
+	<span class="s1">'DLEE'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.529268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-FEB-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">6800</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">1</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">166</span><span class="p">,</span>
+	<span class="s1">'Sundar'</span><span class="p">,</span>
+	<span class="s1">'Ande'</span><span class="p">,</span>
+	<span class="s1">'SANDE'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.629268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-MAR-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">6400</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">10</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">167</span><span class="p">,</span>
+	<span class="s1">'Amit'</span><span class="p">,</span>
+	<span class="s1">'Banda'</span><span class="p">,</span>
+	<span class="s1">'ABANDA'</span><span class="p">,</span>
+	<span class="s1">'011.44.1346.729268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-APR-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">6200</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">10</span><span class="p">,</span>
+	<span class="mi">147</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">168</span><span class="p">,</span>
+	<span class="s1">'Lisa'</span><span class="p">,</span>
+	<span class="s1">'Ozer'</span><span class="p">,</span>
+	<span class="s1">'LOZER'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.929268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'11-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">11500</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">169</span><span class="p">,</span>
+	<span class="s1">'Harrison'</span><span class="p">,</span>
+	<span class="s1">'Bloom'</span><span class="p">,</span>
+	<span class="s1">'HBLOOM'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.829268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-MAR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">10000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">20</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">170</span><span class="p">,</span>
+	<span class="s1">'Tayler'</span><span class="p">,</span>
+	<span class="s1">'Fox'</span><span class="p">,</span>
+	<span class="s1">'TFOX'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.729268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-JAN-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">9600</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">20</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">171</span><span class="p">,</span>
+	<span class="s1">'William'</span><span class="p">,</span>
+	<span class="s1">'Smith'</span><span class="p">,</span>
+	<span class="s1">'WSMITH'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.629268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-FEB-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7400</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">15</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">172</span><span class="p">,</span>
+	<span class="s1">'Elizabeth'</span><span class="p">,</span>
+	<span class="s1">'Bates'</span><span class="p">,</span>
+	<span class="s1">'EBATES'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.529268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-MAR-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7300</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">15</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">173</span><span class="p">,</span>
+	<span class="s1">'Sundita'</span><span class="p">,</span>
+	<span class="s1">'Kumar'</span><span class="p">,</span>
+	<span class="s1">'SKUMAR'</span><span class="p">,</span>
+	<span class="s1">'011.44.1343.329268'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-APR-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">6100</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">10</span><span class="p">,</span>
+	<span class="mi">148</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">174</span><span class="p">,</span>
+	<span class="s1">'Ellen'</span><span class="p">,</span>
+	<span class="s1">'Abel'</span><span class="p">,</span>
+	<span class="s1">'EABEL'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429267'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'11-MAY-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">11000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">30</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">175</span><span class="p">,</span>
+	<span class="s1">'Alyssa'</span><span class="p">,</span>
+	<span class="s1">'Hutton'</span><span class="p">,</span>
+	<span class="s1">'AHUTTON'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429266'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'19-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">8800</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">25</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">176</span><span class="p">,</span>
+	<span class="s1">'Jonathon'</span><span class="p">,</span>
+	<span class="s1">'Taylor'</span><span class="p">,</span>
+	<span class="s1">'JTAYLOR'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429265'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-MAR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">8600</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">20</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">177</span><span class="p">,</span>
+	<span class="s1">'Jack'</span><span class="p">,</span>
+	<span class="s1">'Livingston'</span><span class="p">,</span>
+	<span class="s1">'JLIVINGS'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429264'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-APR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">8400</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">20</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">178</span><span class="p">,</span>
+	<span class="s1">'Kimberely'</span><span class="p">,</span>
+	<span class="s1">'Grant'</span><span class="p">,</span>
+	<span class="s1">'KGRANT'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429263'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-MAY-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">7000</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">15</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="k">NULL</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">179</span><span class="p">,</span>
+	<span class="s1">'Charles'</span><span class="p">,</span>
+	<span class="s1">'Johnson'</span><span class="p">,</span>
+	<span class="s1">'CJOHNSON'</span><span class="p">,</span>
+	<span class="s1">'011.44.1644.429262'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'04-JAN-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">6200</span><span class="p">,</span>
+	<span class="p">.</span><span class="mi">10</span><span class="p">,</span>
+	<span class="mi">149</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">180</span><span class="p">,</span>
+	<span class="s1">'Winston'</span><span class="p">,</span>
+	<span class="s1">'Taylor'</span><span class="p">,</span>
+	<span class="s1">'WTAYLOR'</span><span class="p">,</span>
+	<span class="s1">'650.507.9876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-JAN-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">181</span><span class="p">,</span>
+	<span class="s1">'Jean'</span><span class="p">,</span>
+	<span class="s1">'Fleaur'</span><span class="p">,</span>
+	<span class="s1">'JFLEAUR'</span><span class="p">,</span>
+	<span class="s1">'650.507.9877'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-FEB-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">182</span><span class="p">,</span>
+	<span class="s1">'Martha'</span><span class="p">,</span>
+	<span class="s1">'Sullivan'</span><span class="p">,</span>
+	<span class="s1">'MSULLIVA'</span><span class="p">,</span>
+	<span class="s1">'650.507.9878'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-JUN-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">183</span><span class="p">,</span>
+	<span class="s1">'Girard'</span><span class="p">,</span>
+	<span class="s1">'Geoni'</span><span class="p">,</span>
+	<span class="s1">'GGEONI'</span><span class="p">,</span>
+	<span class="s1">'650.507.9879'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'03-FEB-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">120</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">184</span><span class="p">,</span>
+	<span class="s1">'Nandita'</span><span class="p">,</span>
+	<span class="s1">'Sarchand'</span><span class="p">,</span>
+	<span class="s1">'NSARCHAN'</span><span class="p">,</span>
+	<span class="s1">'650.509.1876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'27-JAN-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">4200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">185</span><span class="p">,</span>
+	<span class="s1">'Alexis'</span><span class="p">,</span>
+	<span class="s1">'Bull'</span><span class="p">,</span>
+	<span class="s1">'ABULL'</span><span class="p">,</span>
+	<span class="s1">'650.509.2876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'20-FEB-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">4100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">186</span><span class="p">,</span>
+	<span class="s1">'Julia'</span><span class="p">,</span>
+	<span class="s1">'Dellinger'</span><span class="p">,</span>
+	<span class="s1">'JDELLING'</span><span class="p">,</span>
+	<span class="s1">'650.509.3876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-JUN-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3400</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">187</span><span class="p">,</span>
+	<span class="s1">'Anthony'</span><span class="p">,</span>
+	<span class="s1">'Cabrio'</span><span class="p">,</span>
+	<span class="s1">'ACABRIO'</span><span class="p">,</span>
+	<span class="s1">'650.509.4876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-FEB-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">121</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">188</span><span class="p">,</span>
+	<span class="s1">'Kelly'</span><span class="p">,</span>
+	<span class="s1">'Chung'</span><span class="p">,</span>
+	<span class="s1">'KCHUNG'</span><span class="p">,</span>
+	<span class="s1">'650.505.1876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'14-JUN-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">189</span><span class="p">,</span>
+	<span class="s1">'Jennifer'</span><span class="p">,</span>
+	<span class="s1">'Dilly'</span><span class="p">,</span>
+	<span class="s1">'JDILLY'</span><span class="p">,</span>
+	<span class="s1">'650.505.2876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'13-AUG-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">190</span><span class="p">,</span>
+	<span class="s1">'Timothy'</span><span class="p">,</span>
+	<span class="s1">'Gates'</span><span class="p">,</span>
+	<span class="s1">'TGATES'</span><span class="p">,</span>
+	<span class="s1">'650.505.3876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'11-JUL-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">191</span><span class="p">,</span>
+	<span class="s1">'Randall'</span><span class="p">,</span>
+	<span class="s1">'Perkins'</span><span class="p">,</span>
+	<span class="s1">'RPERKINS'</span><span class="p">,</span>
+	<span class="s1">'650.505.4876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'19-DEC-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">192</span><span class="p">,</span>
+	<span class="s1">'Sarah'</span><span class="p">,</span>
+	<span class="s1">'Bell'</span><span class="p">,</span>
+	<span class="s1">'SBELL'</span><span class="p">,</span>
+	<span class="s1">'650.501.1876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'04-FEB-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">4000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">193</span><span class="p">,</span>
+	<span class="s1">'Britney'</span><span class="p">,</span>
+	<span class="s1">'Everett'</span><span class="p">,</span>
+	<span class="s1">'BEVERETT'</span><span class="p">,</span>
+	<span class="s1">'650.501.2876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'03-MAR-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3900</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">194</span><span class="p">,</span>
+	<span class="s1">'Samuel'</span><span class="p">,</span>
+	<span class="s1">'McCain'</span><span class="p">,</span>
+	<span class="s1">'SMCCAIN'</span><span class="p">,</span>
+	<span class="s1">'650.501.3876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-JUL-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3200</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">195</span><span class="p">,</span>
+	<span class="s1">'Vance'</span><span class="p">,</span>
+	<span class="s1">'Jones'</span><span class="p">,</span>
+	<span class="s1">'VJONES'</span><span class="p">,</span>
+	<span class="s1">'650.501.4876'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-MAR-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2800</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">123</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">196</span><span class="p">,</span>
+	<span class="s1">'Alana'</span><span class="p">,</span>
+	<span class="s1">'Walsh'</span><span class="p">,</span>
+	<span class="s1">'AWALSH'</span><span class="p">,</span>
+	<span class="s1">'650.507.9811'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-APR-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3100</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">197</span><span class="p">,</span>
+	<span class="s1">'Kevin'</span><span class="p">,</span>
+	<span class="s1">'Feeney'</span><span class="p">,</span>
+	<span class="s1">'KFEENEY'</span><span class="p">,</span>
+	<span class="s1">'650.507.9822'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'23-MAY-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">3000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">198</span><span class="p">,</span>
+	<span class="s1">'Donald'</span><span class="p">,</span>
+	<span class="s1">'OConnell'</span><span class="p">,</span>
+	<span class="s1">'DOCONNEL'</span><span class="p">,</span>
+	<span class="s1">'650.507.9833'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-JUN-1999'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">199</span><span class="p">,</span>
+	<span class="s1">'Douglas'</span><span class="p">,</span>
+	<span class="s1">'Grant'</span><span class="p">,</span>
+	<span class="s1">'DGRANT'</span><span class="p">,</span>
+	<span class="s1">'650.507.9844'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'13-JAN-2000'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SH_CLERK'</span><span class="p">,</span>
+	<span class="mi">2600</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">124</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">200</span><span class="p">,</span>
+	<span class="s1">'Jennifer'</span><span class="p">,</span>
+	<span class="s1">'Whalen'</span><span class="p">,</span>
+	<span class="s1">'JWHALEN'</span><span class="p">,</span>
+	<span class="s1">'515.123.4444'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-SEP-1987'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AD_ASST'</span><span class="p">,</span>
+	<span class="mi">4400</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="mi">10</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">201</span><span class="p">,</span>
+	<span class="s1">'Michael'</span><span class="p">,</span>
+	<span class="s1">'Hartstein'</span><span class="p">,</span>
+	<span class="s1">'MHARTSTE'</span><span class="p">,</span>
+	<span class="s1">'515.123.5555'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-FEB-1996'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'MK_MAN'</span><span class="p">,</span>
+	<span class="mi">13000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">100</span><span class="p">,</span>
+	<span class="mi">20</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">202</span><span class="p">,</span>
+	<span class="s1">'Pat'</span><span class="p">,</span>
+	<span class="s1">'Fay'</span><span class="p">,</span>
+	<span class="s1">'PFAY'</span><span class="p">,</span>
+	<span class="s1">'603.123.6666'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-AUG-1997'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'MK_REP'</span><span class="p">,</span>
+	<span class="mi">6000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">201</span><span class="p">,</span>
+	<span class="mi">20</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">203</span><span class="p">,</span>
+	<span class="s1">'Susan'</span><span class="p">,</span>
+	<span class="s1">'Mavris'</span><span class="p">,</span>
+	<span class="s1">'SMAVRIS'</span><span class="p">,</span>
+	<span class="s1">'515.123.7777'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-JUN-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'HR_REP'</span><span class="p">,</span>
+	<span class="mi">6500</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="mi">40</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">204</span><span class="p">,</span>
+	<span class="s1">'Hermann'</span><span class="p">,</span>
+	<span class="s1">'Baer'</span><span class="p">,</span>
+	<span class="s1">'HBAER'</span><span class="p">,</span>
+	<span class="s1">'515.123.8888'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-JUN-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'PR_REP'</span><span class="p">,</span>
+	<span class="mi">10000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="mi">70</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">205</span><span class="p">,</span>
+	<span class="s1">'Shelley'</span><span class="p">,</span>
+	<span class="s1">'Higgins'</span><span class="p">,</span>
+	<span class="s1">'SHIGGINS'</span><span class="p">,</span>
+	<span class="s1">'515.123.8080'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-JUN-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AC_MGR'</span><span class="p">,</span>
+	<span class="mi">12000</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="mi">110</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">employees</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">206</span><span class="p">,</span>
+	<span class="s1">'William'</span><span class="p">,</span>
+	<span class="s1">'Gietz'</span><span class="p">,</span>
+	<span class="s1">'WGIETZ'</span><span class="p">,</span>
+	<span class="s1">'51hr5.123.8181'</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'07-JUN-1994'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AC_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">8300</span><span class="p">,</span>
+	<span class="k">NULL</span><span class="p">,</span>
+	<span class="mi">205</span><span class="p">,</span>
+	<span class="mi">110</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">102</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'13-Jan-1993'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-Jul-1998'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'IT_PROG'</span><span class="p">,</span>
+	<span class="mi">60</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'21-Sep-1989'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'27-Oct-1993'</span><span class="p">,</span> <span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AC_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">110</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">101</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'28-Oct-1993'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'15-Mar-1997'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AC_MGR'</span><span class="p">,</span>
+	<span class="mi">110</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">201</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'27-Feb-1996'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'19-Dec-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'MK_REP'</span><span class="p">,</span>
+	<span class="mi">20</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">114</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-Mar-1998'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'31-Dec-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">122</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-Jan-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'31-Dec-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'ST_CLERK'</span><span class="p">,</span>
+	<span class="mi">50</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">200</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-Sep-1987'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'17-Jun-1993'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AD_ASST'</span><span class="p">,</span>
+	<span class="mi">90</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">176</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'24-Mar-1998'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'31-Dec-1998'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_REP'</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">176</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-Jan-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'31-Dec-1999'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'SA_MAN'</span><span class="p">,</span>
+	<span class="mi">80</span>
+	<span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">job_history</span>
+<span class="k">VALUES</span> <span class="p">(</span>
+	<span class="mi">200</span><span class="p">,</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'01-Jul-1994'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="n">STR_TO_DATE</span><span class="p">(</span><span class="s1">'31-Dec-1998'</span><span class="p">,</span><span class="s1">'%d-%M-%Y'</span><span class="p">),</span>
+	<span class="s1">'AC_ACCOUNT'</span><span class="p">,</span>
+	<span class="mi">90</span>
+	<span class="p">);</span>
+
+<span class="k">COMMIT</span><span class="p">;</span>
+
+<span class="cm">/* ***************************************************************
+***************************FOREIGN KEYS***************************
+**************************************************************** */</span>
+
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">countries</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">region_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">regions</span><span class="p">(</span><span class="n">region_id</span><span class="p">);</span>    
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">locations</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">country_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">countries</span><span class="p">(</span><span class="n">country_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">departments</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">location_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">locations</span><span class="p">(</span><span class="n">location_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">employees</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">job_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">jobs</span><span class="p">(</span><span class="n">job_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">employees</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">department_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">departments</span><span class="p">(</span><span class="n">department_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">employees</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">manager_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">employees</span><span class="p">(</span><span class="n">employee_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">departments</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">manager_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">employees</span> <span class="p">(</span><span class="n">employee_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">job_history</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">employee_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">employees</span><span class="p">(</span><span class="n">employee_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">job_history</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">job_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">jobs</span><span class="p">(</span><span class="n">job_id</span><span class="p">);</span>
+<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">job_history</span> <span class="k">ADD</span> <span class="k">FOREIGN</span> <span class="k">KEY</span> <span class="p">(</span><span class="n">department_id</span><span class="p">)</span> <span class="k">REFERENCES</span> <span class="n">departments</span><span class="p">(</span><span class="n">department_id</span><span class="p">);</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/etc/2019/05/17/DB-MySQL_scott_hr.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

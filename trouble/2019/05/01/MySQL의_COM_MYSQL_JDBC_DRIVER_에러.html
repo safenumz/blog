@@ -1,0 +1,20 @@
+<h1 id="environment">Environment</h1>
+<ul>
+  <li>MacOS Mojave 10.14.5</li>
+</ul>
+
+<h1 id="trouble">Trouble</h1>
+<ul>
+  <li>MySQL의 COM.MYSQL.JDBC.DRIVER 에러</li>
+</ul>
+
+<pre>
+ LOADING CLASS `COM.MYSQL.JDBC.DRIVER’. THIS IS DEPRECATED. THE NEW DRIVER CLASS IS `COM.MYSQL.CJ.JDBC.DRIVER’. THE DRIVER IS AUTOMATICALLY REGISTERED VIA THE SPI AND MANUAL LOADING OF THE DRIVER CLASS IS GENERALLY UNNECESSARY.
+</pre>
+
+<h1 id="shooting">Shooting</h1>
+<ul>
+  <li>driver 이름 변경 필요</li>
+  <li>변경 전: com.mysql.jdbc.Driver</li>
+  <li>변경 후: com.mysql.cj.jdbc.Driver</li>
+</ul>

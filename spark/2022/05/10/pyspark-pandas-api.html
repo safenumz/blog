@@ -1,0 +1,2319 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] pyspark에서 Pandas API 사용하기 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] pyspark에서 Pandas API 사용하기" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="pandas, spark.DataFrame, pyspark.pandas 간 변환" />
+<meta property="og:description" content="pandas, spark.DataFrame, pyspark.pandas 간 변환" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2022/05/10/pyspark-pandas-api.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2022/05/10/pyspark-pandas-api.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-10T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] pyspark에서 Pandas API 사용하기" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-10T00:00:00-05:00","datePublished":"2022-05-10T00:00:00-05:00","description":"pandas, spark.DataFrame, pyspark.pandas 간 변환","headline":"[Spark] pyspark에서 Pandas API 사용하기","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2022/05/10/pyspark-pandas-api.html"},"url":"https://safenumz.github.io/blog/spark/2022/05/10/pyspark-pandas-api.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] pyspark에서 Pandas API 사용하기</h1><p class="page-description">pandas, spark.DataFrame, pyspark.pandas 간 변환</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-05-10T00:00:00-05:00" itemprop="datePublished">
+        May 10, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-05-10-pyspark-pandas-api.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-05-10-pyspark-pandas-api.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-05-10-pyspark-pandas-api.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-05-10-pyspark-pandas-api.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#pyspark에서-Pandas-API-사용하기">pyspark에서 Pandas API 사용하기 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Pandas-on-Spark-Object-생성">Pandas on Spark Object 생성 </a></li>
+<li class="toc-entry toc-h2"><a href="#Missing-Data">Missing Data </a></li>
+<li class="toc-entry toc-h2"><a href="#Operations">Operations </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Spark-Configurations">Spark Configurations </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Grouping">Grouping </a></li>
+<li class="toc-entry toc-h2"><a href="#Plotting">Plotting </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-05-10-pyspark-pandas-api.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="pyspark에서-Pandas-API-사용하기">
+<a class="anchor" href="#pyspark%EC%97%90%EC%84%9C-Pandas-API-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>pyspark에서 Pandas API 사용하기<a class="anchor-link" href="#pyspark%EC%97%90%EC%84%9C-Pandas-API-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>그 동안 pyspark.pandas API가 있는 줄 모르고 spark.DataFrame 기준으로만 전처리를 했었다. 물론 추후 속도적인 측면도 테스트 해봐야 겠지만, 익숙한 python pandas 문법을 spark에서도 사용할 수 있다는 점이 장점인거 같다.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span><span class="p">;</span> <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">'ignore'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pyspark.pandas</span> <span class="k">as</span> <span class="nn">ps</span>
+<span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Pandas-on-Spark-Object-생성">
+<a class="anchor" href="#Pandas-on-Spark-Object-%EC%83%9D%EC%84%B1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pandas on Spark Object 생성<a class="anchor-link" href="#Pandas-on-Spark-Object-%EC%83%9D%EC%84%B1"> </a>
+</h2>
+<ul>
+<li>
+<code>pandas</code>, <code>spark.DataFrame</code>, <code>pyspark.pandas</code>간의 변환 command</li>
+<li>
+<code>sdf.to_pandas_on_spark()</code>: spark.DataFrame -&gt; pyspark.pandas</li>
+<li>
+<code>spark.createDataFrame(df)</code>: pandas.DataFrame -&gt; spark.DataFrame</li>
+<li>
+<code>ps.from_pandas(df)</code>: pandas -&gt; pyspark.pandas</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>pandas-on-Spark Series 생성</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">s</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0    1.0
+1    3.0
+2    5.0
+3    NaN
+4    6.0
+5    8.0
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>pandas-on-Spark DataFrame 생성</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">'a'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span>
+    <span class="s1">'b'</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">400</span><span class="p">,</span> <span class="mi">500</span><span class="p">,</span> <span class="mi">600</span><span class="p">],</span>
+    <span class="s1">'c'</span><span class="p">:</span> <span class="p">[</span><span class="s2">"one"</span><span class="p">,</span> <span class="s2">"two"</span><span class="p">,</span> <span class="s2">"three"</span><span class="p">,</span> <span class="s2">"four"</span><span class="p">,</span> <span class="s2">"five"</span><span class="p">,</span> <span class="s2">"six"</span><span class="p">]},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>a</th>
+      <th>b</th>
+      <th>c</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>10</th>
+      <td>1</td>
+      <td>100</td>
+      <td>one</td>
+    </tr>
+    <tr>
+      <th>20</th>
+      <td>2</td>
+      <td>200</td>
+      <td>two</td>
+    </tr>
+    <tr>
+      <th>30</th>
+      <td>3</td>
+      <td>300</td>
+      <td>three</td>
+    </tr>
+    <tr>
+      <th>40</th>
+      <td>4</td>
+      <td>400</td>
+      <td>four</td>
+    </tr>
+    <tr>
+      <th>50</th>
+      <td>5</td>
+      <td>500</td>
+      <td>five</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>6</td>
+      <td>600</td>
+      <td>six</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>pandas DataFrame으로부터 Spark DataFrame 생성</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">'20130101'</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dates</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>DatetimeIndex(['2013-01-01', '2013-01-02', '2013-01-03', '2013-01-04',
+               '2013-01-05', '2013-01-06'],
+              dtype='datetime64[ns]', freq='D')</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">dates</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="s1">'ABCD'</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pdf</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2013-01-01</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+    </tr>
+    <tr>
+      <th>2013-01-02</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+    </tr>
+    <tr>
+      <th>2013-01-03</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+    </tr>
+    <tr>
+      <th>2013-01-04</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+    </tr>
+    <tr>
+      <th>2013-01-05</th>
+      <td>-0.339120</td>
+      <td>-0.695819</td>
+      <td>-1.428132</td>
+      <td>-1.526980</td>
+    </tr>
+    <tr>
+      <th>2013-01-06</th>
+      <td>0.726483</td>
+      <td>-1.131556</td>
+      <td>0.242745</td>
+      <td>1.488364</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+<span class="nb">type</span><span class="p">(</span><span class="n">psdf</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>pyspark.pandas.frame.DataFrame</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">pdf</span><span class="p">)</span>
+<span class="n">sdf</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+-------------------+-------------------+-------------------+
+|                   A|                  B|                  C|                  D|
++--------------------+-------------------+-------------------+-------------------+
+|  0.3462987999403194| 0.9467481831984389| 1.1846947637320713|-1.1585782610012703|
+|-0.13346994375082502| 1.2247869095176753| -0.446593621291369| 0.4825652775216099|
+|  0.7480549772449115|  0.199681455812404|-0.5429905711786277| 0.8660881736263012|
+| -0.7446546017705188| 1.4312177915894633| 0.5131170380144356|-0.6499052358759891|
+| -0.3391197127262108|-0.6958191071345965|-1.4281317658506953|-1.5269801796563447|
+|  0.7264826865156339|-1.1315560289935476|0.24274492407843978| 1.4883641187609775|
++--------------------+-------------------+-------------------+-------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Spark DataFrame으로부터 pandas-on-Spark DataFrame 생성</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span> <span class="o">=</span> <span class="n">sdf</span><span class="o">.</span><span class="n">to_pandas_on_spark</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.339120</td>
+      <td>-0.695819</td>
+      <td>-1.428132</td>
+      <td>-1.526980</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>0.726483</td>
+      <td>-1.131556</td>
+      <td>0.242745</td>
+      <td>1.488364</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">dtypes</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>A    float64
+B    float64
+C    float64
+D    float64
+dtype: object</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">columns</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Index(['A', 'B', 'C', 'D'], dtype='object')</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[ 0.3462988 ,  0.94674818,  1.18469476, -1.15857826],
+       [-0.13346994,  1.22478691, -0.44659362,  0.48256528],
+       [ 0.74805498,  0.19968146, -0.54299057,  0.86608817],
+       [-0.7446546 ,  1.43121779,  0.51311704, -0.64990524],
+       [-0.33911971, -0.69581911, -1.42813177, -1.52698018],
+       [ 0.72648269, -1.13155603,  0.24274492,  1.48836412]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>                                                                                
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>count</th>
+      <td>6.000000</td>
+      <td>6.000000</td>
+      <td>6.000000</td>
+      <td>6.000000</td>
+    </tr>
+    <tr>
+      <th>mean</th>
+      <td>0.100599</td>
+      <td>0.329177</td>
+      <td>-0.079527</td>
+      <td>-0.083074</td>
+    </tr>
+    <tr>
+      <th>std</th>
+      <td>0.605622</td>
+      <td>1.058219</td>
+      <td>0.918870</td>
+      <td>1.204421</td>
+    </tr>
+    <tr>
+      <th>min</th>
+      <td>-0.744655</td>
+      <td>-1.131556</td>
+      <td>-1.428132</td>
+      <td>-1.526980</td>
+    </tr>
+    <tr>
+      <th>25%</th>
+      <td>-0.339120</td>
+      <td>-0.695819</td>
+      <td>-0.542991</td>
+      <td>-1.158578</td>
+    </tr>
+    <tr>
+      <th>50%</th>
+      <td>-0.133470</td>
+      <td>0.199681</td>
+      <td>-0.446594</td>
+      <td>-0.649905</td>
+    </tr>
+    <tr>
+      <th>75%</th>
+      <td>0.726483</td>
+      <td>1.224787</td>
+      <td>0.513117</td>
+      <td>0.866088</td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td>0.748055</td>
+      <td>1.431218</td>
+      <td>1.184695</td>
+      <td>1.488364</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">T</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>A</th>
+      <td>0.346299</td>
+      <td>-0.133470</td>
+      <td>0.748055</td>
+      <td>-0.744655</td>
+      <td>-0.339120</td>
+      <td>0.726483</td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td>0.946748</td>
+      <td>1.224787</td>
+      <td>0.199681</td>
+      <td>1.431218</td>
+      <td>-0.695819</td>
+      <td>-1.131556</td>
+    </tr>
+    <tr>
+      <th>C</th>
+      <td>1.184695</td>
+      <td>-0.446594</td>
+      <td>-0.542991</td>
+      <td>0.513117</td>
+      <td>-1.428132</td>
+      <td>0.242745</td>
+    </tr>
+    <tr>
+      <th>D</th>
+      <td>-1.158578</td>
+      <td>0.482565</td>
+      <td>0.866088</td>
+      <td>-0.649905</td>
+      <td>-1.526980</td>
+      <td>1.488364</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">sort_index</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>0.726483</td>
+      <td>-1.131556</td>
+      <td>0.242745</td>
+      <td>1.488364</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.339120</td>
+      <td>-0.695819</td>
+      <td>-1.428132</td>
+      <td>-1.526980</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">'B'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>5</th>
+      <td>0.726483</td>
+      <td>-1.131556</td>
+      <td>0.242745</td>
+      <td>1.488364</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>-0.339120</td>
+      <td>-0.695819</td>
+      <td>-1.428132</td>
+      <td>-1.526980</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+    </tr>
+    <tr>
+      <th>0</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Missing-Data">
+<a class="anchor" href="#Missing-Data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Missing Data<a class="anchor-link" href="#Missing-Data"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Pandas API on Spark는 missing data를 표현하기 위해 <code>np.nan</code>을 사용</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pdf1</span> <span class="o">=</span> <span class="n">pdf</span><span class="o">.</span><span class="n">reindex</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">pdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="s1">'E'</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pdf1</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">dates</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">dates</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s1">'E'</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf1</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">pdf1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>E</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2013-01-01</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-02</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-03</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>2013-01-04</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>missing data 삭제</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf1</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">how</span><span class="o">=</span><span class="s1">'any'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>E</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2013-01-01</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-02</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>missing data 채우기</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf1</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+      <th>E</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>2013-01-01</th>
+      <td>0.346299</td>
+      <td>0.946748</td>
+      <td>1.184695</td>
+      <td>-1.158578</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-02</th>
+      <td>-0.133470</td>
+      <td>1.224787</td>
+      <td>-0.446594</td>
+      <td>0.482565</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-03</th>
+      <td>0.748055</td>
+      <td>0.199681</td>
+      <td>-0.542991</td>
+      <td>0.866088</td>
+      <td>5.0</td>
+    </tr>
+    <tr>
+      <th>2013-01-04</th>
+      <td>-0.744655</td>
+      <td>1.431218</td>
+      <td>0.513117</td>
+      <td>-0.649905</td>
+      <td>5.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Operations">
+<a class="anchor" href="#Operations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Operations<a class="anchor-link" href="#Operations"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기술 통계</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>A    0.100599
+B    0.329177
+C   -0.079527
+D   -0.083074
+dtype: float64</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Spark-Configurations">
+<a class="anchor" href="#Spark-Configurations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Spark Configurations<a class="anchor-link" href="#Spark-Configurations"> </a>
+</h3>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">prev</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"spark.sql.execution.arrow.pyspark.enabled"</span><span class="p">)</span>  <span class="c1"># Keep its default value.</span>
+<span class="n">ps</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s2">"compute.default_index_type"</span><span class="p">,</span> <span class="s2">"distributed"</span><span class="p">)</span>  <span class="c1"># Use default index prevent overhead.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"spark.sql.execution.arrow.pyspark.enabled"</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> ps.range(300000).to_pandas()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>                                                                                
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>285 ms ± 93.1 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">spark</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"spark.sql.execution.arrow.pyspark.enabled"</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+<span class="o">%</span><span class="k">timeit</span> ps.range(300000).to_pandas()
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>702 ms ± 67.9 ms per loop (mean ± std. dev. of 7 runs, 1 loop each)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ps</span><span class="o">.</span><span class="n">reset_option</span><span class="p">(</span><span class="s2">"compute.default_index_type"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"spark.sql.execution.arrow.pyspark.enabled"</span><span class="p">,</span> <span class="n">prev</span><span class="p">)</span>  <span class="c1"># Set its default value back.</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Grouping">
+<a class="anchor" href="#Grouping" aria-hidden="true"><span class="octicon octicon-link"></span></a>Grouping<a class="anchor-link" href="#Grouping"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span> <span class="o">=</span> <span class="n">ps</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">'A'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span>
+                          <span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'foo'</span><span class="p">],</span>
+                    <span class="s1">'B'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'one'</span><span class="p">,</span> <span class="s1">'one'</span><span class="p">,</span> <span class="s1">'two'</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">,</span>
+                          <span class="s1">'two'</span><span class="p">,</span> <span class="s1">'two'</span><span class="p">,</span> <span class="s1">'one'</span><span class="p">,</span> <span class="s1">'three'</span><span class="p">],</span>
+                    <span class="s1">'C'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span>
+                    <span class="s1">'D'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">)})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>A</th>
+      <th>B</th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>foo</td>
+      <td>one</td>
+      <td>0.437018</td>
+      <td>2.192919</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>bar</td>
+      <td>one</td>
+      <td>0.429485</td>
+      <td>-0.560230</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>foo</td>
+      <td>two</td>
+      <td>-0.171649</td>
+      <td>0.048277</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>bar</td>
+      <td>three</td>
+      <td>-0.506166</td>
+      <td>-2.782998</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>foo</td>
+      <td>two</td>
+      <td>-0.038123</td>
+      <td>1.601338</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>bar</td>
+      <td>two</td>
+      <td>0.438333</td>
+      <td>-0.525144</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>foo</td>
+      <td>one</td>
+      <td>0.885746</td>
+      <td>0.038302</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>foo</td>
+      <td>three</td>
+      <td>-0.135220</td>
+      <td>-0.495829</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">'A'</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+    <tr>
+      <th>A</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>foo</th>
+      <td>0.977771</td>
+      <td>3.385007</td>
+    </tr>
+    <tr>
+      <th>bar</th>
+      <td>0.361653</td>
+      <td>-3.868372</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">'A'</span><span class="p">,</span> <span class="s1">'B'</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th></th>
+      <th>C</th>
+      <th>D</th>
+    </tr>
+    <tr>
+      <th>A</th>
+      <th>B</th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>foo</th>
+      <th>two</th>
+      <td>-0.209772</td>
+      <td>1.649615</td>
+    </tr>
+    <tr>
+      <th>bar</th>
+      <th>two</th>
+      <td>0.438333</td>
+      <td>-0.525144</td>
+    </tr>
+    <tr>
+      <th>foo</th>
+      <th>one</th>
+      <td>1.322764</td>
+      <td>2.231221</td>
+    </tr>
+    <tr>
+      <th rowspan="2" valign="top">bar</th>
+      <th>one</th>
+      <td>0.429485</td>
+      <td>-0.560230</td>
+    </tr>
+    <tr>
+      <th>three</th>
+      <td>-0.506166</td>
+      <td>-2.782998</td>
+    </tr>
+    <tr>
+      <th>foo</th>
+      <th>three</th>
+      <td>-0.135220</td>
+      <td>-0.495829</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Plotting">
+<a class="anchor" href="#Plotting" aria-hidden="true"><span class="octicon octicon-link"></span></a>Plotting<a class="anchor-link" href="#Plotting"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">pser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span>
+                 <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s1">'1/1/2000'</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">1000</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psser</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">pser</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psser</span> <span class="o">=</span> <span class="n">psser</span><span class="o">.</span><span class="n">cummax</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">psser</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;AxesSubplot:&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2022/05/10/pyspark-pandas-api.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

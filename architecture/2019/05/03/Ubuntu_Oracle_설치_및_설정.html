@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Oracle] Ubuntu Oracle 설치 및 설정 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Oracle] Ubuntu Oracle 설치 및 설정" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Environment Ubuntu 18.4 Oracle XE 11.2.0" />
+<meta property="og:description" content="Environment Ubuntu 18.4 Oracle XE 11.2.0" />
+<link rel="canonical" href="https://safenumz.github.io/blog/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-03T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Oracle] Ubuntu Oracle 설치 및 설정" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-03T00:00:00-05:00","datePublished":"2019-05-03T00:00:00-05:00","description":"Environment Ubuntu 18.4 Oracle XE 11.2.0","headline":"[Oracle] Ubuntu Oracle 설치 및 설정","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html"},"url":"https://safenumz.github.io/blog/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Oracle] Ubuntu Oracle 설치 및 설정</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-03T00:00:00-05:00" itemprop="datePublished">
+        May 3, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Architecture">Architecture</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="environment">Environment</h1>
+<ul>
+  <li>Ubuntu 18.4</li>
+  <li>Oracle XE 11.2.0</li>
+</ul>
+
+<h1 id="oracle-설치">Oracle 설치</h1>
+<h3 id="oracle-프로그램-다운로드">Oracle 프로그램 다운로드</h3>
+<ul>
+  <li><a href="https://www.oracle.com/downloads/index.html#database">오라클 홈페이지 접속</a></li>
+  <li>Database 11g Express Edition 다운로드</li>
+  <li>Oracle Database Express Edition 11g Release 2 for Linux x64</li>
+  <li>home/<개인컴퓨터계정>/Downloads 폴더에 저장</개인컴퓨터계정></li>
+</ul>
+
+<h3 id="root-계정-로그인">root 계정 로그인</h3>
+<ul>
+  <li>sudo su root / 자신의 패스워드</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>su root
+</code></pre></div></div>
+
+<h3 id="압축-파일-풀기">압축 파일 풀기</h3>
+<ul>
+  <li>오라클 압축파일을 다운받은 경로(다운로드 폴더)로 이동</li>
+  <li>unzip 명령어로 압축파일 풀어줌</li>
+  <li>oracle-xe-11.2.0-1.0.x86_64.rpm</li>
+  <li>압축 해제 후 생성된 Disk1 폴더로 이동</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd </span>Downloads
+
+<span class="nv">$ </span>unzip oracle<span class="k">*</span>
+
+<span class="c"># 압축 해제 후 생성된 Disk1 폴더로 이동</span>
+<span class="nv">$ </span><span class="nb">cd </span>Disk1
+</code></pre></div></div>
+
+<h3 id="alien-libaio1-unixodbc-설치">alien libaio1 unixodbc 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>apt-get <span class="nt">-y</span> <span class="nb">install </span>alien libaio1 unixodbc
+</code></pre></div></div>
+
+<h3 id="rpm-파일을-deb-파일로-변환">rpm 파일을 deb 파일로 변환</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>alien <span class="nt">--scripts</span> <span class="nt">-d</span> oracle<span class="k">*</span>
+</code></pre></div></div>
+
+<h3 id="오라클-설치">오라클 설치</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>dpkg <span class="nt">--install</span> oracle<span class="k">*</span>.deb
+</code></pre></div></div>
+
+<h3 id="etcinitdoracle-xe-configure-설정">/etc/init.d/oracle-xe configure 설정</h3>
+<ul>
+  <li>포트는 기본 포트로 유지, 건드리지 않고 엔터만 치면 됨</li>
+  <li>비밀번호는 신규 설정</li>
+</ul>
+
+<h3 id="오라클-실행-확인">오라클 실행 확인</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemctl start oracle-xe
+
+<span class="nv">$ </span>systemctl status oracle-xe
+</code></pre></div></div>
+
+<h3 id="환경변수-등록">환경변수 등록</h3>
+<ul>
+  <li>. /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh 수정</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">.</span> /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+
+<span class="c"># vim 에디터 설치, 다른 에디터를 쓰고 있다면 설치하지 않아도 된다.</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>vim
+
+<span class="c"># vim 에디터로 bash.bashrc 파일을 열어 준다.</span>
+<span class="nv">$ </span>vim bash.bashrc
+
+<span class="nv">$ </span><span class="nb">source </span>bash.bashrc
+</code></pre></div></div>
+
+<ul>
+  <li>bash.bashrc 파일 하단에 아래 설정을 넣어준다.</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span> /u01/app/oracle/product/11.2.0/xe/bin/oracle_env.sh
+</code></pre></div></div>
+
+<h3 id="데이터베이스-저장-폴더-생성">데이터베이스 저장 폴더 생성</h3>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> /oradata/
+
+<span class="nv">$ </span><span class="nb">chmod </span>777 /oradata/
+</code></pre></div></div>
+
+<h1 id="scott-계정-및-hr-계정-생성">scott 계정 및 hr 계정 생성</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sqlplus system/&lt;system계정 비밀번호&gt;
+
+<span class="c"># 계정 생성</span>
+SQL&gt; CREATE USER scott IDENTIFIED BY tiger<span class="p">;</span>
+
+<span class="c"># 자원과 연결 권한 부여</span>
+SQL&gt; GRANT resource, connect TO scott
+
+<span class="c"># 테이블 저장 공간 기본값으로 설정</span>
+SQL&gt; ALTER USER scott DEFAULT tablespace USERS<span class="p">;</span>
+SQL&gt; ALTER USER scott temporay tablespace TEMP<span class="p">;</span>
+</code></pre></div></div>
+
+<h2 id="연습용-데이터셋-넣기">연습용 데이터셋 넣기</h2>
+<ul>
+  <li><a href="https://github.com/mv/mvdba/tree/master/demo">https://github.com/mv/mvdba/tree/master/demo</a></li>
+  <li>demobld.sql 파일을 다운받고,</li>
+  <li>오라클이 설치된 경로 /u01/app/oracle/product/11.2.0/xe/sqlplus/admin 에 demobld.sql 파일을 넣어준다.</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># scott계정 연결 확인</span>
+SQL&gt; conn scott/tiger
+
+<span class="c"># demobld.sql 파일이 있는 경로, 스크립트 실행</span>
+SQL&gt; @/u01/app/oracle/product/11.2.0/xe/sqlplus/admin/demobld.sql   
+
+<span class="c"># 연습용 데이터셋 확인</span>
+SQL&gt; SELECT <span class="k">*</span> FROM emp<span class="p">;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>위 방식으로 실행했는데도 불구하고 데이터 테이블만 생성되고 데이터가 비어서 나올경우 데이터를 수작업으로 집어넣는다.</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7369</span><span class="p">,</span><span class="s1">'SMITH'</span><span class="p">,</span><span class="s1">'CLERK'</span><span class="p">,</span><span class="mi">7902</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'17-12-1980'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">800</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7499</span><span class="p">,</span><span class="s1">'ALLEN'</span><span class="p">,</span><span class="s1">'SALESMAN'</span><span class="p">,</span><span class="mi">7698</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'20-2-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1600</span><span class="p">,</span><span class="mi">300</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7521</span><span class="p">,</span><span class="s1">'WARD'</span><span class="p">,</span><span class="s1">'SALESMAN'</span><span class="p">,</span><span class="mi">7698</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'22-2-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1250</span><span class="p">,</span><span class="mi">500</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7566</span><span class="p">,</span><span class="s1">'JONES'</span><span class="p">,</span><span class="s1">'MANAGER'</span><span class="p">,</span><span class="mi">7839</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'2-4-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">2975</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7654</span><span class="p">,</span><span class="s1">'MARTIN'</span><span class="p">,</span><span class="s1">'SALESMAN'</span><span class="p">,</span><span class="mi">7698</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'28-9-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1250</span><span class="p">,</span><span class="mi">1400</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7698</span><span class="p">,</span><span class="s1">'BLAKE'</span><span class="p">,</span><span class="s1">'MANAGER'</span><span class="p">,</span><span class="mi">7839</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'1-5-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">2850</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7782</span><span class="p">,</span><span class="s1">'CLARK'</span><span class="p">,</span><span class="s1">'MANAGER'</span><span class="p">,</span><span class="mi">7839</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'9-6-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">2450</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7788</span><span class="p">,</span><span class="s1">'SCOTT'</span><span class="p">,</span><span class="s1">'ANALYST'</span><span class="p">,</span><span class="mi">7566</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'13-7-1987'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">3000</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7839</span><span class="p">,</span><span class="s1">'KING'</span><span class="p">,</span><span class="s1">'PRESIDENT'</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'17-11-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">5000</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7844</span><span class="p">,</span><span class="s1">'TURNER'</span><span class="p">,</span><span class="s1">'SALESMAN'</span><span class="p">,</span><span class="mi">7698</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'8-9-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1500</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7876</span><span class="p">,</span><span class="s1">'ADAMS'</span><span class="p">,</span><span class="s1">'CLERK'</span><span class="p">,</span><span class="mi">7788</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'13-7-1987'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1100</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7900</span><span class="p">,</span><span class="s1">'JAMES'</span><span class="p">,</span><span class="s1">'CLERK'</span><span class="p">,</span><span class="mi">7698</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'3-12-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">950</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">30</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7902</span><span class="p">,</span><span class="s1">'FORD'</span><span class="p">,</span><span class="s1">'ANALYST'</span><span class="p">,</span><span class="mi">7566</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'3-12-1981'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">3000</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">20</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">EMP</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7934</span><span class="p">,</span><span class="s1">'MILLER'</span><span class="p">,</span><span class="s1">'CLERK'</span><span class="p">,</span><span class="mi">7782</span><span class="p">,</span><span class="n">to_date</span><span class="p">(</span><span class="s1">'23-1-1982'</span><span class="p">,</span><span class="s1">'dd-mm-yyyy'</span><span class="p">),</span><span class="mi">1300</span><span class="p">,</span><span class="k">NULL</span><span class="p">,</span><span class="mi">10</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPT</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="s1">'ACCOUNTING'</span><span class="p">,</span><span class="s1">'NEW YORK'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPT</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="s1">'RESEARCH'</span><span class="p">,</span><span class="s1">'DALLAS'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPT</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span><span class="s1">'SALES'</span><span class="p">,</span><span class="s1">'CHICAGO'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">DEPT</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="s1">'OPERATIONS'</span><span class="p">,</span><span class="s1">'BOSTON'</span><span class="p">);</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">SALGRADE</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">700</span><span class="p">,</span><span class="mi">1200</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">SALGRADE</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1201</span><span class="p">,</span><span class="mi">1400</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">SALGRADE</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1401</span><span class="p">,</span><span class="mi">2000</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">SALGRADE</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2001</span><span class="p">,</span><span class="mi">3000</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">SALGRADE</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">3001</span><span class="p">,</span><span class="mi">9999</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="계정-삭제">계정 삭제</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 계정 삭제, system 계정 로그인 후</span>
+SQL&gt; DROP USER scott CASCADE
+</code></pre></div></div>
+
+<h1 id="원격-접속-설정">원격 접속 설정</h1>
+<ul>
+  <li>/u01/app/oracle/product/11.2.0/xe/network/admin</li>
+  <li>위 경로에 있는 listener.ora 파일과 tnsnames.ora 파일을 수정한다.</li>
+</ul>
+
+<h2 id="listenerora">listener.ora</h2>
+<ul>
+  <li>
+    <내부 IP=""> 부분을 자신의 내부 IP로 변경한다.
+
+</내부>
+  </li>
+</ul>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="c"># listener.ora Network Configuration File:</span>
+  2 
+  3 SID_LIST_LISTENER <span class="o">=</span>
+  4   <span class="o">(</span>SID_LIST <span class="o">=</span>
+  5     <span class="o">(</span>SID_DESC <span class="o">=</span>
+  6       <span class="o">(</span>SID_NAME <span class="o">=</span> PLSExtProc<span class="o">)</span>
+  7       <span class="o">(</span>ORACLE_HOME <span class="o">=</span> /u01/app/oracle/product/11.2.0/xe<span class="o">)</span>
+  8       <span class="o">(</span>PROGRAM <span class="o">=</span> extproc<span class="o">)</span>
+  9     <span class="o">)</span>
+ 10   <span class="o">)</span>
+ 11 
+ 12 LISTENER <span class="o">=</span>
+ 13   <span class="o">(</span>DESCRIPTION_LIST <span class="o">=</span>
+ 14     <span class="o">(</span>DESCRIPTION <span class="o">=</span>
+ 15       <span class="o">(</span>ADDRESS <span class="o">=</span> <span class="o">(</span>PROTOCOL <span class="o">=</span> IPC<span class="o">)(</span>KEY <span class="o">=</span> EXTPROC_FOR_XE<span class="o">))</span>
+ 16       <span class="o">(</span>ADDRESS <span class="o">=</span> <span class="o">(</span>PROTOCOL <span class="o">=</span> TCP<span class="o">)(</span>HOST <span class="o">=</span> &lt;내부 IP&gt;<span class="o">)(</span>PORT <span class="o">=</span> 1521<span class="o">))</span>
+ 17     <span class="o">)</span>
+ 18   <span class="o">)</span>
+ 19 
+ 20 DEFAULT_SERVICE_LISTENER <span class="o">=</span> <span class="o">(</span>XE<span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="tnsnamesora">tnsnames.ora</h2>
+<ul>
+  <li>
+    <내부 IP=""> 부분을 자신의 내부 IP로 변경한다.
+</내부>
+  </li>
+  <li>SID와 SERVICE_NAME이 XE인지 확인한다.(변경 가능)</li>
+  <li>(SERVER = DEDICATED) 부분은 삭제</li>
+</ul>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  1 <span class="c"># tnsnames.ora Network Configuration File:</span>
+  2 
+  3 XE <span class="o">=</span>
+  4   <span class="o">(</span>DESCRIPTION <span class="o">=</span>
+  5     <span class="o">(</span>ADDRESS <span class="o">=</span> <span class="o">(</span>PROTOCOL <span class="o">=</span> TCP<span class="o">)(</span>HOST <span class="o">=</span> &lt;내부 IP&gt;<span class="o">)(</span>PORT <span class="o">=</span> 1521<span class="o">))</span>
+  6     <span class="o">(</span>CONNECT_DATA <span class="o">=</span>
+  7       <span class="o">(</span>SERVICE_NAME <span class="o">=</span> XE<span class="o">)</span>
+  8     <span class="o">)</span>
+  9   <span class="o">)</span>
+ 10 
+ 11 EXTPROC_CONNECTION_DATA <span class="o">=</span>
+ 12   <span class="o">(</span>DESCRIPTION <span class="o">=</span>
+ 13     <span class="o">(</span>ADDRESS_LIST <span class="o">=</span>
+ 14       <span class="o">(</span>ADDRESS <span class="o">=</span> <span class="o">(</span>PROTOCOL <span class="o">=</span> IPC<span class="o">)(</span>KEY <span class="o">=</span> EXTPROC_FOR_XE<span class="o">))</span>
+ 15     <span class="o">)</span>
+ 16     <span class="o">(</span>CONNECT_DATA <span class="o">=</span>
+ 17       <span class="o">(</span>SID <span class="o">=</span> XE<span class="o">)</span>
+ 18       <span class="o">(</span>PRESENTATION <span class="o">=</span> RO<span class="o">)</span>
+ 19     <span class="o">)</span>
+ 20   <span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="oracle-중지-후-재실행">Oracle 중지 후 재실행</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>systemctl stop oracle-xe
+
+<span class="nv">$ </span>systemctl start oracle-xe
+
+<span class="nv">$ </span>systemctl status oracle-xe
+</code></pre></div></div>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

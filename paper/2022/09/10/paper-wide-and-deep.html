@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Recommender System] Wide and Deep Learning for Recommender system | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Recommender System] Wide and Deep Learning for Recommender system" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="2016, Google, Wide linear 모델과 Deep neural networks를 Joint한 모델" />
+<meta property="og:description" content="2016, Google, Wide linear 모델과 Deep neural networks를 Joint한 모델" />
+<link rel="canonical" href="https://safenumz.github.io/blog/paper/2022/09/10/paper-wide-and-deep.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/paper/2022/09/10/paper-wide-and-deep.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-10T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Recommender System] Wide and Deep Learning for Recommender system" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-10T00:00:00-05:00","datePublished":"2022-09-10T00:00:00-05:00","description":"2016, Google, Wide linear 모델과 Deep neural networks를 Joint한 모델","headline":"[Recommender System] Wide and Deep Learning for Recommender system","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/paper/2022/09/10/paper-wide-and-deep.html"},"url":"https://safenumz.github.io/blog/paper/2022/09/10/paper-wide-and-deep.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Recommender System] Wide and Deep Learning for Recommender system</h1><p class="page-description">2016, Google, Wide linear 모델과 Deep neural networks를 Joint한 모델</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2022-09-10T00:00:00-05:00" itemprop="datePublished">
+        Sep 10, 2022
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Paper">Paper</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2022-09-10-paper-wide-and-deep.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2022-09-10-paper-wide-and-deep.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2022-09-10-paper-wide-and-deep.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2022-09-10-paper-wide-and-deep.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Wide-and-Deep-Learning-for-Recommender-system">Wide and Deep Learning for Recommender system </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Abstract">Abstract </a></li>
+<li class="toc-entry toc-h2"><a href="#Introduction">Introduction </a></li>
+<li class="toc-entry toc-h2"><a href="#Contributions">Contributions </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#Wide-&-Deep-Learning-Framework-Overview">Wide &amp; Deep Learning Framework Overview </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#Recommender-system-Overview">Recommender system Overview </a></li>
+<li class="toc-entry toc-h2"><a href="#Wide-&-Deep-Learning">Wide &amp; Deep Learning </a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#The-Wide-Component">The Wide Component </a></li>
+<li class="toc-entry toc-h3"><a href="#The-Deep-Component">The Deep Component </a></li>
+<li class="toc-entry toc-h3"><a href="#Joint-Training-of-Wide-&-Deep-Model">Joint Training of Wide &amp; Deep Model </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#System-Implementation">System Implementation </a></li>
+<li class="toc-entry toc-h2"><a href="#Experiment-Results">Experiment Results </a></li>
+<li class="toc-entry toc-h2"><a href="#Conclusion">Conclusion </a></li>
+</ul>
+</li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2022-09-10-paper-wide-and-deep.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Wide-and-Deep-Learning-for-Recommender-system">
+<a class="anchor" href="#Wide-and-Deep-Learning-for-Recommender-system" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wide and Deep Learning for Recommender system<a class="anchor-link" href="#Wide-and-Deep-Learning-for-Recommender-system"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-001.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Abstract">
+<a class="anchor" href="#Abstract" aria-hidden="true"><span class="octicon octicon-link"></span></a>Abstract<a class="anchor-link" href="#Abstract"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-002.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Wide: Memorization<ul>
+<li>Cross-product feature transformation</li>
+<li>More feature engineering effort</li>
+</ul>
+</li>
+<li>Deep: Generalization<ul>
+<li>Generalize to unseen feature combinations</li>
+<li>Less feature engineering effort</li>
+<li>Over-generalize</li>
+</ul>
+</li>
+<li>Wide &amp; Deep<ul>
+<li>Joint wide linear models and deep neural networks</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">
+<a class="anchor" href="#Introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction<a class="anchor-link" href="#Introduction"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Memorization의 정의<ul>
+<li>Frequent co-occurrence of items or features</li>
+<li>Exploit correlation available in the historical data</li>
+</ul>
+</li>
+<li>Generalization의 정의<ul>
+<li>Explore new feature combinations</li>
+</ul>
+</li>
+<li>추천 시스템에서 Memorization과 Generalization<ul>
+<li>Memorization: more topical and directly relevant to the items</li>
+<li>Generalization: improve diversity of the recommendations</li>
+</ul>
+</li>
+<li>Google Play Store의 apps recommendation 실험을 했지만 general하게 적용할 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>기존 추천 모델의 한계<ul>
+<li>Generalized Linear Model<ul>
+<li>
+<strong>Logistic Regression</strong>과 같은 모델에 다양한 features를 만들어서 학습</li>
+<li>Memorization(주어진 데이터 기억)에 특화</li>
+<li>새로운 또는 관측되지 않은 데이터(unseen data)에는 취약</li>
+<li>오버피팅이 발생할 수 있음</li>
+</ul>
+</li>
+<li>Embedding based Model<ul>
+<li>
+<strong>Factorization Machine</strong>, <strong>Deep Neural Network</strong> 방법을 활용</li>
+<li>Generalization(unseen data 대응)에 특화</li>
+<li>Non-zero prediction으로 인해 섬세한 추천이 불가</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Contributions">
+<a class="anchor" href="#Contributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributions<a class="anchor-link" href="#Contributions"> </a>
+</h2>
+<ul>
+<li>Wide &amp; Deep Learning framework를 제안<ul>
+<li>Jointly training feed-forward neural network and linear model</li>
+</ul>
+</li>
+<li>Google Play에 사용화된 Wide &amp; Deep 추천시스템의 평가와 구현내용을 공개<ul>
+<li>모바일 앱스토어에서 App 구매, 다운로드 등 향상</li>
+<li>학습과 서비스 속도를 충족</li>
+</ul>
+</li>
+<li>Tensorflow 기반의 API를 오픈소스 형태로 제공</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Wide-&amp;-Deep-Learning-Framework-Overview">
+<a class="anchor" href="#Wide-&amp;-Deep-Learning-Framework-Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wide &amp; Deep Learning Framework Overview<a class="anchor-link" href="#Wide-&amp;-Deep-Learning-Framework-Overview"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-003.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Recommender-system-Overview">
+<a class="anchor" href="#Recommender-system-Overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Recommender system Overview<a class="anchor-link" href="#Recommender-system-Overview"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-004.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Inference: User가 App Store 방문할 때 query 생성</li>
+<li>Train: Log 등 User Actions을 활용하여 모델 학습</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Wide-&amp;-Deep-Learning">
+<a class="anchor" href="#Wide-&amp;-Deep-Learning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wide &amp; Deep Learning<a class="anchor-link" href="#Wide-&amp;-Deep-Learning"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-Wide-Component">
+<a class="anchor" href="#The-Wide-Component" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Wide Component<a class="anchor-link" href="#The-Wide-Component"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$y = w^Tx + b$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Generalized Linear model</li>
+<li>y → prediction (유저 행동여부)</li>
+<li>$x = [x_{1}, x_{2}, ..., x_{d}]$<ul>
+<li>side d의 feature vector</li>
+<li>Raw input features &amp; cross-product feature</li>
+</ul>
+</li>
+<li>$w = [w_{1}, w_{2}, ..., w_{d}]$ → model parameters</li>
+<li>$b$ → bias</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-005.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$\phi_{k}(x) = \displaystyle\prod_{i=1}^{d}x_{i}^{c_{ki}} \quad c_{ki} \in \{0, 1\}$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$\phi_{k}(x)$ → Cross-product feature의 $k$번째 요소</li>
+<li>$c_{ki} \in \{0, 1\}$ → Raw feature의 $i$번째 요소가 true인지 여부</li>
+<li>Feature interaction 반영</li>
+<li>모델에 Non-linearity 적용<ul>
+<li>(예시) feature가 (gender, language)로 구성되어 있고 cross-product transformation(feature)의 $k$번째를 AND (female, en)일 때, 모두 만족하면 1 아니면 0</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="The-Deep-Component">
+<a class="anchor" href="#The-Deep-Component" aria-hidden="true"><span class="octicon octicon-link"></span></a>The Deep Component<a class="anchor-link" href="#The-Deep-Component"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-006.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Features를 임베딩과 뉴럴넷에 학습<ul>
+<li><strong>Generalization</strong></li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>$a^{l+1} = f(W^{(l)}a^{(l)} + b^{(l)})$</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$l$은 number of layers</li>
+<li>$f$는 activation function(ReLU)</li>
+<li>$a^{(l)}, b^{(l)}, W^{(l)}$<ul>
+<li>Activation, bias and model weights at $l$-th layer</li>
+</ul>
+</li>
+<li>
+<strong>Dense Embeddings</strong><ul>
+<li>Normal Feature에 해당하는 임베딩을 랜덤 초기화(random initialize)하고 모델 전체 학습</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Joint-Training-of-Wide-&amp;-Deep-Model">
+<a class="anchor" href="#Joint-Training-of-Wide-&amp;-Deep-Model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Joint Training of Wide &amp; Deep Model<a class="anchor-link" href="#Joint-Training-of-Wide-&amp;-Deep-Model"> </a>
+</h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-007.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Continuous와 categorical features를 concat하여 Deep의 input a로 활용</li>
+<li>user install app과 impression app을 cross-product하여 Wide의 input x로 활용</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-008-1.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>$P(Y=1|X)$ app을 다운받을 확률</li>
+<li>Sigmoid 함수의 input으로 Wide와 Deep을 합한 값을 넣어주고, 그 output이 최종 결과가 됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="System-Implementation">
+<a class="anchor" href="#System-Implementation" aria-hidden="true"><span class="octicon octicon-link"></span></a>System Implementation<a class="anchor-link" href="#System-Implementation"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-010.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Experiment-Results">
+<a class="anchor" href="#Experiment-Results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Experiment Results<a class="anchor-link" href="#Experiment-Results"> </a>
+</h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-011.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Offline AUC<ul>
+<li>Test set의 사용자 행동결과로 성능 측정</li>
+<li>AUC는 클수록 좋은 점수를 나타냄 (=ROC 커브의 아래 면적)</li>
+</ul>
+</li>
+<li>Online Acquision Gain<ul>
+<li>실제 사용자들의 action을 추적</li>
+<li>기존 모델 대비 application 실제 다운로드 수가 증가</li>
+</ul>
+</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><img src="/blog/images/copied_from_nb/../images/paper/recommendation/wd/wd-012.png" alt=""></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>Multithreading, Split each batch into smaller batches → latency를 14ms 줄일 수 있었음</li>
+<li>추천 알고리즘 성능 뿐만 아니라 Commercial Mobile App Store의 서비스까지 신경 쓴 것을 알 수 있음</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h2>
+<ul>
+<li>Memorization의 Wide와 Generalization의 Deep을 결합한 모델을 제안<ul>
+<li>Wide &amp; Deep Learning</li>
+</ul>
+</li>
+<li>Linear model과 embedding-based model의 장점을 잘 조합</li>
+<li>좋은 추천 알고리즘을 실제 서비스 환경에서 작동할 수 있도록 구현</li>
+<li>Open Source로 Tensorflow API를 구현하여 다양하게 활용</li>
+</ul>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/paper/2022/09/10/paper-wide-and-deep.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MacOS] Linux ISO 파일을 USB로 굽기 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MacOS] Linux ISO 파일을 USB로 굽기" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Environment MacOS" />
+<meta property="og:description" content="Environment MacOS" />
+<link rel="canonical" href="https://safenumz.github.io/blog/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MacOS] Linux ISO 파일을 USB로 굽기" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-07-01T00:00:00-05:00","datePublished":"2019-07-01T00:00:00-05:00","description":"Environment MacOS","headline":"[MacOS] Linux ISO 파일을 USB로 굽기","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html"},"url":"https://safenumz.github.io/blog/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MacOS] Linux ISO 파일을 USB로 굽기</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-07-01T00:00:00-05:00" itemprop="datePublished">
+        Jul 1, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      1 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#etc">etc</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="environment">Environment</h1>
+<ul>
+  <li>MacOS</li>
+</ul>
+
+<h1 id="mac에서-linux-iso-파일을-usb로-굽기">Mac에서 Linux ISO 파일을 USB로 굽기</h1>
+<p>CentOS로 테스트했지만 Ubuntu도 동일한 방법으로 가능하다.</p>
+
+<h2 id="centos7iso-파일-다운">centos7.iso 파일 다운</h2>
+<p>먼저 <a href="https://www.centos.org/">https://www.centos.org/</a> CentOS 홈페이지에서 centos7.iso 파일을 다운받는다.</p>
+
+<h2 id="터미널을-열고-이미지-파일이-있는-경로-로-이동하여-iso-파일을-img-파일로-변환">터미널을 열고 이미지 파일이 있는 경로 로 이동하여 iso 파일을 img 파일로 변환</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># /Home/&lt;userName&gt;/Desktop/ 경로에서</span>
+<span class="nv">$ </span>hdiutil convert <span class="nt">-format</span> UDRW <span class="nt">-o</span> centos7.img ~/Desktop/centos7.iso
+</code></pre></div></div>
+
+<h2 id="centos7img가-아닌-centos7imgdmg이-생성됨-dmg-확장자-제거">centos7.img가 아닌 centos7.img.dmg이 생성됨, dmg 확장자 제거</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mv </span>centos7.img.dmg centos.img
+</code></pre></div></div>
+
+<h2 id="usb-메모리를-삽입하고-포맷">usb 메모리를 삽입하고 포맷</h2>
+<ul>
+  <li>LaunchPad &gt; 기타 &gt; 디스크 유틸리티에서 USB 메모리 선택 후 지우기</li>
+</ul>
+
+<h2 id="usb-메모리가-어떤-위치에-마운트-되어-있는지-확인">USB 메모리가 어떤 위치에 마운트 되어 있는지 확인</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>diskutil list
+</code></pre></div></div>
+
+<h2 id="이미지를-usb에-덮어쓸-때-usb가-시스템에-마운트-되어-있으면-작업할-수-없음으로-unmount-명령어를-이용하여-usb를-추출">이미지를 USB에 덮어쓸 때 USB가 시스템에 마운트 되어 있으면 작업할 수 없음으로, unmount 명령어를 이용하여 USB를 추출</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 여기서는 /dev/disk2에 마운트되어 있음</span>
+<span class="nv">$ </span>diskutil unmountDisk /dev/disk2
+</code></pre></div></div>
+
+<h2 id="usb-메모리에-이미지를-덮어씀">USB 메모리에 이미지를 덮어씀</h2>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo dd </span><span class="k">if</span><span class="o">=</span>centos7.mg <span class="nv">of</span><span class="o">=</span>/dev/disk2 <span class="nv">bs</span><span class="o">=</span>1m
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

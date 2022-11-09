@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] Apache Spark Application 실행 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] Apache Spark Application 실행" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Spark Application 실행" />
+<meta property="og:description" content="Spark Application 실행" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-07T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] Apache Spark Application 실행" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-07T00:00:00-06:00","datePublished":"2019-03-07T00:00:00-06:00","description":"Spark Application 실행","headline":"[Spark] Apache Spark Application 실행","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html"},"url":"https://safenumz.github.io/blog/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] Apache Spark Application 실행</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-07T00:00:00-06:00" itemprop="datePublished">
+        Mar 7, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      3 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="spark-application-실행">Spark Application 실행</h1>
+
+<h2 id="build-package---maven">Build, Package - Maven</h2>
+<ul>
+  <li>provided를 설정하면 패키징를 설정할 때 해당 의존성만 빼고 패키징을 할 수 있다.</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;build&gt;</span>
+  <span class="nt">&lt;plugins&gt;</span>
+    <span class="nt">&lt;plugin&gt;</span>
+      <span class="nt">&lt;groupId&gt;</span>org.apache.maven.plugins<span class="nt">&lt;/groupId&gt;</span>
+      <span class="nt">&lt;artifactId&gt;</span>maven-shade-plugin<span class="nt">&lt;/artifactId&gt;</span>
+      <span class="nt">&lt;version&gt;</span>2.3<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/plugin&gt;</span>
+  <span class="nt">&lt;/plugins&gt;</span>
+<span class="nt">&lt;/build&gt;</span>
+</code></pre></div></div>
+
+<h2 id="maven-project">Maven Project</h2>
+<ul>
+  <li>clean</li>
+  <li>compile</li>
+  <li>package</li>
+</ul>
+
+<p>프로젝트 폴더 아래 target 디렉토리 가면 imple-uber-1.0-SNAPSHOT.jar가 있다. 클러스터 상에서 실행하려면 클러스터상에는 하둡이나 스파크가 있기 때문에 하둡이나 스파크 의존성을 뺴야 한다.</p>
+
+<h2 id="build-package---sbt">Build, Package - SBT</h2>
+<h3 id="assembly-plugin-설정">assembly plugin 설정</h3>
+<ul>
+  <li>$USER_HOME/.sbt/0.14/plugins/build.sbt 없으면 생성, 있으면 아래 줄 추가</li>
+  <li>addSbtPlugin(“com.eed3si9n” % “sbt-assembly” % “0.13.0”)</li>
+</ul>
+
+<pre>
+name := "edu-project"
+version := "1.0.0"
+scalaVersion := "Akka Rpository" at "http://repo.akka.io/releases/"
+libraryDependencies ++= Seq(
+  "org.apache.spark" %% "spark-core" % "1.21" % "provided",
+  "org.apache.spark" % "spark-streaming_2.10" % "1.2.1" % "provided",
+  "org.apache.spark" % "spark-sql_2.10" % "1.2.1" % "provided",
+  "org.apache.spark" % "spark-hive_2.10" $ "1.2.1" $ "provided",
+  "org.apache.spark" % "spark-streaming-twitter_2.10" % "1.2.1"
+)
+</pre>
+
+<h2 id="deploy">Deploy</h2>
+<h3 id="usage-spark-submit-option-app-jar--python-fileapp-option">Usage: spark-submit [option] &lt;app jar | python file&gt;[app option]</h3>
+<h3 id="options">Options</h3>
+<ul>
+  <li>–master MASTER_URL : spark://host:port, mesos://host:port, yarn, local, local[*]</li>
+  <li>–deploy-mode DEPLOY_MODE : lcoal(기본 값), cluster</li>
+  <li>–class CLASS_NAME : application’s main class (Java / Scala apps)</li>
+  <li>–name NAME : application 이름</li>
+  <li>–jars JARS : driver에 포함될 “,”로 구분된 jar 파일 목록과 executor classpath</li>
+  <li>–py-files PY_FILES : “,”로 구분된 .zip, .egg, .py 파일 목록(PYTHONPATH 상의)</li>
+  <li>–files FILES : 각 executor의 실행 디렉토리에 놓여질 파일 목록(“,”로 구분)</li>
+  <li>–conf PROP=VALUES : 속성 파일 지정, 기본값: conf/spark-defaults.conf</li>
+  <li>–driver-memory MEM : driver 메모리 (예. 1000M, 2G) (기본값: 512G)</li>
+  <li>–driver-java-option –driver-library-path –driver-class-path</li>
+  <li>–executor-memory MEM : 각 executor 메모리 (예. 1000M, 2G) (기본값: 1G)</li>
+</ul>
+
+<h4 id="spark-standalone-with-cluster-deploy-mode-only">Spark standalone with cluster deploy mode only</h4>
+<ul>
+  <li>–driver-cores NUM : Cores for driver (Default: 1)</li>
+  <li>–supervise : 지정하면, 드라이버가 실패했을 떄 다시 시작</li>
+</ul>
+
+<h4 id="spark-standalone-and-mesos-only">Spark standalone and Mesos only</h4>
+<ul>
+  <li>–total-executor-cores NUM : 모든 executor이 총 core 개수</li>
+</ul>
+
+<h4 id="yarn-only">YARN-only</h4>
+<ul>
+  <li>–executor-cores NUM : 각 executor의 core 개수 (기본값 : 1)</li>
+  <li>–queue QUEUE_NAME : 사용할 queue 이름 (기본값: “default”)</li>
+  <li>–num-executors NUM : 실행할 executors 개수 (기본값: 2)</li>
+  <li>–archives ARCHIVES : 각 executor의 실행 디렉토리에 풀려질 압축 파일 리스트(“,”로 구분)</li>
+</ul>
+
+<p>외부에서 전달되는 변수를 받아서 쓰려면 파일 내부에 있는 setMaster(“local[*]”) 빼야 함
+4040 포트로 들어가면 현재 어떤 Job을 실행하는지 알 수 있다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /temp
+
+<span class="nv">$ </span><span class="nb">ls </span>sample-uber-1.0-SNAPSHOT.jar
+
+<span class="nv">$ </span><span class="nb">ls</span> <span class="nt">-l</span> sample-uer-1.0-SANPSHOT.jar
+
+<span class="nv">$ </span><span class="nb">cd</span> /data/kodb
+
+<span class="nv">$ </span><span class="nb">cd </span>spark-1.5.2-bin-hadoop2.4/
+
+<span class="nv">$ </span>./spart-all.sh
+패스워드 입력
+
+<span class="nv">$ </span><span class="nb">cd</span> ..
+
+<span class="nv">$ </span><span class="nb">cd </span>bin
+
+<span class="nv">$ </span>./spark-submit <span class="nt">--master</span> spark://master.raonserver.com:7077 <span class="nt">-class</span> org.kodb.spark.TwitterReader /temp/sample-uber-1.0-SNAPSHOT.jar &lt;트위터 키1&gt; &lt;트위터키2&gt; &lt;트위터키3&gt; &lt;트위터키4&gt;
+</code></pre></div></div>
+
+<ul>
+  <li>106.248.46.183:8099</li>
+</ul>
+
+<h2 id="deploylauncher">Deploy(launcher)</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.raonbit.edu</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.apache.spark.launcher.SparkLaunher</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyLauncher</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+    <span class="nc">Process</span> <span class="n">spark</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SparkLauncher</span><span class="o">()</span>
+    <span class="o">.</span><span class="na">setAppResource</span><span class="o">(</span><span class="s">"/my/app.jar"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setMainClass</span><span class="o">(</span><span class="s">"my.spark.app.Main"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setMaster</span><span class="o">(</span><span class="s">"local"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">setConf</span><span class="o">(</span><span class="nc">SparkLauncher</span><span class="o">.</span><span class="na">DRIVER_MOMORY</span><span class="o">,</span> <span class="s">"2g"</span><span class="o">)</span>
+    <span class="o">.</span><span class="na">launch</span><span class="o">();</span>
+    <span class="n">spark</span><span class="o">.</span><span class="na">waitFor</span><span class="o">()</span><span class="err">''</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="deploy-strategy">Deploy Strategy</h2>
+<h3 id="client-mode">Client Mode</h3>
+
+<h3 id="cluster-mode">Cluster Mode</h3>
+
+<h2 id="strandalone-cluster">Strandalone Cluster</h2>
+<h3 id="cluster-시작중지">Cluster 시작/중지</h3>
+<ul>
+  <li>sbin/start-master.sh : 머신의 마스터 인스턴트를 시작</li>
+  <li>sbin/start-slaves.sh : -conf/slaves 파일에 정의된 각 머신에 슬레이브 인스턴스 시작</li>
+  <li>sbin/start-all.sh : 마스터와 슬레이브들 시작</li>
+  <li>sbin/stop-master.sh : bin/start-master.sh 스크립트를 통해 시작된 마스터 중지</li>
+  <li>sbin/stop-slaves.sh : conf/slaves 파일에 정의된 각 머신의 모든 슬레이브 인스턴스 중지</li>
+  <li>sbin/stop-all.sh : 마스터와 슬레이브들 중지</li>
+</ul>
+
+<h3 id="환경-변수-설정">환경 변수 설정</h3>
+<ul>
+  <li>conf/spark-env.sh : conf/spark-env.sh.template을 복사해서 생성</li>
+</ul>
+
+<h3 id="standalone-cluster에서-spark-shell-실행">standalone cluster에서 spark-shell 실행</h3>
+<ul>
+  <li>bin/spark-shell-master spark://HOST:PORT</li>
+</ul>
+
+<h3 id="application-종료-시키기">application 종료 시키기</h3>
+<ul>
+  <li>bin/spark-class org.apache.spark.deploy.Client kill <master url=""> <driver ID=""></driver></master></li>
+  <li>driver id는 standalone master web UL에서 확인 가능(http://master_url:web_ui_port)</li>
+</ul>
+
+<h2 id="standalone-cluster---high-availability">Standalone Cluster - High Availability</h2>
+<h3 id="zookeeper를-이용한-master-노드-이중화--spark-envsh의-spark_demon_java_opts-설정">ZooKeeper를 이용한 Master 노드 이중화 : spark-env.sh의 SPARK_DEMON_JAVA_OPTS 설정</h3>
+<h4 id="sparkdeployrecovermode">spark.deploy.recoverMode</h4>
+<ul>
+  <li>기본값 : NONE</li>
+  <li>ZOOKEEPER로 설정하면 Master노드 이중화(대기 Master 노드)</li>
+</ul>
+
+<h4 id="sparkdeployzookeeperurl">spark.deploy.zookeeper.url</h4>
+<ul>
+  <li>ZooKeeper cluster url</li>
+</ul>
+
+<h4 id="sparkdeployzookeeperdir">spark.deploy.zookeeper.dir</h4>
+<ul>
+  <li>기본값 : /spark</li>
+  <li>복구 상태를 저장하는 zookeeper 내의 디렉토리</li>
+</ul>
+
+<h5 id="spark-master-url--sparkhost1port1host2port2">spark master url : spark://host1.port1,host2:port2</h5>
+
+<h3 id="local-file-system을-이용한-단순-master-노드-재시작--spark-envsh의-spark_demon_java_opts-설정">Local File System을 이용한 단순 Master 노드 재시작 : spark-env.sh의 SPARK_DEMON_JAVA_OPTS 설정</h3>
+<ul>
+  <li>spark.deploy.recoverMode : FILESYSTEM으로 설정하면 재시작 모드</li>
+  <li>spark.deploy.recoveryDirectiory : 복구상태를 저장하는 디렉토리(Master 노드가 접근가능한 디렉토리)</li>
+</ul>
+
+<h5 id="stop-mastersh로-master-노드를-중지-시키면-복구-상태가-제거되지-않음">stop-master.sh로 master 노드를 중지 시키면 복구 상태가 제거되지 않음</h5>
+<h4 id="복구-디렉토리로-nfs-사용-가능">복구 디렉토리로 NFS 사용 가능</h4>
+
+<h2 id="추천-hardware-구성">추천 Hardware 구성</h2>
+<h3 id="storage-systems">Storage Systems</h3>
+<ul>
+  <li>가능하면 HDFS와 같은 노드에서 실행</li>
+  <li>HDFS와 같은 로컬 네트워크 영역에 있는 다른 노드에서 실행</li>
+  <li>Hbase와 같은 low-latency 저장소에서는 간섭을 피하기 위해 다른 노드에서 실행</li>
+</ul>
+
+<h3 id="local-disks">Local Disks</h3>
+<ul>
+  <li>RAID 구성 없이 4~8개 디스크, noatime으로 mount 권장</li>
+  <li>HDFS를 사용한다면 HDFS와 동일한 디스크 사용</li>
+</ul>
+
+<h3 id="memory">Memory</h3>
+<ul>
+  <li>8 ~ 100GB의 memory에서 잘 동작 (전체 메모리의 75%만 사용 권장)</li>
+</ul>
+
+<h3 id="network">Network</h3>
+<ul>
+  <li>10G 이상 사용 권장</li>
+</ul>
+
+<h3 id="cpu-core">CPU Core</h3>
+<ul>
+  <li>8 ~ 16개</li>
+</ul>
+
+<h2 id="spark-configuration">Spark Configuration</h2>
+<h3 id="설정방법">설정방법</h3>
+<h4 id="sparkconf-object">SparkConf Object</h4>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[2]"</span><span class="o">).</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"CountingSheep"</span><span class="o">).</span><span class="py">set</span><span class="o">(</span><span class="s">"spark.executor.memory"</span><span class="o">,</span> <span class="s">"1g"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">conf</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h4 id="java-system-properties">Java System Properties</h4>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">-</span><span class="no">D</span><span class="s">"spark.executor.memory"</span><span class="o">=</span><span class="s">"1g"</span>
+</code></pre></div></div>
+
+<h4 id="command-line-argument">Command Line Argument</h4>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./bin/spark-submit <span class="nt">--name</span> <span class="s2">"My app"</span> <span class="nt">--master</span> <span class="nb">local</span><span class="o">[</span>4] <span class="nt">--conf</span> spark.shuffle.spill<span class="o">=</span><span class="nb">false</span>
+<span class="nt">--conf</span> <span class="s2">"spark.executor.extraJavaOptions=-XX:+PrintGCDetails -XX:+PrintGCTimeStamps"</span> myApp.jar
+</code></pre></div></div>
+
+<h4 id="spark_homeconf">$SPARK_HOME/conf</h4>
+<ul>
+  <li>fairscheduler.xml.template</li>
+  <li>log4j.properties.template</li>
+  <li>metrics.properties.template</li>
+  <li>spark-default.conf.template</li>
+  <li>spark-env.sh.template</li>
+</ul>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[WEB] 04) 정보로서의 HTML, 검색엔진 최적화 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[WEB] 04) 정보로서의 HTML, 검색엔진 최적화" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="정보로서의 HTML" />
+<meta property="og:description" content="정보로서의 HTML" />
+<link rel="canonical" href="https://safenumz.github.io/blog/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-08-24T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[WEB] 04) 정보로서의 HTML, 검색엔진 최적화" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-08-24T00:00:00-05:00","datePublished":"2018-08-24T00:00:00-05:00","description":"정보로서의 HTML","headline":"[WEB] 04) 정보로서의 HTML, 검색엔진 최적화","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html"},"url":"https://safenumz.github.io/blog/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[WEB] 04) 정보로서의 HTML, 검색엔진 최적화</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-08-24T00:00:00-05:00" itemprop="datePublished">
+        Aug 24, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      7 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#WEB">WEB</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="정보로서의-html">정보로서의 HTML</h1>
+
+<h2 id="meta-tag">meta tag</h2>
+<ul>
+  <li>어떤 데이터를 설명하는 TAG</li>
+  <li>keywords : 주요 단어</li>
+  <li>author : 작가</li>
+  <li>http-equiv=”refresh” content=”30” : 30초 간격으로 refresh</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"description"</span> <span class="na">content=</span><span class="s">"생활코딩의 소개자료"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"keywords"</span> <span class="na">content=</span><span class="s">"코딩,coding,생활코딩,프로그래밍,html,css,javascript"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"author"</span> <span class="na">content=</span><span class="s">"jason"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"refresh"</span> <span class="na">content=</span><span class="s">"30"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    생활코딩은 일반인에게 프로그래밍을 알려주는 온라인/오프라인 강의입니다.
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="semantic-tag">semantic tag</h2>
+<ul>
+  <li>의미론적인</li>
+  <li>html5가 되면서 특별한 기능은 없지만 header인지, footer인지 등의 정보를 나타내주는 태그들이 등장</li>
+  <li>header : 화면의 상단에 위치하는 사이트나 문서의 전체적인 정보를 정의</li>
+  <li>footer : 화면의 하단에 위치하는 사이트나 문서의 전체적인 정보를 정의</li>
+  <li>nav : 무서의 네비게이션 항목을 정의</li>
+  <li>section : 문서의 구획들을 정의</li>
+  <li>article : 본문</li>
+  <li>aside : 광고와 같이 페이지의 내용과는 관계가 적은 내용들</li>
+  <li>figure : 삽화나 다이어그램과 같은 부가적인 요소를 정의</li>
+  <li>main : 무서에서 가장 중심이 되는 컨텐츠를 정의</li>
+  <li>mark : 참조나 하이라이트 표시를 필요로 하는 문자를 정의</li>
+  <li>time : 시간을 정의</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"utf-8"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;header&gt;</span>
+      <span class="nt">&lt;h1&gt;&lt;a</span> <span class="na">href=</span><span class="s">"index.html"</span><span class="nt">&gt;</span>HTML<span class="nt">&lt;/a&gt;&lt;/h1&gt;</span>
+    <span class="nt">&lt;/header&gt;</span>
+    <span class="nt">&lt;nav&gt;</span>
+      <span class="nt">&lt;ol&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"1.html"</span><span class="nt">&gt;</span>기술소개<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"2.html"</span><span class="nt">&gt;</span>기본문법<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"3.html"</span><span class="nt">&gt;</span>하이퍼텍스트와 속성<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"4.html"</span><span class="nt">&gt;</span>리스트와 태그의 중첩<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="nt">&lt;/ol&gt;</span>
+    <span class="nt">&lt;/nav&gt;</span>
+    <span class="nt">&lt;article&gt;</span>
+      <span class="nt">&lt;h2&gt;</span>선행학습<span class="nt">&lt;/h2&gt;</span>
+      본 수업을 효과적으로 수행하기 위해서는 ...
+    <span class="nt">&lt;/article&gt;</span>
+    <span class="nt">&lt;footer&gt;</span>
+      <span class="nt">&lt;ul&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"privacy.html"</span><span class="nt">&gt;</span>개인보호정책<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+        <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"about.html"</span><span class="nt">&gt;</span>회사소개<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+      <span class="nt">&lt;/ul&gt;</span>
+    <span class="nt">&lt;/footer&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h1 id="검색엔진-최적화">검색엔진 최적화</h1>
+<h2 id="meta-tag-1">meta tag</h2>
+<ul>
+  <li>title : 제목을 title로 감싸주는 것이 좋음</li>
+  <li>content : 검색결과에 대한 짧은 설명</li>
+  <li>
+    <p>url 주소를 알아보기 좋은 형태로 구성, 검색 엔진이 문서를 크롤링하기 쉬워짐</p>
+  </li>
+  <li>단순 디렉토리 구조 만들기</li>
+  <li>같은 컨텐츠가 다른 여러 주소를 가질 때 : rel=”canonical” 링크 속성을 이용</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;head&gt;</span>
+  <span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"canonical"</span> <span class="na">href=</span><span class="s">"http://localhost/1.html"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>사이트의 이동은 JavaScript를 사용하지 않고 HyperText를 이용</li>
+  <li>검색엔진이 JavaScript를 이해 못함</li>
+</ul>
+
+<h2 id="이미지와-제목">이미지와 제목</h2>
+<ul>
+  <li>alt : alternative, 스크린리더와 같은 프로그램에 그림에 대한 정보를 제공</li>
+  <li>alt를 기반으로 이미지 검색됨</li>
+  <li>이미지만 보관하는 폴더에 저장</li>
+  <li>그림파일 이름에도 의미가 있도록 지정</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">"1.html"</span><span class="nt">&gt;&lt;ing</span> <span class="na">src=</span><span class="s">"images/datascience.png"</span> <span class="na">alt=</span><span class="s">"생활코딩 로고"</span><span class="nt">&gt;&lt;/a&gt;</span>
+</code></pre></div></div>
+
+<h2 id="robotstxt--sitemap">robotstxt &amp; sitemap</h2>
+<ul>
+  <li>로봇의 접근을 제어, 정중한 요청 방식이기 때문에 악의적인 접근을 차단하지는 못함</li>
+  <li>사이트 맵 loc 사용</li>
+  <li>sitemap.xml</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;urlset</span> <span class="na">xmlns=</span><span class="s">"http://www.sitemaps.org/schemas/sitemap/0.9"</span><span class="nt">&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/11/05/ai-deepfm-implementation.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/ai/2022/11/03/ai-neural-collaborative-filtering-implementation.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/11/02/paper-deep-youtube.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/english/2022/10/30/bloomberg-surveillance.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/10/11/paper-multitask-youtube.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/10/09/paper-session-based-rnn.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/10/02/paper-recurrent-recommender.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/09/30/paper-deep-autoencoders.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/english/2022/09/21/bloomberg-surveillance.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/09/21/paper-autorec.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/09/14/paper-deepfm.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/09/10/paper-wide-and-deep.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/09/03/paper-factorization-machines.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/english/2022/08/31/bloomberg-surveillance.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/08/29/paper-neural-collaborative-filtering.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/english/2022/08/26/fed-powell-jackson-hole.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/english/2022/08/12/bloomberg-surveillance.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/paper/2022/08/10/paper-bayesian-personalized-ranking.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2022/08/01/macos-finder-sftp-connection.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2022/08/01/mac-afloat.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2022/06/13/public_bicycle.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/kuberntetes/2022/06/02/kubernetes-pod.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/kuberntetes/2022/06/01/kuberntetes-rbac.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2022/05/11/pyspark-gpu-xgboost-Copy1.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2022/05/10/pyspark-pandas-api.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2022/05/01/jupyter-dl-docker-setting.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2022/05/01/spark_cluster_on_docker_swarm.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2022/05/01/spark-cluster-jupyter.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2022/04/10/docker-mysql-phpmyadmin.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2022/03/27/pyspark-minio-error.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2022/01/27/Pyspark-minio-connection.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/ml/2021/01/06/ml-bagging-boosting.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/ml/2021/01/05/ml-normalization.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2020/07/16/mysql_replication.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2020/07/01/docker_machine.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/05/21/pyspark-ml-recommendation.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/05/20/pyspark-ml-classification.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/05/18/pyspark-ml-unsupervised-learning.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/05/17/pyspark-ml-regression.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/05/12/pyspark-ml-feature-engineering.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/04/15/Linux-ssh_setting.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/04/14/Linux-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8_%EC%97%86%EC%9D%B4_%EB%8B%A4%EB%A5%B8_%EB%A8%B8%EC%8B%A0%EC%97%90_%EC%A0%91%EC%86%8D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/kuberntetes/2020/04/05/kubeadm-upgrade.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/kuberntetes/2020/04/04/kubernetes-etcd.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/kuberntetes/2020/04/03/kubernetes-config.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/jupyter/2020/02/20/test.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/hadoop/2020/02/04/Hadoop_%EB%AA%85%EB%A0%B9%EC%96%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/30/AWS-EMR_Zeppelin.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/30/AWS-Athena_Presto.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/29/AWS-S3_Glue.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/29/AWS-MySQL_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/29/AWS-DynaoDB_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/27/pyspark-conf.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/27/Python-minio-connection.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/26/Spark-sortWithinPartitions.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/26/Spark-jupyter-basic-option.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/26/Spark-coalese-repartition.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/26/Python-user_hostname_path.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/26/Python-logging.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/25/Pyspark-Spark_SQL.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2020/01/25/AWS-awscli_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/25/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EB%B3%B5%EC%86%8C%EC%88%98_%EA%B3%84%EC%82%B0_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/24/Pyspark-Join.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/24/ShellScript-%EB%B0%B0%EC%97%B4_(Array).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/23/Pyspark-UDF.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/23/Linux-%EC%8A%A4%ED%8A%B8%EB%A6%BC_%ED%8E%B8%EC%A7%91%EA%B8%B0_(sed).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/23/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%9E%99_(Heap).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/22/Pyspark-Select_Subset_Columns_Filter.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/22/Linux-%EB%82%A0%EC%A7%9C_%ED%98%95%EC%8B%9D_(date).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/22/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%8A%B8%EB%A6%AC_(Tree).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/21/Pyspark-DataFrame.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/20/PySpark-Spark_rdd.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/19/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%95%B4%EC%89%AC_%ED%85%8C%EC%9D%B4%EB%B8%94_(Hash_Table).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/19/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%EB%A7%81%ED%81%AC%EB%93%9C_%EB%A6%AC%EC%8A%A4%ED%8A%B8_(Linked_List).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/18/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90_(Queue).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/18/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%EC%8A%A4%ED%83%9D_(Stack).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/17/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%EB%B0%B0%EC%97%B4_(Array).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/16/ShellScript-Jupyter_notebook_html_%EB%B3%80%ED%99%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/15/ShellScript-%EC%9D%B8%EC%9E%90%EA%B0%92_%EB%B0%9B%EA%B8%B0_(getopts).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/15/ShellScript-%EB%8B%A4%EC%88%98%EC%9D%98_%ED%8C%A8%ED%82%A4%EC%A7%80_%EC%84%A4%EC%B9%98%EC%9E%90%EB%8F%99%ED%99%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/14/Python_pandas-isin.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/14/Python_numpy-%EC%B5%9C%EC%86%8C_%EC%B5%9C%EB%8C%80_%EC%A1%B0%EA%B1%B4_%EC%83%89%EC%9D%B8%EA%B0%92.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2020/01/14/Python-csv_npy_%ED%8C%8C%EC%9D%BC_%EB%8F%99%EC%9D%BC%EC%84%B1_%EA%B2%80%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/14/ShellScript-%ED%94%84%EB%A1%9C%EC%84%B8%EC%8A%A4_%EB%B3%91%EB%A0%AC%EC%B2%98%EB%A6%AC_(wait).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/14/ShellScript-%ED%8C%8C%EC%9D%BC_%EB%B0%B1%EC%97%85_%EB%B0%8F_%EB%B3%B5%EA%B5%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/14/Linux-%ED%8C%8C%EC%9D%BC%EB%82%B4%EC%9A%A9_%EC%A0%95%EB%A0%AC_(sort).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/markdown/2020/01/14/test-markdown-post.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/13/dynamic_programming_and_divide_and_conquer.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/12/complexity.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/11/recursive.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2020/01/10/Spark-java_net_BindException.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2020/01/10/sort.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/10/pyspark-data-type.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/05/ShellScript-%ED%8C%8C%EC%9D%BC_%EB%8F%99%EC%9D%BC%EC%84%B1_%EB%B9%84%EA%B5%90_(diff).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2020/01/05/ShellScript-%EC%97%90%EB%9F%AC%EB%A9%94%EC%8B%9C%EC%A7%80_%EB%A1%9C%EA%B7%B8%EC%A0%80%EC%9E%A5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2020/01/01/pyspark-read-write.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/12/12/R_%ED%8C%A8%ED%82%A4%EC%A7%80_tidyr_-_gather_spread_seperate_unite.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/12/12/R_%ED%8C%A8%ED%82%A4%EC%A7%80_tidyr.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/12/01/R_dplyr_%ED%8C%A8%ED%82%A4%EC%A7%80_-_%EB%8B%A8%EC%9D%BC_%ED%85%8C%EC%9D%B4%EB%B8%94_%EA%B2%BD%EC%9A%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/24/R_sqldf_%ED%8C%A8%ED%82%A4%EC%A7%80.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/24/R_reshape_%ED%8C%A8%ED%82%A4%EC%A7%80.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/24/R_plyr_%ED%8C%A8%ED%82%A4%EC%A7%80.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/23/R_%EB%82%A0%EC%A7%9C_%EB%AC%B8%EC%9E%90%EC%97%B4_%EA%B0%84_%EB%B3%80%ED%99%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/17/R_%ED%8C%A8%ED%82%A4%EC%A7%80_ggplot2_%EC%A2%8C%ED%91%9C%EA%B3%84_%EC%84%A4%EC%A0%95%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/17/R_%ED%8C%A8%ED%82%A4%EC%A7%80_ggplot2_%EC%86%8C%EA%B0%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/17/R_%ED%8C%A8%ED%82%A4%EC%A7%80_ggplot2_color_fill.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/17/R_%ED%8C%A8%ED%82%A4%EC%A7%80_ggplot2_Bar_%EA%B7%B8%EB%9E%98%ED%94%84_%EA%B7%B8%EB%A6%AC%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_%EC%98%AC%EB%A6%BC_%EB%82%B4%EB%A6%BC_%EB%B0%98%EC%98%AC%EB%A6%BC_%EC%A0%88%EB%8C%93%EA%B0%92.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_%EC%88%98%EC%97%B4%EC%83%9D%EC%84%B1_rep_seq.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_%EB%8D%B0%EC%9D%B4%ED%84%B0_%EA%B8%B8%EC%9D%B4_length_dim_nrow_ncol.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_sample_%EB%B9%84%EB%B3%B5%EC%9B%90%EC%B6%94%EC%B6%9C_%EB%B3%B5%EC%9B%90%EC%B6%94%EC%B6%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_rbind_cbind_merge.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_paste_paste0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/14/R_grep_grepl.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2019/11/11/R_%ED%8C%A8%ED%82%A4%EC%A7%80_quantmod.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/10/11/Git%EC%9D%98_LF_will_be_replaced_by_CRLF_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/10/11/git-gitignore_%EC%A0%81%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/10/11/CentOS%EC%97%90_Tensorflow-GPU_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/10/10/Elasticsearch_vm.max_count_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/08/19/Zepplein%EC%9D%98_io.grpc.StatusRuntimeException.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/08/19/CentOS%EC%97%90%EC%84%9C_Zeppelin_Python_%ED%95%9C%EA%B8%80%ED%8F%B0%ED%8A%B8_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/hadoop/2019/08/12/Hive_Sqoop_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EA%B8%B0%EB%B3%B8_%EC%97%90%EC%A0%9C_%ED%85%8C%EC%8A%A4%ED%8A%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/08/10/CentOS%EC%97%90_Zeppelin_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/08/10/CentOS%EC%97%90_Kafka_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/08/10/CentOS%EC%97%90_ELK_Stack_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/08/01/ShellScript-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/08/01/Linux-%EC%A0%91%EA%B7%BC%EA%B6%8C%ED%95%9C_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2019/08/01/paper.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spring/2019/07/01/Spring-Spring_%ED%94%84%EB%A0%88%EC%9E%84%EC%9B%8C%ED%81%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spring/2019/07/01/Spring-DI(Dependency_Injection).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/07/01/MacOS-Linux_ISO_%ED%8C%8C%EC%9D%BC%EC%9D%84_USB%EB%A1%9C_%EA%B5%BD%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/07/01/%EB%8D%B0%EC%9D%B4%ED%84%B0_%ED%8C%8C%EC%9D%B4%ED%94%84%EB%9D%BC%EC%9D%B8_%EA%B5%AC%EC%B6%95-%EB%8D%B0%EC%9D%B4%ED%84%B0_%EC%88%98%EC%A7%91.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/30/bootstrap.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/24/Mesos_build.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/22/Spark_%ED%8A%9C%EB%8B%9D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/20/Spark_Dynamic_Allocation.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/19/Servlet.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/17/JSP_%ED%8F%BC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/17/JSP_%EC%BF%A0%ED%82%A4%EC%99%80_%EC%84%B8%EC%85%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/17/JSP_%EC%9E%90%EB%B0%94%EB%B9%88%EC%A6%88.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/17/JSP_Objects.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/16/Hadoop_%EA%B8%B0%EB%B3%B8_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/16/CentOS_Nvidia_smi_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/06/14/JSP%EB%A5%BC_%ED%86%B5%ED%95%B4_Oracle_%EC%A0%91%EC%86%8D%EC%8B%9C_Tomcat_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/hadoop/2019/06/14/Hadoop_eco_%EC%A2%85%EB%A5%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/hadoop/2019/06/14/Hadoop_eco_%EC%8B%A4%ED%96%89_%EB%B0%8F_%EC%A4%91%EB%8B%A8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/06/12/CentOS_yum_update%EA%B0%80_%EB%90%98%EC%A7%80_%EC%95%8A%EC%9D%84_%EB%95%8C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/11/jQuery.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/06/10/Linux_sudo_%EB%AA%85%EB%A0%B9%EC%96%B4%EB%A1%9C_root_%EA%B6%8C%ED%95%9C_%EC%96%BB%EC%A7%80_%EB%AA%BB%ED%95%98%EB%8A%94_%EA%B2%BD%EC%9A%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/06/09/Hadoop_Eco_System_%EA%B5%AC%EC%B6%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/06/03/Javascirpt_in_Web.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2019/06/01/card.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/05/30/CSS_%EC%9D%B4%EB%A1%A0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2019/05/28/HTML5_%EC%9D%B4%EB%A1%A0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/05/28/MongoDB_Cluster_%EA%B5%AC%EC%B6%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/nosql/2019/05/27/NoSQL_%EA%B0%9C%EB%85%90.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/nosql/2019/05/27/MongoDB_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/05/20/JDBC_%EC%97%B0%EB%8F%99_%EC%A0%88%EC%B0%A8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/17/DB-RDBMS.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/17/DB-MySQL_scott_hr.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/05/17/Mac_Oracle_IntelliJ_%EC%97%B0%EB%8F%99.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/16/Oracle_SQL_%EC%BF%BC%EB%A6%AC%EC%97%B0%EC%8A%B5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/16/Oracle_SQL_Procedure_Function.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/16/Oracle_SQL_Partition.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/16/Oracle_SQL_PL-SQL.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/16/DB-%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4_%EC%8A%A4%ED%82%A4%EB%A7%88.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/16/DB-Oracle_sqlplus_%ED%99%94%EB%A9%B4%ED%81%AC%EA%B8%B0_%EC%A1%B0%EC%A0%88.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/15/Oracle_SQL_View.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/15/Oracle_SQL_Sequence_Index.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/15/DB-SQL_%EC%A0%95%EA%B7%9C%ED%99%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/14/Oracle_SQL_%EC%84%9C%EB%B8%8C%EC%BF%BC%EB%A6%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/14/Oracle_SQL_JOIN.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/10/Oracle_SQL_%ED%95%A8%EC%88%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/10/Oracle_SQL_%EA%B7%B8%EB%A3%B9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/05/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%86%8C%EC%88%98%EC%9D%98_%EA%B0%9C%EC%88%98_%EA%B5%AC%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/09/Oracle_SQL_%EC%A0%9C%EC%95%BD%EC%A1%B0%EA%B1%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/09/Oracle_SQL_%EC%A0%95%EA%B7%9C%EC%8B%9D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/09/Oracle_SQL_SELECT.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/09/Oracle_DB_%EA%B3%84%EC%A0%95%EC%83%9D%EC%84%B1.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/09/DB-%EB%AC%B4%EA%B2%B0%EC%84%B1_%EC%A0%9C%EC%95%BD%EC%A1%B0%EA%B1%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/05/09/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-%EC%86%8C%EC%88%98%EC%9D%98_%ED%95%A9_%EA%B5%AC%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/05/08/Oracle_SQL_%EA%B0%9C%EC%9A%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/05/08/git-git_%EC%B4%88%EA%B8%B0%ED%99%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/05/07/Mac_sqldeveloper_%EC%A0%91%EC%86%8D%EC%8B%9C_locale_not_recognized_%EC%98%A4%EB%A5%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/05/07/Java_%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/05/07/Java_thred.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/05/07/MacOS-IP%EC%A3%BC%EC%86%8C_%ED%99%95%EC%9D%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/05/03/CentOS%EC%97%90_Oracle_%EC%84%A4%EC%B9%98%EC%8B%9C_Swap_Space_%EB%B6%80%EC%A1%B1_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/05/03/Java_%ED%8C%8C%EC%9D%BC_%EC%9E%85%EC%B6%9C%EB%A0%A5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/05/03/Windows_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/05/03/Ubuntu_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/05/03/CentOS_Oracle_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/05/02/Java_GUI_(2).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/05/01/MySQL%EC%9D%98_COM_MYSQL_JDBC_DRIVER_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/05/01/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-Java_%EC%8A%A4%ED%85%8D%EA%B3%84%EC%82%B0%EA%B8%B0_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/30/Java_GUI_(1).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/04/30/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EA%B3%84%EC%82%B0%EA%B8%B0_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/29/Java_collection.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/04/29/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4_%EB%B0%B0%EB%8B%AC%EC%9D%8C%EC%8B%9D_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/04/28/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/25/Java_%EC%83%81%EC%86%8D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/24/Java_%ED%81%B4%EB%9E%98%EC%8A%A4%EB%B0%B0%EC%97%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/23/Java_%EB%A9%94%EC%86%8C%EB%93%9C_%ED%81%B4%EB%9E%98%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/22/Java_%EB%A9%94%EC%86%8C%EB%93%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2019/04/20/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EC%88%AB%EC%9E%90%EC%95%BC%EA%B5%AC_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/19/Java_%EB%B0%B0%EC%97%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/18/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8_%EB%B0%8F_%EB%B0%B0%EC%97%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/17/Java_%EC%A0%9C%EC%96%B4%EB%AC%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/16/Java_%EC%97%B0%EC%82%B0%EC%9E%90.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2019/04/15/Java_%EA%B0%9C%EB%B0%9C%ED%99%98%EA%B2%BD_%EB%B0%8F_%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%83%80%EC%9E%85.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/04/14/Linux-Mac_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95_%ED%8C%8C%EC%9D%BC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/04/14/Windows_MySQL_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/04/14/Ubuntu_MySQL_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/architecture/2019/04/14/CentOS_MySQL_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/04/12/Jupyter_Notebook%EC%97%90%EC%84%9C_pyspark_%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/04/11/Mac%EC%97%90%EC%84%9C_Docker_%EC%82%AC%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/04/07/MacOS-Terminal_%ED%85%8C%EB%A7%88_%EC%A0%81%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/04/05/Jupyter_notebook%EC%97%90%EC%84%9C_JavaScript_%EC%BD%94%EB%94%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/04/05/Jupyter_Notebook%EC%97%90%EC%84%9C_Scala_%EC%BD%94%EB%94%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/04/05/Jupyter_Notebook%EC%97%90%EC%84%9C_R_%EC%BD%94%EB%94%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2019/04/03/Python-input_vs_raw_input_%EC%B0%A8%EC%9D%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/04/03/Linux-%ED%99%94%EB%A9%B4_%EC%B6%9C%EB%A0%A5_%EB%B0%8F_%ED%8C%8C%EC%9D%BC_%EB%82%B4%EC%9A%A9_%EB%B3%B4%EA%B8%B0_(echo_cat_more).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/04/03/MacOS-%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/04/01/Linux-Ubuntu_%ED%95%9C%EA%B8%80%ED%8F%B0%ED%8A%B8_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/04/01/Ubuntu_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/03/31/Windows10_open_ssh.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/31/Jupyter_Notebook_%EC%84%9C%EB%B2%84_%EC%9B%90%EA%B2%A9%EC%A0%91%EC%86%8D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/03/29/Zeppelin%EC%9D%98_java.lang.NullPointerException_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/03/29/Spark-Shell%EC%9D%98_java.lang.ExceptionInInitializerError_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/03/29/MinGw_%EC%B5%9C%EC%8B%A0%EB%B2%84%EC%A0%84_%EC%97%85%EB%8D%B0%EC%9D%B4%ED%8A%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/29/Jupyter_env.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/29/Jupyter_Notebook%EC%97%90%EC%84%9C_java_%EC%BD%94%EB%94%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/29/Jupyter_Notebook%EC%97%90%EC%84%9C_C_%EC%BD%94%EB%94%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2019/03/28/Python_pandas-crosstab_%EA%B5%90%EC%B0%A8%ED%91%9C_%EB%A7%8C%EB%93%A4%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/trouble/2019/03/25/Zeppeline%EC%9D%98_Spark_Interpreter_%EC%97%90%EB%9F%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/03/11/SQLD_03)_SQL_%EC%B5%9C%EC%A0%81%ED%99%94%EC%9D%98_%EC%9B%90%EB%A6%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/03/10/SQLD_02)_SQL_%ED%99%9C%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2019/03/10/SQLD_01)_SQL_%EA%B8%B0%EB%B3%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/03/10/Atom_packages.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/09/Scala-%ED%85%8C%EC%8A%A4%ED%8A%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/08/Scala-%EC%A0%9C%EC%96%B4%EB%AC%B8_%EC%9D%91%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/08/git-git_%EB%AA%85%EB%A0%B9%EC%96%B4_%EC%A0%95%EB%A6%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/03/08/Jupyter_Notebook_%ED%8F%B0%ED%8A%B8_%EB%B0%8F_%ED%99%94%EB%A9%B4%EB%84%93%EC%9D%B4_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2019/03/07/Spark-Spark_Application_%EC%8B%A4%ED%96%89.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/07/Scala-%EA%B5%AC%EC%A1%B0_(2).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2019/03/06/Spark-Spark_SQL.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/06/Scala-%ED%95%A8%EC%88%98%EC%9D%91%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2019/03/05/Spark-Spark_Streaming.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/05/Scala-%EA%B5%AC%EC%A1%B0_(1).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2019/03/04/Spark-Spark_Core.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/04/Scala-%EA%B8%B0%EC%B4%88_%EB%AC%B8%EB%B2%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/03/Scala-%EA%B8%B0%EB%B3%B8_%EB%AC%B8%EB%B2%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2019/03/02/Scala-Scala_%EC%84%A4%EC%B9%98%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2019/03/01/Linux-Mac_Linux_%EA%B0%84_%EC%9E%90%EC%86%8C%EB%B6%84%EB%A6%AC_%ED%98%84%EC%83%81.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/02/14/Zeppelin-Apache_Zeppline_%EC%84%B8%EB%B6%80%EA%B8%B0%EB%8A%A5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/02/12/Zeppelin-Apache_Zeppeline%EC%9D%84_%EC%9C%84%ED%95%9C_Spark_%ED%8A%9C%ED%86%A0%EB%A6%AC%EC%96%BC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/02/11/Zeppelin-Apache_Zeppeline%EC%9D%84_%EC%9C%84%ED%95%9C_Spark_%EA%B0%9C%EC%9A%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2019/02/10/Zeppelin-Apache_Zeppeline_%EC%84%A4%EC%B9%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2019/01/14/Python_numpy-%EC%A7%91%ED%95%A9%ED%95%A8%EC%88%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/01/02/%EC%BB%A4%EB%A7%A8%EB%93%9C%EC%B0%BD%EC%97%90%EC%84%9C_C%EC%96%B8%EC%96%B4_%EC%8B%A4%ED%96%89%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/etc/2019/01/02/Windows_%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2019/01/01/animal.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/12/06/MySQL_INTERMEDIATE(2).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/12/05/MySQL_NTERMEDIATE(1).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/27/Java-10)_Collection.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/26/Java-09)_%EB%AC%B8%EC%9E%90%EC%97%B4_%ED%81%B4%EB%9E%98%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/25/Java-08)_%EB%9E%8C%EB%8B%A4%EC%8B%9D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/24/Java_07)_%EC%B6%94%EC%83%81%ED%81%B4%EB%9E%98%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/24/Java_06)_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/24/Java_05)_%EB%82%B4%EB%B6%80%ED%81%B4%EB%9E%98%EC%8A%A4%EC%99%80_%EC%9D%B5%EB%AA%85%ED%81%B4%EB%9E%98%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/23/Java_04)_%EC%83%81%EC%86%8D_%EB%B0%8F_%ED%81%B4%EB%9E%98%EC%8A%A4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/22/Java_03)_%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/21/Java_02)_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95_(2).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/10/21/Java_01)_%EA%B8%B0%EC%B4%88%EB%AC%B8%EB%B2%95_(1).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2018/10/11/Python-Numpy.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/09/MySQL_07)_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D%EA%B3%BC_%EC%97%B0%EB%8F%99.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/08/MySQL_06)_%EC%82%AC%EC%9A%A9%EC%9E%90_%EA%B4%80%EB%A6%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/07/MySQL_05)_JOIN.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/06/MySQL_04)_<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/05/MySQL_03)_%EA%B7%B8%EB%A3%B9%ED%95%91_%EC%A0%95%EB%A0%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/04/MySQL_02)_%EC%82%BD%EC%9E%85_%EB%B3%80%EA%B2%BD_%EC%82%AD%EC%A0%9C_%EC%A1%B0%ED%9A%8C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/10/03/MySQL_01)_%EB%8D%B0%EC%9D%B4%ED%84%B0%EA%B4%80%EB%A6%AC-SQL.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2018/10/01/bike.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/03/WEB_18)_fontello_%EC%84%9C%EB%B9%84%EC%8A%A4_%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/03/WEB_17)_CSS_%EB%9B%B0%EC%96%B4%EB%84%98%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/03/WEB_16)_%EC%9C%A0%EC%A7%80%EB%B3%B4%EC%88%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/02/WEB_15)_%EA%B7%B8%EB%9E%98%ED%94%BD.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/02/WEB_14)_%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83_%ED%99%9C%EC%9A%A9.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/02/WEB_13)-_%EB%A0%88%EC%9D%B4%EC%95%84%EC%9B%83_%EA%B8%B0%EB%B3%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/02/WEB_12)_%EC%84%9C%EC%B2%B4_%EB%8B%A4%EB%A3%A8%EA%B8%B0.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/01/WEB_11)_%EC%A0%81%EC%9A%A9_%EC%88%9C%EC%84%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/01/WEB_10)_%EC%84%A0%ED%83%9D%EC%9E%90.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/09/01/WEB_09)_%EB%AF%B8%EB%94%94%EC%96%B4%EC%BF%BC%EB%A6%AC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/26/WEB_08)_%EA%B7%B8%EB%A6%AC%EB%93%9C.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/25/WEB_07)_%EB%B0%95%EC%8A%A4%EB%AA%A8%EB%8D%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/25/WEB_06)_CSS%EC%9D%98_%EB%93%B1%EC%9E%A5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/25/WEB_05)_HTML5.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/22/WEB_03)_%EC%9E%85%EB%A0%A5_%EC%96%91%EC%8B%9D_(Form).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/22/WEB_02)_%ED%91%9C_%EB%A7%8C%EB%93%A4%EA%B8%B0_(table).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/21/WEB_01)_HTML_%EA%B8%B0%EB%B3%B8%EB%AC%B8%EB%B2%95%EA%B3%BC_%EA%B8%B0%EB%B3%B8_Tag.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/web/2018/08/21/WEB_00)_Intro.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/08/JavaScript_06)_%EA%B0%9D%EC%B2%B4(Object).html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/07/JavaScript_05)_%EB%B0%B0%EC%97%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/06/JavaScript_04)_%ED%95%A8%EC%88%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/05/JavaScript_03)_%EB%B0%98%EB%B3%B5%EB%AC%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/04/JavaScript_02)_%EC%A1%B0%EA%B1%B4%EB%AC%B8.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/javascript/2018/06/03/JavaScript_01)_%EB%B3%80%EC%88%98%EC%99%80_%EB%B9%84%EA%B5%90.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2018/05/01/Linux-sudo_su_%EC%B0%A8%EC%9D%B4.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/r/2018/04/20/R_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D_%EA%B8%B0%EC%B4%88.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/scala/2018/04/12/Scala-Scala_Programming.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/java/2018/04/12/Java_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/2018/04/12/Mac_MySQL_%EC%84%A4%EC%B9%98_%EB%B0%8F_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/python/2018/04/10/Python-Pandas.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/devops/2018/04/10/%ED%8F%AD%ED%8F%AC%EC%88%98_%EC%95%A0%EC%9E%90%EC%9D%BC.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/sql/2018/03/20/MySQL_00)_%EC%98%A4%EB%A6%AC%EC%97%94%ED%85%8C%EC%9D%B4%EC%85%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/algorithm/2018/03/10/%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98-Java_%EB%8B%AC%EB%A0%A5_%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/spark/2018/03/03/Spark-Apache-Spark-%EA%B0%9C%EC%9A%94.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2018/03/01/Linux-Ubuntu_WOL_%EC%84%A4%EC%A0%95.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/linux/2018/03/01/Linux-CentOS_WOL.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/project/2012/09/01/uic.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/404.html<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/about/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/search/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/categories/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page2/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page3/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page4/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page5/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page6/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page7/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page8/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page9/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page10/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page11/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page12/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page13/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page14/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page15/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page16/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    <span class="nt">&lt;url&gt;</span>
+        <span class="nt">&lt;loc&gt;</span>https://safenumz.github.io/page17/<span class="nt">&lt;/loc&gt;</span>
+    <span class="nt">&lt;/url&gt;</span>
+    
+    
+    
+    
+    
+    
+    
+<span class="nt">&lt;/urlset&gt;</span>
+</code></pre></div></div>
+
+<h2 id="페이지-랭크">페이지 랭크</h2>
+<ul>
+  <li>다른 사이트들로부터 링크로 많이 연결될수록 사이트의 페이지 랭크가 높아짐</li>
+  <li>랭크가 놓은 A 사이트가 D 사이트에 링크를 건다면 D 사이트의 페이지 랭크가 올라감</li>
+</ul>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/web/2018/08/24/WEB_04)_%EC%A0%95%EB%B3%B4%EB%A1%9C%EC%84%9C%EC%9D%98_HTML,_%EA%B2%80%EC%83%89%EC%97%94%EC%A7%84_%EC%B5%9C%EC%A0%81%ED%99%94.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

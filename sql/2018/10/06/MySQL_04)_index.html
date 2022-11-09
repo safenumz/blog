@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[MySQL] 04) index | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[MySQL] 04) index" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="index" />
+<meta property="og:description" content="index" />
+<link rel="canonical" href="https://safenumz.github.io/blog/sql/2018/10/06/MySQL_04)_index.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/sql/2018/10/06/MySQL_04)_index.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2018-10-06T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[MySQL] 04) index" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2018-10-06T00:00:00-05:00","datePublished":"2018-10-06T00:00:00-05:00","description":"index","headline":"[MySQL] 04) index","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/sql/2018/10/06/MySQL_04)_index.html"},"url":"https://safenumz.github.io/blog/sql/2018/10/06/MySQL_04)_index.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[MySQL] 04) index</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2018-10-06T00:00:00-05:00" itemprop="datePublished">
+        Oct 6, 2018
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#SQL">SQL</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="index">index</h1>
+
+<h2 id="index-1">index</h2>
+<ul>
+  <li>색인, 조회할 때 원하는 행을 빠르게 찾을 수 있게 준비해 둔 데이터</li>
+</ul>
+
+<h3 id="인덱스의-종류">인덱스의 종류</h3>
+<ul>
+  <li>primary : 중복되지 않은 유일한 키</li>
+  <li>normal : 중복을 허용하는 인덱스</li>
+  <li>unique : 중복을 허용하지 않은 유일한 키</li>
+  <li>foreign : 다른 테이블과의 관계성을 부여하는 키</li>
+  <li>full text : 자연어 검색, myisam에서만 지원</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">DROP</span> <span class="k">TABLE</span> <span class="n">IF</span> <span class="k">EXISTS</span> <span class="nv">`student`</span><span class="p">;</span>
+<span class="k">CREATE</span> <span class="k">TABLE</span> <span class="nv">`student`</span> <span class="p">(</span>
+  <span class="nv">`id`</span> <span class="nb">tinyint</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="nv">`name`</span> <span class="nb">char</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`address`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`department`</span> <span class="nb">enum</span><span class="p">(</span><span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'전자공학과'</span><span class="p">,</span> <span class="s1">'물리학과'</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`introduction`</span> <span class="nb">text</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="nv">`number`</span> <span class="nb">char</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">(</span><span class="nv">`id`</span><span class="p">),</span>
+  <span class="k">UNIQUE</span> <span class="k">KEY</span> <span class="nv">`idx_number`</span> <span class="p">(</span><span class="nv">`number`</span><span class="p">)</span> <span class="k">USING</span> <span class="n">BTREE</span><span class="p">,</span>
+  <span class="k">KEY</span> <span class="nv">`idx_department`</span> <span class="p">(</span><span class="nv">`department`</span><span class="p">,</span> <span class="nv">`address`</span><span class="p">),</span>
+  <span class="n">FULLTEXT</span> <span class="k">KEY</span> <span class="nv">`idx_introduction`</span> <span class="p">(</span><span class="nv">`introduction`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">MyISAM</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">9</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8</span><span class="p">;</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'이숙경'</span><span class="p">,</span> <span class="s1">'청주'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'저는 컴퓨터공학과에 다닙니다. cumputer'</span><span class="p">,</span> <span class="s1">'0240132'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">'박재숙'</span><span class="p">,</span> <span class="s1">'서울'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'저는 영문과에 다닙니다'</span><span class="p">,</span> <span class="s1">'0512321'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'백태호'</span><span class="p">,</span> <span class="s1">'경주'</span><span class="p">,</span> <span class="s1">'컴퓨터공학과'</span><span class="p">,</span> <span class="s1">'저는 컴퓨터공학과에 다니고 경주에서 왔습니다.'</span><span class="p">,</span> <span class="s1">'0239531'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">'김경훈'</span><span class="p">,</span> <span class="s1">'제천'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'제천이 고향이고 국문과에 다닙니다.'</span><span class="p">,</span> <span class="s1">'9813413'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="s1">'김경진'</span><span class="p">,</span> <span class="s1">'제주'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'이번에 국문과에 입학한 김경진이라고 합니다. 제주에서 왔습니다.'</span><span class="p">,</span> <span class="s1">'9382958'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="s1">'박경호'</span><span class="p">,</span> <span class="s1">'제주'</span><span class="p">,</span> <span class="s1">'국문과'</span><span class="p">,</span> <span class="s1">'박경호입니다. 잘 부탁드립니다.'</span><span class="p">,</span> <span class="s1">'0145511'</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="nv">`student`</span> <span class="k">VALUES</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="s1">'김정민'</span><span class="p">,</span> <span class="s1">'대전'</span><span class="p">,</span> <span class="s1">'영문과'</span><span class="p">,</span> <span class="s1">'대전에서 왔고 연문과에 다닙니다.'</span><span class="p">,</span> <span class="s1">'05030503'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="primary-key">primary key</h3>
+<p>= 테이블 전체를 통틀어서 중복되지 않는 값을 지정해야 함</p>
+<ul>
+  <li>WHERE문을 이용해서 데이터를 조회할 때 가장 고속으로 데이터를 가져올 수 있음</li>
+  <li>테이블마다 딱 하나의 PRIMARY KEY를 가질 수 있음</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">id</span><span class="o">=</span><span class="mi">3</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="unique-key">unique key</h3>
+<ul>
+  <li>테이블 전체를 통틀어서 중복되지 않는 값을 지정해야 함</li>
+  <li>고속으로 데이터를 가져올 수 있음</li>
+  <li>여러개의 unique key를 지정할 수 있음</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">number</span><span class="o">=</span><span class="mi">9382958</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="normal-key">normal key</h3>
+<ul>
+  <li>중복을 허용함</li>
+  <li>primary, unique 보다 속도가 느림</li>
+  <li>여러개의 키를 지정할 수 있음</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">department</span><span class="o">=</span><span class="s1">'국문과'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="full-text">Full Text</h3>
+<ul>
+  <li>mysql의 기본설정 (ft_min_word_len)이 4로 되어 있기 때문에 최소 4글자 이상을 입력하거나 이 값을 조정해야 함</li>
+  <li>mysql은 전문 검색 엔진이 아니기 때문에 한글 검색이 잘 안됨</li>
+  <li>전문검색엔진으로 lucene, sphinx 참고</li>
+  <li>스토리지 엔진 중 myisam에서만 사용가능</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">introduction</span><span class="p">,</span> <span class="k">MATCH</span><span class="p">(</span><span class="n">introduction</span><span class="p">)</span> <span class="n">AGAINST</span><span class="p">(</span><span class="s1">'영문과에'</span><span class="p">)</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="k">MATCH</span> <span class="p">(</span><span class="n">introduction</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h3 id="중복키">중복키</h3>
+<ul>
+  <li>하나의 키에 여러개의 칼럼을 포함</li>
+</ul>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">student</span> <span class="k">WHERE</span> <span class="n">departent</span><span class="o">=</span><span class="s1">'국문과'</span> <span class="k">AND</span> <span class="n">address</span><span class="o">=</span><span class="s1">'제주'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<h3 id="인덱스의-정의-방법">인덱스의 정의 방법</h3>
+<ul>
+  <li>자주 조회되는 칼럼에 적용</li>
+  <li>조회 시 오랜시간을 소모하는 컬럼에 적용</li>
+  <li>데이터가 긴 경우 인덱스를 사용하지 않음</li>
+</ul>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/sql/2018/10/06/MySQL_04)_index.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,3694 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] PySpark DataTypes | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] PySpark DataTypes" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="pyspark의 여러가지 데이터 타입들" />
+<meta property="og:description" content="pyspark의 여러가지 데이터 타입들" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2020/01/10/pyspark-data-type.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2020/01/10/pyspark-data-type.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-01-10T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] PySpark DataTypes" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2020-01-10T00:00:00-06:00","datePublished":"2020-01-10T00:00:00-06:00","description":"pyspark의 여러가지 데이터 타입들","headline":"[Spark] PySpark DataTypes","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2020/01/10/pyspark-data-type.html"},"url":"https://safenumz.github.io/blog/spark/2020/01/10/pyspark-data-type.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] PySpark DataTypes</h1><p class="page-description">pyspark의 여러가지 데이터 타입들</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2020-01-10T00:00:00-06:00" itemprop="datePublished">
+        Jan 10, 2020
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-justify-center">
+          <div class="px-2">
+
+    <a href="https://github.com/safenumz/blog/tree/master/_notebooks/2020-01-10-pyspark-data-type.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/safenumz/blog/master?filepath=_notebooks%2F2020-01-10-pyspark-data-type.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/safenumz/blog/blob/master/_notebooks/2020-01-10-pyspark-data-type.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+          <div class="px-2">
+  <a href="https://deepnote.com/launch?url=https%3A%2F%2Fgithub.com%2Fsafenumz%2Fblog%2Fblob%2Fmaster%2F_notebooks%2F2020-01-10-pyspark-data-type.ipynb" target="_blank">
+      <img class="notebook-badge-image" src="/blog/assets/badges/deepnote.svg" alt="Launch in Deepnote"/>
+  </a>
+</div>
+
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#스파크-데이터-타입으로-변환">스파크 데이터 타입으로 변환 </a></li>
+<li class="toc-entry toc-h2"><a href="#불리언-데이터-타입">불리언 데이터 타입 </a></li>
+<li class="toc-entry toc-h1"><a href="#문자열-데이터-타입">문자열 데이터 타입 </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#정규-표현식">정규 표현식 </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#날짜와-타임스탬프-데이터-타입">날짜와 타임스탬프 데이터 타입 </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2020-01-10-pyspark-data-type.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">load_ext</span> sparksql_magic
+
+<span class="n">spark</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"spark.sql.repl.eagerEval.enabled"</span><span class="p">,</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">MINIO_ACCESS_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_ACCESS_KEY'</span><span class="p">]</span>
+<span class="n">MINIO_SECRET_KEY</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">'MINIO_SECRET_KEY'</span><span class="p">]</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.access.key"</span><span class="p">,</span> <span class="n">MINIO_ACCESS_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.secret.key"</span><span class="p">,</span> <span class="n">MINIO_SECRET_KEY</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.endpoint"</span><span class="p">,</span> <span class="s2">"http://lab101:10170"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.impl"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.S3AFileSystem"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.connection.ssl.enabled"</span><span class="p">,</span> <span class="s2">"false"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.path.style.access"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"com.amazonaws.services.s3.enableV2"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>
+<span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">_jsc</span><span class="o">.</span><span class="n">hadoopConfiguration</span><span class="p">()</span>\
+    <span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">"fs.s3a.aws.credentials.provider"</span><span class="p">,</span> <span class="s2">"org.apache.hadoop.fs.s3a.SimpleAWSCredentialsProvider"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">read</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"csv"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"header"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">"inferSchema"</span><span class="p">,</span> <span class="s2">"true"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">"s3a://data/retail-data/by-day/2010-12-01.csv"</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+<span class="n">df</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">"dfTable"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>root
+ |-- InvoiceNo: string (nullable = true)
+ |-- StockCode: string (nullable = true)
+ |-- Description: string (nullable = true)
+ |-- Quantity: integer (nullable = true)
+ |-- InvoiceDate: string (nullable = true)
+ |-- UnitPrice: double (nullable = true)
+ |-- CustomerID: double (nullable = true)
+ |-- Country: string (nullable = true)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|InvoiceNo|StockCode|         Description|Quantity|        InvoiceDate|UnitPrice|CustomerID|       Country|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+|   536365|   85123A|WHITE HANGING HEA...|       6|2010-12-01 08:26:00|     2.55|   17850.0|United Kingdom|
+|   536365|    71053| WHITE METAL LANTERN|       6|2010-12-01 08:26:00|     3.39|   17850.0|United Kingdom|
+|   536365|   84406B|CREAM CUPID HEART...|       8|2010-12-01 08:26:00|     2.75|   17850.0|United Kingdom|
+|   536365|   84029G|KNITTED UNION FLA...|       6|2010-12-01 08:26:00|     3.39|   17850.0|United Kingdom|
+|   536365|   84029E|RED WOOLLY HOTTIE...|       6|2010-12-01 08:26:00|     3.39|   17850.0|United Kingdom|
++---------+---------+--------------------+--------+-------------------+---------+----------+--------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="스파크-데이터-타입으로-변환">
+<a class="anchor" href="#%EC%8A%A4%ED%8C%8C%ED%81%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85%EC%9C%BC%EB%A1%9C-%EB%B3%80%ED%99%98" aria-hidden="true"><span class="octicon octicon-link"></span></a>스파크 데이터 타입으로 변환<a class="anchor-link" href="#%EC%8A%A4%ED%8C%8C%ED%81%AC-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85%EC%9C%BC%EB%A1%9C-%EB%B3%80%ED%99%98"> </a>
+</h2>
+<ul>
+<li>
+<strong>lit</strong> 함수는 다른 언어의 데이터 타입을 스파크 데이터 타입에 맞게 변환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span> <span class="n">lit</span><span class="p">(</span><span class="s2">"five"</span><span class="p">),</span> <span class="n">lit</span><span class="p">(</span><span class="mf">5.0</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>DataFrame[5: int, five: string, 5.0: double]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="불리언-데이터-타입">
+<a class="anchor" href="#%EB%B6%88%EB%A6%AC%EC%96%B8-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>불리언 데이터 타입<a class="anchor-link" href="#%EB%B6%88%EB%A6%AC%EC%96%B8-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">col</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"InvoiceNo"</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">536365</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"InvoiceNo"</span><span class="p">,</span> <span class="s2">"Description"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+-----------------------------+
+|InvoiceNo|Description                  |
++---------+-----------------------------+
+|536366   |HAND WARMER UNION JACK       |
+|536366   |HAND WARMER RED POLKA DOT    |
+|536367   |ASSORTED COLOUR BIRD ORNAMENT|
+|536367   |POPPY'S PLAYHOUSE BEDROOM    |
+|536367   |POPPY'S PLAYHOUSE KITCHEN    |
++---------+-----------------------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"InvoiceNo = 536365"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+-----------------------------------+--------+-------------------+---------+----------+--------------+
+|InvoiceNo|StockCode|Description                        |Quantity|InvoiceDate        |UnitPrice|CustomerID|Country       |
++---------+---------+-----------------------------------+--------+-------------------+---------+----------+--------------+
+|536365   |85123A   |WHITE HANGING HEART T-LIGHT HOLDER |6       |2010-12-01 08:26:00|2.55     |17850.0   |United Kingdom|
+|536365   |71053    |WHITE METAL LANTERN                |6       |2010-12-01 08:26:00|3.39     |17850.0   |United Kingdom|
+|536365   |84406B   |CREAM CUPID HEARTS COAT HANGER     |8       |2010-12-01 08:26:00|2.75     |17850.0   |United Kingdom|
+|536365   |84029G   |KNITTED UNION FLAG HOT WATER BOTTLE|6       |2010-12-01 08:26:00|3.39     |17850.0   |United Kingdom|
+|536365   |84029E   |RED WOOLLY HOTTIE WHITE HEART.     |6       |2010-12-01 08:26:00|3.39     |17850.0   |United Kingdom|
++---------+---------+-----------------------------------+--------+-------------------+---------+----------+--------------+
+only showing top 5 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">col</span><span class="p">,</span> <span class="n">instr</span>
+
+<span class="n">priceFilter</span> <span class="o">=</span> <span class="n">col</span><span class="p">(</span><span class="s2">"UnitPrice"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">600</span>
+<span class="n">descripFilter</span> <span class="o">=</span> <span class="n">instr</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Description</span><span class="p">,</span> <span class="s2">"POSTAGE"</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<span class="n">df</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">StockCode</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="s2">"DOT"</span><span class="p">))</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">priceFilter</span> <span class="o">|</span> <span class="n">descripFilter</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+---------+--------------+--------+-------------------+---------+----------+--------------+
+|InvoiceNo|StockCode|   Description|Quantity|        InvoiceDate|UnitPrice|CustomerID|       Country|
++---------+---------+--------------+--------+-------------------+---------+----------+--------------+
+|   536544|      DOT|DOTCOM POSTAGE|       1|2010-12-01 14:32:00|   569.77|      null|United Kingdom|
+|   536592|      DOT|DOTCOM POSTAGE|       1|2010-12-01 17:06:00|   607.49|      null|United Kingdom|
++---------+---------+--------------+--------+-------------------+---------+----------+--------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT * FROM dfTable WHERE StockCode in ("DOT") AND (UnitPrice &gt; 600 OR instr(Description, "POSTAGE") &gt;= 1)
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">InvoiceNo</td>
+<td style="font-weight: bold">StockCode</td>
+<td style="font-weight: bold">Description</td>
+<td style="font-weight: bold">Quantity</td>
+<td style="font-weight: bold">InvoiceDate</td>
+<td style="font-weight: bold">UnitPrice</td>
+<td style="font-weight: bold">CustomerID</td>
+<td style="font-weight: bold">Country</td>
+</tr>
+<tr>
+<td>536544</td>
+<td>DOT</td>
+<td>DOTCOM POSTAGE</td>
+<td>1</td>
+<td>2010-12-01 14:32:00</td>
+<td>569.77</td>
+<td>null</td>
+<td>United Kingdom</td>
+</tr>
+<tr>
+<td>536592</td>
+<td>DOT</td>
+<td>DOTCOM POSTAGE</td>
+<td>1</td>
+<td>2010-12-01 17:06:00</td>
+<td>607.49</td>
+<td>null</td>
+<td>United Kingdom</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">instr</span>
+
+<span class="n">DOTCodeFilter</span> <span class="o">=</span> <span class="n">col</span><span class="p">(</span><span class="s2">"StockCode"</span><span class="p">)</span> <span class="o">==</span> <span class="s2">"DOT"</span>
+<span class="n">priceFilter</span> <span class="o">=</span> <span class="n">col</span><span class="p">(</span><span class="s2">"UnitPrice"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">600</span>
+<span class="n">descripFilter</span> <span class="o">=</span> <span class="n">instr</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="s2">"POSTAGE"</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"isExpensive"</span><span class="p">,</span> <span class="n">DOTCodeFilter</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">priceFilter</span> <span class="o">|</span> <span class="n">descripFilter</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"isExpensive"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"unitPrice"</span><span class="p">,</span> <span class="s2">"isExpensive"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+---------+-----------+
+|unitPrice|isExpensive|
++---------+-----------+
+|   569.77|       true|
+|   607.49|       true|
++---------+-----------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT UnitPrice, (StockCode = 'DOT' AND (UnitPrice &gt; 600 OR instr(Description, "POSTAGE") &gt;= 1)) as isExpensive
+FROM dfTable
+WHERE (StockCode = 'DOT' AND (UnitPrice &gt; 600 OR instr(Description, "POSTAGE") &gt;= 1))
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">UnitPrice</td>
+<td style="font-weight: bold">isExpensive</td>
+</tr>
+<tr>
+<td>569.77</td>
+<td>True</td>
+</tr>
+<tr>
+<td>607.49</td>
+<td>True</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">expr</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"isExpensive"</span><span class="p">,</span> <span class="n">expr</span><span class="p">(</span><span class="s2">"NOT UnitPrice &lt;= 250"</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"isExpensive"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">,</span> <span class="s2">"UnitPrice"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------+---------+
+|   Description|UnitPrice|
++--------------+---------+
+|DOTCOM POSTAGE|   569.77|
+|DOTCOM POSTAGE|   607.49|
++--------------+---------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>두 컬럼 사이의 상관관계</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">corr</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">corr</span><span class="p">(</span><span class="s2">"Quantity"</span><span class="p">,</span> <span class="s2">"UnitPrice"</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">corr</span><span class="p">(</span><span class="s2">"Quantity"</span><span class="p">,</span> <span class="s2">"UnitPrice"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------------+
+|corr(Quantity, UnitPrice)|
++-------------------------+
+|     -0.04112314436835551|
++-------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT corr(Quantity, UnitPrice) FROM dfTable
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid"><td style="font-weight: bold">corr(Quantity, UnitPrice)</td></tr>
+<tr><td>-0.04112314436835551</td></tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>요약 통계</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------+-----------------+------------------+--------------------+------------------+-------------------+------------------+------------------+--------------+
+|summary|        InvoiceNo|         StockCode|         Description|          Quantity|        InvoiceDate|         UnitPrice|        CustomerID|       Country|
++-------+-----------------+------------------+--------------------+------------------+-------------------+------------------+------------------+--------------+
+|  count|             3108|              3108|                3098|              3108|               3108|              3108|              1968|          3108|
+|   mean| 536516.684944841|27834.304044117645|                null| 8.627413127413128|               null| 4.151946589446603|15661.388719512195|          null|
+| stddev|72.89447869788873|17407.897548583845|                null|26.371821677029203|               null|15.638659854603892|1854.4496996893627|          null|
+|    min|           536365|             10002| 4 PURPLE FLOCK D...|               -24|2010-12-01 08:26:00|               0.0|           12431.0|     Australia|
+|    max|          C536548|              POST|ZINC WILLIE WINKI...|               600|2010-12-01 17:35:00|            607.49|           18229.0|United Kingdom|
++-------+-----------------+------------------+--------------------+------------------+-------------------+------------------+------------------+--------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>직접 집계</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">count</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">stddev_pop</span><span class="p">,</span> <span class="nb">min</span><span class="p">,</span> <span class="nb">max</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>데이터의 백분위수 계산</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">olNmae</span> <span class="o">=</span> <span class="s2">"UnitPrice"</span>
+<span class="n">quantileProbs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">]</span>
+<span class="n">relError</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">approxQuantile</span><span class="p">(</span><span class="s2">"UnitPrice"</span><span class="p">,</span> <span class="n">quantileProbs</span><span class="p">,</span> <span class="n">relError</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[2.51]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>교차표, 자주 사용하는 항목 쌍 확인</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="s2">"StockCode"</span><span class="p">,</span> <span class="s2">"Quantity"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table border="1">
+<tr>
+<th>StockCode_Quantity</th>
+<th>-1</th>
+<th>-10</th>
+<th>-12</th>
+<th>-2</th>
+<th>-24</th>
+<th>-3</th>
+<th>-4</th>
+<th>-5</th>
+<th>-6</th>
+<th>-7</th>
+<th>1</th>
+<th>10</th>
+<th>100</th>
+<th>11</th>
+<th>12</th>
+<th>120</th>
+<th>128</th>
+<th>13</th>
+<th>14</th>
+<th>144</th>
+<th>15</th>
+<th>16</th>
+<th>17</th>
+<th>18</th>
+<th>19</th>
+<th>192</th>
+<th>2</th>
+<th>20</th>
+<th>200</th>
+<th>21</th>
+<th>216</th>
+<th>22</th>
+<th>23</th>
+<th>24</th>
+<th>25</th>
+<th>252</th>
+<th>27</th>
+<th>28</th>
+<th>288</th>
+<th>3</th>
+<th>30</th>
+<th>32</th>
+<th>33</th>
+<th>34</th>
+<th>36</th>
+<th>384</th>
+<th>4</th>
+<th>40</th>
+<th>432</th>
+<th>47</th>
+<th>48</th>
+<th>480</th>
+<th>5</th>
+<th>50</th>
+<th>56</th>
+<th>6</th>
+<th>60</th>
+<th>600</th>
+<th>64</th>
+<th>7</th>
+<th>70</th>
+<th>72</th>
+<th>8</th>
+<th>80</th>
+<th>9</th>
+<th>96</th>
+</tr>
+<tr>
+<td>22578</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21327</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22064</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21080</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>22219</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21908</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22818</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>15056BL</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>72817</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22545</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22988</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22274</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>20750</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>82616C</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>21703</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22899</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22379</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22422</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22769</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>22585</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</table>
+only showing top 20 rows
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">stat</span><span class="o">.</span><span class="n">freqItems</span><span class="p">([</span><span class="s2">"StockCode"</span><span class="p">,</span> <span class="s2">"Quantity"</span><span class="p">])</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+--------------------+
+| StockCode_freqItems|  Quantity_freqItems|
++--------------------+--------------------+
+|[90214E, 20728, 2...|[200, 128, 23, 50...|
++--------------------+--------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>모든 로우에 고유 ID 값 추가</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">monotonically_increasing_id</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">monotonically_increasing_id</span><span class="p">())</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------------------------+
+|monotonically_increasing_id()|
++-----------------------------+
+|                            0|
+|                            1|
++-----------------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="문자열-데이터-타입">
+<a class="anchor" href="#%EB%AC%B8%EC%9E%90%EC%97%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>문자열 데이터 타입<a class="anchor-link" href="#%EB%AC%B8%EC%9E%90%EC%97%B4-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>initcap</strong> 주어진 문자열에서 공백으로 나눠진 모든 단어의 첫 글자를 대문자로 변경</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">initcap</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">initcap</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------------------------------+
+|initcap(Description)              |
++----------------------------------+
+|White Hanging Heart T-light Holder|
+|White Metal Lantern               |
++----------------------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT initcap(Description) FROM dfTable LIMIT 2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid"><td style="font-weight: bold">initcap(Description)</td></tr>
+<tr><td>White Hanging Heart T-light Holder</td></tr>
+<tr><td>White Metal Lantern</td></tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>upper</strong>, <strong>lower</strong>: 대소문자 변환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">upper</span><span class="p">,</span> <span class="n">lower</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="n">lower</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)),</span> <span class="n">upper</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+--------------------+--------------------+
+|         Description|  lower(Description)|  upper(Description)|
++--------------------+--------------------+--------------------+
+|WHITE HANGING HEA...|white hanging hea...|WHITE HANGING HEA...|
+| WHITE METAL LANTERN| white metal lantern| WHITE METAL LANTERN|
++--------------------+--------------------+--------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>lpad</strong>, <strong>ltrim</strong>, <strong>rpad</strong>, <strong>rtrim</strong>, <strong>trim</strong>: 문자열 주변의 공백을 제거하거나 추가</li>
+<li>
+<strong>lpad</strong> 함수나 <strong>rpad</strong> 함수에 문자열에 길이 보다 작은 숫자를 넘기면 문자열의 오른쪽부터 제거됨</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">lit</span><span class="p">,</span> <span class="n">ltrim</span><span class="p">,</span> <span class="n">rtrim</span><span class="p">,</span> <span class="n">rpad</span><span class="p">,</span> <span class="n">lpad</span><span class="p">,</span> <span class="n">trim</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">ltrim</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"    HELLO      "</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"ltrim"</span><span class="p">),</span>
+    <span class="n">rtrim</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"   HELLO     "</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"rtrim"</span><span class="p">),</span>
+    <span class="n">trim</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"    HELLO    "</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"trim"</span><span class="p">),</span>
+    <span class="n">lpad</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"HELLO"</span><span class="p">),</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"lpad"</span><span class="p">),</span>
+    <span class="n">rpad</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"HELLO"</span><span class="p">),</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"rpad"</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------+--------+-----+----+----------+
+|      ltrim|   rtrim| trim|lpad|      rpad|
++-----------+--------+-----+----+----------+
+|HELLO      |   HELLO|HELLO| HEL|HELLO     |
+|HELLO      |   HELLO|HELLO| HEL|HELLO     |
++-----------+--------+-----+----+----------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT
+    ltrim('   HELLO   '),
+    rtrim('  HELLO   '),
+    trim('   HELLO   '),
+    lpad('HELLOOO    ', 3, ' '),
+    rpad('HELLOOO   ', 10, ' ')
+FROM dfTable
+LIMIT 2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">ltrim(   HELLO   )</td>
+<td style="font-weight: bold">rtrim(  HELLO   )</td>
+<td style="font-weight: bold">trim(   HELLO   )</td>
+<td style="font-weight: bold">lpad(HELLOOO    , 3,  )</td>
+<td style="font-weight: bold">rpad(HELLOOO   , 10,  )</td>
+</tr>
+<tr>
+<td>HELLO   </td>
+<td>  HELLO</td>
+<td>HELLO</td>
+<td>HEL</td>
+<td>HELLOOO   </td>
+</tr>
+<tr>
+<td>HELLO   </td>
+<td>  HELLO</td>
+<td>HELLO</td>
+<td>HEL</td>
+<td>HELLOOO   </td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="정규-표현식">
+<a class="anchor" href="#%EC%A0%95%EA%B7%9C-%ED%91%9C%ED%98%84%EC%8B%9D" aria-hidden="true"><span class="octicon octicon-link"></span></a>정규 표현식<a class="anchor-link" href="#%EC%A0%95%EA%B7%9C-%ED%91%9C%ED%98%84%EC%8B%9D"> </a>
+</h2>
+<ul>
+<li>스파크는 정규 표현식을 위해 <strong>regexp_extract</strong> 함수와 <strong>regexp_replace</strong> 함수를 제공</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">regexp_replace</span>
+
+<span class="n">regex_string</span> <span class="o">=</span> <span class="s2">"BLACK|WHITE|RED|GREEN|BLUE"</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">regexp_replace</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="n">regex_string</span><span class="p">,</span> <span class="s2">"COLOR"</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"color_clean"</span><span class="p">),</span> <span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+--------------------+--------------------+
+|         color_clean|         Description|
++--------------------+--------------------+
+|COLOR HANGING HEA...|WHITE HANGING HEA...|
+| COLOR METAL LANTERN| WHITE METAL LANTERN|
++--------------------+--------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT
+    regexp_replace(Description, 'BLACK|WHITE|RED|GREEN|BLUE', 'COLOR') as color_clean, Description
+FROM dfTable
+LIMIT 2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">color_clean</td>
+<td style="font-weight: bold">Description</td>
+</tr>
+<tr>
+<td>COLOR HANGING HEART T-LIGHT HOLDER</td>
+<td>WHITE HANGING HEART T-LIGHT HOLDER</td>
+</tr>
+<tr>
+<td>COLOR METAL LANTERN</td>
+<td>WHITE METAL LANTERN</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>translate</strong>: 주어진 문자를 다른 문자로 치환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">translate</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">translate</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="s2">"LEET"</span><span class="p">,</span> <span class="s2">"1337"</span><span class="p">),</span> <span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------------------------------+--------------------+
+|translate(Description, LEET, 1337)|         Description|
++----------------------------------+--------------------+
+|              WHI73 HANGING H3A...|WHITE HANGING HEA...|
+|               WHI73 M37A1 1AN73RN| WHITE METAL LANTERN|
++----------------------------------+--------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>regexp_extract</strong>: 정규식으로 값 추출</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">regexp_extract</span>
+
+<span class="n">extract_str</span> <span class="o">=</span> <span class="s2">"(BLACK|WHITE|RED|GREEN|BLUE)"</span>
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">regexp_extract</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="n">extract_str</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"color_clean"</span><span class="p">),</span>
+    <span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-----------+--------------------+
+|color_clean|         Description|
++-----------+--------------------+
+|      WHITE|WHITE HANGING HEA...|
+|      WHITE| WHITE METAL LANTERN|
++-----------+--------------------+
+only showing top 2 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>값 추출 없이 단순히 값의 존재 여부 확인</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">instr</span>
+
+<span class="n">containBlack</span> <span class="o">=</span> <span class="n">instr</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="s2">"BLACK"</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<span class="n">containWhite</span> <span class="o">=</span> <span class="n">instr</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">),</span> <span class="s2">"WHITE"</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+<span class="n">df</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"hasSimpleColor"</span><span class="p">,</span> <span class="n">containBlack</span> <span class="o">|</span> <span class="n">containWhite</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s2">"hasSimpleColor"</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------------------------------+
+|Description                       |
++----------------------------------+
+|WHITE HANGING HEART T-LIGHT HOLDER|
+|WHITE METAL LANTERN               |
+|RED WOOLLY HOTTIE WHITE HEART.    |
++----------------------------------+
+only showing top 3 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT Description FROM dfTable
+WHERE instr(Description, 'BLACK') &gt;= 1 OR instr(Description, 'WHITE') &gt;= 1
+LIMIT 3
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid"><td style="font-weight: bold">Description</td></tr>
+<tr><td>WHITE HANGING HEART T-LIGHT HOLDER</td></tr>
+<tr><td>WHITE METAL LANTERN</td></tr>
+<tr><td>RED WOOLLY HOTTIE WHITE HEART.</td></tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>locate</strong>: 문자열의 위치를 정수로 반환하는 locate 함수를 사용</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">expr</span><span class="p">,</span> <span class="n">locate</span>
+
+<span class="n">simpleColors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"black"</span><span class="p">,</span> <span class="s2">"white"</span><span class="p">,</span> <span class="s2">"red"</span><span class="p">,</span> <span class="s2">"green"</span><span class="p">,</span> <span class="s2">"blue"</span><span class="p">]</span>
+<span class="k">def</span> <span class="nf">color_locator</span><span class="p">(</span><span class="n">column</span><span class="p">,</span> <span class="n">color_string</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">locate</span><span class="p">(</span><span class="n">color_string</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">column</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="s2">"boolean"</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"is_"</span> <span class="o">+</span> <span class="n">color_string</span><span class="p">)</span>
+
+<span class="n">selectedColumns</span> <span class="o">=</span> <span class="p">[</span><span class="n">color_locator</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">Description</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">simpleColors</span><span class="p">]</span>
+<span class="n">selectedColumns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expr</span><span class="p">(</span><span class="s2">"*"</span><span class="p">))</span>
+
+<span class="n">df</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">*</span><span class="n">selectedColumns</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">expr</span><span class="p">(</span><span class="s2">"is_white OR is_red"</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s2">"Description"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------------------------------+
+|Description                       |
++----------------------------------+
+|WHITE HANGING HEART T-LIGHT HOLDER|
+|WHITE METAL LANTERN               |
+|RED WOOLLY HOTTIE WHITE HEART.    |
++----------------------------------+
+only showing top 3 rows
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="날짜와-타임스탬프-데이터-타입">
+<a class="anchor" href="#%EB%82%A0%EC%A7%9C%EC%99%80-%ED%83%80%EC%9E%84%EC%8A%A4%ED%83%AC%ED%94%84-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>날짜와 타임스탬프 데이터 타입<a class="anchor-link" href="#%EB%82%A0%EC%A7%9C%EC%99%80-%ED%83%80%EC%9E%84%EC%8A%A4%ED%83%AC%ED%94%84-%EB%8D%B0%EC%9D%B4%ED%84%B0-%ED%83%80%EC%9E%85"> </a>
+</h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>시간대 설정이 필요하면 <strong>spark.conf.sessionLocalTimeZone</strong> 속성에서 조정 가능</li>
+<li>이 때, 시간대 포맷은 자바 TimeZone 포맷을 따라야 함</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">current_date</span><span class="p">,</span> <span class="n">current_timestamp</span>
+
+<span class="n">dateDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>\
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"today"</span><span class="p">,</span> <span class="n">current_date</span><span class="p">())</span>\
+    <span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"now"</span><span class="p">,</span> <span class="n">current_timestamp</span><span class="p">())</span>
+<span class="n">dateDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">"dateTable"</span><span class="p">)</span>
+<span class="n">dateDF</span><span class="o">.</span><span class="n">printSchema</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>root
+ |-- id: long (nullable = false)
+ |-- today: date (nullable = false)
+ |-- now: timestamp (nullable = false)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>5일 전후의 날짜 계산</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">date_add</span><span class="p">,</span> <span class="n">date_sub</span>
+
+<span class="n">dateDF</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">date_sub</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"today"</span><span class="p">),</span> <span class="mi">5</span><span class="p">),</span> <span class="n">date_add</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"today"</span><span class="p">),</span> <span class="mi">5</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+------------------+------------------+
+|date_sub(today, 5)|date_add(today, 5)|
++------------------+------------------+
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
+|        2022-05-10|        2022-05-20|
++------------------+------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>datediff</strong>: 두 날짜 사이의 일 수를 반환</li>
+<li>
+<strong>months_between</strong>: 두 날짜 사이의 개월 수 반환</li>
+<li>
+<strong>to_date</strong>: 문자열을 날짜로 변환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">datediff</span><span class="p">,</span> <span class="n">months_between</span><span class="p">,</span> <span class="n">to_date</span>
+
+<span class="n">dateDF</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"week_age"</span><span class="p">,</span> <span class="n">date_sub</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"today"</span><span class="p">),</span> <span class="mi">7</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">datediff</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"week_age"</span><span class="p">),</span> <span class="n">col</span><span class="p">(</span><span class="s2">"today"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dateDF</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2016-01-01"</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"start"</span><span class="p">),</span>
+    <span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2017-05-22"</span><span class="p">))</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"end"</span><span class="p">)</span>
+<span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">months_between</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"start"</span><span class="p">),</span> <span class="n">col</span><span class="p">(</span><span class="s2">"end"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------------+
+|datediff(week_age, today)|
++-------------------------+
+|                       -7|
++-------------------------+
+only showing top 1 row
+
++--------------------------------+
+|months_between(start, end, true)|
++--------------------------------+
+|                    -16.67741935|
++--------------------------------+
+only showing top 1 row
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">to_date</span><span class="p">,</span> <span class="n">lit</span>
+
+<span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">withColumn</span><span class="p">(</span><span class="s2">"date"</span><span class="p">,</span> <span class="n">lit</span><span class="p">(</span><span class="s2">"2017-01-01"</span><span class="p">))</span>\
+    <span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">to_date</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"date"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------+
+|to_date(date)|
++-------------+
+|   2017-01-01|
++-------------+
+only showing top 1 row
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>년-월-일 형태가 아닌 년-일-월 형태의 날자 포맷에서는 파싱할 수 없으므로 null 값을 반환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">dateDF</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2016-20-12"</span><span class="p">)),</span> <span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2017-12-11"</span><span class="p">)))</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+-------------------+-------------------+
+|to_date(2016-20-12)|to_date(2017-12-11)|
++-------------------+-------------------+
+|               null|         2017-12-11|
++-------------------+-------------------+
+only showing top 1 row
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>dateFormat을 지정하여 해결</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">to_date</span>
+
+<span class="n">dateFormat</span> <span class="o">=</span> <span class="s2">"yyyy-dd-MM"</span>
+<span class="n">cleanDateDF</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">range</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2017-12-11"</span><span class="p">),</span> <span class="n">dateFormat</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"date"</span><span class="p">),</span>
+    <span class="n">to_date</span><span class="p">(</span><span class="n">lit</span><span class="p">(</span><span class="s2">"2017-20-12"</span><span class="p">),</span> <span class="n">dateFormat</span><span class="p">)</span><span class="o">.</span><span class="n">alias</span><span class="p">(</span><span class="s2">"date2"</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">cleanDateDF</span><span class="o">.</span><span class="n">createOrReplaceTempView</span><span class="p">(</span><span class="s2">"dateTable2"</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT to_date(date, 'yyyy-dd-MM'), to_date(date2, 'yyyy-dd-MM'), to_date(date)
+FROM dateTable2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">to_date(date, yyyy-dd-MM)</td>
+<td style="font-weight: bold">to_date(date2, yyyy-dd-MM)</td>
+<td style="font-weight: bold">to_date(date)</td>
+</tr>
+<tr>
+<td>2017-11-12</td>
+<td>2017-12-20</td>
+<td>2017-11-12</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>timestamp로 변경</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">pyspark.sql.functions</span> <span class="kn">import</span> <span class="n">col</span><span class="p">,</span> <span class="n">to_timestamp</span>
+
+<span class="n">cleanDateDF</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">to_timestamp</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"date"</span><span class="p">),</span> <span class="n">dateFormat</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+------------------------------+
+|to_timestamp(date, yyyy-dd-MM)|
++------------------------------+
+|           2017-11-12 00:00:00|
++------------------------------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT to_timestamp(date, 'yyy-dd-MM'), to_timestamp(date2, 'yyy-dd-MM') FROM dateTable2
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid">
+<td style="font-weight: bold">to_timestamp(date, yyy-dd-MM)</td>
+<td style="font-weight: bold">to_timestamp(date2, yyy-dd-MM)</td>
+</tr>
+<tr>
+<td>2017-11-12 00:00:00</td>
+<td>2017-12-20 00:00:00</td>
+</tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<ul>
+<li>
+<strong>cast(date as timestamp)</strong>: date를 timestamp로 변환</li>
+</ul>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%%</span><span class="k">sparksql</span>
+SELECT cast(to_date("2017-01-01", "yyyy-dd-MM") as timestamp)
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<table>
+<tr style="border-bottom: 1px solid"><td style="font-weight: bold">CAST(to_date(2017-01-01, yyyy-dd-MM) AS TIMESTAMP)</td></tr>
+<tr><td>2017-01-01 00:00:00</td></tr>
+</table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cleanDateDF</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"date2"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">lit</span><span class="p">(</span><span class="s2">"2017-12-12"</span><span class="p">))</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----------+----------+
+|      date|     date2|
++----------+----------+
+|2017-11-12|2017-12-20|
++----------+----------+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">cleanDateDF</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">col</span><span class="p">(</span><span class="s2">"date2"</span><span class="p">)</span> <span class="o">&gt;</span> <span class="s2">"'2017-12-12'"</span><span class="p">)</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>+----+-----+
+|date|date2|
++----+-----+
++----+-----+
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2020/01/10/pyspark-data-type.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[WEB] HTML5 예제 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[WEB] HTML5 예제" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="HTML5 예제" />
+<meta property="og:description" content="HTML5 예제" />
+<link rel="canonical" href="https://safenumz.github.io/blog/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-05-29T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[WEB] HTML5 예제" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-05-29T00:00:00-05:00","datePublished":"2019-05-29T00:00:00-05:00","description":"HTML5 예제","headline":"[WEB] HTML5 예제","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html"},"url":"https://safenumz.github.io/blog/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[WEB] HTML5 예제</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-05-29T00:00:00-05:00" itemprop="datePublished">
+        May 29, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      10 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#WEB">WEB</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="html5-예제">HTML5 예제</h1>
+
+<h2 id="html5-섹션">HTML5 섹션</h2>
+<h3 id="01_html5_sectinhtml">01_html5_sectin.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 01_html5_sectin.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=utf-8"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;title&gt;</span>산과 벗하는 산악회<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="c">&lt;!-- 표준안 구조 --&gt;</span>
+<span class="nt">&lt;header&gt;</span>
+<span class="c">&lt;!-- 페이지 안에서 제목 h1 ~ h6 --&gt;</span>
+<span class="nt">&lt;h1&gt;</span>우리 산악회<span class="nt">&lt;/h1&gt;</span>
+
+주말 산행 뿐만 아니라 주중 산행, 무박 산행도 합니다.
+<span class="nt">&lt;/header&gt;</span>
+
+<span class="c">&lt;!-- 메뉴역할 --&gt;</span>
+<span class="nt">&lt;nav&gt;</span>
+	<span class="c">&lt;!-- &lt;ul&gt;
+		&lt;li&gt;&lt;a href="http://w3schools.com" target="_blank"&gt;산행예절&lt;/a&gt;&lt;/li&gt; 새창
+		&lt;li&gt;&lt;a href="http://www.daum.net" target="_self"&gt;산행준비&lt;/a&gt;&lt;/li&gt; 해당창 그대로
+		&lt;li&gt;&lt;a href="http://www.naver.com" target="_parent"&gt;산행종류&lt;/a&gt;&lt;/li&gt; 부모창
+		&lt;li&gt;&lt;a href="http://www.mk.co.kr" target="_top"&gt;보행요령&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a href="http://www.nate.com"&gt;등산식량&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt; --&gt;</span>
+	
+	<span class="c">&lt;!-- 북마크 --&gt;</span>
+	<span class="nt">&lt;ol&gt;</span>
+		<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">'#greeting'</span><span class="nt">&gt;</span>산행예절<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">'#etiquette'</span><span class="nt">&gt;</span>산행준비<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">'#manner'</span><span class="nt">&gt;</span>산행종류<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		<span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">'99_html5구조_css.html'</span><span class="nt">&gt;</span>보행요령<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+	<span class="nt">&lt;/ol&gt;</span>
+<span class="nt">&lt;/nav&gt;</span>
+
+
+<span class="nt">&lt;section&gt;</span> 
+	<span class="nt">&lt;header&gt;&lt;h3&gt;</span>산행 예절<span class="nt">&lt;/h3&gt;&lt;/header&gt;</span>
+	<span class="nt">&lt;article&gt;</span>  
+		<span class="nt">&lt;h4</span> <span class="na">id=</span><span class="s">'greeting'</span><span class="nt">&gt;</span>인사<span class="nt">&lt;/h4&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		인사를 할 때에는 너무 큰소리로 하지 말고 상대방이 똑똑히 들을 정도의 소리로 인사한다. 산쟁이 중에는 "수고 하십니다"란 인사를 싫어하는 사람이 많다. 오히려 그것 보단 "힘내세요" "조금만 가면 정상입니다" "좋은 산행 되세요"라고 인사가 적당하지 않은가 생각한다. 그리고 단체로 갈 땐 모든 사람이 인사를 하면 안된다 여러 명이 줄지어서 갈 땐 선두에 선 사람이 인사를 하고 뒷사람은 가볍게 목례정도만 하면 된다. 
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		인사를 할 때에는 너무 큰소리로 하지 말고 상대방이 똑똑히 들을 정도의 소리로 인사한다. 산쟁이 중에는 "수고 하십니다"란 인사를 싫어하는 사람이 많다. 오히려 그것 보단 "힘내세요" "조금만 가면 정상입니다" "좋은 산행 되세요"라고 인사가 적당하지 않은가 생각한다. 그리고 단체로 갈 땐 모든 사람이 인사를 하면 안된다 여러 명이 줄지어서 갈 땐 선두에 선 사람이 인사를 하고 뒷사람은 가볍게 목례정도만 하면 된다. 
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		인사를 할 때에는 너무 큰소리로 하지 말고 상대방이 똑똑히 들을 정도의 소리로 인사한다. 산쟁이 중에는 "수고 하십니다"란 인사를 싫어하는 사람이 많다. 오히려 그것 보단 "힘내세요" "조금만 가면 정상입니다" "좋은 산행 되세요"라고 인사가 적당하지 않은가 생각한다. 그리고 단체로 갈 땐 모든 사람이 인사를 하면 안된다 여러 명이 줄지어서 갈 땐 선두에 선 사람이 인사를 하고 뒷사람은 가볍게 목례정도만 하면 된다. 
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		인사를 할 때에는 너무 큰소리로 하지 말고 상대방이 똑똑히 들을 정도의 소리로 인사한다. 산쟁이 중에는 "수고 하십니다"란 인사를 싫어하는 사람이 많다. 오히려 그것 보단 "힘내세요" "조금만 가면 정상입니다" "좋은 산행 되세요"라고 인사가 적당하지 않은가 생각한다. 그리고 단체로 갈 땐 모든 사람이 인사를 하면 안된다 여러 명이 줄지어서 갈 땐 선두에 선 사람이 인사를 하고 뒷사람은 가볍게 목례정도만 하면 된다. 
+		<span class="nt">&lt;/p&gt;</span>
+		
+		<span class="nt">&lt;h4</span> <span class="na">id = </span><span class="s">'etiquette'</span><span class="nt">&gt;</span>추월을 해야 할땐 먼저 양해를 구하자.<span class="nt">&lt;/h4&gt;</span>
+		
+		<span class="nt">&lt;p&gt;</span>
+		좁은 등산로에서 예고없이 추월을 한다면 배낭 같은 것이 부딪혀 서로 중심이 흐트러질 경우가 많다. 약한 사람은 튕겨 날 경우도 있다. 추월을 할 땐 미리 "먼저 가겠습니다"라고 하고 비켜주면 그때 "고맙습니다"라고 인사를 하고 추월을 하자.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		좁은 등산로에서 예고없이 추월을 한다면 배낭 같은 것이 부딪혀 서로 중심이 흐트러질 경우가 많다. 약한 사람은 튕겨 날 경우도 있다. 추월을 할 땐 미리 "먼저 가겠습니다"라고 하고 비켜주면 그때 "고맙습니다"라고 인사를 하고 추월을 하자.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		좁은 등산로에서 예고없이 추월을 한다면 배낭 같은 것이 부딪혀 서로 중심이 흐트러질 경우가 많다. 약한 사람은 튕겨 날 경우도 있다. 추월을 할 땐 미리 "먼저 가겠습니다"라고 하고 비켜주면 그때 "고맙습니다"라고 인사를 하고 추월을 하자.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		좁은 등산로에서 예고없이 추월을 한다면 배낭 같은 것이 부딪혀 서로 중심이 흐트러질 경우가 많다. 약한 사람은 튕겨 날 경우도 있다. 추월을 할 땐 미리 "먼저 가겠습니다"라고 하고 비켜주면 그때 "고맙습니다"라고 인사를 하고 추월을 하자.
+		<span class="nt">&lt;/p&gt;</span>
+		
+		<span class="nt">&lt;h4</span> <span class="na">id = </span><span class="s">'manner'</span><span class="nt">&gt;</span>올라오는 사람에게 양보를 하자.<span class="nt">&lt;/h4&gt;</span>
+		
+		<span class="nt">&lt;p&gt;</span>
+		산에서 많이 경험을 하였을 것이다. 내려 오는 사람보단 올라가는 사람이 시간이 촉박하다. 또 페이스 유지도 올라오는 사람이 유지하기가 어렵다. 단체일 경우에는 소수인 그룹이 양보한다.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		산에서 많이 경험을 하였을 것이다. 내려 오는 사람보단 올라가는 사람이 시간이 촉박하다. 또 페이스 유지도 올라오는 사람이 유지하기가 어렵다. 단체일 경우에는 소수인 그룹이 양보한다.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		산에서 많이 경험을 하였을 것이다. 내려 오는 사람보단 올라가는 사람이 시간이 촉박하다. 또 페이스 유지도 올라오는 사람이 유지하기가 어렵다. 단체일 경우에는 소수인 그룹이 양보한다.
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+		산에서 많이 경험을 하였을 것이다. 내려 오는 사람보단 올라가는 사람이 시간이 촉박하다. 또 페이스 유지도 올라오는 사람이 유지하기가 어렵다. 단체일 경우에는 소수인 그룹이 양보한다.
+		<span class="nt">&lt;/p&gt;</span>
+	<span class="nt">&lt;/article&gt;</span>
+ <span class="nt">&lt;/section&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-리스트-만들기">HTML5 리스트 만들기</h2>
+<h3 id="02_html5_listhtml">02_html5_list.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 02_html5_list.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+	<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=utf-8"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;title&gt;</span>카레만들기<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"../images/sample/curry.jpg"</span> <span class="na">alt=</span><span class="s">"카레이미지"</span> <span class="na">title=</span><span class="s">"설명"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>커리 (Curry) 재료<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;ul&gt;</span>
+	<span class="nt">&lt;li&gt;</span>카레 가루 100g<span class="nt">&lt;/li&gt;</span>
+	<span class="nt">&lt;li&gt;</span>닭가슴살 200g<span class="nt">&lt;/li&gt;</span>
+	<span class="nt">&lt;li&gt;</span>감자 1개<span class="nt">&lt;/li&gt;</span>
+	<span class="nt">&lt;li&gt;</span>양파 1/2개 <span class="nt">&lt;/li&gt;</span>
+	<span class="nt">&lt;li&gt;</span>당근 1/2개<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+
+<span class="nt">&lt;h2&gt;</span>커리(Curry) 만드는 법<span class="nt">&lt;/h2&gt;</span>
+<span class="nt">&lt;ol&gt;</span>
+    <span class="nt">&lt;li&gt;</span>카레 가루 8큰술에 물 6큰술을 넣어 풀어놓는다.<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>닭가슴살, 감자, 양파, 당근 등을 따로 중불에 살짝 볶는다.<span class="nt">&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;</span>볶아 놓은 재료를 카레를 풀어놓은 물과 함께 냄비에 넣고 물 2컵을 부은 후 15분 정도 끓인다.<span class="nt">&lt;/li&gt;</span>
+<span class="nt">&lt;/ol&gt;</span>
+
+<span class="nt">&lt;ul&gt;</span> <span class="c">&lt;!--절대경로--&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"/WebUI/media/bibi.mp3"</span><span class="nt">&gt;</span>음악파일<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">""</span><span class="nt">&gt;</span>비디오 파일<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+
+<span class="nt">&lt;ul&gt;</span> <span class="c">&lt;!--상대경로--&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"../media/bibi.mp3"</span><span class="nt">&gt;</span>음악파일<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+    <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">""</span><span class="nt">&gt;</span>비디오 파일<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+<span class="nt">&lt;/ul&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-텍스트-꾸미기">HTML5 텍스트 꾸미기</h2>
+<h3 id="03_html5_texthtml">03_html5_text.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 03_html5_text.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=utf-8"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>제주 올레<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;h1&gt;</span>제주 올레<span class="nt">&lt;/h1&gt;</span>
+		<span class="nt">&lt;b&gt;</span>진하게<span class="nt">&lt;/b&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+		<span class="nt">&lt;strong&gt;</span>중요한<span class="nt">&lt;/strong&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+		<span class="nt">&lt;em&gt;</span>강조<span class="nt">&lt;/em&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+		<span class="nt">&lt;b&gt;&lt;i&gt;</span> 진하게 이탤릭체<span class="nt">&lt;/i&gt;&lt;/b&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span> 보통문자
+		<span class="nt">&lt;small&gt;</span>작은문자<span class="nt">&lt;/small&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span> 보통문자
+		<span class="nt">&lt;sup&gt;</span>윗첨자<span class="nt">&lt;/sup&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span> 보통문자
+		<span class="nt">&lt;sub&gt;</span>아래첨자<span class="nt">&lt;/sub&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+	
+		<span class="nt">&lt;del&gt;</span>삭제<span class="nt">&lt;/del&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+		<span class="nt">&lt;ins&gt;</span>추가<span class="nt">&lt;/ins&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span>
+	
+		<span class="nt">&lt;mark&gt;</span>하이라이팅<span class="nt">&lt;/mark&gt;</span>
+		<span class="nt">&lt;br</span> <span class="nt">/&gt;</span> 제주 올레 제주 올레 7코스
+	
+		<span class="c">&lt;!-- 2.  수봉로 글씨만 하이라이팅 --&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+			외돌개를 출발하여 법환포구를 경유해 월평포구까지 어어진 해안올레. 올레인들이 가장 아끼고자연생태길인
+			<span class="nt">&lt;mark&gt;</span>'수봉로'<span class="nt">&lt;/mark&gt;</span>
+			를 만날 수 있다.
+			<span class="nt">&lt;mark&gt;</span>수봉로<span class="nt">&lt;/mark&gt;</span>
+			는 세 번째 코스 개척 시기인 2007년 12월, 올레지기인 '김수봉'님이 염소가 다니던 길에 직접 삽과 곡괭이만으로 계단과
+			길을 만들어서 사람이 걸어다닐 수 있도록 한 길이다.
+		<span class="nt">&lt;/p&gt;</span>
+	
+		<span class="c">&lt;!-- 1 --&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+			<span class="nt">&lt;b&gt;</span>패스포트 스탬프 확인 장소<span class="nt">&lt;/b&gt;&lt;br</span> <span class="nt">/&gt;</span>
+			<span class="c">&lt;!-- 진하게 --&gt;</span>
+			<span class="nt">&lt;strong&gt;</span>시작 외돌개 제주 올레 안내소<span class="nt">&lt;/strong&gt;&lt;br</span> <span class="nt">/&gt;</span>
+			<span class="c">&lt;!-- 중요하게 --&gt;</span>
+			<span class="nt">&lt;em&gt;</span>중간 강정 올레 쉼터<span class="nt">&lt;/em&gt;&lt;br</span> <span class="nt">/&gt;</span>
+			<span class="c">&lt;!-- 강조 --&gt;</span>
+			<span class="nt">&lt;i&gt;</span>종점 월평 송이 슈퍼<span class="nt">&lt;/i&gt;&lt;br</span> <span class="nt">/&gt;</span>
+			<span class="c">&lt;!-- 이탤릭체 --&gt;</span>
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="c">&lt;!-- 3.   삭제할 글자와 밑줄을 --&gt;</span>
+		<span class="nt">&lt;p&gt;</span>
+			난이도 : 상 길이: 총 16.4km(4~5시간) 수봉로는 언덕길이고 일강정 바당올레에서 서건도 사이 바윗길이 험한 편이다
+	
+			<span class="c">&lt;!-- &lt;pre&gt; text형식 살려줌 --&gt;</span>
+		<span class="nt">&lt;pre&gt;</span>수봉로는 언덕길이고 
+								일강정 바당올레에서 서건도 사이 바윗길이 험한 편이다 
+									외돌개 산책로에서 외돌개가 보인다. 
+										전설을 들어보면	가슴 아리다
+							<span class="nt">&lt;/pre&gt;</span>
+		<span class="c">&lt;!-- &lt;p&gt;에서 공백살리고 싶다면, &amp;nbsp해줘야함. --&gt;</span>
+		<span class="nt">&lt;p&gt;</span>수봉로는 언덕길이고 <span class="ni">&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>  <span class="ni">&amp;nbsp;&amp;nbsp;&amp;nbsp;</span>  <span class="ni">&amp;nbsp;&amp;nbsp;&amp;nbsp;</span> 일강정 바당올레에서 서건도 사이 바윗길이 험한 편이다 외돌개
+			산책로에서 외돌개가 보인다. 전설을 들어보면 가슴 아리다<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;/p&gt;</span>
+		<span class="nt">&lt;section&gt;</span>
+			<span class="nt">&lt;figure&gt;</span>
+				<span class="c">&lt;!-- 그림과 설명을 묶어줌. --&gt;</span>
+				<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">'../images/new/road1.jpg'</span> <span class="nt">/&gt;</span>
+				<span class="nt">&lt;figcaption&gt;</span>수봉로 언덕을 넘자마자 다시 만나게 되는 바다.<span class="nt">&lt;/figcaption&gt;</span>
+			<span class="nt">&lt;/figure&gt;</span>
+			<span class="nt">&lt;figure&gt;</span>
+				<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">'/WebUI/images/new/road2.jpg'</span> <span class="nt">/&gt;</span>
+				<span class="nt">&lt;figcaption&gt;</span>외돌개 산책로에서 외돌개가 보인다. 전설을 들어보면 가슴 아리다<span class="nt">&lt;/figcaption&gt;</span>
+			<span class="nt">&lt;/figure&gt;</span>
+	
+		<span class="nt">&lt;/section&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-span">html5 span</h2>
+<h3 id="04_html5_spanhtml">04_html5_span.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 04_html5_span.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=utf-8"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>푸터 영역 | WebCafe<span class="nt">&lt;/title&gt;</span>
+		<span class="nt">&lt;style </span><span class="na">type=</span><span class="s">"text/css"</span><span class="nt">&gt;</span>
+		
+		<span class="nt">address</span> <span class="p">{</span> 
+		    <span class="nl">clear</span><span class="p">:</span><span class="nb">both</span><span class="p">;</span> 
+			<span class="nl">padding</span><span class="p">:</span><span class="m">0</span> <span class="m">0</span> <span class="m">15px</span> <span class="m">3px</span><span class="p">;</span>
+			<span class="nl">font-size</span><span class="p">:</span><span class="m">15px</span><span class="p">;</span>
+			<span class="nl">line-height</span><span class="p">:</span><span class="m">1.5</span><span class="p">;</span>
+			<span class="nl">color</span><span class="p">:</span><span class="m">#787878</span><span class="p">;</span> <span class="err">&lt;!--</span> <span class="err">rgb</span> <span class="err">color는</span> <span class="err">16진수</span> <span class="err">--&gt;</span>
+		<span class="p">}</span> 
+		
+		<span class="nt">address</span> <span class="nc">.addr</span> <span class="p">{</span>
+			<span class="nl">padding-right</span><span class="p">:</span><span class="m">10px</span><span class="p">;</span>
+			<span class="nl">color</span> <span class="p">:</span> <span class="m">#9922cc</span><span class="p">;</span>
+			<span class="nl">font-size</span><span class="p">:</span> <span class="m">18px</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="nt">address</span> <span class="nc">.tel</span><span class="o">,</span> <span class="nt">address</span> <span class="nc">.fax</span> <span class="p">{</span>
+			<span class="nl">padding</span><span class="p">:</span> <span class="m">0px</span> <span class="m">3px</span><span class="p">;</span>
+			<span class="nl">color</span> <span class="p">:</span> <span class="m">#aa3302</span><span class="p">;</span>
+			<span class="nl">font-family</span> <span class="p">:</span> <span class="n">Serif</span><span class="p">;</span>
+		<span class="p">}</span>
+		
+		<span class="nt">address</span> <span class="nc">.copyright</span> <span class="p">{</span>
+			<span class="nl">padding-right</span><span class="p">:</span><span class="m">10px</span><span class="p">;</span>
+			<span class="nl">color</span> <span class="p">:</span> <span class="m">#ee1212</span><span class="p">;</span>
+			<span class="nl">font-size</span><span class="p">:</span> <span class="m">13px</span><span class="p">;</span>
+		<span class="p">}</span>
+		
+		<span class="nt">&lt;/style&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>	
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"footer"</span><span class="nt">&gt;</span> <span class="c">&lt;!-- id 찾을때는 # --&gt;</span>
+		  <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"footerInner"</span><span class="nt">&gt;</span><span class="c">&lt;!-- class 찾을때는 . --&gt;</span>
+		    <span class="nt">&lt;p</span> <span class="na">class=</span><span class="s">"footerLogo"</span><span class="nt">&gt;&lt;img</span> <span class="na">src=</span><span class="s">"../images/common/logo_copyright.gif"</span> <span class="na">alt=</span><span class="s">"WebCafe"</span> <span class="nt">/&gt;&lt;/p&gt;</span>
+		    <span class="nt">&lt;h2&gt;</span>사이트 이용안내<span class="nt">&lt;/h2&gt;</span>
+		    <span class="nt">&lt;ul</span> <span class="na">class=</span><span class="s">"guideMenu"</span><span class="nt">&gt;</span>
+		      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>회사소개<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>개인정보보호정책<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>이메일주소무단수집거부<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Contact Us<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		      <span class="nt">&lt;li&gt;&lt;a</span> <span class="na">href=</span><span class="s">"#"</span><span class="nt">&gt;</span>Site map<span class="nt">&lt;/a&gt;&lt;/li&gt;</span>
+		    <span class="nt">&lt;/ul&gt;</span>
+		    <span class="nt">&lt;address&gt;</span>
+		    	<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"addr"</span><span class="nt">&gt;</span>서울시 마포구 상수동 123-12 한주빌딩 5층<span class="nt">&lt;/span&gt;</span>
+		    	<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"tel"</span><span class="nt">&gt;</span>· 전화: 02-1234-1234<span class="nt">&lt;/span&gt;</span> 
+				<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"fax"</span><span class="nt">&gt;</span>· FAX: 02-1234-1234<span class="nt">&lt;/span&gt;</span> 
+				<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"email"</span><span class="nt">&gt;</span>· E-MAIL: webmaster@mail.com<span class="nt">&lt;/span&gt;&lt;br</span> <span class="nt">/&gt;</span>
+		   	 	<span class="nt">&lt;span</span> <span class="na">class=</span><span class="s">"copyright"</span><span class="nt">&gt;</span>Copyright ⓒ Web Cafe CORPORATION ALL RIGHTS RESERVED.<span class="nt">&lt;/span&gt;</span>
+		    <span class="nt">&lt;/address&gt;</span>
+		  <span class="nt">&lt;/div&gt;</span>
+		<span class="nt">&lt;/div&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-테이블-만들기">HTML5 테이블 만들기</h2>
+<h3 id="05_html5_tablehtml">05_html5_table.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 05_html5_table.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>05_html5_table.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;table</span> <span class="na">border =</span><span class="s">'2'</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td&gt;</span>가<span class="nt">&lt;/td&gt;&lt;td</span> <span class="na">colspan = </span><span class="s">'2'</span><span class="nt">&gt;</span>가<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">rowspan = </span><span class="s">'2'</span><span class="nt">&gt;</span>A<span class="nt">&lt;/td&gt;&lt;td&gt;</span>A<span class="nt">&lt;/td&gt;&lt;td&gt;</span>A<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td&gt;</span>ㄱ<span class="nt">&lt;/td&gt;&lt;td&gt;</span>ㄱ<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;/table&gt;</span>
+		<span class="nt">&lt;br/&gt;</span>
+		<span class="nt">&lt;table</span> <span class="na">border =</span><span class="s">'2'</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;th</span> <span class="na">colspan=</span><span class="s">'2'</span><span class="nt">&gt;</span>부서명<span class="nt">&lt;/th&gt;&lt;th&gt;</span>전화번호(02+)<span class="nt">&lt;/th&gt;&lt;th&gt;</span>팩스번호(02+)<span class="nt">&lt;/th&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">colspan=</span><span class="s">'2'</span><span class="nt">&gt;</span>종합상황실<span class="nt">&lt;/td&gt;&lt;td&gt;</span>123-1001~1005<span class="nt">&lt;/td&gt;&lt;td&gt;</span>321-1001<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'3'</span><span class="nt">&gt;</span>비서실<span class="nt">&lt;/td&gt;&lt;td&gt;</span>비서실장<span class="nt">&lt;/td&gt;&lt;td&gt;</span>123-1111<span class="nt">&lt;/td&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'3'</span><span class="nt">&gt;</span>321-1002(사장)<span class="nt">&lt;br/&gt;</span>321-1003(감사)<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'2'</span><span class="nt">&gt;</span>비서실<span class="nt">&lt;/td&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'2'</span> <span class="nt">&gt;</span>123-1112 <span class="nt">&lt;br/&gt;</span>123-1113<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'3'</span><span class="nt">&gt;</span>홍보실<span class="nt">&lt;/td&gt;&lt;td&gt;</span>홍보실장<span class="nt">&lt;/td&gt;&lt;td&gt;</span>123-1001<span class="nt">&lt;/td&gt;&lt;td</span> <span class="na">rowspan=</span><span class="s">'3'</span><span class="nt">&gt;</span>321-1101<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td&gt;</span>홍보부<span class="nt">&lt;/td&gt;&lt;td&gt;</span>123-2001~123-2009<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+		<span class="nt">&lt;tr&gt;&lt;td&gt;</span>국제협력부<span class="nt">&lt;/td&gt;&lt;td&gt;</span>123-1230~1234<span class="nt">&lt;/td&gt;&lt;/tr&gt;</span>
+	<span class="nt">&lt;/table&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-폼-만들기">HTML5 폼 만들기</h2>
+<h3 id="06_html5_formhtml">06_html5_form.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>06_html5_form.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">'xxxx.jsp'</span> <span class="na">method=</span><span class="s">'get'</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;fieldset&gt;</span>
+				<span class="nt">&lt;legend&gt;</span> 개인정보 <span class="nt">&lt;/legend&gt;</span>
+				<span class="nt">&lt;ol&gt;</span>
+					<span class="nt">&lt;li&gt;</span>
+						<span class="c">&lt;!-- label id는 같이 줘야 두개를 하나로 인식함. --&gt;</span> <span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">'name'</span><span class="nt">&gt;</span>이름<span class="nt">&lt;/label&gt;</span>
+						<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'text'</span> <span class="na">name=</span><span class="s">'name'</span> <span class="na">id=</span><span class="s">'name'</span> <span class="na">placeholder=</span><span class="s">'홍길동'</span> <span class="na">required</span><span class="nt">&gt;</span>
+						<span class="c">&lt;!-- required 필수입력 지정 --&gt;</span>
+					<span class="nt">&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;&lt;label</span> <span class="na">for=</span><span class="s">'email'</span><span class="nt">&gt;</span>이메일<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'email'</span>
+						<span class="na">name=</span><span class="s">'email'</span> <span class="na">id=</span><span class="s">'email'</span> <span class="na">placeholder=</span><span class="s">'abc@encore.com'</span> <span class="na">required</span><span class="nt">&gt;</span>
+					<span class="nt">&lt;/li&gt;</span>
+	
+	
+					<span class="nt">&lt;li&gt;&lt;label</span> <span class="na">for=</span><span class="s">'tel'</span><span class="nt">&gt;</span>전화번호<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'tel'</span> <span class="na">name=</span><span class="s">'tel'</span>
+						<span class="na">id=</span><span class="s">'tel'</span> <span class="na">placeholder=</span><span class="s">'010-000-0000'</span><span class="nt">&gt;&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;&lt;label</span> <span class="na">for=</span><span class="s">'mybirth'</span><span class="nt">&gt;</span>생일<span class="nt">&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'date'</span>
+						<span class="na">name=</span><span class="s">'birth'</span> <span class="na">id=</span><span class="s">'mybirth'</span> <span class="na">placeholder=</span><span class="s">'1989-05-06'</span><span class="nt">&gt;&lt;/li&gt;</span>
+				<span class="nt">&lt;/ol&gt;</span>
+			<span class="nt">&lt;/fieldset&gt;</span>
+			<span class="nt">&lt;fieldset&gt;</span>
+				<span class="nt">&lt;ol&gt;</span>
+					<span class="nt">&lt;legend&gt;</span> 코딩 숙련도(상,중,하) <span class="nt">&lt;/legend&gt;</span>
+					<span class="nt">&lt;li&gt;&lt;label</span> <span class="na">for=</span><span class="s">'skill'</span><span class="nt">&gt;&lt;/label&gt;</span> <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"range"</span>
+						<span class="na">name=</span><span class="s">"skill"</span> <span class="na">id=</span><span class="s">" skill"</span> <span class="na">min=</span><span class="s">"0"</span> <span class="na">max=</span><span class="s">"3"</span><span class="nt">&gt;&lt;/li&gt;</span>
+				<span class="nt">&lt;/ol&gt;</span>
+			<span class="nt">&lt;/fieldset&gt;</span>
+			<span class="nt">&lt;fieldset&gt;</span>
+				<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'submit'</span> <span class="na">value=</span><span class="s">'전송'</span> <span class="nt">/&gt;</span>
+			<span class="nt">&lt;/fieldset&gt;</span>
+		<span class="nt">&lt;/form&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="심플-폼-예제">심플 폼 예제</h2>
+<h3 id="06_simpleformhtml">06_simpleform.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>06_simpleform.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="c">&lt;!-- method는 전송방식이며, get과 post가 있고 get이 default.
+				get방식은 body에 넣어서 주소에 보이고, post는 head에 넣어서 주소에 안보임.--&gt;</span>
+		<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"xxxxx.jsp"</span> <span class="na">method=</span><span class="s">'post'</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;fieldset&gt;</span>
+				<span class="nt">&lt;legend&gt;</span>회원가입<span class="nt">&lt;/legend&gt;</span>
+				<span class="nt">&lt;ol&gt;</span>
+					<span class="nt">&lt;li&gt;</span>이름 : <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'irum'</span> <span class="na">type=</span><span class="s">'text'</span> <span class="nt">/&gt;&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>비밀번호 : <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'pw'</span> <span class="na">type=</span><span class="s">'password'</span> <span class="nt">/&gt;&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;</span>성별 <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'gender'</span> <span class="na">type=</span><span class="s">'radio'</span> <span class="na">value=</span><span class="s">"men"</span> <span class="nt">/&gt;</span>남자 <span class="nt">&lt;input</span>
+						<span class="na">name=</span><span class="s">'gender'</span> <span class="na">type=</span><span class="s">'radio'</span> <span class="na">value=</span><span class="s">"women"</span> <span class="nt">/&gt;</span>여자
+					<span class="nt">&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;</span>직업 <span class="nt">&lt;select</span> <span class="na">name=</span><span class="s">"job"</span><span class="nt">&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"program"</span> <span class="na">selected=</span><span class="s">"selected"</span><span class="nt">&gt;</span>프로그래머<span class="nt">&lt;/option&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"nojob"</span><span class="nt">&gt;</span>백수<span class="nt">&lt;/option&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value=</span><span class="s">"lawyer"</span><span class="nt">&gt;</span>변호사<span class="nt">&lt;/option&gt;</span>
+					<span class="nt">&lt;/select&gt;&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;</span>취미 <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'hobby'</span> <span class="na">type=</span><span class="s">'checkbox'</span> <span class="na">value=</span><span class="s">"sleep"</span> <span class="nt">/&gt;</span>잠자기
+						<span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'hobby'</span> <span class="na">type=</span><span class="s">'checkbox'</span> <span class="na">value=</span><span class="s">"eat"</span> <span class="nt">/&gt;</span>먹기 <span class="nt">&lt;input</span>
+						<span class="na">name=</span><span class="s">'hobby'</span> <span class="na">type=</span><span class="s">'checkbox'</span> <span class="na">value=</span><span class="s">"breath"</span> <span class="nt">/&gt;</span>숨쉬기 <span class="nt">&lt;input</span>
+						<span class="na">name=</span><span class="s">'hobby'</span> <span class="na">type=</span><span class="s">'checkbox'</span> <span class="na">value=</span><span class="s">"spaceout"</span> <span class="nt">/&gt;</span>멍때리기
+					<span class="nt">&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;</span>성별 <span class="nt">&lt;input</span> <span class="na">name=</span><span class="s">'gend'</span> <span class="na">type=</span><span class="s">'radio'</span> <span class="na">value=</span><span class="s">"men"</span> <span class="nt">/&gt;</span>남자 <span class="nt">&lt;input</span>
+						<span class="na">name=</span><span class="s">'gender'</span> <span class="na">type=</span><span class="s">'radio'</span> <span class="na">value=</span><span class="s">"women"</span> <span class="nt">/&gt;</span>여자
+					<span class="nt">&lt;/li&gt;</span>
+	
+					<span class="nt">&lt;li&gt;&lt;input</span> <span class="na">type=</span><span class="s">'submit'</span> <span class="na">value=</span><span class="s">'확인'</span> <span class="nt">/&gt;</span> <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">'reset'</span>
+						<span class="na">value=</span><span class="s">'취소'</span> <span class="nt">/&gt;&lt;/li&gt;</span>			
+					<span class="nt">&lt;li&gt;</span>
+						여행하고 싶은 장소 : <span class="nt">&lt;input</span> <span class="na">type = </span><span class="s">'text'</span> <span class="na">list=</span><span class="s">'countries'</span><span class="nt">/&gt;</span>
+						<span class="nt">&lt;datalist</span> <span class="na">id=</span><span class="s">'countries'</span><span class="nt">&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value = </span><span class="s">'칠레'</span><span class="nt">/&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value = </span><span class="s">'스페인'</span><span class="nt">/&gt;</span>
+							<span class="nt">&lt;option</span> <span class="na">value = </span><span class="s">'스위스'</span><span class="nt">/&gt;</span>		
+						<span class="nt">&lt;/datalist&gt;</span>
+					<span class="nt">&lt;/li&gt;</span>
+				<span class="nt">&lt;/ol&gt;</span>
+			<span class="nt">&lt;/fieldset&gt;</span>
+		<span class="nt">&lt;/form&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-이전-이메일-폼">HTML5 이전 이메일 폼</h2>
+<h3 id="06_email_old_formhtml">06_email_old_form.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 06_email_old_form.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>old form<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+	<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"myform"</span> <span class="na">action=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"email"</span><span class="nt">&gt;</span>email<span class="nt">&lt;/label&gt;</span>
+		<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">id=</span><span class="s">"email"</span> <span class="na">name=</span><span class="s">"email"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;/form&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+	<span class="nt">&lt;script&gt;</span>
+		<span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">"</span><span class="s2">#myform</span><span class="dl">"</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="dl">"</span><span class="s2">submit</span><span class="dl">"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+			<span class="kd">var</span> <span class="nx">email</span> <span class="o">=</span> <span class="nb">document</span><span class="p">.</span><span class="nx">querySelector</span><span class="p">(</span><span class="dl">"</span><span class="s2">#email</span><span class="dl">"</span><span class="p">);</span>
+			<span class="kd">var</span> <span class="nx">isValidate</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+			<span class="kd">var</span> <span class="nx">regexp</span> <span class="o">=</span> <span class="sr">/</span><span class="se">[</span><span class="sr">a-z</span><span class="se">]</span><span class="sr">+</span><span class="se">[</span><span class="sr">a-z0-9</span><span class="se">]</span><span class="sr">*</span><span class="se">\.?[</span><span class="sr">a-z0-9</span><span class="se">]</span><span class="sr">*@</span><span class="se">[</span><span class="sr">a-z0-9</span><span class="se">]</span><span class="sr">+</span><span class="se">\.?[</span><span class="sr">a-z0-9</span><span class="se">]</span><span class="sr">*/i</span><span class="p">;</span>
+			 <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">regexp</span><span class="p">.</span><span class="nx">test</span><span class="p">(</span><span class="nx">email</span><span class="p">.</span><span class="nx">value</span><span class="p">)){</span>
+				<span class="nx">alert</span><span class="p">(</span><span class="dl">"</span><span class="s2">이메일 형식이 다릅니다.</span><span class="dl">"</span><span class="p">);</span>
+				<span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+			<span class="p">}</span> 
+		<span class="p">});</span>
+	<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-이메일-폼">HTML5 이메일 폼</h2>
+<h3 id="06_email_html5_formhtml">06_email_html5_form.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 06_email_html5_form.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>new form<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;form</span> <span class="na">id=</span><span class="s">"myform"</span> <span class="na">action=</span><span class="s">"#"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;label</span> <span class="na">for=</span><span class="s">"email"</span><span class="nt">&gt;</span>email<span class="nt">&lt;/label&gt;</span>
+			<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"email"</span> <span class="na">id=</span><span class="s">"email"</span> <span class="na">name=</span><span class="s">"email"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;/form&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="iframe">iframe</h2>
+<h3 id="07_iframehtml">07_iframe.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 07_iframe.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>07_iframe.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.daum.net'</span> <span class="na">target = </span><span class="s">'leftFrm'</span><span class="nt">&gt;</span>다음<span class="nt">&lt;/a&gt;</span>
+		<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.nate.com'</span> <span class="na">target = </span><span class="s">'rightFrm'</span><span class="nt">&gt;</span>네이트<span class="nt">&lt;/a&gt;&lt;hr/&gt;&lt;hr/&gt;</span>
+		<span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">'http://www.etnews.com'</span> <span class="na">width=</span><span class="s">'500'</span>  <span class="na">height=</span><span class="s">'500'</span> <span class="na">name=</span><span class="s">'leftFrm'</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+		<span class="nt">&lt;iframe</span> <span class="na">src=</span><span class="s">'http://www.mk.co.kr'</span> <span class="na">width=</span><span class="s">'500'</span>  <span class="na">height=</span><span class="s">'500'</span> <span class="na">name=</span><span class="s">'rightFrm'</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="08_iframehtml">08_iframe.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 08_iframe.html  --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>08_iframe.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;iframe</span> <span class="na">src = </span><span class="s">'./08_sub.html'</span> <span class="na">width=</span><span class="s">'500'</span> <span class="na">height=</span><span class="s">'500'</span> <span class="na">name=</span><span class="s">'left'</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+		<span class="nt">&lt;iframe</span> <span class="na">src = </span><span class="s">''</span> <span class="na">width=</span><span class="s">'500'</span> <span class="na">height=</span><span class="s">'500'</span> <span class="na">name=</span><span class="s">'right'</span><span class="nt">&gt;&lt;/iframe&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="08_subhtml">08_sub.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- 08_sub.html --&gt;</span>
+<span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"EUC-KR"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>08_sub.html<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;div&gt;</span>
+			<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.daum.net'</span><span class="nt">&gt;</span>다음<span class="nt">&lt;/a&gt;</span>
+			<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.nate.com'</span> <span class="na">target=</span><span class="s">'right'</span><span class="nt">&gt;</span>네이트<span class="nt">&lt;/a&gt;</span>
+			<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.naver.com'</span> <span class="na">target=</span><span class="s">'_top'</span><span class="nt">&gt;</span>네이버<span class="nt">&lt;/a&gt;</span>
+			<span class="nt">&lt;a</span> <span class="na">href=</span><span class="s">'http://www.korea.com'</span> <span class="na">target=</span><span class="s">"_blank"</span><span class="nt">&gt;</span>코리아<span class="nt">&lt;/a&gt;</span>
+		<span class="nt">&lt;/div&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h2 id="html5-구조">HTML5 구조</h2>
+<h3 id="99_html5구조_csshtml">99_html5구조_css.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"UTF-8"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;title&gt;</span>html5 structure<span class="nt">&lt;/title&gt;</span>
+		<span class="nt">&lt;link</span> <span class="na">rel=</span><span class="s">"stylesheet"</span> <span class="na">href=</span><span class="s">"99_html5구조.css"</span> <span class="nt">/&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>
+	<span class="nt">&lt;body&gt;</span>
+		<span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"wrapper"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;header&gt;</span>
+				<span class="nt">&lt;h1&gt;</span>
+					<span class="nt">&lt;mark&gt;</span>HTML5<span class="nt">&lt;/mark&gt;</span>문서의 주요 구조
+				<span class="nt">&lt;/h1&gt;</span>
+				<span class="nt">&lt;h2&gt;</span>HTML5를 처음 공부하는 당신을 위해<span class="nt">&lt;/h2&gt;</span>
+			<span class="nt">&lt;/header&gt;</span>
+			<span class="nt">&lt;nav&gt;</span>
+				<span class="nt">&lt;ul&gt;</span>
+					<span class="nt">&lt;li&gt;</span>header<span class="nt">&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>nav<span class="nt">&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>section<span class="nt">&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>article<span class="nt">&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>footer<span class="nt">&lt;/li&gt;</span>
+				<span class="nt">&lt;/ul&gt;</span>
+			<span class="nt">&lt;/nav&gt;</span>
+			<span class="nt">&lt;section&gt;</span>
+				<span class="nt">&lt;article&gt;</span>
+					<span class="nt">&lt;header&gt;</span>
+						<span class="nt">&lt;h2&gt;</span>header란?<span class="nt">&lt;/h2&gt;</span>
+						<span class="nt">&lt;time&gt;</span>posted 2016-01-01<span class="nt">&lt;/time&gt;</span>
+					<span class="nt">&lt;/header&gt;</span>
+					<span class="nt">&lt;p&gt;</span>header란 head와 다르다.<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;p&gt;</span>주로 문서의 제목을 나타낼 때 사용된다.<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;footer&gt;</span>
+						<span class="nt">&lt;p&gt;</span>comments (0)<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;/footer&gt;</span>
+				<span class="nt">&lt;/article&gt;</span>
+				<span class="nt">&lt;article&gt;</span>
+					<span class="nt">&lt;header&gt;</span>
+						<span class="nt">&lt;h2&gt;</span>nav란?<span class="nt">&lt;/h2&gt;</span>
+						<span class="nt">&lt;time&gt;</span>posted 2016-01-01<span class="nt">&lt;/time&gt;</span>
+					<span class="nt">&lt;/header&gt;</span>
+					<span class="nt">&lt;p&gt;</span>nav는 화면에서 메뉴를 주로 나타낸다.<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;p&gt;</span>일반적으로 ul &gt; li 항목으로 표현한다.<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;footer&gt;</span>
+						<span class="nt">&lt;p&gt;</span>comments (0)<span class="nt">&lt;/p&gt;</span>
+					<span class="nt">&lt;/footer&gt;</span>
+				<span class="nt">&lt;/article&gt;</span>
+			<span class="nt">&lt;/section&gt;</span>
+			<span class="nt">&lt;aside&gt;</span>
+				<span class="nt">&lt;ul&gt;</span>
+					<span class="nt">&lt;li&gt;&lt;header&gt;</span><span class="ni">&amp;lt;</span>head<span class="ni">&amp;gt;</span><span class="nt">&lt;/header&gt;</span>
+						<span class="nt">&lt;p&gt;</span>단순히 문서의 정보 표시<span class="nt">&lt;/p&gt;&lt;/li&gt;</span>
+					<span class="nt">&lt;li&gt;</span>javascript<span class="nt">&lt;/li&gt;</span>
+				<span class="nt">&lt;/ul&gt;</span>
+			<span class="nt">&lt;/aside&gt;</span>
+			<span class="nt">&lt;footer&gt;</span>
+				<span class="nt">&lt;p&gt;</span>copyright <span class="ni">&amp;copy;</span> 2014 ~<span class="nt">&lt;/p&gt;</span>
+			<span class="nt">&lt;/footer&gt;</span>
+		<span class="nt">&lt;/div&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="99_html5구조css">99_html5구조.css</h3>
+
+<div class="language-css highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">@CHARSET</span> <span class="s1">"UTF-8"</span><span class="p">;</span>
+
+<span class="o">*</span> <span class="p">{</span>
+	<span class="nl">margin</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">0px</span><span class="p">;</span>
+	<span class="c">/* border:solid 1px black; */</span>
+<span class="p">}</span>
+
+<span class="nt">h1</span> <span class="p">{</span>
+	<span class="nl">font</span><span class="p">:</span> <span class="nb">bold</span> <span class="m">20px</span> <span class="n">verdana</span><span class="p">,</span> <span class="nb">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">h2</span> <span class="p">{</span>
+	<span class="nl">font</span><span class="p">:</span> <span class="nb">bold</span> <span class="m">14px</span> <span class="n">verdana</span><span class="p">,</span> <span class="nb">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">body</span> <span class="p">{</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="nb">center</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nf">#wrapper</span> <span class="p">{</span>
+	<span class="nl">width</span><span class="p">:</span> <span class="m">960px</span><span class="p">;</span>
+	<span class="nl">margin</span><span class="p">:</span> <span class="m">15px</span> <span class="nb">auto</span><span class="p">;</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nf">#wrapper</span><span class="o">&gt;</span><span class="nt">header</span> <span class="p">{</span>
+	<span class="nl">background</span><span class="p">:</span> <span class="m">#fffbb9</span><span class="p">;</span>
+	<span class="nl">border</span><span class="p">:</span> <span class="nb">solid</span> <span class="m">1px</span> <span class="m">#999999</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">nav</span> <span class="p">{</span>
+	<span class="nl">background</span><span class="p">:</span> <span class="m">#cccccc</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span> <span class="m">15px</span><span class="p">;</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">nav</span><span class="o">&gt;</span><span class="nt">ul</span><span class="o">&gt;</span><span class="nt">li</span> <span class="p">{</span>
+	<span class="nl">display</span><span class="p">:</span> <span class="n">inline-block</span><span class="p">;</span>
+	<span class="nl">list-style</span><span class="p">:</span> <span class="nb">none</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">5px</span><span class="p">;</span>
+	<span class="nl">font</span><span class="p">:</span> <span class="nb">bold</span> <span class="m">14px</span> <span class="n">verdana</span><span class="p">,</span> <span class="nb">sans-serif</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">section</span> <span class="p">{</span>
+	<span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+	<span class="nl">width</span><span class="p">:</span> <span class="m">660px</span><span class="p">;</span>
+	<span class="nl">margin</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">aside</span> <span class="p">{</span>
+	<span class="nl">float</span><span class="p">:</span> <span class="nb">left</span><span class="p">;</span>
+	<span class="nl">width</span><span class="p">:</span> <span class="m">220px</span><span class="p">;</span>
+	<span class="nl">margin</span><span class="p">:</span> <span class="m">20px</span> <span class="m">0px</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+	<span class="nl">background</span><span class="p">:</span> <span class="m">#cccccc</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">article</span><span class="o">&gt;</span><span class="nt">footer</span> <span class="p">{</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="nb">right</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nf">#wrapper</span><span class="o">&gt;</span><span class="nt">footer</span> <span class="p">{</span>
+	<span class="nl">clear</span><span class="p">:</span> <span class="nb">both</span><span class="p">;</span>
+	<span class="nl">text-align</span><span class="p">:</span> <span class="n">cneter</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+	<span class="nl">border-top</span><span class="p">:</span> <span class="m">2px</span> <span class="nb">solid</span> <span class="m">#999999</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">article</span> <span class="p">{</span>
+	<span class="nl">background</span><span class="p">:</span> <span class="m">#fffbcc</span><span class="p">;</span>
+	<span class="nl">border</span><span class="p">:</span> <span class="m">1px</span> <span class="nb">solid</span> <span class="m">#999999</span><span class="p">;</span>
+	<span class="nl">padding</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+	<span class="nl">margin-bottom</span><span class="p">:</span> <span class="m">15px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">time</span> <span class="p">{</span>
+	<span class="nl">color</span><span class="p">:</span> <span class="m">#999999</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">time</span><span class="nd">:hover</span> <span class="p">{</span>
+	<span class="nl">font-size</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="nt">article</span> <span class="nt">footer</span><span class="nd">:active</span> <span class="p">{</span>
+	<span class="nl">font-size</span><span class="p">:</span> <span class="m">20px</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="99_mobile_formhtml">99_mobile_form.html</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+	<span class="nt">&lt;head&gt;</span>
+		<span class="nt">&lt;meta</span> <span class="na">charset=</span><span class="s">"euc-kr"</span> <span class="nt">/&gt;</span> 	
+		<span class="nt">&lt;meta</span> <span class="na">name=</span><span class="s">"viewport"</span> 
+				<span class="na">content=</span><span class="s">"width=device-width, initial-scale=1.0, 
+							maximum-scale=1.0, minimum-scale=1.0, 
+							user-scalable=no"</span><span class="nt">/&gt;</span>
+		<span class="nt">&lt;title&gt;</span>모바일 페이지<span class="nt">&lt;/title&gt;</span>
+	<span class="nt">&lt;/head&gt;</span>		
+	<span class="nt">&lt;body&gt;</span>	
+		<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"#"</span> <span class="nt">&gt;</span>
+			날짜: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"date"</span> <span class="na">min=</span><span class="s">"2011-11-01"</span> <span class="na">max=</span><span class="s">"2021-12-31"</span> <span class="na">step=</span><span class="s">"1"</span> <span class="na">value=</span><span class="s">"2018-11-11"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			범위: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"range"</span> <span class="na">min=</span><span class="s">"0"</span> <span class="na">max=</span><span class="s">"100"</span> <span class="na">step=</span><span class="s">"1"</span> <span class="na">value=</span><span class="s">"50"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			숫자: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"number"</span> <span class="na">min=</span><span class="s">"0"</span> <span class="na">max=</span><span class="s">"100"</span> <span class="na">step=</span><span class="s">"1"</span> <span class="na">value=</span><span class="s">"50"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			검색: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"search"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			URL: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"url"</span> <span class="na">list=</span><span class="s">"url_list"</span><span class="nt">/&gt;</span>	<span class="nt">&lt;br/&gt;</span>
+			메일: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"email"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			힌트문자: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">placeholder=</span><span class="s">"이름을 입력하세요"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			자동포커스: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">autofocus</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			빈값검사: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">required</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			정규표현식: <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">pattern=</span><span class="s">"(010|011)-\d{3,4}-\d{4}"</span><span class="nt">/&gt;</span> <span class="nt">&lt;br/&gt;</span>
+			<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"Submit"</span><span class="nt">/&gt;</span> 
+		<span class="nt">&lt;/form&gt;</span>
+	<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/web/2019/05/29/HTML5_%EC%98%88%EC%A0%9C.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

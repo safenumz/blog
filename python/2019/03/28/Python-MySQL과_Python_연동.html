@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Python] MySQL과 Python 연동하기 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Python] MySQL과 Python 연동하기" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="데이터 베이스 연결" />
+<meta property="og:description" content="데이터 베이스 연결" />
+<link rel="canonical" href="https://safenumz.github.io/blog/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-28T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Python] MySQL과 Python 연동하기" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-28T00:00:00-05:00","datePublished":"2019-03-28T00:00:00-05:00","description":"데이터 베이스 연결","headline":"[Python] MySQL과 Python 연동하기","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html"},"url":"https://safenumz.github.io/blog/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Python] MySQL과 Python 연동하기</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-28T00:00:00-05:00" itemprop="datePublished">
+        Mar 28, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      2 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Python">Python</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="데이터-베이스-연결">데이터 베이스 연결</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">db</span> <span class="o">=</span> <span class="n">MySQLdb</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span>
+  <span class="s">"[mysql 서버 ip]"</span><span class="p">,</span> <span class="c1"># IP (Mysql 서버)
+</span>  <span class="s">"root"</span><span class="p">,</span> <span class="c1"># Mysql 사용자 계정
+</span>  <span class="s">"dss"</span><span class="p">,</span> <span class="c1"># password
+</span>  <span class="s">"world"</span><span class="p">,</span> <span class="c1"># 데이터 베이스 이름
+</span>  <span class="n">charset</span><span class="o">=</span><span class="s">'utf8'</span><span class="p">,</span> <span class="c1"># 문자 인코딩 방식
+</span><span class="p">)</span>
+<span class="n">db</span>
+</code></pre></div></div>
+
+<h1 id="select">SELECT</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># query
+</span><span class="n">SQL_QUERY</span><span class="o">=</span><span class="s">"""
+  SELECT code, name, Population
+  FROM country;
+"""</span>
+
+<span class="c1"># excute query
+</span><span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">SQL_QUERY</span><span class="p">)</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="p">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">[:</span><span class="mi">5</span><span class="p">]:</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+<span class="c1"># ('ABW', 'Aruba', 103000)
+# ('AFG', 'Afghanistan', 22720000)
+# ('AGO', 'Angola', 12878000)
+# ('AIA', 'Anguilla', 8000)
+# ('ALB', 'Albania', 3401200)
+</span></code></pre></div></div>
+
+<h1 id="create-database">CREATE DATABASE</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  CREATE DATABASE city_info_2;
+"""</span>
+<span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+
+<span class="c1"># 데이터 베이스 이동
+</span><span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  USE city_info_2;
+"""</span>
+
+<span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">surcur</span><span class="p">()</span>
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+
+<span class="c1"># 테이블 생성
+</span><span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  CREATE TABLE popular(
+    rank int(4),
+    city_name varchar(20),
+    population int(10)
+  );
+"""</span>
+
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+
+<span class="c1"># 데이터 입력
+</span><span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  INSERT INTO popular (rank, city_name, population)
+  VALUES (1, 'seoul', 9900000),
+  (2, 'busan', 3500000),
+  (3, 'incheon', 2900000);
+"""</span>
+
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+
+<span class="c1"># 데이터베이스와 cursor의 명령과 동기화시키는 명령
+</span><span class="n">db</span><span class="p">.</span><span class="n">commit</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h1 id="mysql-datas---pandas-dataframe">MySQL Datas -&gt; Pandas Dataframe</h1>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  SELECT * FROM popular
+"""</span>
+
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+
+<span class="n">rows</span> <span class="o">=</span> <span class="n">cur</span><span class="p">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="n">rows</span>
+<span class="c1"># ((1, 'seoul', 9900000), (2, 'busan', 3500000), (3, 'incheon', 2900000))
+</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s">'rank'</span><span class="p">,</span> <span class="s">'city_name'</span><span class="p">,</span> <span class="s">'population'</span><span class="p">])</span>
+<span class="n">df</span>
+
+<span class="c1"># rank	city_name	population
+# 0	1	seoul	9900000
+# 1	2	busan	3500000
+# 2	3	incheon	2900000
+</span>
+<span class="n">city_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">QUERY</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="n">city_df</span>
+
+<span class="c1"># rank	city_name	population
+# 0	1	seoul	9900000
+# 1	2	busan	3500000
+# 2	3	incheon	2900000
+</span></code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="n">sns</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="n">tips</span> <span class="o">=</span> <span class="n">sns</span><span class="p">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="s">'tips'</span><span class="p">)</span>
+<span class="n">tips</span><span class="p">.</span><span class="n">tail</span><span class="p">()</span>
+
+
+<span class="c1"># total_bill	tip	sex	smoker	day	time	size
+# 239	29.03	5.92	Male	No	Sat	Dinner	3
+# 240	27.18	2.00	Female	Yes	Sat	Dinner	2
+# 241	22.67	2.00	Male	Yes	Sat	Dinner	2
+# 242	17.82	1.75	Male	No	Sat	Dinner	2
+# 243	18.78	3.00	Female	No	Thur	Dinner	2
+</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s">"mysql+mysqldb://root:[name]@[ip주소]/city_info_2"</span><span class="p">)</span>
+<span class="n">engine</span>
+
+<span class="n">tips</span><span class="p">.</span><span class="n">to_sql</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">'tips'</span><span class="p">,</span> <span class="n">con</span><span class="o">=</span><span class="n">engine</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s">'replace'</span><span class="p">)</span>
+
+<span class="c1"># 데이터베이스 서버와 동기화
+</span><span class="n">db</span><span class="p">.</span><span class="n">commit</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="n">pd</span>
+<span class="n">QUERY</span> <span class="o">=</span> <span class="s">"""
+  SELECT * FROM tips;
+"""</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql</span><span class="p">(</span><span class="n">QUERY</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+<span class="n">df</span><span class="p">.</span><span class="n">tail</span><span class="p">()</span>
+
+
+<span class="c1"># index	total_bill	tip	sex	smoker	day	time	size
+# 239	239	29.03	5.92	Male	No	Sat	Dinner	3
+# 240	240	27.18	2.00	Female	Yes	Sat	Dinner	2
+# 241	241	22.67	2.00	Male	Yes	Sat	Dinner	2
+# 242	242	17.82	1.75	Male	No	Sat	Dinner	2
+# 243	243	18.78	3.00	Female	No	Thur	Dinner	2
+</span></code></pre></div></div>
+
+<h2 id="delete-database">DELETE DATABASE</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">QUERY</span><span class="o">=</span><span class="s">"""
+  DROP DATABASE city_info_2;
+"""</span>
+<span class="n">cur</span> <span class="o">=</span> <span class="n">db</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="n">cur</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">QUERY</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="connection-close">CONNECTION CLOSE</h2>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">db</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+<span class="n">db</span>
+<span class="c1"># &lt;_mysql.connection closed at 557a45a65fa8&gt;
+</span></code></pre></div></div>
+
+  </div><a class="u-url" href="/blog/python/2019/03/28/Python-MySQL%EA%B3%BC_Python_%EC%97%B0%EB%8F%99.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

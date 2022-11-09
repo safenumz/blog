@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spring] DI(Dependency Injection) | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spring] DI(Dependency Injection)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Spring DI(Dependency Injection)" />
+<meta property="og:description" content="Spring DI(Dependency Injection)" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spring/2019/07/01/Spring-DI(Dependency_Injection).html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spring/2019/07/01/Spring-DI(Dependency_Injection).html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-07-01T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spring] DI(Dependency Injection)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-07-01T00:00:00-05:00","datePublished":"2019-07-01T00:00:00-05:00","description":"Spring DI(Dependency Injection)","headline":"[Spring] DI(Dependency Injection)","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spring/2019/07/01/Spring-DI(Dependency_Injection).html"},"url":"https://safenumz.github.io/blog/spring/2019/07/01/Spring-DI(Dependency_Injection).html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spring] DI(Dependency Injection)</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-07-01T00:00:00-05:00" itemprop="datePublished">
+        Jul 1, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spring">Spring</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="spring-didependency-injection">Spring DI(Dependency Injection)</h1>
+
+<h2 id="기존-개념과-코드">기존 개념과 코드</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 한국어 메시지를 출력하려면?</span>
+<span class="nc">MessageBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MessageBeanKoImpl</span><span class="o">();</span>
+<span class="n">bean</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="s">"홍길동"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 한국어 메시지를 영어 메시지로 변경하려면?</span>
+<span class="nc">MessageBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MessageBeanEnImpl</span><span class="o">();</span>
+<span class="n">bean</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="s">"Jone"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<h2 id="ioc-inversion-of-control-역행제어">IoC (Inversion of Control: 역행제어)</h2>
+<blockquote>
+  <p>IoC(제어권의 역전)이란, 객체의 생성, 생명주기의 관리까지 모든 객체에 대한 제어권이 바뀌었다는 것을 의미한다.</p>
+  <ul>
+    <li>컴포넌트 의존관계 결정 (component dependency resolution), 설정(configuration) 및 생명주기(lifecycle)를 해결하기 위한 디자인 패턴(Design Pattern)</li>
+  </ul>
+</blockquote>
+
+<h2 id="ioc-컨테이너">IoC 컨테이너</h2>
+<ul>
+  <li>스프링 프레임워크도 객체에 대한 생성 및 생명주기를 관리할 수 있는 기능을 제공하고 있음. 즉 IoC 컨테이너 기능을 제공한다.
+    <ul>
+      <li>IoC 컨테이너는 객체의 생성을 책임지고, 의존성을 관리한다.</li>
+      <li>POJO의 생성, 초기화, 서비스, 소멸에 대한 권한을 가진다.</li>
+      <li>개발자들이 직접 POJO를 생성할 수 있지만 컨테이너에게 맡긴다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="ioc-분류">IoC 분류</h2>
+<ul>
+  <li>IoC : Inversion of Control</li>
+  <li>DI : Dependency Injection</li>
+  <li>DL : Dependency Lookup</li>
+</ul>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IoC <span class="nt">--</span> DL
+    |
+    <span class="nt">--</span> DI <span class="nt">--</span> Setter Injection
+          |
+          <span class="nt">--</span> Constructor Injection
+          |
+          <span class="nt">--</span> Method Injection
+</code></pre></div></div>
+
+<h2 id="dl과-di">DL과 DI</h2>
+<ul>
+  <li>DL (Dependency Lookup) 의존성 검색 : 저장소에 저장되어 있는 Bean에 접근하기 위해 컨테이너가 제공하는 API를 이용하여 Bean을 Lookup 하는 것</li>
+  <li>DI (Dependency Injection) 의존성 주입 : 각 클래스간의 의존관계를 빈 설정(Bean Definition) 정보를 바탕으로 컨테이너가 자동을 연결해주는 것</li>
+  <li>DL 사용시 컨테이너 종속성이 증가하여, 주로 DI를 사용함</li>
+</ul>
+
+<h2 id="di-개요">DI 개요</h2>
+<blockquote>
+  <p>각 클래스간의 의존관계를 빈 설정(Bean Definition) 정보를 바탕으로 컨테이너가 자동으로 연결해주는 것을 말함</p>
+  <ul>
+    <li>개발자들은 단지 빈 설정파일에서 의존관계가 필요하다는 정보를 추가하면 된다.</li>
+    <li>객체 레퍼런스를 컨테이너로부터 주입 받아서, 실행 시에 동적으로 의존관계가 생성된다</li>
+  </ul>
+</blockquote>
+
+<h3 id="di-dependency-injection-장점">DI (Dependency Injection) 장점</h3>
+<ul>
+  <li>코드가 단순해진다.</li>
+  <li>컴포넌트 간의 결합도가 제거된다.</li>
+</ul>
+
+<h2 id="관련용어">관련용어</h2>
+<h3 id="빈bean">빈(Bean)</h3>
+<ul>
+  <li>스프링이 IoC 방식으로 관리하는 객체라는 뜻</li>
+  <li>스프링이 직접 생성과 제어를 담당하는 객체를 Bean이라고 부름</li>
+</ul>
+
+<h3 id="빈-팩토리beanfactory">빈 팩토리(BeanFactory)</h3>
+<ul>
+  <li>스프링의 IoC를 담당하는 핵심 컴테이너를 가리킴</li>
+  <li>Bean을 등록, 생성, 조회, 반환하는 기능을 담당함</li>
+  <li>이 BeanFactory를 바로 사용하지 않고 이를 확장한 ApplicationContext를 주로 이용함</li>
+</ul>
+
+<h3 id="애플리케이션-컨텍스트application-context">애플리케이션 컨텍스트(Application Context)</h3>
+<ul>
+  <li>BeanFactory를 확장한 IoC 컨테이너</li>
+  <li>Bean을 등록하고 관리하는 기능은 BeanFactory와 동일하지만 스프링이 제공하는 각종 부가 서비스를 추가로 제공함</li>
+  <li>스프링에서는 ApplicationContext를 BeanFactory 보다 더 많이 사용함</li>
+</ul>
+
+<h2 id="빈-설정방법">빈 설정방법</h2>
+<h3 id="xml-기반-설정-방식">XML 기반 설정 방식</h3>
+<ul>
+  <li>스프링 1.0</li>
+  <li>xml 파일에 <bean> 요소로 빈을 정의한다.</bean></li>
+  <li>
+    <constructor-arg>나 <property> 요소로 의존성을 주입한다.
+
+</property></constructor-arg>
+  </li>
+</ul>
+<h3 id="annotation-기반-설정-방식">Annotation 기반 설정 방식</h3>
+<ul>
+  <li>스프링 2.5</li>
+  <li>@Component 같은 어노테이션이 부여된 클래스를 탐색하여 DI 컨테이너에 빈을 등록한다.</li>
+</ul>
+
+<h3 id="java-기반-설정-방식">Java 기반 설정 방식</h3>
+<ul>
+  <li>스피링 3.0</li>
+  <li>자바 클래스에 @Configuration을 메소드에 @Bean 어노테이션을 사용해 빈을 정의한다.</li>
+</ul>
+
+<h1 id="빈-설정">빈 설정</h1>
+<h2 id="1-xml-기반">1. XML 기반</h2>
+<h3 id="1-spring-bean-configuration-file-생성">(1) Spring Bean Configuration File 생성</h3>
+<ul>
+  <li>src 폴더에서 오른쪽 마우스 &gt; other &gt; Spring 선택</li>
+  <li>파일명: applicationContext</li>
+</ul>
+
+<h3 id="2-spring-bean-configuration-fileapplicationcontextxml에-빈-정의">(2) Spring Bean Configuration File(applicationContext.xml)에 빈 정의</h3>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- applicationContext.xml --&gt;</span>
+<span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+	<span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+	<span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+
+<span class="c">&lt;!-- DI : 빈 정의 --&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"ko"</span> <span class="na">class=</span><span class="s">"ex1_xml1_scope.MessageBeanKoImpl"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"en"</span> <span class="na">class=</span><span class="s">"ex1_xml1_scope.MessageBeanEnImpl"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div>
+
+<h3 id="mainapp-클래스에서">MainApp 클래스에서</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. 스프링의 설정파일을 연결</span>
+<span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ex1_xml1_scope/applicationContext.xml"</span><span class="o">);</span>
+
+<span class="c1">// 2. DI 컨테이너에서 빈 가져오기</span>
+<span class="nc">MessageBean</span> <span class="n">bean</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"ko"</span><span class="o">,</span> <span class="nc">MessageBean</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="c1">// 자바소스에서 new 코딩을 없애고 두 클래스간의 결합도를 낮춰서</span>
+<span class="c1">// 한쪽 클래스 변경에 의한 새로 컴파일/복사/실행을 안 해도 될 수 있음</span>
+</code></pre></div></div>
+
+<h3 id="참고-스프링-설정-파일-연결">[참고] 스프링 설정 파일 연결</h3>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ApplicationContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"exercise/beans.xml"</span><span class="o">);</span>
+
+<span class="nc">ApplicationContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">AppConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="nc">ApplicationContext</span> <span class="n">ctx</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FileSystemXmlApplicationContext</span><span class="o">(</span><span class="err">"</span><span class="n">src</span><span class="o">/</span><span class="n">exercise</span><span class="o">/</span><span class="n">beans</span><span class="o">.</span><span class="na">xml</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="참고-beanfactory와-applicationcontext">[참고] BeanFactory와 ApplicationContext</h3>
+
+<p><img src="https://hhqa5a.bn.files.1drv.com/y4mlRU1bltHnDS2tgwePpp22chOUwr3XX-oNWdXI7gZfWz9X_s3ljIvM0mtpId0-jEid-P9hh9SAdTI6SJppPYtSYiiNjeuwb7xB0Ux7LO0JLDbd33PjVZnzo8nOwCCgVJu2-kmkH0YjeW0Z5GdF6CHvCP14KepZkyWv3MGjy-CKf_DtPyW-gOBt_rlHa-zFaWuUBeVACGyeeiu6AJv4bo0Fw?width=1124&amp;height=620&amp;cropmode=none" /></p>
+
+<h2 id="3-생성자-주입---멤버-변수가-객체일-때">(3) 생성자 주입 - 멤버 변수가 객체일 때</h2>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MemberDao</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="nc">MemberBean</span> <span class="n">member</span><span class="o">;</span>
+
+	<span class="c1">// 생성자</span>
+	<span class="kd">public</span> <span class="nf">MemberDAO</span><span class="o">()</span> <span class="o">{</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="nf">MemberDAO</span><span class="o">(</span><span class="nc">MemberBean</span> <span class="n">member</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">member</span> <span class="o">=</span> <span class="n">member</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"member"</span> <span class="na">class=</span><span class="s">"ex1_xml2_ref.MemberBean"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"doo1"</span> <span class="na">class=</span><span class="s">"ex1_xml2_ref.MemberDAO"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">ref=</span><span class="s">"member"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div>
+
+<h2 id="2-annotation-기반">2. Annotation 기반</h2>
+<h3 id="1-component-scan">(1) Component Scan</h3>
+<ul>
+  <li>Annotation이 붙은 클래스를 탐색하여 DI 컨테이너에 자동으로 등록</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MemberBean</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">message</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MemberDAO</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="nc">MemberBean</span> <span class="n">member</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="2-auto-wiring">(2) Auto Wiring</h3>
+<ul>
+  <li>DB 컨테이너가 자동으로 필요로 하는 의존 컴포넌트를 주입</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MemberDAO</span> <span class="o">{</span>
+	<span class="c1">// 필드 기반 의존성 주입 법칙</span>
+	<span class="nd">@Autowired</span>
+	<span class="kd">private</span> <span class="nc">MemberBean</span> <span class="n">member</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="2-xml-기반-양식으로-컴포넌트-스캔-범위-설정">(2) xml 기반 양식으로 컴포넌트 스캔 범위 설정</h3>
+<ul>
+  <li>applicationContext.xml</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+	<span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+	<span class="na">xmlns:context=</span><span class="s">"http://www.springframework.org/schema/context"</span>
+	<span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/context "</span>
+
+	<span class="err">&lt;</span><span class="na">context:component-scan</span> <span class="na">bese-package=</span><span class="s">"ex2_annotation"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div>
+
+<h2 id="3-java-기반">3. Java 기반</h2>
+
+<h3 id="1-자바-코드로빈을-설정-java-configuration-class">(1) 자바 코드로빈을 설정 (Java Configuration Class)</h3>
+<ul>
+  <li>AppConfig.java</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Configuration</span>
+<span class="nd">@ComponentScan</span><span class="o">(</span><span class="s">"ex3_javabased"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppConfig</span> <span class="o">{</span>
+	<span class="nd">@Bean</span>
+	<span class="nc">MemberBean</span> <span class="nf">memberBean</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nf">MemberBean</span><span class="o">(</span><span class="s">"홍자"</span><span class="o">,</span> <span class="mi">33</span><span class="o">,</span> <span class="s">"오늘도 행복"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+	<span class="nd">@Bean</span>
+	<span class="nc">MemberDAO</span> <span class="nf">memberDAO</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="k">new</span> <span class="nf">MemberDAO</span><span class="o">(</span><span class="n">memberBean</span><span class="o">());</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="2-스프링-설정-파일-연결">(2) 스프링 설정 파일 연결</h2>
+<ul>
+  <li>MainApp.java</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+	<span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> 
+		<span class="k">new</span> <span class="nf">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">AppConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+	<span class="nc">MemberDAO</span> <span class="n">dao</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"memberDAO"</span><span class="o">,</span> <span class="nc">MemberDAO</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+	<span class="n">dao</span><span class="o">.</span><span class="na">insert</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="의존성-주입-어노테이션">의존성 주입 어노테이션</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">어노테이이션</th>
+      <th style="text-align: center">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">@Autowired</td>
+      <td style="text-align: center">스프링 제공</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">/</td>
+      <td style="text-align: center">생성자, 메소드, 변수 위에 모두 사용 가능하지만 주로 변수 위에 설정하여 해당 타입의 객체를 자동으로 할당</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">@Qualifier</td>
+      <td style="text-align: center">스프링 제공</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">/</td>
+      <td style="text-align: center">특정 객체의 이름으로 의존성 주입할 때 사용</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">@Resource</td>
+      <td style="text-align: center">javax.annotation.Resource</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">/</td>
+      <td style="text-align: center">@Autowired와 @Qualifier 기능을 결합함 역할</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">@Inject</td>
+      <td style="text-align: center">javax.inject.Inject</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">/</td>
+      <td style="text-align: center">@Autowired와 동일한 기능</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>스프링 프레임워크에는 클래스를 분류하기 위해 @Component를 상속한 어노테이션을 제공</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">어노테이이션</th>
+      <th style="text-align: center">클래스</th>
+      <th style="text-align: right">설명</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">@Service</td>
+      <td style="text-align: center">XXXServiceImpl</td>
+      <td style="text-align: right">비즈니스 로직을 처리하는 Service 클래스</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">@Repository</td>
+      <td style="text-align: center">XXXDAO</td>
+      <td style="text-align: right">데이터베이스 연동을 처리하는 DAO 클래스</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">@Controller</td>
+      <td style="text-align: center">XXXController</td>
+      <td style="text-align: right">사용자 요청을 제어하는 Controller 클래스</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="연습-1">연습 1</h2>
+
+<p><img src="https://hhqh5a.bn.files.1drv.com/y4m-LGYSTufz3f6GwO6h5_o0k_5MUdBqxTVEaZXQyuFf0U_rqFLYz1mnYDzYH7uZW4CuwWGJ3WnWoIFGAXAbLkF_efIMUArGb8ZrrxLIJDVy6bcjwBT3bvRe0RU7VHTgTHL_ZhKZFuatTirPXS4INkJk8AJAJgBDbj4EMQcsnSOMzuNZ3bZa7gsd2pT-Z9_4anYsxtoBIyiahLbFqsfYpse3Q?width=1444&amp;height=914&amp;cropmode=none" /></p>
+
+<h2 id="연습-2">연습 2</h2>
+
+<p><img src="https://hhqg5a.bn.files.1drv.com/y4mCwtzohGOLkrQVe_mlT4_AN-9t7YeCauXRPfHXbHswTkIr858EFIEgWepHiFBs4EM_JjFqHcOVX7xAS-E1HvblWMIOtvVZjTNbkfItjLdL5VQDtoa9lyE91fo5jo4c9QFomTcxTwj2JMebz6nQ2g6xT1wAPJr9LCuEbpOxbTz1KBSWJe5pme5h1pekvLn-Xse3yPCfREAt6zjoWQ16FclHg?width=1584&amp;height=724&amp;cropmode=none" /></p>
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spring/2019/07/01/Spring-DI(Dependency_Injection).html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

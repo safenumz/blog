@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Java] 인터페이스 | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Java] 인터페이스" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="abstract 미완성 오버라이딩에 강제성을 부여하기 위해 오버라이딩 -&gt; 다형성을 쓰기 위해 부모가 미완성이 자식이 완성해줘야 함 Item 클래스는 미완성 클래스라 객체생성이 안됨, 추상(미완성) 클래스는 부모역할만 하라는 뜻 Item i = Item(); -&gt; 에러" />
+<meta property="og:description" content="abstract 미완성 오버라이딩에 강제성을 부여하기 위해 오버라이딩 -&gt; 다형성을 쓰기 위해 부모가 미완성이 자식이 완성해줘야 함 Item 클래스는 미완성 클래스라 객체생성이 안됨, 추상(미완성) 클래스는 부모역할만 하라는 뜻 Item i = Item(); -&gt; 에러" />
+<link rel="canonical" href="https://safenumz.github.io/blog/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-04-26T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Java] 인터페이스" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-04-26T00:00:00-05:00","datePublished":"2019-04-26T00:00:00-05:00","description":"abstract 미완성 오버라이딩에 강제성을 부여하기 위해 오버라이딩 -&gt; 다형성을 쓰기 위해 부모가 미완성이 자식이 완성해줘야 함 Item 클래스는 미완성 클래스라 객체생성이 안됨, 추상(미완성) 클래스는 부모역할만 하라는 뜻 Item i = Item(); -&gt; 에러","headline":"[Java] 인터페이스","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html"},"url":"https://safenumz.github.io/blog/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Java] 인터페이스</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-04-26T00:00:00-05:00" itemprop="datePublished">
+        Apr 26, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Java">Java</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="abstract">abstract</h1>
+<ul>
+  <li>미완성</li>
+  <li>오버라이딩에 강제성을 부여하기 위해</li>
+  <li>오버라이딩 -&gt; 다형성을 쓰기 위해</li>
+  <li>부모가 미완성이 자식이 완성해줘야 함</li>
+  <li>Item 클래스는 미완성 클래스라 객체생성이 안됨, 추상(미완성) 클래스는 부모역할만 하라는 뜻</li>
+  <li>Item i = Item(); -&gt; 에러</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">h_inherit_book</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">h_inherit_book.sub.Item</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Book</span> <span class="kd">extends</span> <span class="nc">Item</span> <span class="o">{</span>
+  <span class="nc">String</span> <span class="n">writer</span><span class="o">;</span>
+  <span class="nc">String</span> <span class="n">publisher</span><span class="o">;</span>
+    
+  <span class="nc">Book</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">super</span><span class="o">();</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Book 기본생성자"</span><span class="o">);</span>
+  <span class="o">}</span>
+
+  <span class="nc">Book</span><span class="o">(</span><span class="nc">String</span> <span class="n">no</span><span class="o">,</span> <span class="nc">String</span> <span class="n">title</span><span class="o">,</span> <span class="nc">String</span> <span class="n">writer</span><span class="o">,</span> <span class="nc">String</span> <span class="n">publisher</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// 부모 멤버를 접근할 때는 super</span>
+    <span class="kd">super</span><span class="o">();</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">no</span> <span class="o">=</span> <span class="n">no</span><span class="o">;</span>
+    <span class="kd">super</span><span class="o">.</span><span class="na">title</span> <span class="o">=</span> <span class="n">title</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">writer</span> <span class="o">=</span> <span class="n">writer</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">publisher</span> <span class="o">=</span> <span class="n">publisher</span><span class="o">;</span>
+
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Book 인자생성자"</span><span class="o">);</span>
+
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">output</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"책번호: "</span> <span class="o">+</span> <span class="n">no</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"책제목: "</span> <span class="o">+</span> <span class="n">title</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"작가: "</span> <span class="o">+</span> <span class="n">writer</span><span class="o">);</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"출판사: "</span> <span class="o">+</span> <span class="n">publisher</span><span class="o">);</span>
+  <span class="o">}</span>
+
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스의</span> <span class="n">실행</span> <span class="n">결과는</span><span class="o">?</span>
+<span class="c1">// 디폴트</span>
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Parent</span><span class="o">{</span>
+	<span class="kd">abstract</span>  <span class="kt">int</span>  <span class="nf">getNumber</span><span class="o">();</span> <span class="c1">// 추상</span>
+<span class="o">}</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span> <span class="c1">// 반드시 자식클래스에서 오버라이딩</span>
+	<span class="kd">private</span>  <span class="kt">int</span>  <span class="n">number</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+	<span class="kd">private</span>  <span class="kt">int</span>  <span class="nf">getNumber</span><span class="o">()</span> <span class="o">{</span><span class="k">return</span>  <span class="n">number</span><span class="o">;}</span> <span class="c1">// 에러</span>
+<span class="o">}</span> <span class="c1">// 오버라이딩 감지, 부모가 디폴트인데 프라이빗을 쓰면 안됨</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span><span class="n">에러없이</span> <span class="n">컴파일</span> <span class="n">된다</span><span class="o">.</span>                       
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span><span class="mi">2</span><span class="n">라인에서</span> <span class="n">에러가</span> <span class="n">발생한다</span>
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span><span class="mi">4</span><span class="n">라인에서</span> <span class="n">에러가</span> <span class="n">발생한다</span><span class="o">.</span>                
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span><span class="mi">6</span><span class="n">라인에서</span> <span class="n">에러가</span> <span class="n">발생한다</span><span class="o">.</span>
+
+<span class="cm">/*
+ [정답] 4
+ */</span>
+
+
+<span class="mi">8</span><span class="o">.</span> <span class="n">다음소스에서</span> <span class="n">잘못</span> <span class="n">된</span> <span class="n">부분을</span> <span class="n">찾아</span> <span class="n">수정하시오</span><span class="o">.</span>
+<span class="c1">// 객체생성 안됨</span>
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span> <span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span> <span class="nc">String</span> <span class="o">[]</span> <span class="n">args</span> <span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Parent</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Parent</span><span class="o">();</span> <span class="c1">// 객체생성 안됨</span>
+		<span class="n">p</span><span class="o">.</span><span class="na">method</span><span class="o">();</span>
+		<span class="nc">Child</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span><span class="o">();</span>
+		<span class="n">c</span><span class="o">.</span><span class="na">method</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+
+<span class="cm">/*
+Parent p = new Parent(); -&gt; Parent p = new Child();
+*/</span>
+</code></pre></div></div>
+
+<h1 id="final">final</h1>
+<ul>
+  <li>변경불가</li>
+  <li>final field : 값 변경 불가, 상</li>
+  <li>final method : overriding 불가</li>
+  <li>final class : 상속 불가</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">i_final</span><span class="o">;</span>
+<span class="cm">/*
+final - 변경불가
+    final field - 값 변경 불가, 상
+    final method - overriding 불가
+    final class - 상속 불가
+ */</span>
+
+<span class="kd">final</span> <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+    <span class="c1">// final은 변경이 안됨</span>
+    <span class="kd">final</span> <span class="nc">String</span> <span class="n">field</span> <span class="o">=</span> <span class="s">"부모님꺼"</span><span class="o">;</span>
+
+    <span class="kd">final</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">job</span><span class="o">()</span> <span class="o">{</span>
+<span class="c1">//        field = "진짜내꺼";</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"부모님께서 장만"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="cm">/*
+// final은 상속받을 수 없음
+class Child extends Parent {
+
+    Child() {
+//        field = "내꺼임";
+    }
+
+//    public void job() {
+//        System.out.println("물려받아 탕진");
+//    }
+
+}
+*/</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// new Child() 쓸 수 없다.</span>
+        <span class="nc">Parent</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Parent</span><span class="o">();</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">field</span><span class="o">);</span>
+        <span class="n">p</span><span class="o">.</span><span class="na">job</span><span class="o">();</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">2</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스</span> <span class="n">중에서</span> <span class="n">상속</span> <span class="n">할</span> <span class="n">수</span> <span class="n">없는</span> <span class="n">클래스는</span> <span class="o">?</span>
+
+ <span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="kd">final</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+  <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+  <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+ <span class="o">}</span>
+
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="kd">private</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="kd">final</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">5</span><span class="o">)</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">}</span>
+
+<span class="cm">/*
+[정답] 1, 2, 5
+2 : 컴파일 오류
+*/</span>
+
+
+
+<span class="mi">3</span><span class="o">.</span> <span class="n">같은</span> <span class="n">패키지에</span> <span class="n">있는</span> <span class="n">클래스에서는</span> <span class="n">참조할</span> <span class="n">수</span> <span class="n">있고</span><span class="o">,</span> <span class="n">다른</span> <span class="n">패키지에</span> <span class="n">있는</span> <span class="n">클래스에서는</span> <span class="n">참조할</span> <span class="n">수</span> <span class="n">없는</span> <span class="n">메소드를</span> <span class="n">만들고자</span> <span class="n">할</span> <span class="n">때</span><span class="o">,</span> <span class="n">이메소드</span> <span class="n">앞에</span> <span class="n">어떤</span> <span class="n">접근</span> <span class="n">지정자를</span> <span class="n">선언해야</span> <span class="n">하나</span> <span class="o">?</span>
+
+ <span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="kd">public</span>
+ <span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="kd">private</span>
+ <span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="kd">protected</span>
+ <span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="n">아무것도</span> <span class="n">지정하지</span> <span class="n">않는다</span><span class="o">.</span>
+
+
+<span class="cm">/*
+[정답] 4
+*/</span>
+
+
+<span class="mi">4</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스의</span> <span class="n">실행</span> <span class="n">결과는</span> <span class="o">?</span>
+
+
+ <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+  <span class="kd">private</span> <span class="kd">final</span> <span class="nc">String</span> <span class="n">str</span> <span class="o">=</span> <span class="err">“</span><span class="n">매력있는</span><span class="err">”</span><span class="o">;</span>
+
+  <span class="kt">void</span> <span class="nf">method</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+
+   <span class="n">str</span> <span class="o">+=</span> <span class="n">s</span><span class="o">;</span>
+
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+   <span class="nc">Test</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Test</span><span class="o">();</span>
+
+   <span class="n">t</span><span class="o">.</span><span class="na">method</span><span class="o">(</span><span class="err">“</span><span class="n">자바</span><span class="err">”</span><span class="o">);</span>
+
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">str</span><span class="o">);</span>
+
+  <span class="o">}</span>
+
+ <span class="o">}</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="n">컴파일에러가</span> <span class="n">발생한다</span>
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span><span class="err">“</span> <span class="n">매력있는</span><span class="err">”</span> <span class="n">문장</span> <span class="n">출력된다</span><span class="o">.</span>
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span><span class="err">“</span> <span class="n">매력있는자바</span><span class="err">”</span> <span class="n">문장</span> <span class="n">출력된다</span><span class="o">.</span>
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="n">실행은</span> <span class="n">되지만</span> <span class="n">아무것도</span> <span class="n">출력되지</span> <span class="n">않는다</span><span class="o">.</span>
+
+<span class="cm">/*
+[정답] 
+*/</span>
+
+
+
+<span class="mi">5</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스에서</span><span class="err">“</span> <span class="n">여기</span><span class="err">”</span> <span class="n">부분에</span> <span class="n">메소드</span> <span class="n">오버라이딩으로</span> <span class="n">적합한</span> <span class="n">것은</span> <span class="o">?</span>
+
+ <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+ <span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+ <span class="cm">/*    여기      */</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{}</span>
+
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="kd">public</span> <span class="kt">int</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+ <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+<span class="o">}</span>
+
+
+<span class="cm">/*
+[정답] 2
+알맞은 코드 2, 3
+오버라이딩 2
+*/</span>
+
+
+
+
+<span class="mi">6</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스에서</span><span class="err">“</span> <span class="n">여기</span><span class="err">”</span> <span class="n">부분에</span> <span class="n">들어갈</span> <span class="n">코드로</span> <span class="n">알맞은</span> <span class="n">것은</span> <span class="o">?</span>
+
+ <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kt">double</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="mf">36.7</span><span class="o">;</span>
+  <span class="o">}</span>
+
+ <span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+ <span class="cm">/*    여기      */</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+ <span class="kt">double</span> <span class="n">d</span> <span class="o">=</span> <span class="mf">36.7</span><span class="o">;</span>
+<span class="o">};</span>
+
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="kd">public</span> <span class="kt">double</span> <span class="nf">method</span><span class="o">(</span><span class="kt">double</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+ <span class="k">return</span> <span class="n">d</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="kt">double</span> <span class="nf">method</span><span class="o">(</span><span class="kt">double</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+ <span class="k">return</span> <span class="n">d</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="kt">double</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+ <span class="k">return</span> <span class="mf">36.7</span><span class="o">;</span>
+<span class="o">}</span>
+
+
+<span class="cm">/*
+[정답] 2, 3
+*/</span>
+
+
+
+
+<span class="mi">7</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스에서</span><span class="err">“</span> <span class="n">여기</span><span class="err">”</span> <span class="n">부분에</span> <span class="n">들어갈</span> <span class="n">코드로</span> <span class="n">알맞은</span> <span class="n">것은</span> <span class="o">?</span>
+
+
+
+ <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+  <span class="kd">final</span> <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+
+  <span class="nc">Parent</span><span class="o">()</span> <span class="o">{}</span>
+
+  <span class="nc">Parent</span><span class="o">(</span><span class="nc">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+   <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
+  <span class="o">}</span>
+
+ <span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+ <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="nc">Child</span><span class="o">()</span> <span class="o">{}</span>
+
+ <span class="nc">Child</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+  <span class="cm">/* 여기 */</span> <span class="o">}</span>
+
+ <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+  <span class="nc">Child</span> <span class="n">ch</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+
+ <span class="o">}</span>
+
+<span class="o">}</span>
+
+
+
+<span class="o">(</span><span class="mi">1</span><span class="o">)</span> <span class="nc">Child</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+
+ <span class="k">this</span><span class="o">.</span><span class="na">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="k">this</span><span class="o">();</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">2</span><span class="o">)</span> <span class="nc">Child</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+
+ <span class="k">this</span><span class="o">.</span><span class="na">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+
+ <span class="kd">super</span><span class="o">(</span><span class="err">“</span><span class="n">생성</span><span class="err">”</span><span class="o">);</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">3</span><span class="o">)</span> <span class="nc">Child</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+
+ <span class="kd">super</span><span class="o">(</span><span class="err">“</span><span class="n">생성</span><span class="err">”</span><span class="o">);</span>
+
+ <span class="k">this</span><span class="o">.</span><span class="na">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="o">(</span><span class="mi">4</span><span class="o">)</span> <span class="nc">Child</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
+
+ <span class="kd">super</span><span class="o">(</span><span class="err">“</span><span class="n">생성</span><span class="err">”</span><span class="o">);</span>
+
+ <span class="kd">super</span><span class="o">.</span><span class="na">i</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span>
+
+<span class="o">}</span>
+
+<span class="cm">/*
+[정답] 3
+*/</span>
+
+
+
+
+<span class="mi">9</span><span class="o">.</span> <span class="n">다음</span> <span class="n">소스의</span> <span class="n">출력</span> <span class="n">결과는</span> <span class="o">?</span>
+ <span class="kd">class</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+  <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">7</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+   <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+  <span class="o">}</span>
+
+ <span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child</span> <span class="kd">extends</span> <span class="nc">Parent</span> <span class="o">{</span>
+
+ <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span><span class="o">;</span>
+
+ <span class="kd">public</span> <span class="kt">int</span> <span class="nf">get</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="n">i</span><span class="o">;</span>
+ <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+
+ <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+  <span class="nc">Parent</span> <span class="n">p</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Parent</span><span class="o">();</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="mi">1</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="err">“</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">i</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+
+  <span class="nc">Child</span> <span class="n">c</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span><span class="o">();</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="mi">2</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="err">“</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">i</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">c</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+
+  <span class="nc">Parent</span> <span class="n">p2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span><span class="o">();</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">“</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="mi">3</span><span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">--</span> <span class="o">-</span> <span class="err">“</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p2</span><span class="o">.</span><span class="na">i</span><span class="o">);</span>
+
+  <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">p2</span><span class="o">.</span><span class="na">get</span><span class="o">());</span>
+
+ <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="cm">/*
+---1--- 
+7
+7
+---2---
+5
+5
+---3---
+7
+5
+*/</span>
+</code></pre></div></div>
+
+<h1 id="interface">interface</h1>
+<ul>
+  <li>구조(틀)</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="no">A</span><span class="o">;</span>
+	<span class="no">A</span><span class="o">(){}</span>
+	<span class="kt">void</span> <span class="nf">A</span><span class="o">(){}</span>
+	<span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">AA</span><span class="o">();</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="no">A</span> <span class="o">{</span>
+	<span class="kt">void</span> <span class="nf">AA</span><span class="o">()(){}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">interface</span> <span class="nc">B</span> <span class="o">{</span>
+	<span class="kt">int</span> <span class="no">B</span><span class="o">;</span> <span class="c1">// 자동으로 public static final이 붙는다.</span>
+	<span class="kt">void</span> <span class="nf">B</span><span class="o">();</span> <span class="c1">// 자동으로 public abstract가 붙는다.</span>
+<span class="o">}</span>
+<span class="kd">class</span> <span class="nc">BB</span> <span class="n">implemnets</span> <span class="no">B</span> <span class="o">{</span>
+	<span class="kt">void</span> <span class="nf">B</span><span class="o">()</span> <span class="o">{}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 오라클 연결</span>
+<span class="nc">OracleConnection</span> <span class="n">con</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">OracleConnection</span><span class="o">();</span>
+<span class="n">con</span><span class="o">.</span><span class="na">oracleCon</span><span class="o">();</span>
+
+<span class="c1">// MySQL 연결</span>
+<span class="nc">MySQL</span> <span class="n">con</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MySQL</span><span class="o">();</span>
+<span class="n">con</span><span class="o">.</span><span class="na">connect</span><span class="o">();</span>
+
+<span class="nc">Connection</span> <span class="n">con</span> <span class="o">=</span> <span class="n">실제디비객체</span><span class="o">;</span>
+<span class="n">con</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+</code></pre></div></div>
+
+  </div><a class="u-url" href="/blog/java/2019/04/26/Java_%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

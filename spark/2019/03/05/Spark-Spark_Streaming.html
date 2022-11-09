@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>[Spark] Spark Streaming | Dev Log of Jason Ahn</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="[Spark] Spark Streaming" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Spark Streaming Overview 대규모의 실시간 데이터 처리를 위한 고성능의 장애 허용 framework, Spark Core 확장 API spark straming은 Kafka, Flume, HDFS/S3, Kinesis, Twitter 등의 다양한 input 소스로부터 받아서 처리하고, 처리된 데이터를 HDFS, Databases, Dashboards 등으로 보내주는 역할을 함" />
+<meta property="og:description" content="Spark Streaming Overview 대규모의 실시간 데이터 처리를 위한 고성능의 장애 허용 framework, Spark Core 확장 API spark straming은 Kafka, Flume, HDFS/S3, Kinesis, Twitter 등의 다양한 input 소스로부터 받아서 처리하고, 처리된 데이터를 HDFS, Databases, Dashboards 등으로 보내주는 역할을 함" />
+<link rel="canonical" href="https://safenumz.github.io/blog/spark/2019/03/05/Spark-Spark_Streaming.html" />
+<meta property="og:url" content="https://safenumz.github.io/blog/spark/2019/03/05/Spark-Spark_Streaming.html" />
+<meta property="og:site_name" content="Dev Log of Jason Ahn" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-03-05T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="[Spark] Spark Streaming" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2019-03-05T00:00:00-06:00","datePublished":"2019-03-05T00:00:00-06:00","description":"Spark Streaming Overview 대규모의 실시간 데이터 처리를 위한 고성능의 장애 허용 framework, Spark Core 확장 API spark straming은 Kafka, Flume, HDFS/S3, Kinesis, Twitter 등의 다양한 input 소스로부터 받아서 처리하고, 처리된 데이터를 HDFS, Databases, Dashboards 등으로 보내주는 역할을 함","headline":"[Spark] Spark Streaming","mainEntityOfPage":{"@type":"WebPage","@id":"https://safenumz.github.io/blog/spark/2019/03/05/Spark-Spark_Streaming.html"},"url":"https://safenumz.github.io/blog/spark/2019/03/05/Spark-Spark_Streaming.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://safenumz.github.io/blog/feed.xml" title="Dev Log of Jason Ahn" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Dev Log of Jason Ahn</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">[Spark] Spark Streaming</h1><p class="post-meta post-meta-title"><time class="dt-published" datetime="2019-03-05T00:00:00-06:00" itemprop="datePublished">
+        Mar 5, 2019
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      8 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Spark">Spark</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <h1 id="spark-streaming">Spark Streaming</h1>
+<h2 id="overview">Overview</h2>
+<h3 id="대규모의-실시간-데이터-처리를-위한-고성능의-장애-허용-framework-spark-core-확장-api">대규모의 실시간 데이터 처리를 위한 고성능의 장애 허용 framework, Spark Core 확장 API</h3>
+<ul>
+  <li>spark straming은 Kafka, Flume, HDFS/S3, Kinesis, Twitter 등의 다양한 input 소스로부터 받아서 처리하고, 처리된 데이터를 HDFS, Databases, Dashboards 등으로 보내주는 역할을 함</li>
+</ul>
+
+<h3 id="streaming-연산을-아주-작은-batch-작업의-연속으로-처리">Streaming 연산을 아주 작은 batch 작업의 연속으로 처리</h3>
+<ul>
+  <li>실시간 stream을 X초의 batch들로 나눔, 0.5초 보다 작은 batch의 지연은 대략 1초</li>
+  <li>각각의 batch는 RDD이고 RDD 연산을 사용하여 처리 가능</li>
+  <li>RDD 연산의 처리 결과가 batch에 반환</li>
+</ul>
+
+<h2 id="dstream">DStream</h2>
+<h3 id="spark-streaming의-programming-model">Spark Streaming의 Programming Model</h3>
+<ul>
+  <li>Stream Data를 표현하는 연속된 RDD</li>
+  <li>RDD와 마찬가지로 input source에서 생성하거나 Dstream을 transform하여 생성</li>
+  <li>RDD 연산을 그대로 사용 –Batch(Historical) Data와 Stream Data를 동일한 방식으로 처리</li>
+</ul>
+
+<h2 id="spark-streaming-application">Spark Streaming Application</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// spark streaming 예제</span>
+<span class="k">package</span> <span class="nn">org.apache.spark.examples.streaming</span>
+
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.straming.</span><span class="o">{</span><span class="nc">Seconds</span><span class="o">,</span> <span class="nc">StreamingContext</span><span class="o">}</span>
+
+<span class="k">object</span> <span class="nc">HdfsWordCount</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">args</span><span class="o">.</span><span class="py">length</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">err</span><span class="o">.</span><span class="py">println</span><span class="o">(</span><span class="s">"Usage: HdfsWordCount &lt;directory&gt;"</span><span class="o">)</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nv">StreamingExamples</span><span class="o">.</span><span class="py">setStreamingLogLevels</span><span class="o">()</span>
+    <span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"HdfsWordCount"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span>
+
+    <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">textFileStream</span><span class="o">(</span><span class="nf">args</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
+    <span class="k">val</span> <span class="nv">words</span> <span class="k">=</span> <span class="nv">lines</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+    <span class="k">val</span> <span class="nv">wordCounts</span> <span class="k">=</span> <span class="nv">words</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="nv">wordCounts</span><span class="o">.</span><span class="py">print</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">awaitTermination</span><span class="o">()</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h2 id="start-streaming-programming">Start Streaming Programming</h2>
+<h3 id="libraries-dependency">Libraries Dependency</h3>
+<ul>
+  <li>Streaming 의존성 추가</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+  <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+  <span class="nt">&lt;artifactId&gt;</span>spark-streaming_2.10<span class="nt">&lt;/artifactId&gt;</span>
+  <span class="nt">&lt;version&gt;</span>1.5.2<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+<h3 id="streaming-programming-structure">Streaming programming Structure</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 1. Spark Conf 생성</span>
+<span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"TwitterPopularTags"</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
+
+<span class="c1">// 2. Streaming Context 생성</span>
+<span class="c1">// 들어오는 단위를 2초단위로 모아서 배치 처리</span>
+<span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">sparkconf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span>
+
+<span class="c1">// 3. Input DStream 생성</span>
+<span class="k">val</span> <span class="nv">stream</span> <span class="k">=</span> <span class="nv">twitterUtils</span><span class="o">.</span><span class="py">createStream</span><span class="o">(</span><span class="n">ssc</span><span class="o">)</span>
+
+<span class="c1">// 4. Streaming 처리 정의</span>
+<span class="c1">// Business logic</span>
+
+<span class="c1">// 5. Streaming context 시작</span>
+<span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+<span class="nv">ssc</span><span class="o">.</span><span class="py">awaitTermination</span><span class="o">()</span>
+
+<span class="c1">// 6. Streaming context 종료</span>
+<span class="nv">ssc</span><span class="o">.</span><span class="py">stop</span><span class="o">()</span>
+</code></pre></div></div>
+
+<h2 id="input-dstream">Input Dstream</h2>
+<h3 id="streaming-소스에서-들어오는-데이터-스트림을-표현하는-것으로-streamingcontext-api에서-직접-제공하는-basic-source와-외부-library에-존재하는-advanced-source로-구분">Streaming 소스에서 들어오는 데이터 스트림을 표현하는 것으로 StreamingContext API에서 직접 제공하는 Basic source와 외부 library에 존재하는 Advanced source로 구분</h3>
+<ul>
+  <li>File Stream을 제외한 모든 input dstream은 하나의 receiver 객체와 연결, 따라서 모든 input dstream은 데이터의 단일 스트림을 받음</li>
+  <li>receiver는 streaming application에 할당된 하나의 core 점유</li>
+  <li>application에 할당된 core의 개수가 receiver의 개수 보다 작으면 데이터 수집 불가</li>
+  <li>application을 로컬에서 하나의 core로 실행하면 처리 불가</li>
+</ul>
+
+<h2 id="input-dstreams---basic-source">Input DStreams - Basic Source</h2>
+<ul>
+  <li>actorStream : 아카에서 나오는 데이터를 스트림할 때 사용</li>
+  <li>socketTextStream</li>
+  <li>socketStream</li>
+  <li>rawSocketStream</li>
+  <li>fileStream</li>
+  <li>fileStream</li>
+  <li>textFileStream</li>
+  <li>queueStream</li>
+  <li>queueStream</li>
+</ul>
+
+<h2 id="input-dstreams---advanced-source">Input DStreams - Advanced Source</h2>
+<ul>
+  <li>Twitter (TwitterUtils)</li>
+  <li>Kafaka (KafkaUtils) : 카프카 토픽에 직접 연결해 데이터를 가져오는 방식 권장</li>
+  <li>Flume (FlumeUtils)</li>
+  <li>Kinesis (KinesisUtils)</li>
+  <li>MQTT (MQTTUtils)</li>
+  <li>ZeroMQ (ZeroMQUtils)</li>
+</ul>
+
+<p><br /></p>
+<h1 id="transformation-operation"><a href="">Transformation Operation</a></h1>
+<h2 id="transfrom">transfrom</h2>
+<ul>
+  <li>def transform<a href="transfromFunc: RDD[T] =&gt; RDD[U]">U: ClassTag</a>: DStream[U]</li>
+  <li>def transform<a href="transfromFunc: (RDD[T], Time) =&gt; RDD[U]">U: ClassTag</a>: DStream[U]</li>
+  <li>Dstream의 모든 RDD 마다 함수를 적용하여 새로운 DStream을 생성, DStream에 직접 사용할 수 없는 RDD 연산 수행 가능, Mllib, GraphX를 Dstream에 직접 적용 가능</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">spamRDD</span> <span class="o">..</span> <span class="c1">// spam 정보를 담고 있는 RDD</span>
+<span class="k">val</span> <span class="nv">cleanedDStream</span> <span class="k">=</span> <span class="nv">wordCounts</span><span class="o">.</span><span class="py">transform</span><span class="o">(</span><span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nv">rdd</span><span class="o">.</span><span class="py">join</span><span class="o">(</span><span class="n">spamInfoRDD</span><span class="o">).</span><span class="py">filter</span><span class="o">(...)</span> <span class="c1">// DStream의 각 RDD와 spamRDD join</span>
+<span class="o">})</span>
+</code></pre></div></div>
+
+<h2 id="updatestatebykey">UpdateStateByKey</h2>
+<ul>
+  <li>def updateStateByKey<a href="updateFunc: (Seq[V], Option[S]) =&gt; Option[S]">S: ClassTag</a>: DStream[(K, S)]</li>
+  <li>def updateStateByKey<a href="updateFunc: (Seq[V], Option[S]) =&gt; Option[S], numPartitions: Int">S: ClassTag</a>: DStream[(K, S)]</li>
+  <li>def updateStateByKey<a href="updateFunc: (Seq[V], Option[S]) =&gt; Option[S], partitioner: Partitioner">S: ClassTag</a>: DStream[(K, S)]</li>
+  <li>def updateStateByKey[S: ClassTag])updateFunc: (Iterator[(K, Seq[V], Option[S])] =&gt; Iterator[(K, S)], partitioner: Partitioner, rememberPartitioner: Boolean): DStream[(K, S)]</li>
+</ul>
+
+<h2 id="checkpointing">CheckPointing</h2>
+<h3 id="장애-복구를-위한-정보-저장">장애 복구를 위한 정보 저장</h3>
+<ul>
+  <li>Metadata checkpointing: Streaming 구성 정보를 HDFS 같은 장애 허용 저장소에 저장, driver 노드에서 발생한 장애를 복구할 때 사용
+    <ul>
+      <li>Configuration - Streaming application을 생성하는 데 사용했던 구성 정보</li>
+      <li>Distream Operaton - Streaming application을 정의하는데 사용했던 DStream 연산 집합</li>
+      <li>Incomplete batches - queue에 쌓여 있으나 처리되지 않는 batch 들</li>
+    </ul>
+  </li>
+  <li>Data checkpointing : 생성된 RDD들을 저장, 여러 개의 batch들 사이에서 데이터를 합하는 stateful transformation에서는 필수 (예, updateStateByKey, window operations)</li>
+</ul>
+
+<h3 id="설정-방법">설정 방법</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// StreamContext or Spark Context</span>
+<span class="nv">ssc</span><span class="o">.</span><span class="py">checkpoint</span><span class="o">(</span><span class="n">directory</span><span class="o">)</span>
+<span class="c1">//DStream</span>
+<span class="nv">stream</span><span class="o">.</span><span class="py">checkpoint</span><span class="o">(</span><span class="nc">Duration</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="driver-실패-복구">Driver 실패 복구</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">functionToCreateContext</span><span class="o">()</span> <span class="k">:</span> <span class="kt">StreamingContext</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(...)</span> <span class="c1">// new context</span>
+  <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">socketTextStream</span><span class="o">(...)</span> <span class="c1">// create DStreams</span>
+
+  <span class="nv">ssc</span><span class="o">.</span><span class="py">checkpoint</span><span class="o">(</span><span class="n">checkpointDirectory</span><span class="o">)</span> <span class="c1">// set checkpoint directory</span>
+  <span class="n">ssc</span>
+<span class="o">}</span>
+<span class="c1">// Get StreamingContext from checkpoint data or create a new one</span>
+<span class="k">val</span> <span class="nv">context</span> <span class="k">=</span> <span class="nv">StreamingContext</span><span class="o">.</span><span class="py">getOrCreate</span><span class="o">(</span><span class="n">checkpointDirectory</span><span class="o">,</span> <span class="n">functionToCreateContext_</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="operation">Operation</h2>
+<h3 id="transformation">Transformation</h3>
+<ul>
+  <li>map(func), flatMap(func), filter(func), count()</li>
+  <li>repartiton(numPartitons)</li>
+  <li>union(otherStream)</li>
+  <li>reduce(func), countByValue(), reduceByKey(func, [numTasks])</li>
+  <li>join(otherStream, [numTasks]), cogroup(otherStream, [numTasks])</li>
+  <li>transform(func)</li>
+  <li>updateStateByKey(func)</li>
+</ul>
+
+<h3 id="window">Window</h3>
+<ul>
+  <li>window(length, interval)</li>
+  <li>countByWindow(length, interval)</li>
+  <li>reduceByWindow(func, length, interval)</li>
+  <li>reduceByeKeyAndWindow(func, length, interval, [numTasks])</li>
+  <li>countByValueAndWindow(length, interval, [numTasks])</li>
+</ul>
+
+<h3 id="output">Output</h3>
+<ul>
+  <li>Print()</li>
+  <li>foreachRDD(func)</li>
+  <li>saveAsObjectFiles(prefix, [suffix])</li>
+  <li>saveAsTextFiles(prefix, [suffix])</li>
+  <li>saveAsHadoopFiles(prefix, [suffix])</li>
+</ul>
+
+<h4 id="window-length--window의-기간">window length : window의 기간</h4>
+<h4 id="sliding-interval--window-연산이-수행되는-간격-batch-크기의-배수로-지정해야-함">sliding interval : window 연산이 수행되는 간격 (batch 크기의 배수로 지정해야 함)</h4>
+<h4 id="checkpointing-필수--checkpointing-duration은-sliding-interval의-510배가-적당">checkpointing 필수 : checkpointing duration은 sliding interval의 5~10배가 적당</h4>
+
+<h1 id="window-operationtransformation">Window Operation(Transformation)</h1>
+<h2 id="window-1">window</h2>
+<ul>
+  <li>def window(windowDuration: Duration)</li>
+  <li>def window(windowDuration: Duration, slideDuration: Duration)</li>
+  <li>새로운 window DStream 생성</li>
+</ul>
+
+<h2 id="countbywindow">countByWindow</h2>
+<ul>
+  <li>def countByValueAndWindow( WindowDuration: Duration, slideDuration: Duration, numPartitions: Int = ssc.sc.defaultParallelism)(implicit ord: Ordering[T] = null) : DStream[(T, Long)]</li>
+  <li>Window item count 함수</li>
+</ul>
+
+<h2 id="countbyvalueandwindow">countByValueAndWindow</h2>
+<ul>
+  <li>def countByValueAndWindow( windowDuration: Duration, slideDuration: Duration, numPartitions: Int = ssc.sc.defaultParallelism)(implicit ord: Ordering[T] = null) : DStream[(T, Long)]</li>
+  <li>windowDuration 동안의 데이터를 Key, 해당 데이터의 개수를 Value로 담고 있는 DStream 생성</li>
+</ul>
+
+<h2 id="reducebywindow">reduceByWindow</h2>
+<ul>
+  <li>def reduceByWindow(reduceFunc: (T, T) =&gt; T, windowDuration: Duration, slideDuration: Duration): DStream[T]</li>
+  <li>def reduceByWindow(reduceFunc: (T, T) =&gt; T, invReduceFunc: (T, T) =&gt; T, windowDuration: Duration, slideDuration: Duration): DStream[T]</li>
+  <li>Window reduce 함수</li>
+</ul>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">retweetCnt</span> <span class="k">=</span> <span class="nv">stream</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">status</span> <span class="k">=&gt;</span> <span class="n">statusgetRetweetCount</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">retSum</span> <span class="k">=</span> <span class="nv">retweetCnt</span><span class="o">.</span><span class="py">reduceByWindow</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">,</span> <span class="nc">Secounds</span><span class="o">(</span><span class="mi">4</span><span class="o">),</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">4</span><span class="o">))</span>
+<span class="nv">retSum</span><span class="o">.</span><span class="py">print</span>
+
+<span class="k">val</span> <span class="nv">retSum</span> <span class="k">=</span> <span class="nv">retweetCnt</span><span class="o">.</span><span class="py">reduceByWindow</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">,</span><span class="k">_</span><span class="o">-</span><span class="k">_</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">4</span><span class="o">),</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">4</span><span class="o">))</span>
+<span class="nv">retSum</span><span class="o">.</span><span class="py">print</span>
+</code></pre></div></div>
+
+<h2 id="join-operation">Join Operation</h2>
+<h3 id="join">join</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">stream1</span> <span class="k">=</span> <span class="nc">DStream</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+<span class="k">val</span> <span class="nv">stream2</span> <span class="k">=</span> <span class="nc">DSTream</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+
+<span class="k">val</span> <span class="nv">joinedStream</span> <span class="k">=</span> <span class="nv">stream1</span><span class="o">.</span><span class="py">join</span><span class="o">(</span><span class="n">stream2</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="window-join">window join</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">windowedStream1</span> <span class="k">=</span> <span class="nv">stream1</span><span class="o">.</span><span class="py">window</span><span class="o">(</span><span class="nc">Seconds</span><span class="o">(</span><span class="mi">20</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">windowedStream2</span> <span class="k">=</span> <span class="nv">stream2</span><span class="o">.</span><span class="py">window</span><span class="o">(</span><span class="nc">Minutes</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">joinedStream</span> <span class="k">=</span> <span class="nv">windowedStream1</span><span class="o">.</span><span class="py">join</span><span class="o">(</span><span class="n">windowedStream2</span><span class="o">)</span>
+</code></pre></div></div>
+
+<h3 id="stream-dataset-join">Stream dataset join</h3>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">dataset</span><span class="k">:</span> <span class="kt">RDD</span><span class="o">[</span><span class="kt">String</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">...</span>
+<span class="k">val</span> <span class="nv">windowedStream</span> <span class="k">=</span> <span class="nv">stream</span><span class="o">.</span><span class="py">window</span><span class="o">(</span><span class="nc">Seconds</span><span class="o">(</span><span class="mi">20</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">joinedStream</span> <span class="k">=</span> <span class="nv">windowedStream</span><span class="o">.</span><span class="py">transform</span> <span class="o">{</span> <span class="n">rdd</span> <span class="k">=&gt;</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">join</span><span class="o">(</span><span class="n">dataset</span><span class="o">)}</span>
+</code></pre></div></div>
+
+<h1 id="output-operation">Output Operation</h1>
+<h2 id="print">print</h2>
+<ul>
+  <li>def print()</li>
+  <li>드라이버 노드에서 실행되며 DStream의 각 배치에서 처음 10개의 데이터 출력, 개발시에 디버깅 용도로 유요</li>
+</ul>
+
+<h2 id="foreachrdd">foreachRDD</h2>
+<ul>
+  <li>def foreachRDD(foreachFunc: RDD[T] =&gt; Unit)</li>
+  <li>def foreachRDD(foreachFunc: (RDD[T], Time) =&gt; Unit)</li>
+  <li>Dstream 안의 각 RDD에 foreachFunc 적용, RDD를 파일로 저장하거나 네트워크를 통해 데이터베이스에 저장하는 것 처럼 각 RDD를 외부 시스템으로 보냄, foreachFunc 함수는 stream application이 실행되고 있는 드라이버 프로세스에서 실행되고 보통 RDD action을 가지고 있어서 스트림의 RDD 연산 수행</li>
+</ul>
+
+<h2 id="foreachrdd-design-pattern">foreachRDD Design Pattern</h2>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">dstrem</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span><span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="k">val</span> <span class="nv">connection</span> <span class="k">=</span> <span class="nf">createNewConnection</span><span class="o">()</span> <span class="c1">// executed at the driver</span>
+  <span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">record</span> <span class="k">=&gt;</span> <span class="o">{</span>
+    <span class="nv">connection</span><span class="o">.</span><span class="py">send</span><span class="o">(</span><span class="n">record</span><span class="o">)</span> <span class="c1">// executed at the worker</span>
+  <span class="o">})</span>
+<span class="o">})</span>
+
+<span class="c1">// connection 객체가 각 worker로 보내져야 함</span>
+<span class="c1">// connection 객체는 직렬화 할 수 없음</span>
+
+<span class="nv">dstream</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span><span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">record</span> <span class="o">=&gt;{</span>
+    <span class="k">val</span> <span class="nv">connection</span> <span class="k">=</span> <span class="nf">createNewConnection</span><span class="o">()</span>
+    <span class="nv">connection</span><span class="o">.</span><span class="py">send</span><span class="o">(</span><span class="n">record</span><span class="o">)</span>
+    <span class="nv">connection</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+  <span class="o">})</span>
+<span class="o">})</span>
+
+<span class="c1">// 모든 record마다 connection을 만드는 대신 파티션마다 connection 생성</span>
+
+<span class="nv">dstream</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span><span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nv">rdd</span><span class="o">.</span><span class="py">foreachPartition</span><span class="o">(</span><span class="n">record</span> <span class="k">=&gt;</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">connection</span> <span class="k">=</span> <span class="nf">createNewConnection</span><span class="o">()</span>
+    <span class="nv">record</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">r</span> <span class="k">=&gt;</span> <span class="nv">connection</span><span class="o">.</span><span class="py">send</span><span class="o">(</span><span class="n">r</span><span class="o">))</span>
+    <span class="nv">connection</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+  <span class="o">})</span>
+<span class="o">})</span>
+
+<span class="c1">// ConnectionPool 사용</span>
+<span class="nv">dstream</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span><span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+  <span class="nv">rdd</span><span class="o">.</span><span class="py">foreachPartition</span><span class="o">(</span><span class="n">record</span> <span class="k">=&gt;</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">connection</span> <span class="k">=</span> <span class="nv">ConnectionPool</span><span class="o">.</span><span class="py">getConnection</span><span class="o">()</span>
+    <span class="nv">record</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">r</span> <span class="k">=&gt;</span> <span class="nv">connection</span><span class="o">.</span><span class="py">send</span><span class="o">(</span><span class="n">r</span><span class="o">))</span>
+    <span class="nv">ConnectionPool</span><span class="o">.</span><span class="py">returnConnection</span><span class="o">(</span><span class="n">connection</span><span class="o">)</span>
+  <span class="o">})</span>
+<span class="o">})</span>
+</code></pre></div></div>
+
+<h1 id="spark-stream-예제">Spark Stream 예제</h1>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// NetworkWordCount</span>
+
+<span class="k">import</span> <span class="nn">org.apache.spark.SparkConf</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.streaming.</span><span class="o">{</span><span class="nc">Seconds</span><span class="o">,</span> <span class="nc">StreamingContext</span><span class="o">}</span>
+<span class="k">import</span> <span class="nn">org.apache.spark.storage.StorageLevel</span>
+
+<span class="k">object</span> <span class="nc">NetworkWordCount</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">args</span><span class="o">.</span><span class="py">length</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">err</span><span class="o">.</span><span class="py">println</span><span class="o">(</span><span class="s">"Usage: NetworkWordCount &lt;hostnmae&gt; &lt;port&gt;"</span><span class="o">)</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nv">StreamingExamples</span><span class="o">.</span><span class="py">setStreamingLogLevles</span><span class="o">()</span>
+
+    <span class="c1">// Create the context with a 1 second batch size</span>
+    <span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppname</span><span class="o">(</span><span class="s">"NetworkWordCount"</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+
+    <span class="c1">// Create a socket stream on target ip: port and count the words</span>
+    <span class="c1">// in input stream of \n delimited text (eg. generated by 'nc')</span>
+    <span class="c1">// Note that no duplication in distributed scenario for fault tolerance</span>
+    <span class="c1">// Replication necessary in distributed scenario for fault tolerance</span>
+    <span class="c1">// hostname은 args(0), port는 args(1)로 받는다</span>
+    <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">socketTextStream</span><span class="o">(</span><span class="nf">args</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="nf">args</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="py">toInt</span><span class="o">,</span> <span class="nv">StorageLevel</span><span class="o">.</span><span class="py">MEMORY_AND_DISK_SER</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">word</span> <span class="k">=</span> <span class="nv">lines</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+    <span class="k">val</span> <span class="nv">wordCounts</span> <span class="k">=</span> <span class="nv">words</span><span class="o">.</span><span class="py">mp</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="mi">1</span><span class="o">)).</span><span class="py">reduceByKey</span><span class="o">(</span><span class="k">_</span><span class="o">+</span><span class="k">_</span><span class="o">)</span>
+    <span class="nv">wordCounts</span><span class="o">.</span><span class="py">print</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">awaitTermInation</span><span class="o">()</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// StatefulNetworkWordCount</span>
+
+<span class="k">object</span> <span class="nc">StatefulNetworkWordCount</span> <span class="o">{</span>
+  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span> <span class="o">{</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">args</span><span class="o">.</span><span class="py">lenth</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span> <span class="o">{</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">err</span><span class="o">.</span><span class="py">println</span><span class="o">(</span><span class="s">"Usage: StatefulNetworkWordCOunt &lt;hostname&gt; &lt;port&gt;"</span><span class="o">)</span>
+      <span class="nv">System</span><span class="o">.</span><span class="py">exit</span><span class="o">(</span><span class="mi">1</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="nv">StreamingExamples</span><span class="o">.</span><span class="py">setStreamingLogLevelIs</span><span class="o">()</span>
+
+    <span class="k">val</span> <span class="nv">updateFunc</span> <span class="k">=</span> <span class="o">(</span><span class="n">values</span><span class="k">:</span> <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">],</span> <span class="n">state</span><span class="k">:</span> <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">])</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="k">val</span> <span class="nv">currentCount</span> <span class="k">=</span> <span class="nv">values</span><span class="o">.</span><span class="py">sum</span>
+
+      <span class="k">val</span> <span class="nv">previousCount</span> <span class="k">=</span> <span class="nv">state</span><span class="o">.</span><span class="py">getOrElse</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+
+      <span class="nf">some</span><span class="o">(</span><span class="n">currentCount</span> <span class="o">+</span> <span class="n">previousCount</span><span class="o">)</span>
+    <span class="o">}</span>
+
+    <span class="k">val</span> <span class="nv">newUpdateFunc</span> <span class="k">=</span> <span class="o">(</span><span class="n">iterator</span><span class="k">:</span> <span class="kt">Iterator</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">Seq</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span>, <span class="kt">Option</span><span class="o">[</span><span class="kt">Int</span><span class="o">])])</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="nv">iterator</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">t</span> <span class="k">=&gt;</span> <span class="nf">updateFunc</span><span class="o">(</span><span class="nv">t</span><span class="o">.</span><span class="py">_2</span><span class="o">,</span> <span class="nv">t</span><span class="o">.</span><span class="py">_3</span><span class="o">)).</span><span class="py">map</span><span class="o">(</span><span class="n">s</span> <span class="o">=(</span><span class="nv">t</span><span class="o">.</span><span class="py">_1</span><span class="o">,</span> <span class="n">s</span><span class="o">))</span>
+    <span class="o">}</span>
+
+    <span class="k">val</span> <span class="nv">sparkConf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"StatefulNetworkWordCount"</span><span class="o">)</span>
+    <span class="c1">// Create the context with a 1 second batch size</span>
+
+    <span class="c1">// 현재 디렉토리 . 에 체크포인트 저장이 된다.</span>
+    <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">sparkConf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">checkpoint</span><span class="o">(</span><span class="s">"."</span><span class="o">)</span>
+
+    <span class="c1">// Initial RDD input to updateStateByKey</span>
+    <span class="k">val</span> <span class="nv">initialRDD</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">sparkContext</span><span class="o">.</span><span class="py">parallelize</span><span class="o">(</span><span class="nc">List</span><span class="o">((</span><span class="s">"hello"</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="o">(</span><span class="s">"world"</span><span class="o">,</span> <span class="mi">1</span><span class="o">)))</span>
+
+    <span class="c1">// Create a ReceiverInputDStream on target ip:port and count the words</span>
+    <span class="c1">// in input stream of \n delimited test (eg. generated by 'nc')</span>
+    <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">ssc</span><span class="o">.</span><span class="py">socketTextStream</span><span class="o">(</span><span class="nf">args</span><span class="o">(</span><span class="mi">0</span><span class="o">),</span> <span class="nf">args</span><span class="o">(</span><span class="mi">1</span><span class="o">).</span><span class="py">toInt</span><span class="o">)</span>
+    <span class="k">val</span> <span class="nv">words</span> <span class="k">=</span> <span class="nv">lines</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">" "</span><span class="o">))</span>
+    <span class="k">val</span> <span class="nv">wordDStream</span> <span class="k">=</span> <span class="nv">words</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="mi">1</span><span class="o">))</span>
+
+    <span class="c1">// Update the cumulative count using updateStateByKey</span>
+    <span class="c1">// This wil give a DStream made of state (which is the cumulative count of the words)</span>
+
+    <span class="n">vla</span> <span class="n">stateDstream</span>  <span class="k">=</span> <span class="nv">wordDstream</span><span class="o">.</span><span class="py">updateStateByKey</span><span class="o">[</span><span class="kt">Int</span><span class="o">](</span><span class="n">newUpdateFunc</span><span class="o">,</span> <span class="k">new</span> <span class="nc">HashPartitioner</span> <span class="o">(</span><span class="nv">ssc</span><span class="o">.</span><span class="py">sparkContext</span><span class="o">.</span><span class="py">defaultParallelism</span><span class="o">),</span> <span class="kc">true</span><span class="o">,</span> <span class="n">initialRDD</span><span class="o">)</span>
+    <span class="nv">stateDstream</span><span class="o">.</span><span class="py">print</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+    <span class="nv">ssc</span><span class="o">.</span><span class="py">awaitTermination</span><span class="o">()</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// 9999 포트가 점유되고 있는지 확인
+$ netstat -anp | grep 9999
+
+// shell1 : netcat 접속
+$ nc -lk 9999
+
+// shell2 : spark 하위 bin 디렉토리에서
+$ ./run-example streaming.StatefulNetworkWordCount localhost 9999
+
+// shell1 에서 단어를 치면 실시간으로 shell2에서 단어가 집계가 된다
+</code></pre></div></div>
+
+<h2 id="tweeter-인증키-얻는-방법">tweeter 인증키 얻는 방법</h2>
+<ul>
+  <li><a href="https://apps.twitter.com">https://apps.twitter.com</a></li>
+  <li>Create app</li>
+  <li>자신의 트위터 계정의 핸드폰 번호가 등록되어야 함</li>
+  <li>Keys and Access Tokens 확인</li>
+  <li>Your Access Token 생성</li>
+  <li>한국어만 집계하도록 등록할 수 있음</li>
+  <li>Consumer Key, Comsumer Key Secret, Access Token, Access Token Secret</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./run-example streaming.TwitterPoularTags &lt;Consumer Key&gt; &lt;Consumer Key Secret&gt; &lt;Access Toeken&gt; &lt;Access Token Secret&gt;
+</code></pre></div></div>
+
+<p>TwitterReader.scala</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">object</span> <span class="nc">TwitterReader</span> <span class="k">extends</span> <span class="nc">App</span> <span class="o">{</span>
+  <span class="nv">System</span><span class="o">.</span><span class="py">setProperty</span><span class="o">(</span><span class="s">"twitter4j.oauth.consumerKey"</span><span class="o">,</span> <span class="nf">args</span><span class="o">(</span><span class="mi">0</span><span class="o">))</span>
+  <span class="nv">System</span><span class="o">.</span><span class="py">setProperty</span><span class="o">(</span><span class="s">"twitter4j.oauth.consumerSecret"</span><span class="o">,</span> <span class="nf">args</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+  <span class="nv">System</span><span class="o">.</span><span class="py">setProperty</span><span class="o">(</span><span class="s">"twitter4j.oauth.accessToken"</span><span class="o">,</span> <span class="nf">args</span><span class="o">(</span><span class="mi">2</span><span class="o">))</span>
+  <span class="nv">System</span><span class="o">.</span><span class="py">setProperty</span><span class="o">(</span><span class="s">"twitter4j.oauth.accessTokenSecret"</span><span class="o">,</span> <span class="nf">args</span><span class="o">(</span><span class="mi">3</span><span class="o">))</span>
+
+  <span class="k">val</span> <span class="nv">conf</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkConf</span><span class="o">().</span><span class="py">setAppName</span><span class="o">(</span><span class="s">"TwitterReader"</span><span class="o">).</span><span class="py">setMaster</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
+  <span class="k">val</span> <span class="nv">ssc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">conf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">5</span><span class="o">))</span>
+
+  <span class="k">val</span> <span class="nv">filters</span> <span class="k">=</span> <span class="nc">Array</span><span class="o">()</span>
+  <span class="k">val</span> <span class="nv">tweets</span> <span class="k">=</span> <span class="nv">TwitterUtils</span><span class="o">.</span><span class="py">createStream</span><span class="o">(</span><span class="n">ssc</span><span class="o">,</span> <span class="nc">None</span><span class="o">)</span>
+
+  <span class="nv">tweets</span><span class="o">.</span><span class="py">foreachRDD</span><span class="o">(</span> <span class="n">rdd</span> <span class="k">=&gt;</span> <span class="o">{</span>
+    <span class="nv">rdd</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">status</span> <span class="k">=&gt;</span> <span class="o">{</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"text ==&gt; %s"</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="nv">status</span><span class="o">.</span><span class="py">getText</span><span class="o">))</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"id ==&gt; %s"</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="nv">status</span><span class="o">.</span><span class="py">getId</span><span class="o">))</span>
+      <span class="nf">println</span><span class="o">(</span><span class="s">"retweet cot ==&gt; %s"</span><span class="o">.</span><span class="py">status</span><span class="o">.</span><span class="py">getRetweetCount</span><span class="o">)</span>
+    <span class="o">})</span>
+  <span class="o">})</span>
+  <span class="nv">ssc</span><span class="o">.</span><span class="py">start</span><span class="o">()</span>
+  <span class="nv">ssc</span><span class="o">.</span><span class="py">awitTermination</span><span class="o">()</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ul>
+  <li>dependency 추가, spark-streaming-twitter는 spark 2.0.0 이상의 버전부터는 지원하지 않음, 따라서 org.apache.bahir에서 써야 함</li>
+</ul>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.spark<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spark-streaming_${scala.binary.version}<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>${spark.version}<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+
+<span class="nt">&lt;dependency&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>org.apache.bahir<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>spark-streaming-twitter_${scala.binary.version}<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;version&gt;</span>2.0.1<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="safenumz/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/spark/2019/03/05/Spark-Spark_Streaming.html" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>AI and Data Engineering</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/fastai" target="_blank" title="fastai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/fastdotai" target="_blank" title="fastdotai"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
